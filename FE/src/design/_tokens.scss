@@ -1,0 +1,195 @@
+// =============================================================================
+// DESIGN TOKENS - LIGHT THEME & GLASSMORPHISM
+// XinMall 数码电商系统核心设计变量
+// =============================================================================
+
+// --- 1. Color Palette (色板) ---
+
+// 品牌色：数码产品通常使用冷静、科技感的蓝色
+$color-primary:       #2979FF; // 核心主色 (Electric Blue)
+$color-primary-light: #E3F2FD; // 主色浅调 (用于背景/标签)
+$color-primary-dark:  #1565C0; // 主色深调 (用于点击态)
+
+// 渐变色 (品牌渐变)
+$gradient-primary: linear-gradient(135deg, #2979FF 0%, #7C4DFF 100%);
+$gradient-gold: linear-gradient(135deg, #FFD700 0%, #FFA000 100%);
+
+// 功能色
+$color-success:       #00C853; // 交易成功/正品认证
+$color-success-light: #E8F5E9;
+$color-warning:       #FFAB00; // 提醒/打包出售警告
+$color-warning-light: #FFF8E1;
+$color-error:         #FF3D00; // 错误/降价
+$color-error-light:   #FFEBEE;
+$color-info:          #00B8D4; // 信息提示
+$color-info-light:    #E0F7FA;
+
+// 背景色
+$color-bg-page:       #F2F4F8; // 页面背景色 (极淡的蓝灰色)
+$color-bg-white:      #FFFFFF; // 纯白背景
+$color-bg-gray:       #F5F5F7; // 浅灰背景
+
+// 文本色 (层级分明)
+$color-text-main:     #1D1D1F; // 主要信息 (接近纯黑但柔和)
+$color-text-sub:      #6E6E73; // 次要信息 (参数/日期)
+$color-text-disabled: #A1A1A6; // 禁用状态
+$color-text-placeholder: #A1A1A6; // 占位符
+$color-text-white:    #FFFFFF; // 反白文字
+$color-text-link:     #2979FF; // 链接颜色
+
+// 边框色
+$color-border:        rgba(0, 0, 0, 0.08); // 标准边框
+$color-border-light:  rgba(0, 0, 0, 0.04); // 浅边框
+$color-divider:       rgba(0, 0, 0, 0.06); // 分割线
+
+// 毛玻璃体系核心变量 (Glass System)
+// 基础白色：用于卡片背景
+$glass-white-high:    rgba(255, 255, 255, 0.85); // 强背景 (内容区)
+$glass-white-mid:     rgba(255, 255, 255, 0.65); // 中背景 (浮层)
+$glass-white-low:     rgba(255, 255, 255, 0.45); // 弱背景 (装饰)
+
+// 彩色毛玻璃 (用于特殊场景)
+$glass-primary:       rgba(41, 121, 255, 0.15); // 主色毛玻璃
+$glass-success:       rgba(0, 200, 83, 0.15);   // 成功色毛玻璃
+$glass-warning:       rgba(255, 171, 0, 0.15);  // 警告色毛玻璃
+
+// 边框高光：用于模拟光照边缘，增加质感
+$glass-border-light:  rgba(255, 255, 255, 0.6);
+$glass-border-shadow: rgba(0, 0, 0, 0.05);
+
+// --- 2. Typography (排版) ---
+
+// 字号系统
+$font-size-xs:   20rpx;  // 标签/角标
+$font-size-sm:   24rpx;  // 辅助文案
+$font-size-md:   28rpx;  // 正文 (默认)
+$font-size-lg:   32rpx;  // 小标题
+$font-size-xl:   40rpx;  // 价格/大标题
+$font-size-xxl:  48rpx;  // 巨型数字
+$font-size-xxxl: 64rpx;  // 特大数字
+
+// 字重
+$font-weight-regular: 400;
+$font-weight-medium:  500;
+$font-weight-bold:    600; // iOS风格尽量不要用太粗的700
+
+// 行高
+$line-height-tight:   1.2;
+$line-height-normal:  1.5;
+$line-height-loose:   1.8;
+
+// 字间距
+$letter-spacing-tight: -0.02em;
+$letter-spacing-normal: 0;
+$letter-spacing-wide:  0.05em;
+
+// --- 3. Spacing (间距 - 4px栅格) ---
+
+$space-2:   4rpx;   // 2px - 极小间距
+$space-4:   8rpx;   // 4px - 微小间距
+$space-6:   12rpx;  // 6px - 小间距
+$space-8:   16rpx;  // 8px - 标准间距
+$space-12:  24rpx;  // 12px - 中等间距
+$space-16:  32rpx;  // 16px - 大间距
+$space-20:  40rpx;  // 20px - 较大间距
+$space-24:  48rpx;  // 24px - 大区块间距
+$space-32:  64rpx;  // 32px - 页面级间距
+
+// 简写别名
+$space-xs:  $space-4;
+$space-sm:  $space-8;
+$space-md:  $space-12;
+$space-lg:  $space-16;
+$space-xl:  $space-24;
+
+// --- 4. Radius (圆角 - 毛玻璃风格通常更圆润) ---
+
+$radius-xs:    4rpx;   // 微圆角
+$radius-sm:    8rpx;   // 小圆角
+$radius-md:    16rpx;  // 标准卡片圆角
+$radius-lg:    24rpx;  // 较大的卡片
+$radius-xl:    32rpx;  // 大卡片/弹窗
+$radius-full:  999px;  // 完全圆形
+
+// --- 5. Shadows (弥散投影) ---
+
+// 基础阴影 (无色倾向)
+$shadow-xs: 0 2rpx 8rpx rgba(0, 0, 0, 0.02);
+$shadow-sm: 0 4rpx 12rpx rgba(0, 0, 0, 0.03);
+$shadow-md: 0 8rpx 24rpx rgba(0, 0, 0, 0.04);
+
+// 品牌色阴影 (带主色倾向，更高级)
+$shadow-primary-sm: 0 4rpx 16rpx rgba(41, 121, 255, 0.12);
+$shadow-primary-md: 0 8rpx 32rpx rgba(41, 121, 255, 0.16);
+$shadow-primary-lg: 0 16rpx 48rpx rgba(41, 121, 255, 0.20);
+
+// 功能色阴影
+$shadow-success: 0 8rpx 24rpx rgba(0, 200, 83, 0.15);
+$shadow-warning: 0 8rpx 24rpx rgba(255, 171, 0, 0.15);
+$shadow-error:   0 8rpx 24rpx rgba(255, 61, 0, 0.15);
+
+// 内阴影 (用于输入框聚焦等)
+$shadow-inset: inset 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+
+// --- 6. Glass Effects (毛玻璃效果) ---
+
+// 模糊程度
+$blur-sm:  8px;
+$blur-md:  16px;
+$blur-lg:  24px;
+$blur-xl:  32px;
+
+// 毛玻璃过渡时间
+$glass-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+// --- 7. Animation (动画) ---
+
+// 时长
+$duration-fast:   0.15s;
+$duration-normal: 0.25s;
+$duration-slow:   0.4s;
+
+// 缓动函数
+$ease-in:      cubic-bezier(0.4, 0, 1, 1);
+$ease-out:     cubic-bezier(0, 0, 0.2, 1);
+$ease-in-out:  cubic-bezier(0.4, 0, 0.2, 1);
+$ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
+
+// --- 8. Z-Index (层级) ---
+
+$z-dropdown:   100;
+$z-sticky:     200;
+$z-fixed:      300;
+$z-modal-backdrop: 400;
+$z-modal:      500;
+$z-popover:    600;
+$z-toast:      700;
+
+// --- 9. Breakpoints (断点 - 用于响应式) ---
+
+$breakpoint-xs: 320px;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+
+// --- 10. Component Specific (组件专用变量) ---
+
+// 按钮
+$btn-height-sm:  56rpx;
+$btn-height-md:  80rpx;
+$btn-height-lg:  96rpx;
+
+// 输入框
+$input-height:   88rpx;
+$input-padding:  $space-md;
+
+// 导航栏
+$navbar-height:  88rpx;
+
+// 标签栏
+$tabbar-height:  100rpx;
+
+// 卡片
+$card-padding:   $space-md;
+$card-radius:    $radius-lg;
