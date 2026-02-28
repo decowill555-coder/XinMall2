@@ -25,7 +25,7 @@
 		// --- 1. Tabbar 页面 (主包) ---
 		    {
 		      "path": "pages/index/index",
-		      "style": { "navigationBarTitleText": "数码严选", "navigationStyle": "custom" }
+		      "style": { "navigationBarTitleText": "首页", "navigationStyle": "custom" }
 		    },
 		    {
 		      "path": "pages/follow/index",
