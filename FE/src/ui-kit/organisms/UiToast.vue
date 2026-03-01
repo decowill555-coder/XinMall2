@@ -13,13 +13,13 @@
           name="loading" 
           spin 
           size="64" 
-          color="#fff" 
+          color="#FFFFFF" 
         />
         <ui-icon 
           v-else 
           :name="iconName" 
           size="64" 
-          color="#fff" 
+          color="#FFFFFF" 
         />
       </view>
 
@@ -32,14 +32,13 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 
-// 定义类型
 type ToastType = 'text' | 'success' | 'error' | 'warning' | 'loading';
 
 interface ToastOptions {
   type?: ToastType;
   message: string;
   duration?: number;
-  mask?: boolean; // 是否禁止背景点击
+  mask?: boolean;
 }
 
 const visible = ref(false);
@@ -48,7 +47,6 @@ const type = ref<ToastType>('text');
 const zIndex = ref(9999);
 let timer: any = null;
 
-// 图标映射
 const iconName = computed(() => {
   switch (type.value) {
     case 'success': return 'check-circle';
@@ -65,7 +63,6 @@ const show = (options: ToastOptions | string) => {
   message.value = opts.message || '';
   type.value = opts.type || 'text';
   
-  // 清除上一个计时器
   if (timer) clearTimeout(timer);
   
   visible.value = true;
@@ -87,15 +84,12 @@ defineExpose({ show, hide });
 </script>
 
 <style lang="scss" scoped>
-@import '@/design/_tokens.scss';
-@import '@/design/_mixins.scss';
-
 .ui-toast {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  pointer-events: none; // 默认不阻挡点击，除非开启mask逻辑(简化版暂略)
+  pointer-events: none;
   opacity: 0;
   transition: opacity 0.2s;
   
@@ -110,12 +104,10 @@ defineExpose({ show, hide });
     max-width: 400rpx;
     padding: $space-lg;
     border-radius: $radius-lg;
-    
-    // 深色毛玻璃风格 (类似 iOS 系统级 Toast)
     background-color: rgba(30, 30, 30, 0.75); 
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    box-shadow: $shadow-lg;
+    box-shadow: $shadow-md;
 
     .toast-icon {
       margin-bottom: $space-sm;
@@ -123,13 +115,12 @@ defineExpose({ show, hide });
 
     .toast-text {
       font-size: $font-size-md;
-      color: #fff;
+      color: $color-white;
       text-align: center;
       line-height: 1.4;
       font-weight: $font-weight-medium;
     }
 
-    // 纯文本模式更紧凑
     &.type-text {
       padding: $space-md $space-lg;
       min-width: 0;

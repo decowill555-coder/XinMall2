@@ -7,7 +7,7 @@
       'is-error': error 
     }"
   >
-    <!-- 前缀插槽 (如：搜索图标) -->
+    <!-- 前缀插槽 -->
     <view v-if="$slots.prefix" class="ui-input__prefix">
       <slot name="prefix" />
     </view>
@@ -29,13 +29,13 @@
 
     <!-- 功能区：清空 + 密码显隐 -->
     <view class="ui-input__actions">
-      <!-- 清空按钮 (仅在有内容且聚焦时显示) -->
+      <!-- 清空按钮 -->
       <view 
         v-if="clearable && modelValue && isFocused" 
         class="ui-input__icon-btn" 
         @tap.stop="handleClear"
       >
-        <UiIcon name="close-circle-fill" color="#A1A1A6" size="32" />
+        <UiIcon name="close-circle-fill" :color="$color-text-placeholder" size="32" />
       </view>
 
       <!-- 密码切换 -->
@@ -44,11 +44,11 @@
         class="ui-input__icon-btn" 
         @tap.stop="togglePassword"
       >
-        <UiIcon :name="showPassword ? 'eye' : 'eye-off'" color="#6E6E73" size="36" />
+        <UiIcon :name="showPassword ? 'eye' : 'eye-off'" :color="$color-text-sub" size="36" />
       </view>
     </view>
 
-    <!-- 后缀插槽 (如：单位 'GB') -->
+    <!-- 后缀插槽 -->
     <view v-if="$slots.suffix" class="ui-input__suffix">
       <slot name="suffix" />
     </view>
@@ -57,7 +57,6 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import UiIcon from '@/ui-kit/base/UiIcon.vue'; // 假设Icon组件在下一节创建
 
 interface Props {
   modelValue: string | number;
@@ -66,7 +65,7 @@ interface Props {
   disabled?: boolean;
   clearable?: boolean;
   maxlength?: number;
-  error?: boolean; // 错误状态（红框）
+  error?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -82,7 +81,6 @@ const emit = defineEmits(['update:modelValue', 'confirm', 'clear']);
 const isFocused = ref(false);
 const showPassword = ref(false);
 
-// 处理密码显隐逻辑
 const inputType = computed(() => {
   if (props.type === 'password') {
     return showPassword.value ? 'text' : 'password';
@@ -105,35 +103,30 @@ const togglePassword = () => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/styles/_tokens.scss';
-
 .ui-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
   width: 100%;
-  height: 88rpx; // 标准高度
+  height: 88rpx;
   padding: 0 $space-md;
-  background-color: rgba(255, 255, 255, 0.6); // 半透明背景
-  border: 1px solid transparent; // 预留边框
+  background-color: rgba(255, 255, 255, 0.6);
+  border: 1px solid transparent;
   border-radius: $radius-md;
   transition: all 0.2s ease;
   box-sizing: border-box;
 
-  // 状态：聚焦
   &.is-focus {
-    background-color: #fff;
+    background-color: $color-white;
     border-color: $color-primary;
-    box-shadow: 0 0 0 4rpx rgba($color-primary, 0.1); // 聚焦光晕
+    box-shadow: 0 0 0 4rpx rgba($color-primary, 0.1);
   }
 
-  // 状态：错误
   &.is-error {
     border-color: $color-error;
     background-color: rgba($color-error, 0.05);
   }
   
-  // 状态：禁用
   &.is-disabled {
     background-color: rgba(0,0,0,0.03);
     opacity: 0.6;
@@ -145,11 +138,9 @@ const togglePassword = () => {
   font-size: $font-size-md;
   color: $color-text-main;
   height: 100%;
-  // 去除uniapp默认样式干扰
   min-height: auto; 
 }
 
-// 占位符样式 (Hack for uniapp)
 .ui-input-placeholder {
   color: $color-text-placeholder;
 }

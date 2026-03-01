@@ -10,7 +10,7 @@
       :class="{ 'is-checked': modelValue, 'is-round': shape === 'round' }"
       :style="checkedStyle"
     >
-      <ui-icon v-if="modelValue" name="check" size="20" color="#fff" />
+      <ui-icon v-if="modelValue" name="check" size="20" color="#FFFFFF" />
     </view>
     
     <!-- 文字标签 -->
@@ -40,8 +40,8 @@ const emit = defineEmits(['update:modelValue', 'change']);
 const checkedStyle = computed(() => {
   if (!props.modelValue) return {};
   return {
-    backgroundColor: props.color || '#2979FF', // $color-primary
-    borderColor: props.color || '#2979FF'
+    backgroundColor: props.color || '#1ABC9C',
+    borderColor: props.color || '#1ABC9C'
   };
 });
 
@@ -54,7 +54,7 @@ const toggle = () => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/design/_tokens.scss';
+
 
 .ui-checkbox {
   display: inline-flex;
@@ -79,11 +79,9 @@ const toggle = () => {
 
     &.is-round { border-radius: 50%; }
     
-    // 选中状态
-    &.is-checked {
+    // 选中状�?    &.is-checked {
       border-color: transparent;
-      // 背景色由 style 动态控制
-    }
+      // 背景色由 style 动态控�?    }
   }
 
   .checkbox-label {

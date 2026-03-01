@@ -21,7 +21,7 @@
           <view v-if="type === 'line' && modelValue === index" class="tab-line" />
         </view>
         
-        <!-- Capsule 风格的选中背景块 (可选高级实现，这里用简单的 active class 代替) -->
+        <!-- Capsule 风格的选中背景�?(可选高级实现，这里用简单的 active class 代替) -->
       </view>
     </scroll-view>
   </view>
@@ -53,8 +53,8 @@ const onClick = (index: number) => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/design/_tokens.scss';
-@import '@/design/_mixins.scss';
+
+
 
 .ui-tabs-container {
   width: 100%;
@@ -64,8 +64,7 @@ const onClick = (index: number) => {
 .ui-tabs-scroll {
   white-space: nowrap;
   width: 100%;
-  // 隐藏滚动条
-  @include hide-scrollbar;
+  // 隐藏滚动�?  @include hide-scrollbar;
 }
 
 .ui-tabs-nav {
@@ -92,7 +91,7 @@ const onClick = (index: number) => {
     }
   }
 
-  // --- Line 风格 (底部短横线) ---
+  // --- Line 风格 (底部短横�? ---
   &.style-line {
     .tab-line {
       position: absolute;
@@ -115,9 +114,8 @@ const onClick = (index: number) => {
       background-color: transparent;
 
       &.is-active {
-        // 激活态：主色背景 + 白字 + 阴影
         background-color: $color-primary;
-        color: #fff;
+        color: $color-white;
         box-shadow: $shadow-primary-sm;
       }
     }

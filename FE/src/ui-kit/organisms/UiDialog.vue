@@ -13,7 +13,7 @@
         <text class="title-text">{{ title }}</text>
       </view>
       
-      <!-- 内容 (支持 Slot) -->
+      <!-- 内容 -->
       <view class="dialog-body" :style="{ textAlign: messageAlign }">
         <slot>
           <text class="message-text">{{ message }}</text>
@@ -38,7 +38,6 @@
           :style="{ color: confirmColor }"
           @click="onConfirm"
         >
-          <!-- 确认按钮可能需要 loading 状态 -->
           <ui-icon v-if="loading" name="loading" spin />
           <text v-else>{{ confirmText }}</text>
         </view>
@@ -58,8 +57,8 @@ const props = withDefaults(defineProps<{
   cancelColor?: string;
   confirmText?: string;
   confirmColor?: string;
-  buttonLayout?: 'horizontal' | 'vertical'; // 按钮布局
-  loading?: boolean; // 异步关闭时使用
+  buttonLayout?: 'horizontal' | 'vertical';
+  loading?: boolean;
   beforeClose?: (action: 'confirm' | 'cancel') => Promise<boolean> | boolean;
 }>(), {
   show: false,
@@ -68,7 +67,7 @@ const props = withDefaults(defineProps<{
   cancelText: '取消',
   cancelColor: '#6E6E73',
   confirmText: '确认',
-  confirmColor: '#2979FF', // $color-primary
+  confirmColor: '#1ABC9C',
   buttonLayout: 'horizontal',
   loading: false
 });
@@ -88,7 +87,6 @@ const onCancel = () => {
 const onConfirm = async () => {
   if (props.loading) return;
   
-  // 如果有拦截钩子
   if (props.beforeClose) {
     const result = await props.beforeClose('confirm');
     if (result !== false) {
@@ -103,9 +101,6 @@ const onConfirm = async () => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/design/_tokens.scss';
-@import '@/design/_mixins.scss';
-
 .ui-dialog-wrapper {
   position: fixed;
   top: 0;
@@ -138,14 +133,14 @@ const onConfirm = async () => {
 
   .dialog-content {
     position: relative;
-    width: 600rpx; // 300px
-    background-color: rgba(255, 255, 255, 0.9); // 不完全透明，保证可读性
+    width: 600rpx;
+    background-color: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur($blur-lg);
     border-radius: $radius-xl;
     overflow: hidden;
-    transform: scale(0.9); // 初始缩放
+    transform: scale(0.9);
     opacity: 0;
-    transition: all $duration-spring; // 弹性动画
+    transition: all $duration-normal $ease-spring;
     box-shadow: $shadow-md;
   }
 
@@ -186,7 +181,7 @@ const onConfirm = async () => {
       height: 96rpx;
       @include flex-center;
       font-size: $font-size-lg;
-      font-weight: $font-weight-bold; // iOS 风格按钮加粗
+      font-weight: $font-weight-bold;
       transition: background-color 0.2s;
       
       &:active { background-color: rgba(0,0,0,0.05); }

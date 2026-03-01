@@ -35,7 +35,7 @@
     <ui-icon 
       v-else 
       name="user" 
-      color="#FFFFFF" 
+      :color="$color-white" 
       :size="textSize" 
     />
   </view>
@@ -47,15 +47,15 @@ import { ref, computed, watch } from 'vue';
 const props = withDefaults(defineProps<{
   src?: string;
   text?: string;
-  size?: number; // rpx
+  size?: number;
   shape?: 'circle' | 'square';
-  bordered?: boolean; // 是否显示光环描边
-  bg?: string; // 兜底背景色
+  bordered?: boolean;
+  bg?: string;
 }>(), {
   size: 80,
   shape: 'circle',
   bordered: true,
-  bg: '#B0B5C1' // 使用中性灰作为默认底色
+  bg: '#B0B5C1'
 });
 
 const emit = defineEmits(['click']);
@@ -74,8 +74,6 @@ const handleError = () => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/design/_tokens.scss';
-@import '@/design/_mixins.scss';
 
 .ui-avatar {
   position: relative;

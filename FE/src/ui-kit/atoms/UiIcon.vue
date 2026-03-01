@@ -1,11 +1,11 @@
 <template>
   <text 
-    class="ui-icon iconfont" 
-    :class="[`icon-${name}`]"
-    :style="{ 
-      fontSize: parseSize(size), 
+    class="ui-icon iconfont"
+    :class="`icon-${name}`"
+    :style="{
+      fontSize: parsedSize,
       color: color,
-      fontWeight: bold ? '600' : 'normal'
+      fontWeight: bold ? 600 : 'normal'
     }"
     @tap="emit('click')"
   />
@@ -15,10 +15,10 @@
 import { computed } from 'vue';
 
 interface Props {
-  name: string;      // 图标类名后缀，例如 'home' -> .icon-home
-  size?: string | number; // 支持 32 或 '32rpx'
-  color?: string;    // 图标颜色
-  bold?: boolean;    // 是否加粗
+  name: string;
+  size?: string | number;
+  color?: string;
+  bold?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -29,17 +29,12 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['click']);
 
-// 兼容数字和字符串单位
-const parseSize = (val: string | number) => {
-  return typeof val === 'number' ? `${val}rpx` : val;
-};
+const parsedSize = computed(() => {
+  return typeof props.size === 'number' ? `${props.size}rpx` : props.size;
+});
 </script>
 
 <style scoped>
-/* 
- * 必须在全局 App.vue 或 uni.scss 中引入 iconfont.css 
- * .iconfont { font-family: "iconfont" !important; ... }
- */
 .ui-icon {
   display: inline-block;
   font-style: normal;

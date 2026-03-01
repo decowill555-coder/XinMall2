@@ -11,13 +11,12 @@
   >
     <!-- 1. 加载中状态 (骨架屏) -->
     <view v-if="loading" class="placeholder loading">
-      <!-- 引用骨架屏逻辑，这里简化为 CSS 动画 -->
       <view class="skeleton-shimmer" />
     </view>
 
     <!-- 2. 加载失败状态 -->
     <view v-if="error" class="placeholder error">
-      <ui-icon name="image-off" :size="48" color="#A1A1A6" />
+      <ui-icon name="image-off" :size="48" :color="$color-text-placeholder" />
     </view>
 
     <!-- 3. 真实图片 -->
@@ -45,7 +44,7 @@ const props = withDefaults(defineProps<{
 }>(), {
   width: '100%',
   height: '100%',
-  radius: '16rpx', // 默认对应 $radius-md
+  radius: '16rpx',
   mode: 'aspectFill'
 });
 
@@ -55,7 +54,7 @@ const loading = ref(true);
 const loaded = ref(false);
 const error = ref(false);
 
-// 监听 src 变化重置状态（用于复用组件场景）
+// 监听 src 变化重置状态
 watch(() => props.src, () => {
   loading.value = true;
   loaded.value = false;
@@ -74,14 +73,10 @@ const onError = () => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/design/_tokens.scss';
-@import '@/design/_mixins.scss';
-
 .ui-image {
   position: relative;
   overflow: hidden;
   background-color: $color-bg-gray;
-  // 消除图片底边距
   display: flex; 
 
   .placeholder {
@@ -94,7 +89,6 @@ const onError = () => {
     z-index: 1;
 
     &.loading {
-      // 使用 mixin 中的骨架屏动画
       @include skeleton-loading;
     }
 
@@ -107,7 +101,6 @@ const onError = () => {
     width: 100%;
     height: 100%;
     opacity: 0;
-    // 关键：平滑过渡
     transition: opacity $duration-normal $ease-out;
     position: relative;
     z-index: 2;
@@ -118,7 +111,6 @@ const onError = () => {
   }
 }
 
-// 骨架屏流光动画补充 (如果在 mixin 中定义了可以直接复用，这里防守性写一下)
 .skeleton-shimmer {
   width: 100%;
   height: 100%;

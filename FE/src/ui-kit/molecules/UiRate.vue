@@ -13,7 +13,7 @@
       />
     </view>
     
-    <!-- 辅助文字 (如：5.0) -->
+    <!-- 辅助文字 -->
     <text v-if="showScore" class="rate-score" :style="{ color: activeColor }">
       {{ modelValue.toFixed(1) }}
     </text>
@@ -23,8 +23,8 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<{
   modelValue: number;
-  count?: number; // 星星总数
-  size?: number;  // 大小
+  count?: number;
+  size?: number;
   activeColor?: string;
   voidColor?: string;
   readonly?: boolean;
@@ -33,7 +33,7 @@ const props = withDefaults(defineProps<{
   modelValue: 0,
   count: 5,
   size: 32,
-  activeColor: '#FFAB00', // $color-warning (金黄色)
+  activeColor: '#FFAB00',
   voidColor: '#E5E5E5',
   readonly: false,
   showScore: false
@@ -49,8 +49,6 @@ const onRate = (index: number) => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/design/_tokens.scss';
-
 .ui-rate {
   display: inline-flex;
   align-items: center;
@@ -60,7 +58,7 @@ const onRate = (index: number) => {
     transition: transform 0.1s;
     
     &:active {
-      transform: scale(1.2); // 点击星星有放大效果
+      transform: scale(1.2);
     }
   }
 

@@ -6,11 +6,11 @@
       `padding-${padding}`,
       { 'is-glass': glass },
       { 'has-shadow': shadow },
-      { 'is-interactive': interactive } // 开启点击反馈
+      { 'is-interactive': interactive }
     ]"
     @tap="handleClick"
   >
-    <!-- 头部：标题 + 右侧操作(如：查看更多) -->
+    <!-- 头部 -->
     <view v-if="title || $slots.header" class="ui-card__head">
       <view class="ui-card__title">
         <slot name="title">{{ title }}</slot>
@@ -30,9 +30,9 @@
 <script setup lang="ts">
 interface Props {
   title?: string;
-  glass?: boolean;       // 开启毛玻璃
-  shadow?: boolean;      // 开启投影
-  interactive?: boolean; // 开启点击反馈（缩放）
+  glass?: boolean;
+  shadow?: boolean;
+  interactive?: boolean;
   radius?: 'sm' | 'md' | 'lg';
   padding?: 'sm' | 'md' | 'lg' | 'none';
 }
@@ -53,44 +53,35 @@ const handleClick = () => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/styles/_tokens.scss';
-@import '@/assets/styles/_mixins.scss';
-
 .ui-card {
   position: relative;
-  background-color: #fff;
+  background-color: $color-white;
   transition: all 0.2s ease;
   overflow: hidden;
   box-sizing: border-box;
 
-  // 毛玻璃模式
   &.is-glass {
     @include glass-effect(20rpx, 0.8);
   }
 
-  // 投影模式
   &.has-shadow {
     box-shadow: $shadow-sm;
   }
 
-  // 点击反馈 (微缩放)
   &.is-interactive:active {
     transform: scale(0.98);
     opacity: 0.95;
   }
 
-  // 圆角预设
   &.radius-sm { border-radius: $radius-sm; }
   &.radius-md { border-radius: $radius-md; }
   &.radius-lg { border-radius: $radius-lg; }
 
-  // 内边距预设
   &.padding-none { padding: 0; }
   &.padding-sm { padding: $space-sm; }
   &.padding-md { padding: $space-md; }
   &.padding-lg { padding: $space-lg; }
 
-  // 内部布局
   &__head {
     display: flex;
     justify-content: space-between;

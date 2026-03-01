@@ -5,13 +5,13 @@
 
 // --- 1. Color Palette (色板) ---
 
-// 品牌色：数码产品通常使用冷静、科技感的蓝色
-$color-primary:       #2979FF; // 核心主色 (Electric Blue)
-$color-primary-light: #E3F2FD; // 主色浅调 (用于背景/标签)
-$color-primary-dark:  #1565C0; // 主色深调 (用于点击态)
+// 品牌色：翠绿色系 - 柔和、清新、环保
+$color-primary:       #1ABC9C; // 核心主色 (Emerald Green)
+$color-primary-light: #E8F8F5; // 主色浅调 (用于背景/标签)
+$color-primary-dark:  #16A085; // 主色深调 (用于点击态)
 
 // 渐变色 (品牌渐变)
-$gradient-primary: linear-gradient(135deg, #2979FF 0%, #7C4DFF 100%);
+$gradient-primary: linear-gradient(135deg, #1ABC9C 0%, #10AC84 100%);
 $gradient-gold: linear-gradient(135deg, #FFD700 0%, #FFA000 100%);
 
 // 功能色
@@ -35,7 +35,8 @@ $color-text-sub:      #6E6E73; // 次要信息 (参数/日期)
 $color-text-disabled: #A1A1A6; // 禁用状态
 $color-text-placeholder: #A1A1A6; // 占位符
 $color-text-white:    #FFFFFF; // 反白文字
-$color-text-link:     #2979FF; // 链接颜色
+$color-white:         #FFFFFF; // 纯白色
+$color-text-link:     #1ABC9C; // 链接颜色
 
 // 边框色
 $color-border:        rgba(0, 0, 0, 0.08); // 标准边框

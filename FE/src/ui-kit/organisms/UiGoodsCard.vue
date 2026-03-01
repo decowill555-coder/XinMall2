@@ -5,9 +5,9 @@
     :class="[`mode-${mode}`]"
     @click="onClick"
   >
-    <!-- === 模式 A: 瀑布流 (社区/逛逛) === -->
+    <!-- === 模式 A: 瀑布�?(社区/逛�? === -->
     <block v-if="mode === 'waterfall'">
-      <!-- 图片区 (固定宽度，高度自适应或固定比例) -->
+      <!-- 图片�?(固定宽度，高度自适应或固定比�? -->
       <view class="card-image-box">
         <ui-image 
           :src="data.cover" 
@@ -17,11 +17,11 @@
         />
         <!-- 视频标识 -->
         <view v-if="data.isVideo" class="video-tag">
-           <ui-icon name="play" size="20" color="#fff" />
+           <ui-icon name="play" size="20" color="#FFFFFF" />
         </view>
       </view>
 
-      <!-- 内容区 -->
+      <!-- 内容�?-->
       <view class="card-content">
         <!-- 标题 (双行截断) -->
         <text class="goods-title">{{ data.title }}</text>
@@ -38,7 +38,7 @@
           <view class="action-info">
             <ui-price v-if="data.price" :value="data.price" :size="28" :bold="true" />
             <view v-else class="like-box">
-              <ui-icon name="heart" size="24" color="#6E6E73" />
+              <ui-icon name="heart" size="24" :color="$color-text-sub" />
               <text class="like-count">{{ data.likeCount }}</text>
             </view>
           </view>
@@ -67,7 +67,7 @@
             <text class="spec-text">{{ data.specs || '暂无规格信息' }}</text>
           </view>
 
-          <!-- 标签行 -->
+          <!-- 标签�?-->
           <view class="goods-tags">
              <ui-tag 
                v-for="tag in data.tags?.slice(0, 3)" 
@@ -80,7 +80,7 @@
              />
           </view>
 
-          <!-- 底部价格行 -->
+          <!-- 底部价格�?-->
           <view class="list-footer">
             <ui-price :value="data.price" :size="36" color="#FF3D00" />
             <text class="post-time">{{ data.timeStr }}</text>
@@ -97,14 +97,14 @@ interface GoodsData {
   cover: string;
   title: string;
   price?: number | string;
-  condition?: string; // e.g. "99新"
-  specs?: string;     // e.g. "iPhone 13 Pro Max / 256G / 远峰蓝"
-  tags?: string[];    // e.g. ["国行", "在保", "有发票"]
+  condition?: string; // e.g. "99�?
+  specs?: string;     // e.g. "iPhone 13 Pro Max / 256G / 远峰�?
+  tags?: string[];    // e.g. ["国行", "在保", "有发�?]
   userAvatar?: string;
   userName?: string;
   likeCount?: number;
   isVideo?: boolean;
-  timeStr?: string;   // e.g. "3分钟前"
+  timeStr?: string;   // e.g. "3分钟�?
 }
 
 const props = withDefaults(defineProps<{
@@ -126,13 +126,12 @@ const toUser = () => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/design/_tokens.scss';
-@import '@/design/_mixins.scss';
+
+
 
 .ui-goods-card {
   position: relative;
-  background-color: $glass-white-high; // 高透明度白底
-  border-radius: $radius-md;
+  background-color: $glass-white-high; // 高透明度白�?  border-radius: $radius-md;
   overflow: hidden;
   box-shadow: $shadow-sm;
   transition: transform 0.2s;
@@ -141,9 +140,9 @@ const toUser = () => {
     transform: scale(0.98);
   }
 
-  // === 瀑布流样式 ===
+  // === 瀑布流样�?===
   &.mode-waterfall {
-    width: 100%; // 由父级 Grid 决定宽度
+    width: 100%; // 由父�?Grid 决定宽度
     display: flex;
     flex-direction: column;
     margin-bottom: $space-sm;
@@ -157,7 +156,7 @@ const toUser = () => {
         position: absolute;
         top: 10rpx;
         right: 10rpx;
-        background: rgba(0,0,0,0.3);
+        background: rgba(0, 0, 0, 0.3);
         border-radius: 50%;
         padding: 8rpx;
         backdrop-filter: blur(4px);
@@ -172,8 +171,7 @@ const toUser = () => {
         color: $color-text-main;
         line-height: $line-height-normal;
         margin-bottom: $space-sm;
-        @include text-ellipsis(2); // 2行截断
-        font-weight: $font-weight-medium;
+        @include text-ellipsis(2); // 2行截�?        font-weight: $font-weight-medium;
       }
 
       .card-footer {
@@ -226,10 +224,10 @@ const toUser = () => {
         top: 8rpx;
         left: 8rpx;
         background: rgba(0, 0, 0, 0.6);
-        color: #fff;
-        font-size: 20rpx;
+        color: $color-white;
+        font-size: $font-size-xs;
         padding: 4rpx 8rpx;
-        border-radius: 6rpx;
+        border-radius: $radius-xs;
         backdrop-filter: blur(4px);
       }
     }
@@ -241,8 +239,7 @@ const toUser = () => {
       justify-content: space-between;
 
       .goods-title {
-        font-size: $font-size-lg; // 列表模式标题大一点
-        color: $color-text-main;
+        font-size: $font-size-lg; // 列表模式标题大一�?        color: $color-text-main;
         font-weight: $font-weight-bold;
         @include text-ellipsis(2);
       }
@@ -252,8 +249,7 @@ const toUser = () => {
         .spec-text {
           font-size: $font-size-sm;
           color: $color-text-sub;
-          background-color: rgba(0,0,0,0.03); // 浅灰背景块
-          padding: 4rpx 10rpx;
+          background-color: rgba(0,0,0,0.03); // 浅灰背景�?          padding: 4rpx 10rpx;
           border-radius: $radius-sm;
         }
       }

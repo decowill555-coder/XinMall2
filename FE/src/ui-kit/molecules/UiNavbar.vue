@@ -29,14 +29,14 @@
         </slot>
       </view>
       
-      <!-- 右侧：操作区 (胶囊对齐) -->
+      <!-- 右侧：操作区 -->
       <view class="ui-navbar__right">
         <slot name="right"></slot>
       </view>
     </view>
   </view>
   
-  <!-- 占位块 (防止内容被遮挡) -->
+  <!-- 占位符 -->
   <view v-if="fixed && placeholder" :style="{ height: totalNavHeight + 'px' }"></view>
 </template>
 
@@ -47,12 +47,12 @@ const { statusBarHeight, navBarHeight, totalNavHeight } = useScreen();
 
 interface Props {
   title?: string;
-  color?: string;       // 标题和图标颜色
-  background?: string;  // 背景色 (支持 rgba)
-  fixed?: boolean;      // 是否悬浮固定
-  placeholder?: boolean;// 是否占位
-  glass?: boolean;      // 是否开启毛玻璃
-  back?: boolean;       // 是否显示返回箭头
+  color?: string;
+  background?: string;
+  fixed?: boolean;
+  placeholder?: boolean;
+  glass?: boolean;
+  back?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -81,7 +81,7 @@ const handleBack = () => {
 .ui-navbar {
   width: 100%;
   z-index: 999;
-  box-sizing: content-box; // 包含状态栏高度
+  box-sizing: content-box;
   
   &--fixed {
     position: fixed;
@@ -90,7 +90,7 @@ const handleBack = () => {
   }
   
   &--glass {
-    @include glass-effect(20rpx, 0.85); // 强毛玻璃
+    @include glass-effect(20rpx, 0.85);
     border-bottom: 1rpx solid rgba(0,0,0,0.05);
   }
   
@@ -98,11 +98,11 @@ const handleBack = () => {
     display: flex;
     align-items: center;
     position: relative;
-    padding: 0 32rpx; // 左右边距
+    padding: 0 32rpx;
   }
   
   &__left {
-    width: 120rpx; // 预留左侧区域
+    width: 120rpx;
     display: flex;
     align-items: center;
   }
@@ -122,7 +122,7 @@ const handleBack = () => {
   }
   
   &__right {
-    width: 120rpx; // 预留右侧区域
+    width: 120rpx;
     display: flex;
     justify-content: flex-end;
     align-items: center;

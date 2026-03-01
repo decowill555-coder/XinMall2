@@ -3,7 +3,19 @@ import uni from '@dcloudio/vite-plugin-uni';
 import { resolve } from 'path';
 
 export default defineConfig({
-  plugins: [uni()],
+  plugins: [
+    uni({
+      manifest: resolve(__dirname, 'src/manifest.json'),
+      pages: resolve(__dirname, 'src/pages.json')
+    })
+  ],
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html')
+      }
+    }
+  },
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
@@ -17,11 +29,9 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        // 注意：这里路径已经改为 @design
-        additionalData: `
-          @import "@design/_tokens.scss";
-          @import "@design/_mixins.scss";
-        `
+        additionalData: `@use "@design/_tokens.scss" as *;`,
+        api: 'modern-compiler',
+        silenceDeprecations: ['legacy-js-api', 'import']
       }
     }
   }

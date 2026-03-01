@@ -23,7 +23,7 @@
       
       <!-- 可选：右上角关闭按钮 -->
       <view v-if="closeable" class="close-icon" @click="close">
-        <ui-icon name="close" size="24" color="#A1A1A6" />
+        <ui-icon name="close" size="24" :color="$color-text-placeholder" />
       </view>
     </view>
   </view>
@@ -37,14 +37,14 @@ const props = withDefaults(defineProps<{
   position?: 'top' | 'bottom' | 'left' | 'right' | 'center';
   zIndex?: number;
   maskClosable?: boolean;
-  round?: boolean; // 是否圆角
-  closeable?: boolean; // 是否显示关闭图标
-  safeAreaInsetBottom?: boolean; // 底部安全区适配
-  bgColor?: string; // 自定义背景色
-  glass?: boolean; // 是否开启毛玻璃背景
+  round?: boolean;
+  closeable?: boolean;
+  safeAreaInsetBottom?: boolean;
+  bgColor?: string;
+  glass?: boolean;
 }>(), {
   position: 'center',
-  zIndex: 500, // $z-modal
+  zIndex: 500,
   maskClosable: true,
   round: false,
   closeable: false,
@@ -79,9 +79,6 @@ const close = () => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/design/_tokens.scss';
-@import '@/design/_mixins.scss';
-
 .ui-popup {
   position: fixed;
   top: 0;
@@ -95,7 +92,6 @@ const close = () => {
     visibility: visible;
     .popup-mask { opacity: 1; }
     
-    // 各方向动画激活态
     &.pos-center .popup-content { transform: translate(-50%, -50%) scale(1); opacity: 1; }
     &.pos-bottom .popup-content { transform: translateY(0); }
     &.pos-top .popup-content { transform: translateY(0); }
@@ -103,23 +99,20 @@ const close = () => {
     &.pos-right .popup-content { transform: translateX(0); }
   }
 
-  // --- 遮罩 ---
   .popup-mask {
     @include cover-screen;
     background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(4px); // 遮罩带一点点模糊
+    backdrop-filter: blur(4px);
     opacity: 0;
     transition: opacity $duration-normal;
   }
 
-  // --- 内容基础样式 ---
   .popup-content {
     position: absolute;
     background-color: $color-bg-white;
     transition: transform $duration-normal cubic-bezier(0.36, 0.66, 0.04, 1);
-    box-shadow: $shadow-lg;
+    box-shadow: $shadow-md;
     
-    // 安全区适配
     &.safe-bottom {
       @include safe-area-bottom;
     }
@@ -129,11 +122,10 @@ const close = () => {
       top: $space-md;
       right: $space-md;
       z-index: 1;
-      padding: $space-sm; // 增加点击热区
+      padding: $space-sm;
     }
   }
 
-  // --- 方向变体 ---
   &.pos-center {
     .popup-content {
       top: 50%;
@@ -151,7 +143,6 @@ const close = () => {
       left: 0;
       width: 100%;
       transform: translateY(100%);
-      // 如果开启圆角，只圆上面两个角
     }
     &.is-round .popup-content {
       border-top-left-radius: $radius-xl;

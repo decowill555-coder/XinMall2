@@ -2,23 +2,25 @@
   <view 
     class="ui-cell"
     :class="[
-      { 'is-glass': glass, 'is-link': isLink, 'no-border': !border },
-      customClass
+      { 'is-glass': glass },
+      { 'no-border': !border }
     ]"
     @click="handleClick"
   >
     <!-- 左侧：图标 + 标题 -->
     <view class="cell-left">
       <ui-icon v-if="icon" :name="icon" :size="32" :color="iconColor" class="cell-icon" />
-      <text class="cell-title">{{ title }}</text>
-      <text v-if="label" class="cell-label">{{ label }}</text>
+      <view class="cell-title-group">
+        <text class="cell-title">{{ title }}</text>
+        <text v-if="label" class="cell-label">{{ label }}</text>
+      </view>
     </view>
 
-    <!-- 右侧：内容 + 箭头 -->
+    <!-- 右侧：值 + 箭头 -->
     <view class="cell-right">
       <text class="cell-value" :style="{ color: valueColor }">{{ value }}</text>
       <slot name="right-icon">
-        <ui-icon v-if="isLink" name="arrow-right" :size="24" color="#A1A1A6" class="arrow" />
+        <ui-icon v-if="isLink" name="arrow-right" :size="24" :color="$color-text-placeholder" class="arrow" />
       </slot>
     </view>
   </view>
@@ -28,13 +30,13 @@
 const props = withDefaults(defineProps<{
   title: string;
   value?: string;
-  label?: string; // 标题下方的描述
-  icon?: string;  // 左侧图标名称
+  label?: string;
+  icon?: string;
   iconColor?: string;
-  isLink?: boolean; // 是否展示右侧箭头
-  url?: string;     // 跳转链接
-  border?: boolean; // 是否显示底部分割线
-  glass?: boolean;  // 是否开启毛玻璃背景
+  isLink?: boolean;
+  url?: string;
+  border?: boolean;
+  glass?: boolean;
   customClass?: string;
   valueColor?: string;
 }>(), {
@@ -55,31 +57,25 @@ const handleClick = () => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/design/_tokens.scss';
-@import '@/design/_mixins.scss';
-
 .ui-cell {
   position: relative;
   @include flex-between;
-  padding: $space-lg $space-md; // 上下大间距，左右中间距
+  padding: $space-lg $space-md;
   background-color: $color-bg-white;
   transition: background-color $duration-fast;
 
-  // 点击态
   &:active {
     background-color: $color-bg-gray;
   }
 
-  // 毛玻璃模式 (用于个人中心卡片)
   &.is-glass {
-    background-color: transparent; // 背景由父级决定
+    background-color: transparent;
     &:active { opacity: 0.7; }
     
     .cell-title { color: $color-text-main; }
     .cell-value { color: $color-text-sub; }
   }
 
-  // 内部布局
   .cell-left {
     display: flex;
     align-items: center;
@@ -114,7 +110,6 @@ const handleClick = () => {
     }
   }
 
-  // 底部分割线 (使用伪元素实现0.5px)
   &:not(.no-border)::after {
     content: '';
     position: absolute;

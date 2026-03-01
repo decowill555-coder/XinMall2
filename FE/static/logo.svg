@@ -12,20 +12,8 @@
       <stop offset="100%" style="stop-color:#FFA000"/>
     </linearGradient>
     
-    <!-- 背景模糊效果 -->
-    <filter id="blur" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="3"/>
-    </filter>
     
-    <!-- 阴影效果 - 翠绿色阴影 -->
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#1ABC9C" flood-opacity="0.3"/>
-    </filter>
   </defs>
-  
-  <!-- 背景圆形（毛玻璃效果模拟） -->
-  <circle cx="100" cy="100" r="90" fill="url(#primaryGradient)" opacity="0.1"/>
-  <circle cx="100" cy="100" r="85" fill="white" opacity="0.9"/>
   
   <!-- 外圈光环 -->
   <circle cx="100" cy="100" r="75" stroke="url(#primaryGradient)" stroke-width="3" fill="none" opacity="0.3"/>
@@ -54,15 +42,6 @@
     <!-- 内部星星/芯片触点 -->
     <circle cx="100" cy="100" r="8" fill="white"/>
     
-    <!-- 认证标识（小圆点） -->
-    <circle cx="155" cy="45" r="8" fill="url(#goldGradient)"/>
-    <path d="M152 45 L154 47 L158 43" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-  </g>
+     </g>
   
-  <!-- 底部装饰线 -->
-  <path d="M60 165 L140 165" stroke="url(#primaryGradient)" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
-  
-  <!-- 底部装饰点 -->
-  <circle cx="80" cy="165" r="3" fill="#1ABC9C" opacity="0.3"/>
-  <circle cx="120" cy="165" r="3" fill="#10AC84" opacity="0.3"/>
 </svg>

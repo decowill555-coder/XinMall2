@@ -15,13 +15,13 @@
 
 <script setup lang="ts">
 interface Props {
-  // 类型: primary(主色), success(绿), warning(橙), danger(红), info(灰)
+  // 类型: primary(主色), success(�?, warning(�?, danger(�?, info(�?
   type?: 'primary' | 'success' | 'warning' | 'danger' | 'info';
-  // 尺寸: sm(小), md(中)
+  // 尺寸: sm(�?, md(�?
   size?: 'sm' | 'md';
   // 朴素样式 (空心/淡色背景)
   plain?: boolean;
-  // 圆角 (全圆角)
+  // 圆角 (全圆�?
   round?: boolean;
 }
 
@@ -66,11 +66,11 @@ const emit = defineEmits(['click']);
   }
 
   // --- Variants (Solid by default) ---
-  &--primary { background: $color-primary; color: #fff; }
-  &--success { background: $color-success; color: #fff; }
-  &--warning { background: $color-warning; color: #fff; }
-  &--danger  { background: $color-error; color: #fff; }
-  &--info    { background: #F0F2F5; color: $color-text-sub; } // 浅灰底
+  &--primary { background: $color-primary; color: $color-white; }
+  &--success { background: $color-success; color: $color-white; }
+  &--warning { background: $color-warning; color: $color-white; }
+  &--danger  { background: $color-error; color: $color-white; }
+  &--info    { background: $color-info-light; color: $color-text-sub; }
 
   // --- Plain Mode (Light bg + Dark text) ---
   &--plain {

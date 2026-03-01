@@ -17,8 +17,8 @@ const props = withDefaults(defineProps<{
   disabled?: boolean;
 }>(), {
   modelValue: false,
-  activeColor: '#2979FF', // $color-primary
-  inactiveColor: '#E5E5E5',
+  activeColor: '#1ABC9C',
+  inactiveColor: '#CCCCCC',
   disabled: false
 });
 
@@ -33,7 +33,7 @@ const toggle = () => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/design/_tokens.scss';
+
 
 .ui-switch {
   position: relative;
@@ -51,9 +51,9 @@ const toggle = () => {
     width: 42rpx;
     height: 42rpx;
     border-radius: 50%;
-    background-color: #fff;
+    background-color: $color-white;
     box-shadow: $shadow-sm;
-    transition: transform 0.3s cubic-bezier(0.3, 1.05, 0.4, 1.05); // 弹性过渡
+    transition: transform 0.3s cubic-bezier(0.3, 1.05, 0.4, 1.05);
   }
 
   &.is-active .switch-node {

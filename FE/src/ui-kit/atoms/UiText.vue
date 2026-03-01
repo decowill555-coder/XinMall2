@@ -10,7 +10,7 @@
     ]"
     @tap="emit('click')"
   >
-    <!-- 如果是价格模式，自动加 ¥ 符号 -->
+    <!-- 如果是价格模式，自动�?¥ 符号 -->
     <template v-if="price">¥</template>
     <slot></slot>
   </text>
@@ -20,13 +20,13 @@
 interface Props {
   // 尺寸: xs(20), sm(24), md(28), lg(32), xl(40), xxl(48)
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
-  // 颜色: main(黑), sub(深灰), placeholder(浅灰), primary(蓝), error(红), warning(橙)
+  // 颜色: main(�?, sub(深灰), placeholder(浅灰), primary(�?, error(�?, warning(�?
   color?: 'main' | 'sub' | 'placeholder' | 'primary' | 'error' | 'warning' | 'white';
   // 字重: regular(400), medium(500), bold(600)
   weight?: 'regular' | 'medium' | 'bold';
-  // 特殊模式: 价格显示 (如 ¥1999)
+  // 特殊模式: 价格显示 (�?¥1999)
   price?: boolean;
-  // 特殊模式: 删除线 (原价)
+  // 特殊模式: 删除�?(原价)
   lineThrough?: boolean;
 }
 
@@ -60,7 +60,7 @@ const emit = defineEmits(['click']);
   &--primary     { color: $color-primary; }
   &--error       { color: $color-error; }
   &--warning     { color: $color-warning; }
-  &--white       { color: #fff; }
+  &--white       { color: $color-white; }
 
   // --- Weights ---
   &--weight-regular { font-weight: $font-weight-regular; }

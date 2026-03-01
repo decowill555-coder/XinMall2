@@ -1,0 +1,114 @@
+{
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^The(.*)$": "@/components/layout/The$1.vue"
+    }
+  },
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "首页",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/follow/index",
+      "style": {
+        "navigationBarTitleText": "关注",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/message/index",
+      "style": {
+        "navigationBarTitleText": "消息",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/my/index",
+      "style": {
+        "navigationBarTitleText": "我的",
+        "navigationStyle": "custom"
+      }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "pages-sub/trade",
+      "pages": [
+        { "path": "product/detail", "style": { "navigationBarTitleText": "商品详情" } },
+        { "path": "product/list", "style": { "navigationBarTitleText": "商品列表" } },
+        { "path": "cart/index", "style": { "navigationBarTitleText": "购物车" } },
+        { "path": "order/list", "style": { "navigationBarTitleText": "我的订单" } },
+        { "path": "order/detail", "style": { "navigationBarTitleText": "订单详情" } },
+        { "path": "order/confirm", "style": { "navigationBarTitleText": "确认订单" } },
+        { "path": "pay/index", "style": { "navigationBarTitleText": "支付" } },
+        { "path": "evaluate/index", "style": { "navigationBarTitleText": "评价" } },
+        { "path": "search/index", "style": { "navigationBarTitleText": "搜索" } }
+      ]
+    },
+    {
+      "root": "pages-sub/seller",
+      "pages": [
+        { "path": "publish/entry", "style": { "navigationBarTitleText": "发布闲置" } },
+        { "path": "shop/index", "style": { "navigationBarTitleText": "我的店铺" } },
+        { "path": "shop/manage", "style": { "navigationBarTitleText": "店铺管理" } },
+        { "path": "goods/list", "style": { "navigationBarTitleText": "商品管理" } },
+        { "path": "goods/edit", "style": { "navigationBarTitleText": "编辑商品" } },
+        { "path": "after-sale/list", "style": { "navigationBarTitleText": "售后管理" } },
+        { "path": "after-sale/detail", "style": { "navigationBarTitleText": "售后详情" } }
+      ]
+    },
+    {
+      "root": "pages-sub/content",
+      "pages": [
+        { "path": "post/detail", "style": { "navigationBarTitleText": "帖子详情" } },
+        { "path": "post/publish", "style": { "navigationBarTitleText": "发布帖子" } },
+        { "path": "topic/index", "style": { "navigationBarTitleText": "话题" } },
+        { "path": "user/index", "style": { "navigationBarTitleText": "Ta的主页" } }
+      ]
+    },
+    {
+      "root": "pages-sub/user",
+      "pages": [
+        { "path": "login/index", "style": { "navigationBarTitleText": "登录" } },
+        { "path": "address/list", "style": { "navigationBarTitleText": "收货地址" } },
+        { "path": "address/edit", "style": { "navigationBarTitleText": "编辑地址" } },
+        { "path": "collection/index", "style": { "navigationBarTitleText": "我的收藏" } },
+        { "path": "history/index", "style": { "navigationBarTitleText": "浏览足迹" } },
+        { "path": "settings/index", "style": { "navigationBarTitleText": "设置" } },
+        { "path": "wallet/index", "style": { "navigationBarTitleText": "我的钱包" } }
+      ]
+    },
+    {
+      "root": "pages-sub/auth",
+      "pages": [
+        { "path": "real-name/index", "style": { "navigationBarTitleText": "实名认证" } },
+        { "path": "shop-auth/index", "style": { "navigationBarTitleText": "店铺认证" } }
+      ]
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "XinMall",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#F2F4F8"
+  },
+  "uniIdRouter": {},
+  "tabBar": {
+    "custom": true,
+    "color": "#999999",
+    "selectedColor": "#1ABC9C",
+    "borderStyle": "white",
+    "backgroundColor": "#FFFFFF",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "首页" },
+      { "pagePath": "pages/follow/index", "text": "关注" },
+      { "pagePath": "pages/message/index", "text": "消息" },
+      { "pagePath": "pages/my/index", "text": "我的" }
+    ]
+  }
+}

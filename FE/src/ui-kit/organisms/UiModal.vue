@@ -50,14 +50,14 @@
 import { ref, watch } from 'vue';
 
 interface Props {
-  modelValue: boolean; // v-model 控制显示
+  modelValue: boolean;
   title?: string;
   content?: string;
   showCancel?: boolean;
   cancelText?: string;
   confirmText?: string;
   confirmColor?: string;
-  maskClosable?: boolean; // 点击遮罩是否关闭
+  maskClosable?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -67,7 +67,7 @@ const props = withDefaults(defineProps<Props>(), {
   showCancel: true,
   cancelText: '取消',
   confirmText: '确定',
-  confirmColor: '#2979FF', // 使用主色变量需在这里写死或 computed
+  confirmColor: '#1ABC9C',
   maskClosable: true
 });
 
@@ -80,10 +80,10 @@ const animateShow = ref(false);
 watch(() => props.modelValue, (val) => {
   if (val) {
     show.value = true;
-    setTimeout(() => { animateShow.value = true; }, 50); // 延时触发动画
+    setTimeout(() => { animateShow.value = true; }, 50);
   } else {
     animateShow.value = false;
-    setTimeout(() => { show.value = false; }, 300); // 等动画结束再隐藏
+    setTimeout(() => { show.value = false; }, 300);
   }
 });
 
@@ -136,16 +136,15 @@ const handleConfirm = () => {
 
 .ui-modal {
   width: 600rpx;
-  background: #fff;
-  border-radius: $radius-lg; // 24rpx
+  background: $color-white;
+  border-radius: $radius-lg;
   position: relative;
   z-index: 1001;
   overflow: hidden;
   opacity: 0;
   transform: scale(0.9);
-  transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28); // 弹性动画
+  transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
   
-  // 支持毛玻璃背景 (可选)
   @include glass-effect(20rpx, 0.95);
   
   &.is-show {
@@ -174,7 +173,7 @@ const handleConfirm = () => {
   
   &__footer {
     display: flex;
-    border-top: 1rpx solid rgba(0,0,0,0.1);
+    border-top: 1rpx solid $color-divider;
     height: 100rpx;
   }
   
@@ -191,7 +190,7 @@ const handleConfirm = () => {
     
     &--cancel {
       color: $color-text-main;
-      border-right: 1rpx solid rgba(0,0,0,0.1);
+      border-right: 1rpx solid $color-divider;
     }
     
     &--confirm {

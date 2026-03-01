@@ -5,7 +5,7 @@
     @tap="handleClick"
   >
     <!-- 左侧放大镜图标 -->
-    <UiIcon name="search" color="#999" size="32" class="ui-search__icon" />
+    <UiIcon name="search" color="#A1A1A6" size="32" class="ui-search__icon" />
     
     <!-- 输入框 -->
     <input 
@@ -19,7 +19,7 @@
       @blur="isFocus = false"
     />
     
-    <!-- 禁用状态 (作为入口跳转时使用) -->
+    <!-- 禁用状态 -->
     <view v-else class="ui-search__placeholder">
       <text>{{ placeholder }}</text>
     </view>
@@ -30,7 +30,7 @@
       class="ui-search__clear"
       @tap.stop="handleClear"
     >
-      <UiIcon name="close-circle-fill" color="#ccc" size="32" />
+      <UiIcon name="close-circle-fill" color="#A1A1A6" size="32" />
     </view>
   </view>
 </template>
@@ -41,7 +41,7 @@ import { ref } from 'vue';
 interface Props {
   modelValue?: string;
   placeholder?: string;
-  disabled?: boolean; // 如果为true，点击整个组件触发 click 事件（用于跳转搜索页）
+  disabled?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -78,20 +78,20 @@ const handleClick = () => {
   display: flex;
   align-items: center;
   width: 100%;
-  height: 72rpx; // 标准搜索框高度
-  background-color: #F5F7FA; // 浅灰背景
-  border-radius: 999px; // 全圆角
-  padding: 0 24rpx;
+  height: 72rpx;
+  background-color: $color-bg-gray;
+  border-radius: $radius-full;
+  padding: 0 $space-md;
   box-sizing: border-box;
   transition: all 0.3s ease;
   
   &.is-focus {
-    background-color: #fff;
-    box-shadow: 0 0 0 2rpx $color-primary; // 聚焦时变色
+    background-color: $color-white;
+    box-shadow: 0 0 0 2rpx $color-primary;
   }
   
   &__icon {
-    margin-right: 12rpx;
+    margin-right: $space-sm;
   }
   
   &__input {
@@ -108,7 +108,7 @@ const handleClick = () => {
   }
   
   &__clear {
-    padding: 8rpx;
+    padding: $space-xs;
   }
 }
 </style>

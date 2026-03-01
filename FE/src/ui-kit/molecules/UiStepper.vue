@@ -6,10 +6,10 @@
       :class="{ 'disabled': modelValue <= min }"
       @click.stop="onMinus"
     >
-      <ui-icon name="minus" size="24" color="#1D1D1F" />
+      <ui-icon name="minus" size="24" :color="$color-text-main" />
     </view>
 
-    <!-- 数值展示 (不做输入框，数码产品一般买1-2个，输入需求低) -->
+    <!-- 数值展�?(不做输入框，数码产品一般买1-2个，输入需求低) -->
     <view class="stepper-value">
       {{ modelValue }}
     </view>
@@ -20,7 +20,7 @@
       :class="{ 'disabled': modelValue >= max }"
       @click.stop="onPlus"
     >
-      <ui-icon name="plus" size="24" color="#1D1D1F" />
+      <ui-icon name="plus" size="24" :color="$color-text-main" />
     </view>
   </view>
 </template>
@@ -56,8 +56,8 @@ const onPlus = () => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/design/_tokens.scss';
-@import '@/design/_mixins.scss';
+
+
 
 .ui-stepper {
   display: inline-flex;
@@ -74,8 +74,7 @@ const onPlus = () => {
     align-items: center;
     justify-content: center;
     background-color: $color-bg-white; // 按钮是白色的
-    box-shadow: $shadow-sm; // 微阴影
-    
+    box-shadow: $shadow-sm; // 微阴�?    
     &:active { transform: scale(0.9); }
 
     &.disabled {
