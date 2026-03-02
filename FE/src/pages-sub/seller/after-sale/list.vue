@@ -1,6 +1,6 @@
-<template>
+﻿﻿<template>
   <view class="after-sale-list-page">
-    <ui-navbar title="售后管理" :back="true" />
+    <ui-sub-navbar title="售后管理" />
     
     <view class="filter-bar">
       <ui-tabs v-model="activeTab" :list="tabList" type="line" />
@@ -8,7 +8,7 @@
     
     <scroll-view scroll-y class="list-scroll">
       <view v-if="afterSaleList.length === 0" class="empty-state">
-        <ui-icon name="refresh" size="80" color="#A1A1A6" />
+        <ui-icon name="refresh" :size="80" color="#A1A1A6" />
         <text class="empty-text">暂无售后记录</text>
       </view>
       

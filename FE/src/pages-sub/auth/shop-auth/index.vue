@@ -1,10 +1,10 @@
-<template>
+﻿﻿<template>
   <view class="shop-auth-page">
-    <ui-navbar title="店铺认证" :back="true" />
+    <ui-sub-navbar title="店铺认证" />
     
     <scroll-view scroll-y class="auth-scroll">
       <view class="auth-tips">
-        <ui-icon name="store" :size="24" color="#1ABC9C" />
+        <ui-icon name="store" ::size="40" color="#1ABC9C" />
         <text class="tips-text">店铺认证后可开通店铺、发布商品等功能</text>
       </view>
       
@@ -21,7 +21,7 @@
           <text class="form-label">经营类目</text>
           <view class="form-select" @click="showCategoryPicker = true">
             <text :class="{ placeholder: !form.category }">{{ form.category || '请选择经营类目' }}</text>
-            <ui-icon name="arrow-right" :size="16" />
+            <ui-icon name="arrow-right" ::size="32" />
           </view>
         </view>
       </view>
@@ -30,7 +30,7 @@
         <text class="section-title">营业执照</text>
         <view class="upload-item" @click="uploadLicense">
           <view v-if="!form.licenseImage" class="upload-placeholder">
-            <ui-icon name="camera" :size="32" />
+            <ui-icon name="camera" ::size="40" />
             <text>上传营业执照</text>
           </view>
           <ui-image v-else :src="form.licenseImage" width="100%" height="100%" radius="8rpx" />

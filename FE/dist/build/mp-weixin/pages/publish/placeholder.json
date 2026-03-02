@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "发布",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "the-tabbar": "../../components/layout/TheTabbar"
+  }
+}

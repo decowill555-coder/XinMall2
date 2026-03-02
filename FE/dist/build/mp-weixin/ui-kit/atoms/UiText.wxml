@@ -1,0 +1,1 @@
+<text class="{{['ui-text', 'data-v-fd3a258a', b, c, d, e, f]}}" bindtap="{{g}}"><block wx:if="{{a}}">¥</block><slot></slot></text>

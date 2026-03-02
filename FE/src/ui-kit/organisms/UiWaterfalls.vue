@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <view class="ui-waterfalls">
     <view class="waterfalls-column" v-for="(column, colIndex) in columns" :key="colIndex">
       <view 
@@ -56,6 +56,9 @@ const handleClick = (item: any) => {
 .ui-waterfalls {
   display: flex;
   gap: 16rpx;
+  width: 100%;
+  box-sizing: border-box;
+  padding-top: $space-sm;
 }
 
 .waterfalls-column {

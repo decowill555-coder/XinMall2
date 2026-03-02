@@ -1,0 +1,1 @@
+<view class="{{['ui-switch', 'data-v-7d9cf03c', a && 'is-active', b && 'is-disabled']}}" style="{{'background-color:' + c}}" bindtap="{{d}}"><view class="switch-node data-v-7d9cf03c"/></view>

@@ -1,4 +1,4 @@
-<!-- src/ui-kit/atoms/UiDivider.vue -->
+﻿<!-- src/ui-kit/atoms/UiDivider.vue -->
 <template>
   <view 
     class="ui-divider" 

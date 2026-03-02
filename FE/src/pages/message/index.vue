@@ -1,9 +1,9 @@
-<template>
+﻿<template>
   <view class="message-page">
     <view class="page-content">
-      <view class="header">
-        <text class="title">消息</text>
-      </view>
+      <ui-card :glass="true" :shadow="true" radius="lg" padding="lg" class="header-card">
+        <ui-text size="xl" weight="bold" color="main">消息</ui-text>
+      </ui-card>
       
       <view class="message-tabs">
         <ui-tabs v-model="activeTab" :list="tabList" type="line" />
@@ -11,80 +11,92 @@
       
       <scroll-view scroll-y class="message-list">
         <view v-if="activeTab === 0" class="message-group">
-          <view class="group-title">交易消息</view>
-          <view 
-            v-for="item in tradeMessages" 
-            :key="item.id" 
-            class="message-item"
-            @click="goChat(item)"
-          >
-            <view class="item-left">
-              <ui-avatar :src="item.avatar" :size="88" />
-              <view v-if="item.unread" class="unread-dot"></view>
+          <ui-card :glass="true" :shadow="false" radius="lg" padding="none" class="group-card">
+            <view class="group-title">
+              <ui-text size="sm" color="sub">交易消息</ui-text>
             </view>
-            <view class="item-content">
-              <view class="item-header">
-                <text class="item-title">{{ item.title }}</text>
-                <text class="item-time">{{ item.time }}</text>
+            <view 
+              v-for="item in tradeMessages" 
+              :key="item.id" 
+              class="message-item"
+              @click="goChat(item)"
+            >
+              <view class="item-left">
+                <ui-avatar :src="item.avatar" :size="88" />
+                <ui-badge v-if="item.unread > 0" :value="item.unread" is-dot />
               </view>
-              <view class="item-desc">
-                <text class="item-message">{{ item.lastMessage }}</text>
-                <ui-badge v-if="item.unread > 0" :value="item.unread" />
+              <view class="item-content">
+                <view class="item-header">
+                  <ui-text size="md" weight="medium" color="main">{{ item.title }}</ui-text>
+                  <ui-text size="xs" color="placeholder">{{ item.time }}</ui-text>
+                </view>
+                <view class="item-desc">
+                  <ui-text size="sm" color="sub" class="item-message">{{ item.lastMessage }}</ui-text>
+                  <ui-badge v-if="item.unread > 0" :value="item.unread" />
+                </view>
               </view>
             </view>
-          </view>
+          </ui-card>
         </view>
         
         <view v-if="activeTab === 1" class="message-group">
-          <view class="group-title">系统通知</view>
-          <view 
-            v-for="item in systemMessages" 
-            :key="item.id" 
-            class="message-item system-item"
-            @click="handleSystemMessage(item)"
-          >
-            <view class="system-icon">
-              <ui-icon :name="item.icon" :size="40" :color="item.iconColor" />
+          <ui-card :glass="true" :shadow="false" radius="lg" padding="none" class="group-card">
+            <view class="group-title">
+              <ui-text size="sm" color="sub">系统通知</ui-text>
             </view>
-            <view class="item-content">
-              <view class="item-header">
-                <text class="item-title">{{ item.title }}</text>
-                <text class="item-time">{{ item.time }}</text>
+            <view 
+              v-for="item in systemMessages" 
+              :key="item.id" 
+              class="message-item system-item"
+              @click="handleSystemMessage(item)"
+            >
+              <view class="system-icon">
+                <ui-icon :name="item.icon" :size="40" :color="item.iconColor" />
               </view>
-              <text class="item-message">{{ item.content }}</text>
+              <view class="item-content">
+                <view class="item-header">
+                  <ui-text size="md" weight="medium" color="main">{{ item.title }}</ui-text>
+                  <ui-text size="xs" color="placeholder">{{ item.time }}</ui-text>
+                </view>
+                <ui-text size="sm" color="sub" class="item-message">{{ item.content }}</ui-text>
+              </view>
             </view>
-          </view>
+          </ui-card>
         </view>
         
         <view v-if="activeTab === 2" class="message-group">
-          <view class="group-title">互动消息</view>
-          <view 
-            v-for="item in interactMessages" 
-            :key="item.id" 
-            class="message-item"
-            @click="handleInteract(item)"
-          >
-            <view class="item-left">
-              <ui-avatar :src="item.avatar" :size="88" />
+          <ui-card :glass="true" :shadow="false" radius="lg" padding="none" class="group-card">
+            <view class="group-title">
+              <ui-text size="sm" color="sub">互动消息</ui-text>
             </view>
-            <view class="item-content">
-              <view class="item-header">
-                <text class="item-title">{{ item.userName }}</text>
-                <text class="item-time">{{ item.time }}</text>
+            <view 
+              v-for="item in interactMessages" 
+              :key="item.id" 
+              class="message-item"
+              @click="handleInteract(item)"
+            >
+              <view class="item-left">
+                <ui-avatar :src="item.avatar" :size="88" />
               </view>
-              <text class="item-message">{{ item.content }}</text>
+              <view class="item-content">
+                <view class="item-header">
+                  <ui-text size="md" weight="medium" color="main">{{ item.userName }}</ui-text>
+                  <ui-text size="xs" color="placeholder">{{ item.time }}</ui-text>
+                </view>
+                <ui-text size="sm" color="sub" class="item-message">{{ item.content }}</ui-text>
+              </view>
             </view>
-          </view>
+          </ui-card>
         </view>
         
         <view class="empty-state" v-if="isEmpty">
-          <ui-icon name="message" size="80" color="#A1A1A6" />
-          <text class="empty-text">暂无消息</text>
+          <ui-icon name="message" :size="80" color="#A1A1A6" />
+          <ui-text size="md" color="placeholder" class="empty-text">暂无消息</ui-text>
         </view>
       </scroll-view>
     </view>
     
-    <TheTabbar :current="2" />
+    <TheTabbar current="message" />
   </view>
 </template>
 
@@ -193,7 +205,7 @@ const isEmpty = computed(() => {
 });
 
 const goChat = (item: any) => {
-  uni.navigateTo({ url: `/pages-sub/chat/index?id=${item.id}` });
+  uni.showToast({ title: '聊天功能开发中', icon: 'none' });
 };
 
 const handleSystemMessage = (item: any) => {
@@ -215,52 +227,47 @@ const handleInteract = (item: any) => {
   padding-bottom: 120rpx;
 }
 
-.header {
-  padding: $space-lg $space-md;
-  background: $color-white;
-  
-  .title {
-    font-size: $font-size-xl;
-    font-weight: $font-weight-bold;
-    color: $color-text-main;
-  }
+.header-card {
+  margin: $space-md;
 }
 
 .message-tabs {
   background: $color-white;
   padding: 0 $space-md;
+  margin: 0 $space-md;
+  border-radius: $radius-lg;
 }
 
 .message-list {
   height: calc(100vh - 200rpx - 120rpx);
+  padding: $space-md;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .message-group {
+  margin-bottom: $space-md;
+}
+
+.group-card {
   .group-title {
     padding: $space-md;
-    font-size: $font-size-sm;
-    color: $color-text-sub;
+    border-bottom: 1px solid $color-divider;
   }
 }
 
 .message-item {
   display: flex;
   padding: $space-md;
-  background: $color-white;
+  border-bottom: 1px solid $color-divider;
+  
+  &:last-child {
+    border-bottom: none;
+  }
   
   .item-left {
     position: relative;
     margin-right: $space-md;
-    
-    .unread-dot {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 16rpx;
-      height: 16rpx;
-      background: $color-error;
-      border-radius: 50%;
-    }
   }
   
   .item-content {
@@ -272,17 +279,6 @@ const handleInteract = (item: any) => {
       justify-content: space-between;
       align-items: center;
       margin-bottom: $space-xs;
-      
-      .item-title {
-        font-size: $font-size-md;
-        font-weight: $font-weight-medium;
-        color: $color-text-main;
-      }
-      
-      .item-time {
-        font-size: $font-size-xs;
-        color: $color-text-disabled;
-      }
     }
     
     .item-desc {
@@ -292,11 +288,9 @@ const handleInteract = (item: any) => {
     }
     
     .item-message {
-      font-size: $font-size-sm;
-      color: $color-text-sub;
-      @include text-ellipsis(1);
       flex: 1;
       margin-right: $space-sm;
+      @include text-ellipsis(1);
     }
   }
   
@@ -317,8 +311,6 @@ const handleInteract = (item: any) => {
   padding-top: 200rpx;
   
   .empty-text {
-    font-size: $font-size-md;
-    color: $color-text-disabled;
     margin-top: $space-md;
   }
 }

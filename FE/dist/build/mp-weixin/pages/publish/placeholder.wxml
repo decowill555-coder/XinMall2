@@ -1,0 +1,1 @@
+<view class="page-container data-v-9e472ab0"><view class="empty-content data-v-9e472ab0"><text class="empty-text data-v-9e472ab0">发布页面</text><text class="empty-tip data-v-9e472ab0">点击中间按钮发布商品</text></view><the-tabbar wx:if="{{a}}" class="data-v-9e472ab0" u-i="9e472ab0-0" bind:__l="__l" u-p="{{a}}"/></view>

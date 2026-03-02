@@ -1,6 +1,6 @@
-<template>
+﻿﻿<template>
   <view class="address-edit-page">
-    <ui-navbar :title="isEdit ? '编辑地址' : '新增地址'" :back="true" />
+    <ui-sub-navbar :title="isEdit ? '编辑地址' : '新增地址'" />
     
     <scroll-view scroll-y class="edit-scroll">
       <view class="form-section">
@@ -16,7 +16,7 @@
           <text class="form-label">所在地区</text>
           <view class="form-select">
             <text :class="{ placeholder: !form.region }">{{ form.region || '请选择省市区' }}</text>
-            <ui-icon name="arrow-right" :size="16" />
+            <ui-icon name="arrow-right" ::size="32" />
           </view>
         </view>
         <view class="form-item">

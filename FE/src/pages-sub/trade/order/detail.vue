@@ -1,6 +1,6 @@
-<template>
+﻿﻿<template>
   <view class="order-detail-page">
-    <ui-navbar title="订单详情" :back="true" />
+    <ui-sub-navbar title="订单详情" />
     
     <scroll-view scroll-y class="detail-scroll">
       <view class="status-card">
@@ -13,7 +13,7 @@
       
       <view class="address-card">
         <view class="address-header">
-          <ui-icon name="map-pin" :size="20" />
+          <ui-icon name="map-pin" ::size="40" />
           <text class="address-name">{{ address.name }}</text>
           <text class="address-phone">{{ address.phone }}</text>
         </view>
@@ -22,7 +22,7 @@
       
       <view class="goods-card">
         <view class="shop-header">
-          <ui-icon name="store" :size="20" />
+          <ui-icon name="store" ::size="40" />
           <text class="shop-name">{{ order.shopName }}</text>
         </view>
         
@@ -32,7 +32,7 @@
             <text class="goods-title">{{ item.title }}</text>
             <text class="goods-spec">{{ item.spec }}</text>
             <view class="goods-bottom">
-              <ui-price :value="item.price" :size="24" />
+              <ui-price :value="item.price" ::size="40" />
               <text class="goods-quantity">x{{ item.quantity }}</text>
             </view>
           </view>
@@ -65,7 +65,7 @@
         </view>
         <view class="price-item total">
           <text class="price-label">实付款</text>
-          <ui-price :value="order.totalPrice" :size="32" />
+          <ui-price :value="order.totalPrice" ::size="40" />
         </view>
       </view>
     </scroll-view>

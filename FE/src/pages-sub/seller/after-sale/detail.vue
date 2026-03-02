@@ -1,6 +1,6 @@
-<template>
+﻿﻿<template>
   <view class="after-sale-detail-page">
-    <ui-navbar title="售后详情" :back="true" />
+    <ui-sub-navbar title="售后详情" />
     
     <scroll-view scroll-y class="detail-scroll">
       <view class="status-card">
@@ -38,7 +38,7 @@
           <view class="goods-info">
             <text class="goods-title">{{ afterSale.goodsTitle }}</text>
             <text class="goods-spec">{{ afterSale.goodsSpec }}</text>
-            <ui-price :value="afterSale.goodsPrice" :size="24" />
+            <ui-price :value="afterSale.goodsPrice" ::size="40" />
           </view>
         </view>
       </view>

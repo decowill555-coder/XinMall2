@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <view class="ui-modal-wrapper" v-if="show" @touchmove.stop.prevent>
     <!-- 遮罩层 -->
     <view 

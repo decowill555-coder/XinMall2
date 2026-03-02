@@ -1,0 +1,1 @@
+<view class="ui-waterfalls data-v-12ccaf7b"><view wx:for="{{a}}" wx:for-item="column" wx:key="b" class="waterfalls-column data-v-12ccaf7b"><view wx:for="{{column.a}}" wx:for-item="item" wx:key="c" class="waterfalls-item data-v-12ccaf7b" bindtap="{{item.d}}"><slot name="{{item.a}}"></slot></view></view></view>

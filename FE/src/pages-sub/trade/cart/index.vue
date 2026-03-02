@@ -1,10 +1,10 @@
-<template>
+﻿﻿<template>
   <view class="cart-page">
-    <ui-navbar title="购物车" :back="true" />
+    <ui-sub-navbar title="购物车" />
     
     <scroll-view scroll-y class="cart-scroll">
       <view v-if="cartList.length === 0" class="empty-state">
-        <ui-icon name="shopping-cart" size="80" color="#A1A1A6" />
+        <ui-icon name="shopping-cart" :size="80" color="#A1A1A6" />
         <text class="empty-text">购物车空空如也</text>
         <ui-button type="primary" size="sm" @click="goShopping">去逛逛</ui-button>
       </view>
@@ -14,7 +14,7 @@
           <view class="item-check" @click="toggleSelect(item)">
             <ui-icon 
               :name="item.selected ? 'check-circle-fill' : 'circle'" 
-              :size="24" 
+              ::size="40" 
               :color="item.selected ? '#1ABC9C' : '#A1A1A6'" 
             />
           </view>
@@ -36,7 +36,7 @@
         <view class="check-all" @click="toggleSelectAll">
           <ui-icon 
             :name="isAllSelected ? 'check-circle-fill' : 'circle'" 
-            :size="24" 
+            ::size="40" 
             :color="isAllSelected ? '#1ABC9C' : '#A1A1A6'" 
           />
           <text>全选</text>

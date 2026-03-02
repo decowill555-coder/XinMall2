@@ -1,10 +1,10 @@
-<template>
+﻿﻿<template>
   <view class="real-name-page">
-    <ui-navbar title="实名认证" :back="true" />
+    <ui-sub-navbar title="实名认证" />
     
     <scroll-view scroll-y class="auth-scroll">
       <view class="auth-tips">
-        <ui-icon name="shield" :size="24" color="#1ABC9C" />
+        <ui-icon name="shield" ::size="40" color="#1ABC9C" />
         <text class="tips-text">实名认证后可发布商品、提现等功能</text>
       </view>
       
@@ -24,14 +24,14 @@
         <view class="upload-list">
           <view class="upload-item" @click="uploadImage('front')">
             <view v-if="!form.frontImage" class="upload-placeholder">
-              <ui-icon name="camera" :size="32" />
+              <ui-icon name="camera" ::size="40" />
               <text>上传身份证人像面</text>
             </view>
             <ui-image v-else :src="form.frontImage" width="100%" height="100%" radius="8rpx" />
           </view>
           <view class="upload-item" @click="uploadImage('back')">
             <view v-if="!form.backImage" class="upload-placeholder">
-              <ui-icon name="camera" :size="32" />
+              <ui-icon name="camera" ::size="40" />
               <text>上传身份证国徽面</text>
             </view>
             <ui-image v-else :src="form.backImage" width="100%" height="100%" radius="8rpx" />

@@ -1,6 +1,6 @@
-<template>
+﻿﻿<template>
   <view class="goods-edit-page">
-    <ui-navbar title="编辑商品" :back="true" />
+    <ui-sub-navbar title="编辑商品" />
     
     <scroll-view scroll-y class="edit-scroll">
       <view class="form-section">
@@ -23,7 +23,7 @@
           <text class="form-label">商品分类</text>
           <view class="form-select">
             <text>{{ goodsInfo.category || '请选择分类' }}</text>
-            <ui-icon name="arrow-right" :size="16" />
+            <ui-icon name="arrow-right" ::size="32" />
           </view>
         </view>
         

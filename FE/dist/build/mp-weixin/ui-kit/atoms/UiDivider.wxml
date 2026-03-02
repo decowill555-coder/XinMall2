@@ -1,0 +1,1 @@
+<view class="{{['ui-divider', 'data-v-9d244c6e', h && 'is-vertical']}}" style="{{i}}"><view wx:if="{{a}}" class="line data-v-9d244c6e" style="{{b}}"/><text wx:if="{{c}}" class="text data-v-9d244c6e" style="{{'color:' + e}}">{{d}}</text><view wx:if="{{f}}" class="line data-v-9d244c6e" style="{{g}}"/></view>

@@ -1,6 +1,6 @@
-<template>
+﻿﻿<template>
   <view class="evaluate-page">
-    <ui-navbar title="评价" :back="true" />
+    <ui-sub-navbar title="评价" />
     
     <scroll-view scroll-y class="evaluate-scroll">
       <view class="goods-card">

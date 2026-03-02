@@ -1,50 +1,36 @@
-<template>
+﻿<template>
   <view class="follow-page">
     <view class="page-content">
-      <view class="header">
-        <text class="title">关注</text>
-        <text class="subtitle">发现好物好价好价</text>
-      </view>
+      <ui-card :glass="true" :shadow="true" radius="lg" padding="lg" class="header-card">
+        <ui-text size="xl" weight="bold" color="main">关注</ui-text>
+        <ui-text size="sm" color="sub" class="subtitle">发现好物好价</ui-text>
+      </ui-card>
       
       <scroll-view scroll-y class="content-scroll" @scrolltolower="loadMore">
-        <ui-waterfalls :list="postList" columns="2" gap="12" @click="goPostDetail">
-          <template #item="{ item }">
-            <view class="post-item">
-              <ui-image 
-                :src="item.cover" 
-                width="100%" 
-                height="280rpx" 
-                radius="12rpx"
+        <view class="post-list">
+          <ui-waterfalls :list="postList" :columns="2" :gap="12" @click="goPostDetail">
+            <template #item="{ item }">
+              <ui-goods-card 
+                :data="{
+                  ...item,
+                  price: null,
+                  likeCount: item.likeCount
+                }" 
+                mode="waterfall" 
+                @click="goPostDetail" 
+                @user-click="goUser" 
               />
-              <view class="post-overlay" v-if="item.isVideo">
-                <ui-icon name="play" size="20" color="#FFFFFF" />
-              </view>
-              <view class="post-info">
-                <view class="post-header">
-                  <view class="user-info" @click.stop="goUser(item)">
-                    <ui-avatar :src="item.userAvatar" :size="32" :bordered="false" />
-                    <text class="user-name">{{ item.userName }}</text>
-                  </view>
-                  <text class="post-title">{{ item.title }}</text>
-                </view>
-                <view class="post-footer">
-                  <view class="like-box" @click.stop="toggleLike(item)">
-                    <ui-icon :name="item.isLiked ? 'heart-fill' : 'heart'" size="24" :color="item.isLiked ? '#FF3D00' : '#6E6E73'" />
-                    <text class="like-count">{{ item.likeCount }}</text>
-                  </view>
-                </view>
-              </view>
-            </view>
-          </template>
-        </ui-waterfalls>
+            </template>
+          </ui-waterfalls>
+        </view>
         
         <view class="load-more" v-if="postList.length > 0">
-          <text>{{ loading ? '加载中...' : '上拉加载更多' }}</text>
+          <ui-divider :text="loading ? '加载中...' : '上拉加载更多'" />
         </view>
       </scroll-view>
     </view>
     
-    <TheTabbar :current="1" />
+    <TheTabbar current="follow" />
   </view>
 </template>
 
@@ -124,11 +110,6 @@ const goUser = (item: any) => {
   uni.navigateTo({ url: `/pages-sub/content/user/index?id=${item.userId}` });
 };
 
-const toggleLike = (item: any) => {
-  item.isLiked = !item.isLiked;
-  item.likeCount += item.isLiked ? 1 : -1;
-};
-
 const loadMore = () => {
   if (loading.value) return;
   loading.value = true;
@@ -155,93 +136,27 @@ const loadMore = () => {
   padding-bottom: 120rpx;
 }
 
-.header {
-  padding: $space-lg $space-md;
-  background: $color-white;
-  
-  .title {
-    font-size: $font-size-xl;
-    font-weight: $font-weight-bold;
-    color: $color-text-main;
-  }
+.header-card {
+  margin: $space-md;
   
   .subtitle {
-    font-size: $font-size-sm;
-    color: $color-text-sub;
+    display: block;
     margin-top: $space-xs;
   }
 }
 
 .content-scroll {
   height: calc(100vh - 200rpx - 120rpx);
-  padding: $space-sm $space-md;
+  overflow: hidden;
 }
 
-.post-item {
-  background: $color-white;
-  border-radius: $radius-md;
+.post-list {
+  padding: $space-md $space-md 0;
+  box-sizing: border-box;
   overflow: hidden;
-  margin-bottom: $space-sm;
-  
-  .post-overlay {
-    position: absolute;
-    top: 10rpx;
-    right: 10rpx;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 50%;
-    padding: 8rpx;
-  }
-  
-  .post-info {
-    padding: $space-sm;
-  }
-  
-  .post-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: $space-xs;
-  }
-  
-  .user-info {
-    display: flex;
-    align-items: center;
-    
-    .user-name {
-      font-size: $font-size-xs;
-      color: $color-text-sub;
-      margin-left: $space-xs;
-    }
-  }
-  
-  .post-title {
-    font-size: $font-size-sm;
-    color: $color-text-main;
-    line-height: 1.4;
-    @include text-ellipsis(2);
-  }
-  
-  .post-footer {
-    display: flex;
-    justify-content: flex-end;
-    
-    .like-box {
-      display: flex;
-      align-items: center;
-      
-      .like-count {
-        font-size: $font-size-xs;
-        color: $color-text-sub;
-        margin-left: 4rpx;
-      }
-    }
-  }
 }
 
 .load-more {
-  text-align: center;
-  padding: $space-lg;
-  font-size: $font-size-sm;
-  color: $color-text-disabled;
+  padding: $space-md 0;
 }
 </style>

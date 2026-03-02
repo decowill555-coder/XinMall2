@@ -1,0 +1,1 @@
+<view class="{{['ui-checkbox', 'data-v-22f941d4', h && 'is-disabled']}}" catchtap="{{i}}"><view class="{{['checkbox-icon', 'data-v-22f941d4', c && 'is-checked', d && 'is-round']}}" style="{{e}}"><ui-icon wx:if="{{a}}" class="data-v-22f941d4" u-i="22f941d4-0" bind:__l="__l" u-p="{{b}}"/></view><text wx:if="{{f}}" class="checkbox-label data-v-22f941d4">{{g}}</text></view>

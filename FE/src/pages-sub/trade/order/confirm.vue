@@ -1,27 +1,27 @@
-<template>
+﻿﻿<template>
   <view class="confirm-page">
-    <ui-navbar title="确认订单" :back="true" />
+    <ui-sub-navbar title="确认订单" />
     
     <scroll-view scroll-y class="confirm-scroll">
       <view class="address-card" @click="selectAddress">
         <view v-if="address" class="address-content">
           <view class="address-header">
-            <ui-icon name="map-pin" :size="20" />
+            <ui-icon name="map-pin" ::size="40" />
             <text class="address-name">{{ address.name }}</text>
             <text class="address-phone">{{ address.phone }}</text>
           </view>
           <text class="address-detail">{{ address.detail }}</text>
         </view>
         <view v-else class="address-empty">
-          <ui-icon name="plus" :size="20" />
+          <ui-icon name="plus" ::size="40" />
           <text>添加收货地址</text>
         </view>
-        <ui-icon name="arrow-right" :size="20" />
+        <ui-icon name="arrow-right" ::size="40" />
       </view>
       
       <view class="goods-card">
         <view class="shop-header">
-          <ui-icon name="store" :size="20" />
+          <ui-icon name="store" ::size="40" />
           <text class="shop-name">{{ order.shopName }}</text>
         </view>
         
@@ -31,7 +31,7 @@
             <text class="goods-title">{{ item.title }}</text>
             <text class="goods-spec">{{ item.spec }}</text>
             <view class="goods-bottom">
-              <ui-price :value="item.price" :size="24" />
+              <ui-price :value="item.price" ::size="40" />
               <text class="goods-quantity">x{{ item.quantity }}</text>
             </view>
           </view>
@@ -47,7 +47,7 @@
           <text class="info-label">订单备注</text>
           <view class="info-right">
             <text class="info-value">{{ remark || '选填' }}</text>
-            <ui-icon name="arrow-right" :size="16" />
+            <ui-icon name="arrow-right" ::size="32" />
           </view>
         </view>
       </view>
@@ -63,7 +63,7 @@
         </view>
         <view class="price-item total">
           <text class="price-label">合计</text>
-          <ui-price :value="order.totalPrice" :size="32" />
+          <ui-price :value="order.totalPrice" ::size="40" />
         </view>
       </view>
     </scroll-view>

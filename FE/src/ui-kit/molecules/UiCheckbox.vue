@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <view 
     class="ui-checkbox" 
     :class="{ 'is-disabled': disabled }"
@@ -10,7 +10,7 @@
       :class="{ 'is-checked': modelValue, 'is-round': shape === 'round' }"
       :style="checkedStyle"
     >
-      <ui-icon v-if="modelValue" name="check" size="20" color="#FFFFFF" />
+      <ui-icon v-if="modelValue" name="check" :size="40" color="#FFFFFF" />
     </view>
     
     <!-- 文字标签 -->

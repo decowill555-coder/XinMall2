@@ -1,6 +1,6 @@
-<template>
+﻿﻿<template>
   <view class="settings-page">
-    <ui-navbar title="设置" :back="true" />
+    <ui-sub-navbar title="设置" />
     
     <scroll-view scroll-y class="settings-scroll">
       <view class="settings-group">

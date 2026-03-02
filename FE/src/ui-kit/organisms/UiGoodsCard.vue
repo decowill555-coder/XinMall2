@@ -1,10 +1,10 @@
-<!-- src/ui-kit/organisms/UiGoodsCard.vue -->
+﻿<!-- src/ui-kit/organisms/UiGoodsCard.vue -->
 <template>
   <view 
     class="ui-goods-card" 
     :class="[`mode-${mode}`]"
-    @click="onClick"
-  >
+    @click.stop="onClick"
+    >
     <!-- === 模式 A: 瀑布�?(社区/逛�? === -->
     <block v-if="mode === 'waterfall'">
       <!-- 图片�?(固定宽度，高度自适应或固定比�? -->
@@ -17,7 +17,7 @@
         />
         <!-- 视频标识 -->
         <view v-if="data.isVideo" class="video-tag">
-           <ui-icon name="play" size="20" color="#FFFFFF" />
+           <ui-icon name="play" :size="40" color="#FFFFFF" />
         </view>
       </view>
 
@@ -30,7 +30,7 @@
         <view class="card-footer">
           <!-- 用户信息 -->
           <view class="user-info" @click.stop="toUser">
-            <ui-avatar :src="data.userAvatar" :size="32" :bordered="false" />
+            <ui-avatar :src="data.userAvatar" ::size="40" :bordered="false" />
             <text class="user-name">{{ data.userName }}</text>
           </view>
           
@@ -38,7 +38,7 @@
           <view class="action-info">
             <ui-price v-if="data.price" :value="data.price" :size="28" :bold="true" />
             <view v-else class="like-box">
-              <ui-icon name="heart" size="24" :color="$color-text-sub" />
+              <ui-icon name="heart" :size="40" :color="'#6E6E73'" />
               <text class="like-count">{{ data.likeCount }}</text>
             </view>
           </view>
@@ -131,18 +131,31 @@ const toUser = () => {
 
 .ui-goods-card {
   position: relative;
-  background-color: $glass-white-high; // 高透明度白�?  border-radius: $radius-md;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.75) 100%
+  );
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
+  border: 1rpx solid $glass-border-light;
+  border-radius: $radius-md;
   overflow: hidden;
-  box-shadow: $shadow-sm;
-  transition: transform 0.2s;
+  box-shadow: 
+    0 8rpx 32rpx rgba(0, 0, 0, 0.03),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.6);
+  transition: all $duration-fast $ease-spring;
 
   &:active {
     transform: scale(0.98);
+    box-shadow: 
+      0 4rpx 16rpx rgba(0, 0, 0, 0.02),
+      inset 0 0 0 1rpx rgba(255, 255, 255, 0.4);
   }
 
-  // === 瀑布流样�?===
+  // === 瀑布流样式 ===
   &.mode-waterfall {
-    width: 100%; // 由父�?Grid 决定宽度
+    width: 100%; // 由父?Grid 决定宽度
     display: flex;
     flex-direction: column;
     margin-bottom: $space-sm;
@@ -151,15 +164,20 @@ const toUser = () => {
       width: 100%;
       height: 360rpx; // 默认高度，实际开发常配合 css grid
       position: relative;
+      overflow: hidden;
       
       .video-tag {
         position: absolute;
         top: 10rpx;
         right: 10rpx;
-        background: rgba(0, 0, 0, 0.3);
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.3) 100%);
         border-radius: 50%;
         padding: 8rpx;
-        backdrop-filter: blur(4px);
+        backdrop-filter: blur($blur-sm);
+        -webkit-backdrop-filter: blur($blur-sm);
+        box-shadow: 
+          0 4rpx 12rpx rgba(0, 0, 0, 0.2),
+          inset 0 0 0 1rpx rgba(255, 255, 255, 0.2);
       }
     }
 
@@ -171,7 +189,8 @@ const toUser = () => {
         color: $color-text-main;
         line-height: $line-height-normal;
         margin-bottom: $space-sm;
-        @include text-ellipsis(2); // 2行截�?        font-weight: $font-weight-medium;
+        @include text-ellipsis(2); // 2 行截断
+        font-weight: $font-weight-medium;
       }
 
       .card-footer {
@@ -207,7 +226,8 @@ const toUser = () => {
   // === 列表样式 ===
   &.mode-list {
     margin-bottom: $space-md;
-    border: 1px solid rgba(255,255,255,0.6); // 增加边框增强质感
+    border: 1rpx solid $glass-border-light;
+    box-shadow: $glass-shadow-md;
 
     .list-layout {
       display: flex;
@@ -218,17 +238,24 @@ const toUser = () => {
       position: relative;
       margin-right: $space-md;
       flex-shrink: 0;
+      overflow: hidden;
+      border-radius: $radius-md;
+      border: 1rpx solid $glass-border-subtle;
 
       .condition-tag {
         position: absolute;
         top: 8rpx;
         left: 8rpx;
-        background: rgba(0, 0, 0, 0.6);
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 100%);
         color: $color-white;
         font-size: $font-size-xs;
         padding: 4rpx 8rpx;
         border-radius: $radius-xs;
-        backdrop-filter: blur(4px);
+        backdrop-filter: blur($blur-sm);
+        -webkit-backdrop-filter: blur($blur-sm);
+        box-shadow: 
+          0 2rpx 8rpx rgba(0, 0, 0, 0.2),
+          inset 0 0 0 1rpx rgba(255, 255, 255, 0.2);
       }
     }
 
@@ -239,8 +266,13 @@ const toUser = () => {
       justify-content: space-between;
 
       .goods-title {
-        font-size: $font-size-lg; // 列表模式标题大一�?        color: $color-text-main;
+        font-size: $font-size-lg; // 列表模式标题大一些
+        color: $color-text-main;
         font-weight: $font-weight-bold;
+        background: linear-gradient(135deg, $color-text-main 0%, $color-text-sub 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         @include text-ellipsis(2);
       }
 
@@ -249,8 +281,16 @@ const toUser = () => {
         .spec-text {
           font-size: $font-size-sm;
           color: $color-text-sub;
-          background-color: rgba(0,0,0,0.03); // 浅灰背景�?          padding: 4rpx 10rpx;
+          background: linear-gradient(
+            135deg,
+            rgba(0,0,0,0.05) 0%,
+            rgba(0,0,0,0.03) 100%
+          );
+          backdrop-filter: blur($blur-sm);
+          -webkit-backdrop-filter: blur($blur-sm);
+          padding: 4rpx 10rpx;
           border-radius: $radius-sm;
+          border: 1rpx solid $glass-border-subtle;
         }
       }
 
@@ -268,6 +308,62 @@ const toUser = () => {
         .post-time {
           font-size: $font-size-xs;
           color: $color-text-disabled;
+          opacity: 0.8;
+        }
+      }
+    }
+  }
+}
+
+.ui-goods-card--modern {
+  @include modern-card;
+  @include modern-card-interactive;
+  border: none;
+  font-family: $font-family-system;
+  
+  &.mode-waterfall {
+    .card-image-box {
+      height: 340rpx;
+      aspect-ratio: 1 / 1;
+      
+      :deep(.ui-image) {
+        img {
+          object-fit: cover;
+        }
+      }
+    }
+    
+    .card-content {
+      .goods-title {
+        color: $color-text-primary;
+        font-weight: $font-weight-medium;
+      }
+    }
+  }
+  
+  &.mode-list {
+    .list-image {
+      border-radius: $radius-md;
+      overflow: hidden;
+      
+      :deep(.ui-image) {
+        img {
+          object-fit: cover;
+        }
+      }
+    }
+    
+    .goods-title {
+      text-align: left;
+      color: $color-text-primary;
+      -webkit-text-fill-color: $color-text-primary;
+      font-weight: $font-weight-bold;
+    }
+    
+    .list-footer {
+      :deep(.ui-price) {
+        .price-value {
+          @include modern-price;
         }
       }
     }

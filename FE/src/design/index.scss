@@ -2,3 +2,37 @@
 @forward 'tokens';
 @forward 'mixins';
 // 未来可以在这里增加 transition.scss 等
+
+// =============================================================================
+// RESPONSIVE BREAKPOINTS - 响应式断点 (414px 屏幕基准)
+// =============================================================================
+
+@media (max-width: 414px) {
+  .ui-card {
+    padding: 24rpx;
+  }
+  
+  .ui-goods-card {
+    .card-content {
+      padding: 20rpx;
+    }
+  }
+  
+  .ui-btn--modern {
+    &.ui-btn--md {
+      height: 80rpx;
+    }
+  }
+}
+
+@media (max-width: 375px) {
+  .ui-card {
+    padding: 20rpx;
+  }
+  
+  .ui-goods-card {
+    .card-content {
+      padding: 16rpx;
+    }
+  }
+}

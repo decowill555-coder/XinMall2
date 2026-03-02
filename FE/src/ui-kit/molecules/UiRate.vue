@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <view class="ui-rate">
     <view 
       v-for="index in count" 

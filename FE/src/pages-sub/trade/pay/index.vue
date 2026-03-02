@@ -1,6 +1,6 @@
-<template>
+﻿﻿<template>
   <view class="pay-page">
-    <ui-navbar title="支付" :back="true" />
+    <ui-sub-navbar title="支付" />
     
     <view class="pay-content">
       <view class="amount-card">
@@ -27,12 +27,12 @@
           @click="selectedMethod = method.id"
         >
           <view class="method-left">
-            <ui-icon :name="method.icon" :size="24" :color="method.color" />
+            <ui-icon :name="method.icon" ::size="40" :color="method.color" />
             <text class="method-name">{{ method.name }}</text>
           </view>
           <ui-icon 
             :name="selectedMethod === method.id ? 'check-circle-fill' : 'circle'" 
-            :size="24" 
+            ::size="40" 
             :color="selectedMethod === method.id ? '#1ABC9C' : '#A1A1A6'" 
           />
         </view>

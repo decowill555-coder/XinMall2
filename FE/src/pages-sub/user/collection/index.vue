@@ -1,6 +1,6 @@
-<template>
+﻿﻿<template>
   <view class="collection-page">
-    <ui-navbar title="我的收藏" :back="true" />
+    <ui-sub-navbar title="我的收藏" />
     
     <view class="filter-bar">
       <ui-tabs v-model="activeTab" :list="tabList" type="line" />
@@ -8,7 +8,7 @@
     
     <scroll-view scroll-y class="collection-scroll">
       <view v-if="collectionList.length === 0" class="empty-state">
-        <ui-icon name="heart" size="80" color="#A1A1A6" />
+        <ui-icon name="heart" :size="80" color="#A1A1A6" />
         <text class="empty-text">暂无收藏</text>
       </view>
       
@@ -26,7 +26,7 @@
             </view>
           </view>
           <view class="item-action" @click.stop="cancelCollect(item)">
-            <ui-icon name="heart-fill" :size="24" color="#FF3D00" />
+            <ui-icon name="heart-fill" ::size="40" color="#FF3D00" />
           </view>
         </view>
       </view>

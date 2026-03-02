@@ -1,4 +1,4 @@
-<!-- src/ui-kit/organisms/UiPopup.vue -->
+﻿<!-- src/ui-kit/organisms/UiPopup.vue -->
 <template>
   <view 
     class="ui-popup" 
@@ -23,7 +23,7 @@
       
       <!-- 可选：右上角关闭按钮 -->
       <view v-if="closeable" class="close-icon" @click="close">
-        <ui-icon name="close" size="24" :color="$color-text-placeholder" />
+        <ui-icon name="close" :size="40" :color="'#A1A1A6'" />
       </view>
     </view>
   </view>
@@ -86,7 +86,7 @@ const close = () => {
   right: 0;
   bottom: 0;
   visibility: hidden;
-  transition: visibility $duration-normal;
+  transition: visibility $duration-normal $ease-spring;
 
   &.is-show {
     visibility: visible;
@@ -101,17 +101,31 @@ const close = () => {
 
   .popup-mask {
     @include cover-screen;
-    background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(4px);
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.5) 0%,
+      rgba(0, 0, 0, 0.3) 100%
+    );
+    backdrop-filter: blur($blur-md);
+    -webkit-backdrop-filter: blur($blur-md);
     opacity: 0;
-    transition: opacity $duration-normal;
+    transition: opacity $duration-normal $ease-spring;
   }
 
   .popup-content {
     position: absolute;
-    background-color: $color-bg-white;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 255, 255, 0.85) 100%
+    );
+    backdrop-filter: blur($blur-xxl);
+    -webkit-backdrop-filter: blur($blur-xxl);
+    border: 1rpx solid $glass-border-light;
     transition: transform $duration-normal cubic-bezier(0.36, 0.66, 0.04, 1);
-    box-shadow: $shadow-md;
+    box-shadow: 
+      0 16rpx 48rpx rgba(0, 0, 0, 0.08),
+      inset 0 0 0 1rpx rgba(255, 255, 255, 0.7);
     
     &.safe-bottom {
       @include safe-area-bottom;
@@ -123,6 +137,16 @@ const close = () => {
       right: $space-md;
       z-index: 1;
       padding: $space-sm;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.03);
+      backdrop-filter: blur($blur-sm);
+      -webkit-backdrop-filter: blur($blur-sm);
+      transition: all $duration-fast $ease-spring;
+      
+      &:active {
+        background: rgba(0, 0, 0, 0.06);
+        transform: scale(0.9);
+      }
     }
   }
 

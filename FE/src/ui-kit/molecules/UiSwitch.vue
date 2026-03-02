@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <view 
     class="ui-switch" 
     :class="{ 'is-active': modelValue, 'is-disabled': disabled }"

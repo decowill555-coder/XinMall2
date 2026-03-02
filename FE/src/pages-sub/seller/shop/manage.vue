@@ -1,6 +1,6 @@
-<template>
+﻿﻿<template>
   <view class="shop-manage-page">
-    <ui-navbar title="店铺管理" :back="true" />
+    <ui-sub-navbar title="店铺管理" />
     
     <scroll-view scroll-y class="manage-scroll">
       <view class="shop-card">
@@ -33,7 +33,7 @@
           <text class="form-label">经营类目</text>
           <view class="form-select" @click="showCategory = true">
             <text :class="{ placeholder: !shopInfo.category }">{{ shopInfo.category || '请选择类目' }}</text>
-            <ui-icon name="arrow-right" :size="16" />
+            <ui-icon name="arrow-right" ::size="32" />
           </view>
         </view>
         <view class="form-item">

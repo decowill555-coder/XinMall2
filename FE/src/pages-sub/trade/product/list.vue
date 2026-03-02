@@ -1,6 +1,6 @@
-<template>
+﻿﻿<template>
   <view class="product-list-page">
-    <ui-navbar title="商品列表" :back="true" />
+    <ui-sub-navbar title="商品列表" />
     
     <view class="filter-bar">
       <ui-tabs v-model="sortType" :list="sortList" type="line" />
@@ -21,7 +21,7 @@
               <ui-tag v-for="tag in item.tags?.slice(0, 2)" :key="tag" type="primary" size="sm">{{ tag }}</ui-tag>
             </view>
             <view class="product-bottom">
-              <ui-price :value="item.price" type="main" :size="32" />
+              <ui-price :value="item.price" type="main" ::size="40" />
               <text class="sales">{{ item.sales }}人付款</text>
             </view>
           </view>

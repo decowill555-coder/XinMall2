@@ -1,6 +1,6 @@
-<template>
+﻿﻿<template>
   <view class="publish-post-page">
-    <ui-navbar title="发布帖子" :back="true" />
+    <ui-sub-navbar title="发布帖子" />
     
     <scroll-view scroll-y class="publish-scroll">
       <view class="content-section">
@@ -23,7 +23,7 @@
           <view class="option-value">
             <text v-if="selectedTopic">#{{ selectedTopic }}</text>
             <text v-else class="placeholder">选择话题</text>
-            <ui-icon name="arrow-right" :size="16" />
+            <ui-icon name="arrow-right" ::size="32" />
           </view>
         </view>
         
@@ -32,7 +32,7 @@
           <view class="option-value">
             <text v-if="relatedGoods">{{ relatedGoods.title }}</text>
             <text v-else class="placeholder">选择商品</text>
-            <ui-icon name="arrow-right" :size="16" />
+            <ui-icon name="arrow-right" ::size="32" />
           </view>
         </view>
         

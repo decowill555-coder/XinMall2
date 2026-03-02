@@ -1,6 +1,6 @@
-<template>
+﻿﻿<template>
   <view class="topic-page">
-    <ui-navbar :title="'#'+topicName" :back="true" />
+    <ui-sub-navbar :title="'#'+topicName" />
     
     <view class="topic-header">
       <text class="topic-name">#{{ topicName }}</text>
@@ -44,11 +44,11 @@
           </view>
           <view class="post-footer">
             <view class="stat-item">
-              <ui-icon name="heart" size="16" />
+              <ui-icon name="heart" :size="32" />
               <text>{{ item.likeCount }}</text>
             </view>
             <view class="stat-item">
-              <ui-icon name="message" size="16" />
+              <ui-icon name="message" :size="32" />
               <text>{{ item.commentCount }}</text>
             </view>
           </view>

@@ -1,11 +1,11 @@
-<template>
+﻿﻿<template>
   <view class="post-detail-page">
-    <ui-navbar title="帖子详情" :back="true" />
+    <ui-sub-navbar title="帖子详情" />
     
     <scroll-view scroll-y class="detail-scroll">
       <view class="author-card">
         <view class="author-info" @click="goUser">
-          <ui-avatar :src="post.authorAvatar" :size="80" />
+          <ui-avatar :src="post.authorAvatar" ::size="80" />
           <view class="author-detail">
             <text class="author-name">{{ post.authorName }}</text>
             <text class="author-time">{{ post.createTime }}</text>
@@ -51,15 +51,15 @@
       
       <view class="interact-bar">
         <view class="interact-item" @click="toggleLike">
-          <ui-icon :name="post.isLiked ? 'heart-fill' : 'heart'" :size="24" :color="post.isLiked ? '#FF3D00' : '#6E6E73'" />
+          <ui-icon :name="post.isLiked ? 'heart-fill' : 'heart'" ::size="40" :color="post.isLiked ? '#FF3D00' : '#6E6E73'" />
           <text>{{ post.likeCount }}</text>
         </view>
         <view class="interact-item" @click="showComments = true">
-          <ui-icon name="message" :size="24" />
+          <ui-icon name="message" ::size="40" />
           <text>{{ post.commentCount }}</text>
         </view>
         <view class="interact-item" @click="handleShare">
-          <ui-icon name="share" :size="24" />
+          <ui-icon name="share" ::size="40" />
           <text>分享</text>
         </view>
       </view>
@@ -78,7 +78,7 @@
               <text class="comment-text">{{ item.content }}</text>
               <view class="comment-actions">
                 <view class="action-item" @click="likeComment(item)">
-                  <ui-icon :name="item.isLiked ? 'heart-fill' : 'heart'" size="16" :color="item.isLiked ? '#FF3D00' : '#A1A1A6'" />
+                  <ui-icon :name="item.isLiked ? 'heart-fill' : 'heart'" :size="32" :color="item.isLiked ? '#FF3D00' : '#A1A1A6'" />
                   <text>{{ item.likeCount }}</text>
                 </view>
                 <text class="action-item" @click="replyComment(item)">回复</text>

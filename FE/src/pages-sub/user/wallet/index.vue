@@ -1,21 +1,21 @@
-<template>
+﻿﻿<template>
   <view class="wallet-page">
-    <ui-navbar title="我的钱包" :back="true" />
+    <ui-sub-navbar title="我的钱包" />
     
     <view class="wallet-header">
       <text class="balance-label">账户余额（元）</text>
       <text class="balance-value">{{ balance.toFixed(2) }}</text>
       <view class="wallet-actions">
         <view class="action-item" @click="handleWithdraw">
-          <ui-icon name="arrow-up" :size="20" />
+          <ui-icon name="arrow-up" ::size="40" />
           <text>提现</text>
         </view>
         <view class="action-item" @click="handleRecharge">
-          <ui-icon name="arrow-down" :size="20" />
+          <ui-icon name="arrow-down" ::size="40" />
           <text>充值</text>
         </view>
         <view class="action-item" @click="goBankCard">
-          <ui-icon name="credit-card" :size="20" />
+          <ui-icon name="credit-card" ::size="40" />
           <text>银行卡</text>
         </view>
       </view>
@@ -44,14 +44,14 @@
       
       <scroll-view scroll-y class="transaction-scroll">
         <view v-if="transactions.length === 0" class="empty-state">
-          <ui-icon name="file-text" size="80" color="#A1A1A6" />
+          <ui-icon name="file-text" :size="80" color="#A1A1A6" />
           <text class="empty-text">暂无交易记录</text>
         </view>
         
         <view v-else class="transaction-list">
           <view v-for="item in transactions" :key="item.id" class="transaction-item">
             <view class="item-left">
-              <ui-icon :name="item.type === 'income' ? 'arrow-down' : 'arrow-up'" :size="24" :color="item.type === 'income' ? '#1ABC9C' : '#FF3D00'" />
+              <ui-icon :name="item.type === 'income' ? 'arrow-down' : 'arrow-up'" ::size="40" :color="item.type === 'income' ? '#1ABC9C' : '#FF3D00'" />
               <view class="item-info">
                 <text class="item-title">{{ item.title }}</text>
                 <text class="item-time">{{ item.time }}</text>

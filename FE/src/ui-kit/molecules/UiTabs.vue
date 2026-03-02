@@ -1,10 +1,13 @@
-<template>
+﻿<template>
   <view class="ui-tabs-container">
     <scroll-view 
       scroll-x 
       class="ui-tabs-scroll"
       :scroll-into-view="`tab-${modelValue}`"
       :scroll-with-animation="true"
+      :show-scrollbar="false"
+      enhanced
+      :enable-flex="true"
     >
       <view class="ui-tabs-nav" :class="[`style-${type}`]">
         <view 
@@ -54,8 +57,6 @@ const onClick = (index: number) => {
 
 <style lang="scss" scoped>
 
-
-
 .ui-tabs-container {
   width: 100%;
   background-color: transparent;
@@ -64,7 +65,13 @@ const onClick = (index: number) => {
 .ui-tabs-scroll {
   white-space: nowrap;
   width: 100%;
-  // 隐藏滚动�?  @include hide-scrollbar;
+  @include hide-scrollbar;
+  
+  :deep(::-webkit-scrollbar) {
+    display: none;
+    width: 0;
+    height: 0;
+  }
 }
 
 .ui-tabs-nav {
@@ -72,6 +79,14 @@ const onClick = (index: number) => {
   align-items: center;
   padding: 0 $space-md;
   height: 88rpx;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0.2) 100%
+  );
+  backdrop-filter: blur($blur-sm);
+  -webkit-backdrop-filter: blur($blur-sm);
+  border-bottom: 1rpx solid $glass-border-subtle;
 
   .tab-item {
     position: relative;
@@ -82,16 +97,27 @@ const onClick = (index: number) => {
     justify-content: center;
     color: $color-text-sub;
     font-size: $font-size-md;
-    transition: all 0.2s;
+    transition: all $duration-fast $ease-spring;
+    flex-shrink: 0;
+    border-radius: $radius-full;
+    margin: 0 4rpx;
 
     &.is-active {
       color: $color-text-main;
       font-weight: $font-weight-bold;
       font-size: $font-size-lg;
+      background: linear-gradient(
+        135deg,
+        rgba($color-primary, 0.1) 0%,
+        rgba($color-primary, 0.05) 100%
+      );
+      backdrop-filter: blur($blur-sm);
+      -webkit-backdrop-filter: blur($blur-sm);
+      box-shadow: inset 0 0 0 1rpx rgba($color-primary, 0.2);
     }
   }
 
-  // --- Line 风格 (底部短横�? ---
+  // --- Line 风格 (底部短横线) ---
   &.style-line {
     .tab-line {
       position: absolute;
@@ -100,8 +126,9 @@ const onClick = (index: number) => {
       transform: translateX(-50%);
       width: 40rpx;
       height: 6rpx;
-      background: $color-primary; // 可以换成 gradient-primary
+      background: linear-gradient(90deg, $color-primary 0%, $color-primary-dark 100%);
       border-radius: $radius-full;
+      box-shadow: 0 2rpx 8rpx rgba($color-primary, 0.3);
     }
   }
 
@@ -112,11 +139,15 @@ const onClick = (index: number) => {
       border-radius: $radius-full;
       margin-right: $space-sm;
       background-color: transparent;
+      border: 1rpx solid transparent;
 
       &.is-active {
-        background-color: $color-primary;
+        background: linear-gradient(135deg, $color-primary 0%, $color-primary-dark 100%);
         color: $color-white;
-        box-shadow: $shadow-primary-sm;
+        box-shadow: 
+          0 4rpx 16rpx rgba($color-primary, 0.25),
+          inset 0 0 0 1rpx rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.3);
       }
     }
   }

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <button 
     class="ui-btn"
     :class="[
@@ -46,19 +46,42 @@ const handleClick = (e: Event) => {
 </script>
 
 <style lang="scss" scoped>
+@use "sass:color";
+
 .ui-btn {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: $radius-full;
-  border: 1px solid transparent;
+  border: 1rpx solid transparent;
   font-weight: $font-weight-medium;
-  transition: all 0.2s ease;
+  transition: all $duration-fast $ease-spring;
   padding: 0;
   margin: 0;
   line-height: 1.5;
   box-sizing: border-box;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    );
+    transition: left $duration-slow;
+  }
+
+  &:hover::before {
+    left: 100%;
+  }
 
   &--hover {
     transform: scale(0.96);
@@ -90,24 +113,53 @@ const handleClick = (e: Event) => {
   &--primary {
     background: linear-gradient(135deg, $color-primary 0%, $color-primary-dark 100%);
     color: $color-white;
-    box-shadow: 0 8rpx 20rpx rgba($color-primary, 0.3);
+    box-shadow: 
+      0 8rpx 24rpx rgba($color-primary, 0.25),
+      inset 0 0 0 1rpx rgba(255, 255, 255, 0.2);
+    
+    &:active {
+      box-shadow: 
+        0 4rpx 12rpx rgba($color-primary, 0.2),
+        inset 0 0 0 1rpx rgba(255, 255, 255, 0.1);
+    }
   }
 
   &--glass {
-    @include glass-effect(10rpx, 0.6);
+    @include glass-button($color-primary);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.7) 0%,
+      rgba(255, 255, 255, 0.4) 100%
+    );
+    backdrop-filter: blur($blur-lg);
+    -webkit-backdrop-filter: blur($blur-lg);
     color: $color-primary-dark;
-    border-color: rgba($color-primary, 0.2);
+    border-color: rgba($color-primary, 0.3);
+    box-shadow: 
+      0 8rpx 32rpx rgba($color-primary, 0.1),
+      inset 0 0 0 1rpx rgba(255, 255, 255, 0.6);
+    
+    &:active {
+      backdrop-filter: blur($blur-sm);
+      box-shadow: 
+        0 4rpx 16rpx rgba($color-primary, 0.08),
+        inset 0 0 0 1rpx rgba(255, 255, 255, 0.4);
+    }
   }
 
   &--outline {
     background: transparent;
-    border: 1px solid $color-primary;
+    border: 1rpx solid $color-primary;
     color: $color-primary;
+    box-shadow: inset 0 0 0 1rpx rgba(255, 255, 255, 0.1);
   }
   
   &--danger {
-    background: $color-error;
+    background: linear-gradient(135deg, $color-error 0%, color.adjust($color-error, $lightness: -10%) 100%);
     color: $color-white;
+    box-shadow: 
+      0 8rpx 24rpx rgba($color-error, 0.25),
+      inset 0 0 0 1rpx rgba(255, 255, 255, 0.2);
   }
 
   &--disabled {
@@ -116,6 +168,8 @@ const handleClick = (e: Event) => {
     color: $color-text-disabled !important;
     box-shadow: none !important;
     border-color: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 
   &__loading {
@@ -131,5 +185,35 @@ const handleClick = (e: Event) => {
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+.ui-btn--modern {
+  @include modern-button;
+  font-family: $font-family-system;
+  
+  &.ui-btn--sm {
+    height: 64rpx;
+    padding: 0 32rpx;
+    font-size: $font-size-sm;
+    border-radius: 32rpx;
+  }
+  
+  &.ui-btn--md {
+    height: $height-button-modern;
+    padding: 0 48rpx;
+    font-size: $font-size-md;
+  }
+  
+  &.ui-btn--lg {
+    height: 100rpx;
+    padding: 0 64rpx;
+    font-size: $font-size-lg;
+    border-radius: 50rpx;
+  }
+  
+  &.ui-btn--block {
+    width: 100%;
+    display: flex;
+  }
 }
 </style>

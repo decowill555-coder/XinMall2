@@ -1,6 +1,6 @@
-<template>
+﻿﻿<template>
   <view class="product-detail-page">
-    <ui-navbar title="商品详情" :back="true" />
+    <ui-sub-navbar title="商品详情" />
     
     <scroll-view scroll-y class="detail-scroll">
       <swiper class="product-swiper" :indicator-dots="true" :autoplay="false">
@@ -35,7 +35,7 @@
       
       <view class="seller-card">
         <view class="seller-header">
-          <ui-avatar :src="seller.avatar" :size="80" />
+          <ui-avatar :src="seller.avatar" ::size="80" />
           <view class="seller-info">
             <view class="seller-name">{{ seller.name }}</view>
             <view class="seller-desc">{{ seller.desc }}</view>
@@ -67,11 +67,11 @@
     <view class="bottom-action">
       <view class="action-icons">
         <view class="icon-item" @click="handleCollect">
-          <ui-icon :name="isCollected ? 'heart' : 'heart-outline'" :size="24" />
+          <ui-icon :name="isCollected ? 'heart' : 'heart-outline'" ::size="40" />
           <text>收藏</text>
         </view>
         <view class="icon-item" @click="handleMessage">
-          <ui-icon name="message" :size="24" />
+          <ui-icon name="message" ::size="40" />
           <text>私信</text>
         </view>
       </view>

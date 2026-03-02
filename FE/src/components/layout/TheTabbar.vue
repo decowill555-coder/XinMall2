@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <view class="the-tabbar" :style="{ paddingBottom: safeAreaBottom + 'px' }">
     <view 
       v-for="(item, index) in tabList" 
@@ -10,7 +10,7 @@
       <!-- 中间发布按钮 -->
       <view v-if="item.isCenter" class="center-button">
         <view class="center-icon-wrapper">
-          <UiIcon name="plus" :size="24" color="#FFFFFF" />
+          <UiIcon name="plus" ::size="40" color="#FFFFFF" />
         </view>
       </view>
       
@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed } from 'vue';
 import { useAppStore } from '@/stores';
 
 interface TabItem {
@@ -48,11 +48,11 @@ interface TabItem {
 }
 
 interface Props {
-  current?: number;
+  current?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  current: 0
+  current: 'index'
 });
 
 const emit = defineEmits<{
@@ -61,7 +61,10 @@ const emit = defineEmits<{
 }>();
 
 const appStore = useAppStore();
-const currentIndex = ref(props.current);
+
+const currentIndex = computed(() => {
+  return tabList.value.findIndex(item => item.name === props.current);
+});
 
 const safeAreaBottom = computed(() => appStore.safeAreaInsets.bottom);
 
@@ -116,7 +119,6 @@ const handleClick = (index: number, item: TabItem) => {
   
   if (currentIndex.value === index) return;
   
-  currentIndex.value = index;
   emit('change', index, item);
   
   if (item.pagePath) {
@@ -124,10 +126,6 @@ const handleClick = (index: number, item: TabItem) => {
       url: '/' + item.pagePath
     });
   }
-};
-
-const setCurrent = (index: number) => {
-  currentIndex.value = index;
 };
 
 const updateBadge = (name: string, badge: number) => {
@@ -138,7 +136,6 @@ const updateBadge = (name: string, badge: number) => {
 };
 
 defineExpose({
-  setCurrent,
   updateBadge
 });
 </script>
@@ -154,11 +151,17 @@ defineExpose({
   align-items: flex-end;
   justify-content: space-around;
   height: 100rpx;
-  background: $glass-white-high;
-  backdrop-filter: blur(20rpx);
-  -webkit-backdrop-filter: blur(20rpx);
-  border-top: 1rpx solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.03);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.75) 100%
+  );
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
+  border-top: 1rpx solid $glass-border-light;
+  box-shadow: 
+    0 -4rpx 20rpx rgba(0, 0, 0, 0.03),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.5);
 }
 
 .tabbar-item {
@@ -230,6 +233,20 @@ defineExpose({
     color: $color-primary;
     font-weight: 500;
   }
+  
+  .tabbar-icon {
+    &::after {
+      content: '';
+      position: absolute;
+      top: -12rpx;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 32rpx;
+      height: 4rpx;
+      background: $color-primary;
+      border-radius: 2rpx;
+    }
+  }
 }
 
 .tabbar-safe-line {
@@ -245,5 +262,71 @@ defineExpose({
     rgba($color-primary, 0.1) 80%,
     transparent 100%
   );
+}
+
+// =============================================================================
+// MODERN TABBAR - 2025 淘宝/闲鱼风格底部导航
+// =============================================================================
+
+.the-tabbar--modern {
+  height: $height-tabbar;
+  background: $color-bg-white;
+  border-top: none;
+  box-shadow: 0 -4rpx 24rpx rgba(0, 0, 0, 0.06);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  font-family: $font-family-system;
+  
+  .tabbar-item {
+    height: $height-tabbar;
+    
+    &.is-center {
+      .center-icon-wrapper {
+        width: 104rpx;
+        height: 104rpx;
+        background: linear-gradient(135deg, $color-brand-primary 0%, #FF8533 100%);
+        box-shadow: 
+          0 8rpx 24rpx rgba($color-brand-primary, 0.4),
+          inset 0 2rpx 0 rgba(255, 255, 255, 0.3);
+        
+        &:active {
+          transform: scale(0.95);
+          box-shadow: 
+            0 4rpx 12rpx rgba($color-brand-primary, 0.3),
+            inset 0 1rpx 0 rgba(255, 255, 255, 0.2);
+        }
+      }
+    }
+  }
+  
+  .tabbar-icon {
+    width: $height-tabbar-icon;
+    height: $height-tabbar-icon;
+    transition: all $duration-fast $ease-spring;
+  }
+  
+  .tabbar-text {
+    font-size: 22rpx;
+    color: $color-text-secondary;
+  }
+  
+  .is-active {
+    .tabbar-text {
+      color: $color-brand-primary;
+      font-weight: $font-weight-medium;
+    }
+    
+    .tabbar-icon {
+      transform: scale(1.1);
+    }
+    
+    .tabbar-icon::after {
+      display: none;
+    }
+  }
+  
+  .tabbar-safe-line {
+    display: none;
+  }
 }
 </style>

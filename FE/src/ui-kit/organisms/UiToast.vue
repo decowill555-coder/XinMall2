@@ -1,4 +1,4 @@
-<!-- src/ui-kit/organisms/UiToast.vue -->
+﻿<!-- src/ui-kit/organisms/UiToast.vue -->
 <template>
   <view 
     class="ui-toast" 

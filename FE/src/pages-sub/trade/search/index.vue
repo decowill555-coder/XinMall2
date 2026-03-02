@@ -1,4 +1,4 @@
-<template>
+﻿﻿<template>
   <view class="search-page">
     <view class="search-header">
       <ui-search 

@@ -29,7 +29,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@use "@design/_tokens.scss" as *;`,
+        additionalData: `@use "@design/_mixins.scss" as *;`,
         api: 'modern-compiler',
         silenceDeprecations: ['legacy-js-api', 'import']
       }

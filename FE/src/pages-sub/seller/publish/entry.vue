@@ -1,6 +1,6 @@
-<template>
+﻿﻿<template>
   <view class="publish-page">
-    <ui-navbar title="发布闲置" :back="true" />
+    <ui-sub-navbar title="发布闲置" />
     
     <view class="publish-container">
       <view class="form-section">
@@ -34,7 +34,7 @@
           <text :class="{ placeholder: !form.category }">
             {{ form.category || '请选择分类' }}
           </text>
-          <ui-icon name="arrow-right" :size="16" />
+          <ui-icon name="arrow-right" ::size="32" />
         </view>
       </view>
       

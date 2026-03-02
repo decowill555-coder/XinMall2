@@ -1,4 +1,4 @@
-<!-- src/ui-kit/atoms/UiImage.vue -->
+﻿<!-- src/ui-kit/atoms/UiImage.vue -->
 <template>
   <view 
     class="ui-image" 
@@ -16,7 +16,7 @@
 
     <!-- 2. 加载失败状态 -->
     <view v-if="error" class="placeholder error">
-      <ui-icon name="image-off" :size="48" :color="$color-text-placeholder" />
+      <ui-icon name="image-off" :size="48" :color="'#A1A1A6'" />
     </view>
 
     <!-- 3. 真实图片 -->
@@ -76,8 +76,12 @@ const onError = () => {
 .ui-image {
   position: relative;
   overflow: hidden;
-  background-color: $color-bg-gray;
-  display: flex; 
+  background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 100%);
+  backdrop-filter: blur($blur-sm);
+  -webkit-backdrop-filter: blur($blur-sm);
+  display: flex;
+  border: 1rpx solid $glass-border-subtle;
+  box-shadow: $glass-shadow-sm;
 
   .placeholder {
     @include absolute-center;
@@ -90,10 +94,20 @@ const onError = () => {
 
     &.loading {
       @include skeleton-loading;
+      background: linear-gradient(
+        90deg,
+        rgba(245, 245, 247, 0.8) 25%,
+        rgba(250, 250, 250, 0.6) 50%,
+        rgba(245, 245, 247, 0.8) 75%
+      );
+      background-size: 200% 100%;
+      animation: skeleton-animation 1.5s ease-in-out infinite;
     }
 
     &.error {
-      background-color: #F7F8FA;
+      background: rgba(247, 248, 250, 0.8);
+      backdrop-filter: blur($blur-sm);
+      -webkit-backdrop-filter: blur($blur-sm);
     }
   }
 
@@ -101,7 +115,7 @@ const onError = () => {
     width: 100%;
     height: 100%;
     opacity: 0;
-    transition: opacity $duration-normal $ease-out;
+    transition: opacity $duration-normal $ease-spring;
     position: relative;
     z-index: 2;
 

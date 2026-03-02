@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <view 
     class="ui-navbar" 
     :style="{ height: totalNavHeight + 'px', background: background }"
@@ -15,7 +15,7 @@
       <!-- 左侧：返回按钮 -->
       <view class="ui-navbar__left" @tap="handleBack">
         <slot name="left">
-          <UiIcon v-if="back" name="arrow-left" size="44" :color="color" />
+          <UiIcon v-if="back" name="arrow-left" :size="48" :color="color" />
         </slot>
       </view>
       
@@ -82,6 +82,7 @@ const handleBack = () => {
   width: 100%;
   z-index: 999;
   box-sizing: content-box;
+  transition: all $duration-fast $ease-spring;
   
   &--fixed {
     position: fixed;
@@ -90,8 +91,16 @@ const handleBack = () => {
   }
   
   &--glass {
-    @include glass-effect(20rpx, 0.85);
+    @include glass-effect($blur-xl, 0.85);
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(255, 255, 255, 0.7) 100%
+    );
     border-bottom: 1rpx solid rgba(0,0,0,0.05);
+    box-shadow: 
+      0 4rpx 24rpx rgba(0, 0, 0, 0.03),
+      inset 0 0 0 1rpx rgba(255, 255, 255, 0.6);
   }
   
   &__content {
@@ -119,6 +128,10 @@ const handleBack = () => {
     font-weight: bold;
     @include text-ellipsis;
     max-width: 300rpx;
+    background: linear-gradient(135deg, $color-text-main 0%, $color-text-sub 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   
   &__right {

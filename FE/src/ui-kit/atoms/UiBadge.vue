@@ -1,4 +1,4 @@
-<!-- src/ui-kit/atoms/UiBadge.vue -->
+﻿<!-- src/ui-kit/atoms/UiBadge.vue -->
 <template>
   <view class="ui-badge-wrapper">
     <slot />
@@ -57,7 +57,7 @@ const customStyle = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-
+@use "sass:color";
 
 .ui-badge-wrapper {
   position: relative;
@@ -76,16 +76,40 @@ const customStyle = computed(() => {
   border-radius: $radius-full;
   box-sizing: border-box;
   z-index: 10;
-  font-family: 'DIN Alternate', sans-serif; // 数码产品推荐�?DIN 字体
+  font-family: 'DIN Alternate', sans-serif;
+  transition: all $duration-fast $ease-spring;
+  
+  // 关键样式：白色描边，使其在任何背景上都清晰
+  border: 2rpx solid $color-bg-white;
+  box-shadow: 
+    0 4rpx 12rpx rgba(0, 0, 0, 0.1),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.4);
 
-  // 关键样式：白色描边，使其在任何背景上都清�?  border: 2rpx solid $color-bg-white; 
-  box-shadow: $shadow-xs;
-
-  // 颜色变体
-  &.error { background-color: $color-error; }
-  &.success { background-color: $color-success; }
-  &.warning { background-color: $color-warning; }
-  &.info { background-color: $color-info; }
+  // 颜色变体 (带渐变效果)
+  &.error { 
+    background: linear-gradient(135deg, $color-error 0%, color.adjust($color-error, $lightness: -8%) 100%);
+    box-shadow: 
+      0 4rpx 12rpx rgba($color-error, 0.25),
+      inset 0 0 0 1rpx rgba(255, 255, 255, 0.3);
+  }
+  &.success { 
+    background: linear-gradient(135deg, $color-success 0%, color.adjust($color-success, $lightness: -8%) 100%);
+    box-shadow: 
+      0 4rpx 12rpx rgba($color-success, 0.25),
+      inset 0 0 0 1rpx rgba(255, 255, 255, 0.3);
+  }
+  &.warning { 
+    background: linear-gradient(135deg, $color-warning 0%, color.adjust($color-warning, $lightness: -8%) 100%);
+    box-shadow: 
+      0 4rpx 12rpx rgba($color-warning, 0.25),
+      inset 0 0 0 1rpx rgba(255, 255, 255, 0.3);
+  }
+  &.info { 
+    background: linear-gradient(135deg, $color-info 0%, color.adjust($color-info, $lightness: -8%) 100%);
+    box-shadow: 
+      0 4rpx 12rpx rgba($color-info, 0.25),
+      inset 0 0 0 1rpx rgba(255, 255, 255, 0.3);
+  }
 
   // 定位模式
   &.is-fixed {
@@ -102,6 +126,9 @@ const customStyle = computed(() => {
     height: 16rpx;
     padding: 0;
     border: 2rpx solid $color-bg-white;
+    box-shadow: 
+      0 2rpx 8rpx rgba($color-error, 0.3),
+      inset 0 0 0 1rpx rgba(255, 255, 255, 0.4);
   }
 
   .badge-text {
@@ -109,6 +136,7 @@ const customStyle = computed(() => {
     font-size: 20rpx;
     line-height: 1;
     font-weight: $font-weight-medium;
+    text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.15);
   }
 }
 </style>

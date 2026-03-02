@@ -1,0 +1,202 @@
+@keyframes skeleton-animation-4fbb2fe7 {
+0% {
+    background-position: 200% 0;
+}
+100% {
+    background-position: -200% 0;
+}
+}
+@keyframes fade-in-4fbb2fe7 {
+from {
+    opacity: 0;
+}
+to {
+    opacity: 1;
+}
+}
+@keyframes scale-in-4fbb2fe7 {
+from {
+    opacity: 0;
+    transform: scale(0.9);
+}
+to {
+    opacity: 1;
+    transform: scale(1);
+}
+}
+@keyframes glass-scale-in-4fbb2fe7 {
+from {
+    opacity: 0;
+    transform: scale(0.95);
+    backdrop-filter: blur(0);
+}
+to {
+    opacity: 1;
+    transform: scale(1);
+    backdrop-filter: blur(32px);
+}
+}
+@keyframes glow-expand-4fbb2fe7 {
+from {
+    box-shadow: 0 0 0.625rem rgba(26, 188, 156, 0.1);
+}
+to {
+    box-shadow: 0 0 1.875rem rgba(26, 188, 156, 0.3);
+}
+}
+.product-detail-page[data-v-4fbb2fe7] {
+  min-height: 100vh;
+  background: #F2F4F8;
+  padding-bottom: 3.75rem;
+}
+.detail-scroll[data-v-4fbb2fe7] {
+  height: calc(100vh - 2.75rem - 3.75rem);
+}
+.product-swiper[data-v-4fbb2fe7] {
+  width: 100%;
+  height: 23.4375rem;
+}
+.product-swiper .swiper-image[data-v-4fbb2fe7] {
+  width: 100%;
+  height: 100%;
+}
+.product-info[data-v-4fbb2fe7] {
+  padding: 0.75rem;
+  background: #FFFFFF;
+  margin-bottom: 0.5rem;
+}
+.product-info .price-row[data-v-4fbb2fe7] {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+}
+.product-info .price-row .original-price[data-v-4fbb2fe7] {
+  margin-left: 0.5rem;
+  font-size: 0.875rem;
+  color: #A1A1A6;
+  text-decoration: line-through;
+}
+.product-info .product-title[data-v-4fbb2fe7] {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1D1D1F;
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}
+.product-info .tags-row[data-v-4fbb2fe7] {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+.product-info .specs-info[data-v-4fbb2fe7] {
+  background: #F5F5F7;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+}
+.product-info .specs-info .specs-item[data-v-4fbb2fe7] {
+  display: flex;
+  padding: 0.25rem 0;
+  font-size: 0.75rem;
+}
+.product-info .specs-info .specs-item .specs-label[data-v-4fbb2fe7] {
+  color: #6E6E73;
+  width: 3.75rem;
+}
+.product-info .specs-info .specs-item .specs-value[data-v-4fbb2fe7] {
+  color: #1D1D1F;
+  flex: 1;
+}
+.seller-card[data-v-4fbb2fe7] {
+  padding: 0.75rem;
+  background: #FFFFFF;
+  margin-bottom: 0.5rem;
+}
+.seller-card .seller-header[data-v-4fbb2fe7] {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+.seller-card .seller-header .seller-info[data-v-4fbb2fe7] {
+  margin-left: 0.75rem;
+  flex: 1;
+}
+.seller-card .seller-header .seller-info .seller-name[data-v-4fbb2fe7] {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1D1D1F;
+  margin-bottom: 0.25rem;
+}
+.seller-card .seller-header .seller-info .seller-desc[data-v-4fbb2fe7] {
+  font-size: 0.75rem;
+  color: #6E6E73;
+}
+.seller-card .seller-stats[data-v-4fbb2fe7] {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 0.75rem;
+  border-top: 0.03125rem solid rgba(0, 0, 0, 0.06);
+}
+.seller-card .seller-stats .stat-item[data-v-4fbb2fe7] {
+  text-align: center;
+}
+.seller-card .seller-stats .stat-item .stat-value[data-v-4fbb2fe7] {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1D1D1F;
+}
+.seller-card .seller-stats .stat-item .stat-label[data-v-4fbb2fe7] {
+  font-size: 0.625rem;
+  color: #6E6E73;
+}
+.description-card[data-v-4fbb2fe7] {
+  padding: 0.75rem;
+  background: #FFFFFF;
+}
+.description-card .card-title[data-v-4fbb2fe7] {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1D1D1F;
+  margin-bottom: 0.75rem;
+}
+.description-card .description-content[data-v-4fbb2fe7] {
+  font-size: 0.875rem;
+  color: #6E6E73;
+  line-height: 1.8;
+}
+.bottom-action[data-v-4fbb2fe7] {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  height: 3.75rem;
+  padding: 0 0.75rem;
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+  background: #FFFFFF;
+  box-shadow: 0 -0.125rem 0.625rem rgba(0, 0, 0, 0.05);
+}
+.bottom-action .action-icons[data-v-4fbb2fe7] {
+  display: flex;
+  gap: 1rem;
+}
+.bottom-action .action-icons .icon-item[data-v-4fbb2fe7] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.625rem;
+  color: #6E6E73;
+}
+.bottom-action .action-btns[data-v-4fbb2fe7] {
+  flex: 1;
+  display: flex;
+  margin-left: 0.75rem;
+  gap: 0.5rem;
+}
+.bottom-action .action-btns .btn-chat[data-v-4fbb2fe7] {
+  flex: 1;
+}
+.bottom-action .action-btns .btn-buy[data-v-4fbb2fe7] {
+  flex: 1.5;
+}

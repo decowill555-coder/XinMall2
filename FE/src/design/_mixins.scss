@@ -1,20 +1,36 @@
 @import './_tokens.scss';
 
 // =============================================================================
-// GLASSMORPHISM MIXINS - 毛玻璃效果工具集
+// GLASSMORPHISM MIXINS - 2025 毛玻璃/透明玻璃效果工具集
 // =============================================================================
 
-// --- 核心：毛玻璃效果生成器 ---
-// @param $blur: 模糊程度 (默认使用 $blur-md)
-// @param $opacity: 背景透明度 (默认 0.75)
-// @param $border-color: 边框颜色 (默认半透明白色)
-@mixin glass-effect($blur: $blur-md, $opacity: 0.75, $border-color: $glass-border-light) {
+// --- 核心：超透毛玻璃效果生成器 ---
+// @param $blur: 模糊程度 (默认使用 $blur-lg)
+// @param $opacity: 背景透明度 (默认 0.85)
+// @param $border: 边框样式 (默认使用光效边框)
+@mixin glass-effect($blur: $blur-lg, $opacity: 0.85, $border: $glass-border-light) {
   background-color: rgba(255, 255, 255, $opacity);
   backdrop-filter: blur($blur);
   -webkit-backdrop-filter: blur($blur);
-  border: 1px solid $border-color;
+  border: 1rpx solid $border;
   box-shadow: 
-    0 4rpx 30rpx rgba(0, 0, 0, 0.03),
+    0 8rpx 32rpx rgba(0, 0, 0, 0.03),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.6);
+}
+
+// --- 透明水晶玻璃效果 ---
+// 2025 新增：更通透的玻璃效果
+@mixin crystal-glass($blur: $blur-md, $opacity: 0.45) {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, $opacity) 0%,
+    rgba(255, 255, 255, $opacity * 0.6) 100%
+  );
+  backdrop-filter: blur($blur);
+  -webkit-backdrop-filter: blur($blur);
+  border: 1rpx solid $glass-border-light;
+  box-shadow: 
+    0 8rpx 32rpx rgba(0, 0, 0, 0.02),
     inset 0 0 20rpx rgba(255, 255, 255, 0.5);
 }
 
@@ -22,21 +38,61 @@
 // @param $color: 基础颜色
 // @param $blur: 模糊程度
 // @param $opacity: 透明度
-@mixin glass-colored($color: $color-primary, $blur: $blur-md, $opacity: 0.15) {
+@mixin glass-colored($color: $color-primary, $blur: $blur-lg, $opacity: 0.12) {
   background-color: rgba($color, $opacity);
   backdrop-filter: blur($blur);
   -webkit-backdrop-filter: blur($blur);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1rpx solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 8rpx 32rpx rgba($color, 0.08),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.4);
 }
 
 // --- 高级毛玻璃卡片 ---
 // 包含多层效果，更立体
 @mixin glass-card($radius: $radius-lg) {
-  @include glass-effect($blur-lg, 0.85);
+  @include glass-effect($blur-xl, 0.85);
   border-radius: $radius;
   box-shadow: 
-    0 8rpx 32rpx rgba(41, 121, 255, 0.08),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.8);
+    0 16rpx 48rpx rgba(0, 0, 0, 0.04),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.7);
+}
+
+// --- 玻璃态按钮效果 ---
+// 2025 新增：带光晕的按钮
+@mixin glass-button($color: $color-primary) {
+  @include crystal-glass($blur-md, 0.6);
+  color: $color;
+  border: 1rpx solid rgba($color, 0.2);
+  box-shadow: 
+    0 4rpx 16rpx rgba($color, 0.08),
+    inset 0 0 20rpx rgba(255, 255, 255, 0.5);
+  transition: all $duration-normal $ease-spring;
+  
+  &:active {
+    transform: scale(0.96);
+    box-shadow: 
+      0 2rpx 8rpx rgba($color, 0.12),
+      inset 0 0 10rpx rgba(255, 255, 255, 0.3);
+  }
+}
+
+// --- 光晕发光效果 ---
+// 2025 新增：发光边框
+@mixin glow-effect($color: $color-primary, $intensity: 0.2) {
+  box-shadow: 
+    0 0 40rpx rgba($color, $intensity),
+    0 0 80rpx rgba($color, $intensity * 0.5);
+}
+
+// --- 渐变玻璃效果 ---
+// 2025 新增：带渐变背景的玻璃
+@mixin gradient-glass($gradient: $gradient-crystal) {
+  background: $gradient;
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
+  border: 1rpx solid $glass-border-light;
+  box-shadow: $glass-shadow-md;
 }
 
 // =============================================================================
@@ -77,7 +133,7 @@
 
 // --- 点击缩放反馈 (用于按钮/卡片) ---
 @mixin active-scale($scale: 0.96) {
-  transition: transform $duration-fast $ease-out, opacity $duration-fast $ease-out;
+  transition: transform $duration-fast $ease-spring, opacity $duration-fast $ease-out;
   &:active {
     transform: scale($scale);
     opacity: 0.9;
@@ -90,9 +146,9 @@
   overflow: hidden;
 }
 
-// --- 悬停效果 (PC端) ---
+// --- 悬停效果 (PC 端) ---
 @mixin hover-lift {
-  transition: transform $duration-normal $ease-out, box-shadow $duration-normal $ease-out;
+  transition: transform $duration-normal $ease-spring, box-shadow $duration-normal $ease-out;
   &:hover {
     transform: translateY(-4rpx);
     box-shadow: $shadow-primary-md;
@@ -104,6 +160,17 @@
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
+}
+
+// --- 玻璃态交互动画 ---
+// 2025 新增：更流畅的玻璃交互动画
+@mixin glass-interactive {
+  transition: all $duration-normal $ease-spring;
+  
+  &:active {
+    transform: scale(0.98);
+    backdrop-filter: blur($blur-sm);
+  }
 }
 
 // =============================================================================
@@ -230,23 +297,26 @@
   padding: 0 $input-padding;
   font-size: $font-size-md;
   color: $color-text-main;
-  background-color: $color-bg-white;
-  border: 1px solid $color-border;
+  background-color: $glass-input-bg;
+  border: $glass-input-border;
   border-radius: $radius-md;
   outline: none;
-  transition: border-color $duration-fast, box-shadow $duration-fast;
+  backdrop-filter: blur($glass-input-blur);
+  -webkit-backdrop-filter: blur($glass-input-blur);
+  transition: all $duration-fast $ease-spring;
 
   &::placeholder {
     color: $color-text-placeholder;
   }
 
   &:focus {
+    background-color: $glass-crystal-high;
     border-color: $color-primary;
-    box-shadow: 0 0 0 4rpx rgba($color-primary, 0.1);
+    box-shadow: $glass-input-focus-glow;
   }
 
   &:disabled {
-    background-color: $color-bg-gray;
+    background-color: rgba(0,0,0,0.03);
     @include disabled-state;
   }
 }
@@ -260,7 +330,7 @@
   outline: none;
   cursor: pointer;
   font-weight: $font-weight-medium;
-  transition: all $duration-fast $ease-out;
+  transition: all $duration-fast $ease-spring;
   @include active-scale;
 
   &:disabled {
@@ -288,7 +358,7 @@
 
 // --- 从下往上滑入 ---
 @mixin slide-up($duration: $duration-normal, $distance: 40rpx) {
-  animation: slide-up $duration $ease-out;
+  animation: slide-up $duration $ease-spring;
   @keyframes slide-up {
     from {
       opacity: 0;
@@ -314,6 +384,42 @@
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+// --- 玻璃态弹入动画 ---
+// 2025 新增：带玻璃模糊效果的弹入
+@mixin glass-scale-in($duration: $duration-normal) {
+  animation: glass-scale-in $duration $ease-fluid;
+  backdrop-filter: blur($blur-sm);
+  -webkit-backdrop-filter: blur($blur-sm);
+}
+
+@keyframes glass-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+    backdrop-filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+    backdrop-filter: blur($blur-lg);
+  }
+}
+
+// --- 光晕扩散动画 ---
+// 2025 新增：发光扩散效果
+@mixin glow-expand($duration: $duration-slow) {
+  animation: glow-expand $duration $ease-out infinite alternate;
+}
+
+@keyframes glow-expand {
+  from {
+    box-shadow: 0 0 20rpx rgba(26, 188, 156, 0.1);
+  }
+  to {
+    box-shadow: 0 0 60rpx rgba(26, 188, 156, 0.3);
   }
 }
 
@@ -353,4 +459,85 @@
 @mixin smooth-scroll {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+}
+
+// =============================================================================
+// MODERN CARD SHADOW - 2025 现代卡片阴影 (对标闲鱼/淘宝)
+// =============================================================================
+
+@mixin card-shadow {
+  border-radius: 24rpx;
+  box-shadow: 
+    0 4rpx 24rpx rgba(0, 0, 0, 0.08),
+    0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+  background: $color-bg-white;
+  overflow: hidden;
+}
+
+@mixin card-shadow-hover {
+  transition: all $duration-normal $ease-spring;
+  &:active {
+    transform: translateY(-2rpx);
+    box-shadow: 
+      0 8rpx 32rpx rgba(0, 0, 0, 0.12),
+      0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  }
+}
+
+// =============================================================================
+// MODERN CARD - 2025 淘宝/闲鱼风格现代卡片
+// =============================================================================
+
+@mixin modern-card {
+  background: $color-bg-white;
+  border-radius: $radius-card-l;
+  box-shadow: $shadow-card;
+  overflow: hidden;
+  border: none;
+}
+
+@mixin modern-card-interactive {
+  @include modern-card;
+  transition: all $duration-fast $ease-spring;
+  
+  &:active {
+    transform: scale(0.98);
+    box-shadow: $shadow-card-hover;
+  }
+}
+
+@mixin modern-price {
+  font-family: $font-family-price;
+  font-size: $price-font-size;
+  font-weight: $price-font-weight;
+  color: $color-brand-price;
+  line-height: 1;
+}
+
+@mixin modern-price-sm {
+  font-family: $font-family-price;
+  font-size: $price-font-size-sm;
+  font-weight: $price-font-weight;
+  color: $color-brand-price;
+  line-height: 1;
+}
+
+@mixin modern-button {
+  height: $height-button-modern;
+  background: $color-brand-primary;
+  color: $color-white;
+  font-weight: $font-weight-bold;
+  border-radius: $radius-button;
+  box-shadow: $shadow-button;
+  transition: all $duration-fast $ease-spring;
+  
+  &:active {
+    transform: scale(0.98);
+    box-shadow: 0 4rpx 12rpx rgba(255, 106, 0, 0.25);
+  }
+}
+
+@mixin safe-area-tabbar {
+  padding-bottom: calc(#{$height-tabbar} + constant(safe-area-inset-bottom));
+  padding-bottom: calc(#{$height-tabbar} + env(safe-area-inset-bottom));
 }

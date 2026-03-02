@@ -1,10 +1,10 @@
-<template>
+﻿﻿<template>
   <view class="address-list-page">
-    <ui-navbar title="收货地址" :back="true" />
+    <ui-sub-navbar title="收货地址" />
     
     <scroll-view scroll-y class="address-scroll">
       <view v-if="addressList.length === 0" class="empty-state">
-        <ui-icon name="map-pin" size="80" color="#A1A1A6" />
+        <ui-icon name="map-pin" :size="80" color="#A1A1A6" />
         <text class="empty-text">暂无收货地址</text>
         <ui-button type="primary" size="sm" @click="goAdd">添加地址</ui-button>
       </view>
@@ -21,15 +21,15 @@
           </view>
           <view class="address-actions">
             <view class="action-item" @click.stop="setDefault(item)">
-              <ui-icon :name="item.isDefault ? 'check-circle-fill' : 'circle'" :size="20" :color="item.isDefault ? '#1ABC9C' : '#A1A1A6'" />
+              <ui-icon :name="item.isDefault ? 'check-circle-fill' : 'circle'" ::size="40" :color="item.isDefault ? '#1ABC9C' : '#A1A1A6'" />
               <text>默认</text>
             </view>
             <view class="action-item" @click.stop="goEdit(item)">
-              <ui-icon name="edit" :size="20" />
+              <ui-icon name="edit" ::size="40" />
               <text>编辑</text>
             </view>
             <view class="action-item" @click.stop="handleDelete(item)">
-              <ui-icon name="trash" :size="20" />
+              <ui-icon name="trash" ::size="40" />
               <text>删除</text>
             </view>
           </view>

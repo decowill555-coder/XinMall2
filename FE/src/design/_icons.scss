@@ -1,0 +1,135 @@
+// =============================================================================
+// XinMall Icon System - 企业级图标配置
+// =============================================================================
+
+// 图标字体路径
+$icon-font-path: '@/static/fonts/';
+
+// 图标字体名称
+$icon-font-family: 'xinmall-icon';
+
+// 图标 Unicode 映射
+$icon-map: (
+  'arrow-left': '\e600',
+  'arrow-right': '\e601',
+  'arrow-up': '\e602',
+  'arrow-down': '\e603',
+  'home': '\e604',
+  'home-fill': '\e605',
+  'search': '\e606',
+  'search-fill': '\e607',
+  'heart': '\e608',
+  'heart-fill': '\e609',
+  'heart-outline': '\e60a',
+  'star': '\e60b',
+  'star-fill': '\e60c',
+  'star-outline': '\e60d',
+  'user': '\e60e',
+  'user-fill': '\e60f',
+  'message': '\e610',
+  'message-fill': '\e611',
+  'cart': '\e612',
+  'cart-fill': '\e613',
+  'plus': '\e614',
+  'minus': '\e615',
+  'close': '\e616',
+  'check': '\e617',
+  'check-circle': '\e618',
+  'check-circle-fill': '\e619',
+  'circle': '\e61a',
+  'info': '\e61b',
+  'info-circle': '\e61c',
+  'warning': '\e61d',
+  'warning-circle': '\e61e',
+  'error': '\e61f',
+  'error-circle': '\e620',
+  'success': '\e621',
+  'success-circle': '\e622',
+  'phone': '\e623',
+  'email': '\e624',
+  'location': '\e625',
+  'map-pin': '\e626',
+  'camera': '\e627',
+  'image': '\e628',
+  'video': '\e629',
+  'file': '\e62a',
+  'file-text': '\e62b',
+  'folder': '\e62c',
+  'trash': '\e62d',
+  'edit': '\e62e',
+  'copy': '\e62f',
+  'share': '\e630',
+  'link': '\e631',
+  'download': '\e632',
+  'upload': '\e633',
+  'refresh': '\e634',
+  'settings': '\e635',
+  'filter': '\e636',
+  'sort': '\e637',
+  'more': '\e638',
+  'more-vertical': '\e639',
+  'eye': '\e63a',
+  'eye-off': '\e63b',
+  'lock': '\e63c',
+  'unlock': '\e63d',
+  'shield': '\e63e',
+  'bell': '\e63f',
+  'bell-fill': '\e640',
+  'calendar': '\e641',
+  'time': '\e642',
+  'clock': '\e643',
+  'credit-card': '\e644',
+  'wallet': '\e645',
+  'money': '\e646',
+  'gift': '\e647',
+  'coupon': '\e648',
+  'tag': '\e649',
+  'tags': '\e64a',
+  'store': '\e64b',
+  'shop': '\e64c',
+  'goods': '\e64d',
+  'package': '\e64e',
+  'truck': '\e64f',
+  'global': '\e650',
+  'globe': '\e651',
+  'scan': '\e652',
+  'qrcode': '\e653',
+  'type': '\e654',
+  'help-circle': '\e655',
+  'question-circle': '\e656',
+  'like': '\e657',
+  'like-fill': '\e658',
+  'dislike': '\e659',
+  'comment': '\e65a',
+  'comment-fill': '\e65b',
+  'forward': '\e65c',
+  'back': '\e65d',
+  'shopping-cart': '\e65e',
+);
+
+// 生成图标类
+@mixin icon-base {
+  display: inline-block;
+  font-family: $icon-font-family !important;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// 生成单个图标类
+@mixin make-icon($name, $unicode) {
+  .icon-#{$name}::before {
+    content: $unicode;
+  }
+}
+
+// 批量生成所有图标类
+@mixin generate-icons {
+  @each $name, $unicode in $icon-map {
+    @include make-icon($name, $unicode);
+  }
+}

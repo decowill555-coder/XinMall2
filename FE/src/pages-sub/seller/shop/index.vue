@@ -1,6 +1,6 @@
-<template>
+﻿﻿<template>
   <view class="shop-page">
-    <ui-navbar title="我的店铺" :back="true" />
+    <ui-sub-navbar title="我的店铺" />
     
     <scroll-view scroll-y class="shop-scroll">
       <view class="shop-header">
@@ -35,25 +35,25 @@
       <view class="quick-actions">
         <view class="action-item" @click="goPublish">
           <view class="action-icon">
-            <ui-icon name="plus" :size="24" />
+            <ui-icon name="plus" ::size="40" />
           </view>
           <text class="action-text">发布商品</text>
         </view>
         <view class="action-item" @click="goGoodsList">
           <view class="action-icon">
-            <ui-icon name="package" :size="24" />
+            <ui-icon name="package" ::size="40" />
           </view>
           <text class="action-text">商品管理</text>
         </view>
         <view class="action-item" @click="goOrderList">
           <view class="action-icon">
-            <ui-icon name="file-text" :size="24" />
+            <ui-icon name="file-text" ::size="40" />
           </view>
           <text class="action-text">订单管理</text>
         </view>
         <view class="action-item" @click="goAfterSale">
           <view class="action-icon">
-            <ui-icon name="refresh" :size="24" />
+            <ui-icon name="refresh" ::size="40" />
           </view>
           <text class="action-text">售后管理</text>
         </view>
@@ -95,7 +95,7 @@
               <ui-image :src="item.cover" width="200rpx" height="200rpx" radius="8rpx" />
               <text class="goods-title">{{ item.title }}</text>
               <view class="goods-bottom">
-                <ui-price :value="item.price" :size="24" />
+                <ui-price :value="item.price" ::size="40" />
                 <text class="goods-stock">库存{{ item.stock }}</text>
               </view>
             </view>

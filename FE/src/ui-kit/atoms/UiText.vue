@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <text 
     class="ui-text"
     :class="[

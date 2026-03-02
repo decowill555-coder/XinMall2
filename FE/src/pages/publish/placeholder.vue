@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <view class="page-container">
     <view class="empty-content">
       <text class="empty-text">发布页面</text>

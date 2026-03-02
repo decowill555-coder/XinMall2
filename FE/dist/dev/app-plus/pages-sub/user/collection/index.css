@@ -1,0 +1,108 @@
+@keyframes skeleton-animation-2546e59a {
+0% {
+    background-position: 200% 0;
+}
+100% {
+    background-position: -200% 0;
+}
+}
+@keyframes fade-in-2546e59a {
+from {
+    opacity: 0;
+}
+to {
+    opacity: 1;
+}
+}
+@keyframes scale-in-2546e59a {
+from {
+    opacity: 0;
+    transform: scale(0.9);
+}
+to {
+    opacity: 1;
+    transform: scale(1);
+}
+}
+@keyframes glass-scale-in-2546e59a {
+from {
+    opacity: 0;
+    transform: scale(0.95);
+    backdrop-filter: blur(0);
+}
+to {
+    opacity: 1;
+    transform: scale(1);
+    backdrop-filter: blur(32px);
+}
+}
+@keyframes glow-expand-2546e59a {
+from {
+    box-shadow: 0 0 0.625rem rgba(26, 188, 156, 0.1);
+}
+to {
+    box-shadow: 0 0 1.875rem rgba(26, 188, 156, 0.3);
+}
+}
+.collection-page[data-v-2546e59a] {
+  min-height: 100vh;
+  background: #F2F4F8;
+}
+.filter-bar[data-v-2546e59a] {
+  background: #FFFFFF;
+  padding: 0 0.75rem;
+}
+.collection-scroll[data-v-2546e59a] {
+  height: calc(100vh - 2.75rem - 2.75rem);
+  padding: 0.5rem 0.75rem;
+}
+.empty-state[data-v-2546e59a] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 6.25rem;
+}
+.empty-state .empty-text[data-v-2546e59a] {
+  font-size: 0.875rem;
+  color: #A1A1A6;
+  margin-top: 0.75rem;
+}
+.collection-list .collection-item[data-v-2546e59a] {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background: #FFFFFF;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.collection-list .collection-item .item-info[data-v-2546e59a] {
+  flex: 1;
+  margin-left: 0.75rem;
+}
+.collection-list .collection-item .item-info .item-title[data-v-2546e59a] {
+  font-size: 0.75rem;
+  color: #1D1D1F;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.collection-list .collection-item .item-info .item-tags[data-v-2546e59a] {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0.25rem 0;
+}
+.collection-list .collection-item .item-info .item-bottom[data-v-2546e59a] {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+.collection-list .collection-item .item-info .item-bottom .item-time[data-v-2546e59a] {
+  font-size: 0.625rem;
+  color: #A1A1A6;
+}
+.collection-list .collection-item .item-action[data-v-2546e59a] {
+  padding: 0.5rem;
+}

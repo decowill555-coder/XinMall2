@@ -1,6 +1,6 @@
-<template>
+﻿﻿<template>
   <view class="order-list-page">
-    <ui-navbar title="我的订单" :back="true" />
+    <ui-sub-navbar title="我的订单" />
     
     <view class="order-tabs">
       <ui-tabs v-model="activeTab" :list="tabList" type="line" />
@@ -8,7 +8,7 @@
     
     <scroll-view scroll-y class="order-scroll">
       <view v-if="orderList.length === 0" class="empty-state">
-        <ui-icon name="file-text" size="80" color="#A1A1A6" />
+        <ui-icon name="file-text" :size="80" color="#A1A1A6" />
         <text class="empty-text">暂无订单</text>
       </view>
       
@@ -25,7 +25,7 @@
               <text class="goods-title">{{ item.title }}</text>
               <text class="goods-spec">{{ item.spec }}</text>
               <view class="goods-bottom">
-                <ui-price :value="item.price" :size="24" />
+                <ui-price :value="item.price" ::size="40" />
                 <text class="goods-quantity">x{{ item.quantity }}</text>
               </view>
             </view>

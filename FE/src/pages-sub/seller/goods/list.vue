@@ -1,6 +1,6 @@
-<template>
+﻿﻿<template>
   <view class="goods-list-page">
-    <ui-navbar title="商品管理" :back="true" />
+    <ui-sub-navbar title="商品管理" />
     
     <view class="filter-bar">
       <ui-tabs v-model="activeTab" :list="tabList" type="line" />
@@ -8,7 +8,7 @@
     
     <scroll-view scroll-y class="goods-scroll">
       <view v-if="goodsList.length === 0" class="empty-state">
-        <ui-icon name="package" size="80" color="#A1A1A6" />
+        <ui-icon name="package" :size="80" color="#A1A1A6" />
         <text class="empty-text">暂无商品</text>
         <ui-button type="primary" size="sm" @click="goPublish">发布商品</ui-button>
       </view>
@@ -25,7 +25,7 @@
               <ui-tag v-if="item.isRecommend" type="primary" size="sm">推荐</ui-tag>
             </view>
             <view class="goods-bottom">
-              <ui-price :value="item.price" :size="24" />
+              <ui-price :value="item.price" ::size="40" />
               <text class="goods-stock">库存{{ item.stock }}</text>
             </view>
           </view>

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <view class="ui-upload">
     <view class="upload-grid">
       <!-- 1. 已上传图片预览 -->
@@ -15,11 +15,11 @@
         />
         <!-- 删除按钮 -->
         <view class="delete-btn" @click.stop="onRemove(index)">
-          <ui-icon name="close" size="20" color="#FFFFFF" />
+          <ui-icon name="close" :size="40" color="#FFFFFF" />
         </view>
         <!-- 状态层 -->
         <view v-if="item.status === 'uploading'" class="status-layer">
-          <ui-icon name="loading" size="32" color="#FFFFFF" class="spin" />
+          <ui-icon name="loading" :size="40" color="#FFFFFF" class="spin" />
         </view>
       </view>
 

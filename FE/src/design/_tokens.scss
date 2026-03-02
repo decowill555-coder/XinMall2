@@ -1,6 +1,6 @@
 // =============================================================================
-// DESIGN TOKENS - LIGHT THEME & GLASSMORPHISM
-// XinMall 数码电商系统核心设计变量
+// DESIGN TOKENS - 2025 GLASSMORPHISM & CRYSTAL TRANSPARENT
+// XinMall 数码电商系统核心设计变量 - 现代化毛玻璃/透明玻璃风格
 // =============================================================================
 
 // --- 1. Color Palette (色板) ---
@@ -9,25 +9,33 @@
 $color-primary:       #1ABC9C; // 核心主色 (Emerald Green)
 $color-primary-light: #E8F8F5; // 主色浅调 (用于背景/标签)
 $color-primary-dark:  #16A085; // 主色深调 (用于点击态)
+$color-primary-glass: rgba(26, 188, 156, 0.12); // 主色玻璃态
 
-// 渐变色 (品牌渐变)
+// 渐变色 (品牌渐变 - 2025 升级)
 $gradient-primary: linear-gradient(135deg, #1ABC9C 0%, #10AC84 100%);
 $gradient-gold: linear-gradient(135deg, #FFD700 0%, #FFA000 100%);
+$gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%);
+$gradient-crystal: linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.2) 100%);
 
 // 功能色
 $color-success:       #00C853; // 交易成功/正品认证
 $color-success-light: #E8F5E9;
+$color-success-glass: rgba(0, 200, 83, 0.12);
 $color-warning:       #FFAB00; // 提醒/打包出售警告
 $color-warning-light: #FFF8E1;
+$color-warning-glass: rgba(255, 171, 0, 0.12);
 $color-error:         #FF3D00; // 错误/降价
 $color-error-light:   #FFEBEE;
+$color-error-glass:   rgba(255, 61, 0, 0.12);
 $color-info:          #00B8D4; // 信息提示
 $color-info-light:    #E0F7FA;
+$color-info-glass:    rgba(0, 184, 212, 0.12);
 
 // 背景色
 $color-bg-page:       #F2F4F8; // 页面背景色 (极淡的蓝灰色)
 $color-bg-white:      #FFFFFF; // 纯白背景
 $color-bg-gray:       #F5F5F7; // 浅灰背景
+$color-bg-glass:      rgba(255, 255, 255, 0.3); // 玻璃态背景
 
 // 文本色 (层级分明)
 $color-text-main:     #1D1D1F; // 主要信息 (接近纯黑但柔和)
@@ -43,20 +51,36 @@ $color-border:        rgba(0, 0, 0, 0.08); // 标准边框
 $color-border-light:  rgba(0, 0, 0, 0.04); // 浅边框
 $color-divider:       rgba(0, 0, 0, 0.06); // 分割线
 
-// 毛玻璃体系核心变量 (Glass System)
-// 基础白色：用于卡片背景
-$glass-white-high:    rgba(255, 255, 255, 0.85); // 强背景 (内容区)
-$glass-white-mid:     rgba(255, 255, 255, 0.65); // 中背景 (浮层)
-$glass-white-low:     rgba(255, 255, 255, 0.45); // 弱背景 (装饰)
+// =============================================================================
+// 2025 GLASSMORPHISM SYSTEM - 毛玻璃/透明玻璃体系
+// =============================================================================
 
-// 彩色毛玻璃 (用于特殊场景)
-$glass-primary:       rgba(41, 121, 255, 0.15); // 主色毛玻璃
-$glass-success:       rgba(0, 200, 83, 0.15);   // 成功色毛玻璃
-$glass-warning:       rgba(255, 171, 0, 0.15);  // 警告色毛玻璃
+// --- 透明玻璃基底 (Crystal Clear Glass Base) ---
+$glass-crystal:       rgba(255, 255, 255, 0.25); // 超透玻璃 (装饰层)
+$glass-crystal-mid:   rgba(255, 255, 255, 0.45); // 中透玻璃 (次内容层)
+$glass-crystal-high:  rgba(255, 255, 255, 0.65); // 高透玻璃 (主内容层)
+$glass-solid:         rgba(255, 255, 255, 0.85); // 实色玻璃 (强内容层)
 
-// 边框高光：用于模拟光照边缘，增加质感
-$glass-border-light:  rgba(255, 255, 255, 0.6);
-$glass-border-shadow: rgba(0, 0, 0, 0.05);
+// --- 彩色毛玻璃 (Colored Glass) ---
+$glass-primary:       rgba(26, 188, 156, 0.12);   // 主色毛玻璃
+$glass-success:       rgba(0, 200, 83, 0.12);     // 成功色毛玻璃
+$glass-warning:       rgba(255, 171, 0, 0.12);    // 警告色毛玻璃
+$glass-error:         rgba(255, 61, 0, 0.12);     // 错误色毛玻璃
+$glass-info:          rgba(0, 184, 212, 0.12);    // 信息色毛玻璃
+
+// --- 光效边框 (Light Border Effects) ---
+$glass-border-light:    rgba(255, 255, 255, 0.8);   // 高亮边框 (模拟光照)
+$glass-border-mid:      rgba(255, 255, 255, 0.5);   // 中等边框
+$glass-border-subtle:   rgba(255, 255, 255, 0.3);   // 微妙边框
+$glass-border-shadow:   rgba(0, 0, 0, 0.04);        // 阴影边框
+$glass-border-glow:     rgba(26, 188, 156, 0.3);    // 发光边框
+
+// --- 光晕效果 (Glow Effects) ---
+$glow-primary:          0 0 40rpx rgba(26, 188, 156, 0.15);
+$glow-success:          0 0 40rpx rgba(0, 200, 83, 0.15);
+$glow-warning:          0 0 40rpx rgba(255, 171, 0, 0.15);
+$glow-error:            0 0 40rpx rgba(255, 61, 0, 0.15);
+$glow-white:            0 0 60rpx rgba(255, 255, 255, 0.3);
 
 // --- 2. Typography (排版) ---
 
@@ -112,49 +136,87 @@ $radius-lg:    24rpx;  // 较大的卡片
 $radius-xl:    32rpx;  // 大卡片/弹窗
 $radius-full:  999px;  // 完全圆形
 
-// --- 5. Shadows (弥散投影) ---
+// --- 5. Shadows (弥散投影 - 2025 升级) ---
 
-// 基础阴影 (无色倾向)
-$shadow-xs: 0 2rpx 8rpx rgba(0, 0, 0, 0.02);
-$shadow-sm: 0 4rpx 12rpx rgba(0, 0, 0, 0.03);
-$shadow-md: 0 8rpx 24rpx rgba(0, 0, 0, 0.04);
+// 基础阴影 (更柔和、更弥散)
+$shadow-xs: 0 2rpx 12rpx rgba(0, 0, 0, 0.015);
+$shadow-sm: 0 4rpx 20rpx rgba(0, 0, 0, 0.02);
+$shadow-md: 0 8rpx 32rpx rgba(0, 0, 0, 0.03);
+$shadow-lg: 0 16rpx 48rpx rgba(0, 0, 0, 0.04);
+$shadow-xl: 0 24rpx 64rpx rgba(0, 0, 0, 0.05);
+
+// 玻璃态阴影 (带白色内阴影增强质感)
+$glass-shadow-xs: 
+  0 2rpx 8rpx rgba(0, 0, 0, 0.01),
+  inset 0 0 0 1rpx rgba(255, 255, 255, 0.3);
+$glass-shadow-sm: 
+  0 4rpx 20rpx rgba(0, 0, 0, 0.02),
+  inset 0 0 0 1rpx rgba(255, 255, 255, 0.5);
+$glass-shadow-md: 
+  0 8rpx 32rpx rgba(0, 0, 0, 0.03),
+  inset 0 0 0 1rpx rgba(255, 255, 255, 0.6);
+$glass-shadow-lg: 
+  0 16rpx 48rpx rgba(0, 0, 0, 0.04),
+  inset 0 0 0 1rpx rgba(255, 255, 255, 0.7);
+$glass-shadow-xl: 
+  0 24rpx 64rpx rgba(0, 0, 0, 0.05),
+  inset 0 0 0 1rpx rgba(255, 255, 255, 0.8);
 
 // 品牌色阴影 (带主色倾向，更高级)
-$shadow-primary-sm: 0 4rpx 16rpx rgba(41, 121, 255, 0.12);
-$shadow-primary-md: 0 8rpx 32rpx rgba(41, 121, 255, 0.16);
-$shadow-primary-lg: 0 16rpx 48rpx rgba(41, 121, 255, 0.20);
+$shadow-primary-sm: 0 4rpx 20rpx rgba(26, 121, 180, 0.1);
+$shadow-primary-md: 0 8rpx 40rpx rgba(26, 121, 180, 0.15);
+$shadow-primary-lg: 0 16rpx 64rpx rgba(26, 121, 180, 0.2);
 
 // 功能色阴影
-$shadow-success: 0 8rpx 24rpx rgba(0, 200, 83, 0.15);
-$shadow-warning: 0 8rpx 24rpx rgba(255, 171, 0, 0.15);
-$shadow-error:   0 8rpx 24rpx rgba(255, 61, 0, 0.15);
+$shadow-success: 0 8rpx 32rpx rgba(0, 200, 83, 0.12);
+$shadow-warning: 0 8rpx 32rpx rgba(255, 171, 0, 0.12);
+$shadow-error:   0 8rpx 32rpx rgba(255, 61, 0, 0.12);
+
+// 光晕阴影 (2025 新增)
+$shadow-glow-primary: 0 0 40rpx rgba(26, 188, 156, 0.2);
+$shadow-glow-success: 0 0 40rpx rgba(0, 200, 83, 0.2);
+$shadow-glow-white:   0 0 60rpx rgba(255, 255, 255, 0.4);
 
 // 内阴影 (用于输入框聚焦等)
-$shadow-inset: inset 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+$shadow-inset: inset 0 2rpx 12rpx rgba(0, 0, 0, 0.03);
+$shadow-inset-glow: inset 0 0 20rpx rgba(255, 255, 255, 0.5);
 
-// --- 6. Glass Effects (毛玻璃效果) ---
+// --- 6. Glass Effects (毛玻璃效果 - 2025 增强) ---
 
-// 模糊程度
-$blur-sm:  8px;
-$blur-md:  16px;
-$blur-lg:  24px;
-$blur-xl:  32px;
+// 模糊程度 (增强模糊效果)
+$blur-xs:  4px;
+$blur-sm:  12px;
+$blur-md:  20px;
+$blur-lg:  32px;
+$blur-xl:  48px;
+$blur-xxl: 64px;
 
-// 毛玻璃过渡时间
-$glass-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+// 毛玻璃过渡时间 (更流畅)
+$glass-transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+$glass-transition-slow: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 
-// --- 7. Animation (动画) ---
+// 玻璃态高光 (2025 新增)
+$glass-highlight: linear-gradient(
+  135deg, 
+  rgba(255, 255, 255, 0.8) 0%, 
+  rgba(255, 255, 255, 0.1) 50%, 
+  rgba(255, 255, 255, 0.05) 100%
+);
+
+// --- 7. Animation (动画 - 2025 流体效果) ---
 
 // 时长
-$duration-fast:   0.15s;
-$duration-normal: 0.25s;
-$duration-slow:   0.4s;
+$duration-fast:   0.2s;
+$duration-normal: 0.3s;
+$duration-slow:   0.5s;
 
-// 缓动函数
+// 缓动函数 (更自然的弹性效果)
 $ease-in:      cubic-bezier(0.4, 0, 1, 1);
 $ease-out:     cubic-bezier(0, 0, 0.2, 1);
 $ease-in-out:  cubic-bezier(0.4, 0, 0.2, 1);
 $ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
+$ease-bounce:  cubic-bezier(0.68, -0.55, 0.265, 1.55);
+$ease-fluid:   cubic-bezier(0.25, 0.1, 0.25, 1.2);
 
 // --- 8. Z-Index (层级) ---
 
@@ -194,3 +256,70 @@ $tabbar-height:  100rpx;
 // 卡片
 $card-padding:   $space-md;
 $card-radius:    $radius-lg;
+
+// --- 11. 2025 Glass Component Variables (玻璃态组件变量) ---
+
+// 玻璃卡片
+$glass-card-bg: $glass-solid;
+$glass-card-border: 1rpx solid $glass-border-light;
+$glass-card-blur: $blur-lg;
+$glass-card-shadow: $glass-shadow-md;
+
+// 玻璃按钮
+$glass-btn-bg: $glass-crystal-high;
+$glass-btn-border: 1rpx solid $glass-border-light;
+$glass-btn-blur: $blur-md;
+$glass-btn-glow: $glow-primary;
+
+// 玻璃输入框
+$glass-input-bg: $glass-crystal-mid;
+$glass-input-border: 1rpx solid $glass-border-subtle;
+$glass-input-blur: $blur-sm;
+$glass-input-focus-glow: $shadow-glow-primary;
+
+// =============================================================================
+// 2025 TAobao/Xianyu E-COMMERCE TOKENS - 淘宝/闲鱼电商风格设计令牌
+// =============================================================================
+
+// --- 品牌色系 (Brand Colors - 阿里系) ---
+$color-brand-primary:     #FF6A00; // 阿里橙 - 主按钮/选中态
+$color-brand-primary-light: rgba(255, 106, 0, 0.1); // 主色浅调
+$color-brand-price:       #FF0033; // 京东红 - 价格强调
+$color-brand-price-light: rgba(255, 0, 51, 0.1); // 价格浅调
+
+// --- 文本色 (Text Colors - 电商风格) ---
+$color-text-primary:      #1A1A1A; // 主要文字 (非纯黑)
+$color-text-secondary:    #999999; // 次要文字
+$color-text-tertiary:     #CCCCCC; // 三级文字
+
+// --- 圆角系统 (Radius - 圆润感) ---
+$radius-card-l:           24rpx; // 卡片大圆角
+$radius-card-s:           12rpx; // 按钮/小卡片圆角
+$radius-button:           44rpx; // 按钮圆角 (全圆)
+
+// --- 阴影系统 (Shadows - 弥散阴影，去描边化) ---
+$shadow-card:             0 8rpx 24rpx rgba(0, 0, 0, 0.06); // 卡片弥散阴影
+$shadow-card-hover:       0 12rpx 32rpx rgba(0, 0, 0, 0.1); // 卡片悬停阴影
+$shadow-button:           0 6rpx 20rpx rgba(255, 106, 0, 0.3); // 按钮阴影
+
+// --- 字体系统 (Font Family) ---
+$font-family-system:      -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+$font-family-price:       'DIN-Bold', 'Helvetica Neue', -apple-system, sans-serif; // 价格专用字体
+
+// --- 组件高度 (Component Heights) ---
+$height-button-modern:    88rpx; // 现代按钮高度
+$height-tabbar:           100rpx; // 底部导航高度
+$height-tabbar-icon:      48rpx; // 选中态图标大小
+
+// --- 价格样式 (Price Styles) ---
+$price-font-size:         36rpx; // 价格字号
+$price-font-size-sm:      28rpx; // 小价格字号
+$price-font-weight:       700; // 价格字重
+
+// --- 图标尺寸 (Icon Sizes) ---
+$icon-size-xs:    32rpx;   // 16px - 内联小图标
+$icon-size-sm:    40rpx;   // 20px - 小图标
+$icon-size-md:    48rpx;   // 24px - 中等图标 (默认)
+$icon-size-lg:    56rpx;   // 28px - 大图标
+$icon-size-xl:    64rpx;   // 32px - 超大图标
+$icon-size-xxl:   80rpx;   // 40px - 巨大图标 (空状态)

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "首页",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "the-tabbar": "../../components/layout/TheTabbar"
+  }
+}

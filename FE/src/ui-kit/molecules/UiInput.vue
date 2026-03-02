@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <view 
     class="ui-input-wrapper"
     :class="{ 
@@ -35,7 +35,7 @@
         class="ui-input__icon-btn" 
         @tap.stop="handleClear"
       >
-        <UiIcon name="close-circle-fill" :color="$color-text-placeholder" size="32" />
+        <UiIcon name="close-circle-fill" :color="'#A1A1A6'" :size="40" />
       </view>
 
       <!-- 密码切换 -->
@@ -44,7 +44,7 @@
         class="ui-input__icon-btn" 
         @tap.stop="togglePassword"
       >
-        <UiIcon :name="showPassword ? 'eye' : 'eye-off'" :color="$color-text-sub" size="36" />
+        <UiIcon :name="showPassword ? 'eye' : 'eye-off'" :color="'#6E6E73'" size="36" />
       </view>
     </view>
 
@@ -110,25 +110,49 @@ const togglePassword = () => {
   width: 100%;
   height: 88rpx;
   padding: 0 $space-md;
-  background-color: rgba(255, 255, 255, 0.6);
-  border: 1px solid transparent;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0.4) 100%
+  );
+  backdrop-filter: blur($blur-sm);
+  -webkit-backdrop-filter: blur($blur-sm);
+  border: 1rpx solid $glass-border-subtle;
   border-radius: $radius-md;
-  transition: all 0.2s ease;
+  transition: all $duration-fast $ease-spring;
   box-sizing: border-box;
+  box-shadow: $glass-shadow-sm;
 
   &.is-focus {
-    background-color: $color-white;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.85) 0%,
+      rgba(255, 255, 255, 0.65) 100%
+    );
+    backdrop-filter: blur($blur-md);
+    -webkit-backdrop-filter: blur($blur-md);
     border-color: $color-primary;
-    box-shadow: 0 0 0 4rpx rgba($color-primary, 0.1);
+    box-shadow: 
+      0 0 0 4rpx rgba($color-primary, 0.08),
+      inset 0 0 0 1rpx rgba(255, 255, 255, 0.6);
   }
 
   &.is-error {
     border-color: $color-error;
-    background-color: rgba($color-error, 0.05);
+    background: linear-gradient(
+      135deg,
+      rgba($color-error, 0.08) 0%,
+      rgba($color-error, 0.05) 100%
+    );
+    backdrop-filter: blur($blur-sm);
+    -webkit-backdrop-filter: blur($blur-sm);
+    box-shadow: 0 0 0 4rpx rgba($color-error, 0.08);
   }
   
   &.is-disabled {
-    background-color: rgba(0,0,0,0.03);
+    background: rgba(0,0,0,0.03);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     opacity: 0.6;
   }
 }
@@ -138,11 +162,12 @@ const togglePassword = () => {
   font-size: $font-size-md;
   color: $color-text-main;
   height: 100%;
-  min-height: auto; 
-}
-
-.ui-input-placeholder {
-  color: $color-text-placeholder;
+  min-height: auto;
+  background: transparent;
+  
+  &::placeholder {
+    color: $color-text-placeholder;
+  }
 }
 
 .ui-input__actions {
@@ -157,8 +182,24 @@ const togglePassword = () => {
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 50%;
+  transition: all $duration-fast $ease-spring;
+  
+  &:active {
+    background: rgba(0, 0, 0, 0.05);
+    transform: scale(0.9);
+  }
 }
 
-.ui-input__prefix { margin-right: $space-sm; display: flex; align-items: center; }
-.ui-input__suffix { margin-left: $space-sm; display: flex; align-items: center; }
+.ui-input__prefix { 
+  margin-right: $space-sm; 
+  display: flex; 
+  align-items: center; 
+}
+
+.ui-input__suffix { 
+  margin-left: $space-sm; 
+  display: flex; 
+  align-items: center; 
+}
 </style>

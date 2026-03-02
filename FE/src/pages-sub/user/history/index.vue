@@ -1,10 +1,10 @@
-<template>
+﻿﻿<template>
   <view class="history-page">
-    <ui-navbar title="浏览足迹" :back="true" />
+    <ui-sub-navbar title="浏览足迹" />
     
     <scroll-view scroll-y class="history-scroll">
       <view v-if="historyList.length === 0" class="empty-state">
-        <ui-icon name="eye" size="80" color="#A1A1A6" />
+        <ui-icon name="eye" :size="80" color="#A1A1A6" />
         <text class="empty-text">暂无浏览记录</text>
       </view>
       
@@ -20,7 +20,7 @@
                   <ui-tag v-for="tag in item.tags?.slice(0, 2)" :key="tag" type="primary" size="sm">{{ tag }}</ui-tag>
                 </view>
                 <view class="item-bottom">
-                  <ui-price :value="item.price" :size="24" />
+                  <ui-price :value="item.price" ::size="40" />
                   <text class="item-time">{{ item.viewTime }}</text>
                 </view>
               </view>

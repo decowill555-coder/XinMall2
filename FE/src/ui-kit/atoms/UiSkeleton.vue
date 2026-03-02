@@ -1,4 +1,4 @@
-<!-- src/ui-kit/atoms/UiSkeleton.vue -->
+﻿<!-- src/ui-kit/atoms/UiSkeleton.vue -->
 <template>
   <view 
     class="ui-skeleton"
@@ -19,11 +19,12 @@ const props = withDefaults(defineProps<{
   height?: string;
   circle?: boolean; // 是否圆形
   radius?: string;  // 圆角大小
-  animate?: boolean; // 是否开启动�?  marginTop?: string;
+  animate?: boolean; // 是否开启动�?  marginTop?: string;
   marginBottom?: string;
+  marginTop?: string;
 }>(), {
   width: '100%',
-  height: '32rpx', // 默认一行文字高�?  circle: false,
+  height: '32rpx', // 默认一行文字高�?  circle: false,
   radius: '8rpx', // $radius-sm
   animate: true,
   marginTop: '0',
@@ -39,7 +40,7 @@ const props = withDefaults(defineProps<{
   background-color: $color-bg-gray;
   
   &.is-animate {
-    // 调用 mixins.scss 中定义的骨架屏动�?    @include skeleton-loading;
+    // 调用 mixins.scss 中定义的骨架屏动�?    @include skeleton-loading;
   }
 }
 </style>

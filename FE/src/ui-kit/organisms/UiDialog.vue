@@ -1,4 +1,4 @@
-<!-- src/ui-kit/organisms/UiDialog.vue -->
+﻿<!-- src/ui-kit/organisms/UiDialog.vue -->
 <template>
   <view 
     class="ui-dialog-wrapper" 
@@ -113,7 +113,7 @@ const onConfirm = async () => {
   justify-content: center;
   visibility: hidden;
   opacity: 0;
-  transition: all $duration-normal;
+  transition: all $duration-normal $ease-spring;
 
   &.is-show {
     visibility: visible;
@@ -122,41 +122,59 @@ const onConfirm = async () => {
     .dialog-content {
       transform: scale(1);
       opacity: 1;
+      @include glass-scale-in($duration-normal);
     }
   }
 
   .dialog-mask {
     @include cover-screen;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.5) 0%,
+      rgba(0, 0, 0, 0.4) 100%
+    );
+    backdrop-filter: blur($blur-md);
+    -webkit-backdrop-filter: blur($blur-md);
   }
 
   .dialog-content {
     position: relative;
     width: 600rpx;
-    background-color: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur($blur-lg);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 255, 255, 0.85) 100%
+    );
+    backdrop-filter: blur($blur-xxl);
+    -webkit-backdrop-filter: blur($blur-xxl);
+    border: 1rpx solid $glass-border-light;
     border-radius: $radius-xl;
     overflow: hidden;
     transform: scale(0.9);
     opacity: 0;
-    transition: all $duration-normal $ease-spring;
-    box-shadow: $shadow-md;
+    transition: all $duration-normal $ease-fluid;
+    box-shadow: 
+      0 24rpx 64rpx rgba(0, 0, 0, 0.1),
+      inset 0 0 0 1rpx rgba(255, 255, 255, 0.8);
   }
 
   .dialog-header {
-    padding: $space-lg $space-lg 0;
+    padding: $space-xl $space-xl 0;
     text-align: center;
     
     .title-text {
       font-size: $font-size-lg;
       font-weight: $font-weight-bold;
       color: $color-text-main;
+      background: linear-gradient(135deg, $color-text-main 0%, $color-text-sub 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
   }
 
   .dialog-body {
-    padding: $space-lg;
+    padding: $space-xl;
     
     .message-text {
       font-size: $font-size-md;
@@ -167,12 +185,12 @@ const onConfirm = async () => {
 
   .dialog-footer {
     display: flex;
-    border-top: 1px solid $color-divider;
+    border-top: 1rpx solid $glass-border-subtle;
 
     &.vertical {
       flex-direction: column;
       
-      .btn { width: 100%; border-right: none; border-bottom: 1px solid $color-divider; }
+      .btn { width: 100%; border-right: none; border-bottom: 1rpx solid $glass-border-subtle; }
       .btn:last-child { border-bottom: none; }
     }
 
@@ -182,16 +200,24 @@ const onConfirm = async () => {
       @include flex-center;
       font-size: $font-size-lg;
       font-weight: $font-weight-bold;
-      transition: background-color 0.2s;
+      transition: all $duration-fast $ease-spring;
+      background: transparent;
       
-      &:active { background-color: rgba(0,0,0,0.05); }
+      &:active { 
+        background: rgba(0,0,0,0.03);
+        backdrop-filter: blur($blur-sm);
+        -webkit-backdrop-filter: blur($blur-sm);
+      }
     }
 
     .btn-divider {
-      width: 1px;
+      width: 1rpx;
       height: 100%;
-      background-color: $color-divider;
-      transform: scaleX(0.5);
+      background: linear-gradient(
+        180deg,
+        $glass-border-subtle 0%,
+        transparent 100%
+      );
     }
   }
 }

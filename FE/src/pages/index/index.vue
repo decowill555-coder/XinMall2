@@ -1,6 +1,6 @@
-<template>
+﻿<template>
   <view class="index-page">
-    <view class="page-content">
+    <view class="fixed-header">
       <view class="search-bar">
         <ui-search 
           v-model="keyword" 
@@ -13,40 +13,25 @@
       <view class="category-tabs">
         <ui-tabs v-model="activeTab" :list="categoryList" type="capsule" />
       </view>
-      
-      <scroll-view scroll-y class="goods-list" @scrolltolower="loadMore">
-        <ui-waterfalls :list="goodsList" :columns="2" :gap="12" @click="goDetail">
-          <template #item="{ item }">
-            <view class="goods-item">
-              <ui-image 
-                :src="item.cover" 
-                width="100%" 
-                height="320rpx" 
-                radius="12rpx"
-              />
-              <view class="goods-info">
-                <view class="goods-title">{{ item.title }}</view>
-                <view class="goods-tags" v-if="item.tags?.length">
-                  <ui-tag v-for="tag in item.tags.slice(0, 2)" :key="tag" type="primary" size="sm">
-                    {{ tag }}
-                  </ui-tag>
-                </view>
-                <view class="goods-bottom">
-                  <ui-price :value="item.price" type="main" :size="32" />
-                  <text class="sales-count">{{ item.sales }}人付款</text>
-                </view>
-              </view>
-            </view>
-          </template>
-        </ui-waterfalls>
+    </view>
+    
+    <view class="page-content">
+      <scroll-view scroll-y class="goods-scroll" @scrolltolower="loadMore">
+        <view class="goods-list">
+          <ui-waterfalls :list="goodsList" :columns="2" :gap="12" @click="goDetail">
+            <template #item="{ item }">
+              <ui-goods-card :data="item" mode="waterfall" @click="goDetail" @user-click="goUser" />
+            </template>
+          </ui-waterfalls>
+        </view>
         
         <view class="load-more" v-if="goodsList.length > 0">
-          <text>{{ loading ? '加载中...' : '上拉加载更多' }}</text>
+          <ui-divider :text="loading ? '加载中...' : '上拉加载更多'" />
         </view>
       </scroll-view>
     </view>
     
-    <TheTabbar :current="0" />
+    <TheTabbar current="index" />
   </view>
 </template>
 
@@ -75,7 +60,10 @@ const goodsList = ref([
     title: 'iPhone 15 Pro Max 256GB 钛金属',
     price: 7999,
     sales: 128,
-    tags: ['99新', '在保']
+    tags: ['99新', '在保'],
+    userAvatar: 'https://picsum.photos/100/100?random=u1',
+    userName: '数码达人',
+    likeCount: 128
   },
   {
     id: 2,
@@ -83,7 +71,10 @@ const goodsList = ref([
     title: 'MacBook Pro 14寸 M3芯片',
     price: 12999,
     sales: 56,
-    tags: ['全新未拆', '官方质保']
+    tags: ['全新未拆', '官方质保'],
+    userAvatar: 'https://picsum.photos/100/100?random=u2',
+    userName: '科技博主',
+    likeCount: 256
   },
   {
     id: 3,
@@ -91,7 +82,10 @@ const goodsList = ref([
     title: 'iPad Pro 12.9寸 256G WiFi版',
     price: 6999,
     sales: 89,
-    tags: ['95新', '送配件']
+    tags: ['95新', '送配件'],
+    userAvatar: 'https://picsum.photos/100/100?random=u3',
+    userName: '苹果控',
+    likeCount: 89
   },
   {
     id: 4,
@@ -99,7 +93,10 @@ const goodsList = ref([
     title: 'AirPods Pro 第二代',
     price: 1399,
     sales: 256,
-    tags: ['全新', '正品']
+    tags: ['全新', '正品'],
+    userAvatar: 'https://picsum.photos/100/100?random=u4',
+    userName: '耳机控',
+    likeCount: 256
   },
   {
     id: 5,
@@ -107,7 +104,10 @@ const goodsList = ref([
     title: 'Sony WH-1000XM5 降噪耳机',
     price: 2199,
     sales: 78,
-    tags: ['9成新', '箱说全']
+    tags: ['9成新', '箱说全'],
+    userAvatar: 'https://picsum.photos/100/100?random=u5',
+    userName: '音乐发烧友',
+    likeCount: 78
   },
   {
     id: 6,
@@ -115,7 +115,10 @@ const goodsList = ref([
     title: 'Nintendo Switch OLED 续航版',
     price: 1899,
     sales: 167,
-    tags: ['99新', '双系统']
+    tags: ['99新', '双系统'],
+    userAvatar: 'https://picsum.photos/100/100?random=u6',
+    userName: '游戏玩家',
+    likeCount: 167
   },
   {
     id: 7,
@@ -123,7 +126,10 @@ const goodsList = ref([
     title: '佳能 EOS R6 Mark II 机身',
     price: 15999,
     sales: 23,
-    tags: ['95新', '国行']
+    tags: ['95新', '国行'],
+    userAvatar: 'https://picsum.photos/100/100?random=u7',
+    userName: '摄影师老李',
+    likeCount: 23
   },
   {
     id: 8,
@@ -131,7 +137,10 @@ const goodsList = ref([
     title: 'ROG 游戏本 魔霸7 Plus',
     price: 11999,
     sales: 45,
-    tags: ['全新未拆', '学生优惠']
+    tags: ['全新未拆', '学生优惠'],
+    userAvatar: 'https://picsum.photos/100/100?random=u8',
+    userName: '电竞达人',
+    likeCount: 45
   },
   {
     id: 9,
@@ -139,7 +148,10 @@ const goodsList = ref([
     title: 'Apple Watch Series 9 45mm',
     price: 2899,
     sales: 198,
-    tags: ['GPS', '全新']
+    tags: ['GPS', '全新'],
+    userAvatar: 'https://picsum.photos/100/100?random=u9',
+    userName: '智能穿戴',
+    likeCount: 198
   },
   {
     id: 10,
@@ -147,7 +159,10 @@ const goodsList = ref([
     title: '三星 Galaxy S23 Ultra 512G',
     price: 5999,
     sales: 67,
-    tags: ['99新', '在保']
+    tags: ['99新', '在保'],
+    userAvatar: 'https://picsum.photos/100/100?random=u10',
+    userName: '安卓粉',
+    likeCount: 67
   },
   {
     id: 11,
@@ -155,7 +170,10 @@ const goodsList = ref([
     title: '小米 13 Ultra 256G',
     price: 4599,
     sales: 112,
-    tags: ['95新', '送碎屏险']
+    tags: ['95新', '送碎屏险'],
+    userAvatar: 'https://picsum.photos/100/100?random=u11',
+    userName: '米粉一枚',
+    likeCount: 112
   },
   {
     id: 12,
@@ -163,7 +181,10 @@ const goodsList = ref([
     title: '华为 Mate 60 Pro 512G',
     price: 6999,
     sales: 234,
-    tags: ['全新未拆', '官方正品']
+    tags: ['全新未拆', '官方正品'],
+    userAvatar: 'https://picsum.photos/100/100?random=u12',
+    userName: '华为铁粉',
+    likeCount: 234
   }
 ]);
 
@@ -173,6 +194,10 @@ const goSearch = () => {
 
 const goDetail = (item: any) => {
   uni.navigateTo({ url: `/pages-sub/trade/product/detail?id=${item.id}` });
+};
+
+const goUser = (item: any) => {
+  uni.navigateTo({ url: `/pages-sub/content/user/index?id=${item.userId}` });
 };
 
 const loadMore = () => {
@@ -197,65 +222,43 @@ const loadMore = () => {
   background: $color-bg-page;
 }
 
-.page-content {
-  padding-bottom: 120rpx;
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: $color-bg-white;
+  padding: $space-md $space-md $space-sm;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.04);
 }
 
 .search-bar {
-  padding: $space-md;
-  background: $color-white;
+  margin-bottom: $space-sm;
 }
 
 .category-tabs {
-  padding: 0 $space-md $space-md;
-  background: $color-white;
+  background: transparent;
+  margin: $space-sm 0;
+}
+
+.page-content {
+  padding-top: 200rpx;
+  padding-bottom: 120rpx;
+}
+
+.goods-scroll {
+  height: calc(100vh - 200rpx - 120rpx);
+  overflow: hidden;
 }
 
 .goods-list {
-  height: calc(100vh - 88rpx - 120rpx - 200rpx);
-  padding: $space-sm $space-md;
-}
-
-.goods-item {
-  background: $color-white;
-  border-radius: $radius-md;
+  padding: $space-md $space-md 0;
+  box-sizing: border-box;
   overflow: hidden;
-  margin-bottom: $space-sm;
-  
-  .goods-info {
-    padding: $space-sm;
-  }
-  
-  .goods-title {
-    font-size: $font-size-sm;
-    color: $color-text-main;
-    line-height: 1.4;
-    @include text-ellipsis(2);
-    margin-bottom: $space-xs;
-  }
-  
-  .goods-tags {
-    display: flex;
-    gap: $space-xs;
-    margin-bottom: $space-xs;
-  }
-  
-  .goods-bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    
-    .sales-count {
-      font-size: $font-size-xs;
-      color: $color-text-disabled;
-    }
-  }
 }
 
 .load-more {
-  text-align: center;
-  padding: $space-lg;
-  font-size: $font-size-sm;
-  color: $color-text-disabled;
+  padding: $space-md 0;
 }
 </style>

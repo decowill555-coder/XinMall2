@@ -1,0 +1,1 @@
+"use strict";exports.splitPrice=t=>{const e=((t,e=2,r="¥")=>{const i=Number(t);if(isNaN(i))return`${r}0.00`;const s=i.toFixed(e).toString().split(".");return s[0]=s[0].replace(/\B(?=(\d{3})+(?!\d))/g,","),`${r}${s.join(".")}`})(t,2,""),[r,i]=e.split(".");return{symbol:"¥",integer:r,decimal:i,full:`¥${e}`}};

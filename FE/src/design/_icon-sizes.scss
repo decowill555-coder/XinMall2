@@ -1,0 +1,25 @@
+// =============================================================================
+// XinMall Icon Size System - 图标尺寸规范
+// =============================================================================
+
+// 图标尺寸规范 (rpx)
+// 遵循 8px 栅格系统，确保视觉一致性
+
+$icon-size-xs:    32rpx;   // 16px - 超小图标：内联小图标、标签内图标
+$icon-size-sm:    40rpx;   // 20px - 小图标：列表项辅助图标、输入框内图标
+$icon-size-md:    48rpx;   // 24px - 中等图标：按钮内图标、Tabbar 图标
+$icon-size-lg:    56rpx;   // 28px - 大图标：卡片图标、功能入口
+$icon-size-xl:    64rpx;   // 32px - 较大图标：主要操作按钮
+$icon-size-xxl:   88rpx;   // 44px - 导航栏图标
+$icon-size-empty: 160rpx;  // 80px - 空状态图标
+
+// 使用场景说明：
+// 
+// 导航栏返回按钮:     $icon-size-xxl (44rpx)
+// Tabbar 图标:        $icon-size-md (24rpx)
+// 按钮内图标:         $icon-size-xl (32rpx)
+// 列表项图标:         $icon-size-sm (20rpx)
+// 输入框内图标:       $icon-size-sm (20rpx)
+// 空状态图标:         $icon-size-empty (80rpx)
+// 卡片功能图标:       $icon-size-lg (28rpx)
+// 内联小图标:         $icon-size-xs (16rpx)

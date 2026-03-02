@@ -1,11 +1,11 @@
-<template>
+﻿<template>
   <view 
     class="ui-search" 
     :class="{ 'is-focus': isFocus }"
     @tap="handleClick"
   >
     <!-- 左侧放大镜图标 -->
-    <UiIcon name="search" color="#A1A1A6" size="32" class="ui-search__icon" />
+    <UiIcon name="search" color="#A1A1A6" :size="40" class="ui-search__icon" />
     
     <!-- 输入框 -->
     <input 
@@ -30,7 +30,7 @@
       class="ui-search__clear"
       @tap.stop="handleClear"
     >
-      <UiIcon name="close-circle-fill" color="#A1A1A6" size="32" />
+      <UiIcon name="close-circle-fill" color="#A1A1A6" :size="40" />
     </view>
   </view>
 </template>
@@ -78,37 +78,40 @@ const handleClick = () => {
   display: flex;
   align-items: center;
   width: 100%;
-  height: 72rpx;
-  background-color: $color-bg-gray;
-  border-radius: $radius-full;
-  padding: 0 $space-md;
+  height: 80rpx;
+  background-color: #F5F5F7;
+  border-radius: 40rpx;
+  padding: 0 $space-lg;
   box-sizing: border-box;
   transition: all 0.3s ease;
+  font-family: $font-family-system;
   
   &.is-focus {
     background-color: $color-white;
-    box-shadow: 0 0 0 2rpx $color-primary;
+    box-shadow: 0 0 0 2rpx $color-brand-primary;
   }
   
   &__icon {
     margin-right: $space-sm;
+    flex-shrink: 0;
   }
   
   &__input {
     flex: 1;
     font-size: $font-size-md;
-    color: $color-text-main;
+    color: $color-text-primary;
     height: 100%;
   }
   
   &__placeholder {
     flex: 1;
     font-size: $font-size-md;
-    color: $color-text-placeholder;
+    color: $color-text-secondary;
   }
   
   &__clear {
     padding: $space-xs;
+    flex-shrink: 0;
   }
 }
 </style>

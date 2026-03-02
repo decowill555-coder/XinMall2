@@ -1,6 +1,6 @@
-<template>
+﻿﻿<template>
   <view class="user-page">
-    <ui-navbar title="Ta的主页" :back="true" />
+    <ui-sub-navbar title="Ta的主页" />
     
     <scroll-view scroll-y class="user-scroll">
       <view class="user-header">

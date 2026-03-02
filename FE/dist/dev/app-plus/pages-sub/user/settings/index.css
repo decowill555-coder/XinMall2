@@ -1,0 +1,70 @@
+@keyframes skeleton-animation-daf51fb5 {
+0% {
+    background-position: 200% 0;
+}
+100% {
+    background-position: -200% 0;
+}
+}
+@keyframes fade-in-daf51fb5 {
+from {
+    opacity: 0;
+}
+to {
+    opacity: 1;
+}
+}
+@keyframes scale-in-daf51fb5 {
+from {
+    opacity: 0;
+    transform: scale(0.9);
+}
+to {
+    opacity: 1;
+    transform: scale(1);
+}
+}
+@keyframes glass-scale-in-daf51fb5 {
+from {
+    opacity: 0;
+    transform: scale(0.95);
+    backdrop-filter: blur(0);
+}
+to {
+    opacity: 1;
+    transform: scale(1);
+    backdrop-filter: blur(32px);
+}
+}
+@keyframes glow-expand-daf51fb5 {
+from {
+    box-shadow: 0 0 0.625rem rgba(26, 188, 156, 0.1);
+}
+to {
+    box-shadow: 0 0 1.875rem rgba(26, 188, 156, 0.3);
+}
+}
+.settings-page[data-v-daf51fb5] {
+  min-height: 100vh;
+  background: #F2F4F8;
+}
+.settings-scroll[data-v-daf51fb5] {
+  height: calc(100vh - 2.75rem);
+  padding: 0.5rem 0.75rem;
+}
+.settings-group[data-v-daf51fb5] {
+  background: #FFFFFF;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+}
+.logout-section[data-v-daf51fb5] {
+  margin-top: 1.5rem;
+  padding: 0 0.75rem;
+}
+.version-info[data-v-daf51fb5] {
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 0.625rem;
+  color: #A1A1A6;
+}

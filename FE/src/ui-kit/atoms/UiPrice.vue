@@ -1,4 +1,4 @@
-<!-- src/ui-kit/atoms/UiPrice.vue -->
+﻿<!-- src/ui-kit/atoms/UiPrice.vue -->
 <template>
   <view 
     class="ui-price" 

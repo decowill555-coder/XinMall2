@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <view class="ui-stepper">
     <!-- 减号按钮 -->
     <view 
@@ -6,7 +6,7 @@
       :class="{ 'disabled': modelValue <= min }"
       @click.stop="onMinus"
     >
-      <ui-icon name="minus" size="24" :color="$color-text-main" />
+      <ui-icon name="minus" :size="40" :color="$color-text-main" />
     </view>
 
     <!-- 数值展�?(不做输入框，数码产品一般买1-2个，输入需求低) -->
@@ -20,7 +20,7 @@
       :class="{ 'disabled': modelValue >= max }"
       @click.stop="onPlus"
     >
-      <ui-icon name="plus" size="24" :color="$color-text-main" />
+      <ui-icon name="plus" :size="40" :color="$color-text-main" />
     </view>
   </view>
 </template>

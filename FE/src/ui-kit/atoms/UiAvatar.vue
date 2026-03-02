@@ -1,4 +1,4 @@
-<!-- src/ui-kit/atoms/UiAvatar.vue -->
+﻿<!-- src/ui-kit/atoms/UiAvatar.vue -->
 <template>
   <view 
     class="ui-avatar" 
@@ -31,11 +31,11 @@
       {{ text.charAt(0).toUpperCase() }}
     </text>
 
-    <!-- 3. 图标兜底 (默认) -->
+    <!-- 3. 图标兜底 -->
     <ui-icon 
       v-else 
       name="user" 
-      :color="$color-white" 
+      :color="'#FFFFFF'" 
       :size="textSize" 
     />
   </view>
@@ -84,21 +84,38 @@ const handleError = () => {
   box-sizing: border-box;
   color: $color-text-white;
   font-weight: $font-weight-medium;
+  transition: all $duration-fast $ease-spring;
   
   // 形状
   &.shape-circle { border-radius: 50%; }
   &.shape-square { border-radius: $radius-md; }
 
-  // Glassmorphism 描边特征：外圈半透明白，内圈微阴影
+  // Glassmorphism 描边特征：外圈高亮半透明白，内圈微阴影，增强立体感
   &.is-bordered {
     border: 2rpx solid $glass-border-light; 
-    box-shadow: $shadow-sm;
+    box-shadow: 
+      0 4rpx 16rpx rgba(0, 0, 0, 0.08),
+      inset 0 0 0 1rpx rgba(255, 255, 255, 0.4);
+  }
+  
+  // 悬停效果
+  &:active {
+    transform: scale(0.95);
+    box-shadow: 
+      0 2rpx 8rpx rgba(0, 0, 0, 0.05),
+      inset 0 0 0 1rpx rgba(255, 255, 255, 0.2);
   }
 
   .avatar-img {
     width: 100%;
     height: 100%;
     opacity: 1;
+    transition: opacity $duration-fast $ease-out;
+  }
+  
+  .avatar-text {
+    font-weight: $font-weight-bold;
+    text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.15);
   }
 }
 </style>

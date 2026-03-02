@@ -1,0 +1,98 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/follow/index",
+    "pages/message/index",
+    "pages/my/index",
+    "pages/publish/placeholder"
+  ],
+  "subPackages": [
+    {
+      "root": "pages-sub/trade",
+      "pages": [
+        "product/detail",
+        "product/list",
+        "cart/index",
+        "order/list",
+        "order/detail",
+        "order/confirm",
+        "pay/index",
+        "evaluate/index",
+        "search/index"
+      ]
+    },
+    {
+      "root": "pages-sub/seller",
+      "pages": [
+        "publish/entry",
+        "shop/index",
+        "shop/manage",
+        "goods/list",
+        "goods/edit",
+        "after-sale/list",
+        "after-sale/detail"
+      ]
+    },
+    {
+      "root": "pages-sub/content",
+      "pages": [
+        "post/detail",
+        "post/publish",
+        "topic/index",
+        "user/index"
+      ]
+    },
+    {
+      "root": "pages-sub/user",
+      "pages": [
+        "login/index",
+        "address/list",
+        "address/edit",
+        "collection/index",
+        "history/index",
+        "settings/index",
+        "wallet/index"
+      ]
+    },
+    {
+      "root": "pages-sub/auth",
+      "pages": [
+        "real-name/index",
+        "shop-auth/index"
+      ]
+    }
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "XinMall",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#F2F4F8",
+    "navigationStyle": "custom"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#999999",
+    "selectedColor": "#1ABC9C",
+    "borderStyle": "white",
+    "backgroundColor": "#FFFFFF",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/follow/index",
+        "text": "关注"
+      },
+      {
+        "pagePath": "pages/message/index",
+        "text": "消息"
+      },
+      {
+        "pagePath": "pages/my/index",
+        "text": "我的"
+      }
+    ]
+  },
+  "usingComponents": {}
+}
