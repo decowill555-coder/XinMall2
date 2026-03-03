@@ -1,4 +1,4 @@
-﻿﻿<template>
+<template>
   <view class="order-list-page">
     <ui-sub-navbar title="我的订单" />
     
@@ -6,7 +6,7 @@
       <ui-tabs v-model="activeTab" :list="tabList" type="line" />
     </view>
     
-    <scroll-view scroll-y class="order-scroll">
+    <scroll-view scroll-y class="order-scroll" :style="{ height: scrollHeight + 'px' }">
       <view v-if="orderList.length === 0" class="empty-state">
         <ui-icon name="file-text" :size="80" color="#A1A1A6" />
         <text class="empty-text">暂无订单</text>
@@ -50,6 +50,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { scrollHeight } = usePageLayout({
+  hasSubNavbar: true,
+  headerEstimatedHeight: 176
+});
 
 const activeTab = ref(0);
 
@@ -146,8 +152,8 @@ const goEvaluate = (order: any) => {
 }
 
 .order-scroll {
-  height: calc(100vh - 88rpx - 88rpx);
   padding: $space-sm $space-md;
+  overflow: hidden;
 }
 
 .empty-state {

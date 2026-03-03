@@ -1,8 +1,8 @@
-﻿﻿<template>
+<template>
   <view class="confirm-page">
     <ui-sub-navbar title="确认订单" />
     
-    <scroll-view scroll-y class="confirm-scroll">
+    <scroll-view scroll-y class="confirm-scroll" :style="{ height: scrollHeight + 'px' }">
       <view class="address-card" @click="selectAddress">
         <view v-if="address" class="address-content">
           <view class="address-header">
@@ -68,7 +68,7 @@
       </view>
     </scroll-view>
     
-    <view class="confirm-footer">
+    <view class="confirm-footer" :style="{ paddingBottom: (safeAreaBottom + 12) + 'px' }">
       <view class="footer-left">
         <text class="total-label">实付款：</text>
         <ui-price :value="order.totalPrice" type="main" :size="36" />
@@ -95,6 +95,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { safeAreaBottom, scrollHeight } = usePageLayout({
+  hasSubNavbar: true,
+  headerEstimatedHeight: 180
+});
 
 const showRemark = ref(false);
 const remark = ref('');
@@ -142,8 +148,8 @@ const handleSubmit = () => {
 }
 
 .confirm-scroll {
-  height: calc(100vh - 88rpx - 120rpx);
   padding: $space-sm $space-md;
+  overflow: hidden;
 }
 
 .address-card {
@@ -298,11 +304,10 @@ const handleSubmit = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 120rpx;
-  padding: 0 $space-md;
-  padding-bottom: calc(#{$space-md} + env(safe-area-inset-bottom));
+  padding: $space-md;
   background: $color-white;
   box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
+  z-index: 100;
   
   .footer-left {
     display: flex;

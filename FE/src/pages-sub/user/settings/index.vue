@@ -1,8 +1,8 @@
-﻿﻿<template>
+﻿<template>
   <view class="settings-page">
     <ui-sub-navbar title="设置" />
     
-    <scroll-view scroll-y class="settings-scroll">
+    <scroll-view scroll-y class="settings-scroll" :style="{ height: scrollHeight + 'px' }">
       <view class="settings-group">
         <ui-cell title="账号与安全" icon="shield" is-link @click="goAccount" />
         <ui-cell title="隐私设置" icon="lock" is-link @click="goPrivacy" />
@@ -39,6 +39,12 @@
 </template>
 
 <script setup lang="ts">
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { scrollHeight } = usePageLayout({
+  hasSubNavbar: true
+});
+
 const goAccount = () => uni.showToast({ title: '账号与安全', icon: 'none' });
 const goPrivacy = () => uni.showToast({ title: '隐私设置', icon: 'none' });
 const goNotification = () => uni.showToast({ title: '通知设置', icon: 'none' });
@@ -97,7 +103,8 @@ const handleLogout = () => {
 }
 
 .settings-scroll {
-  height: calc(100vh - 88rpx);
+  overflow: hidden;
+}
   padding: $space-sm $space-md;
 }
 

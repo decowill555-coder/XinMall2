@@ -261,15 +261,17 @@ to {
   margin: 0.5rem 0;
 }
 .page-content[data-v-83a5a03c] {
-  padding-top: 6.25rem;
-  padding-bottom: 3.75rem;
+  padding-bottom: 0;
 }
 .goods-scroll[data-v-83a5a03c] {
-  height: calc(100vh - 6.25rem - 3.75rem);
   overflow: hidden;
 }
+.swiper[data-v-83a5a03c] {
+  padding: 1.5rem 0.75rem 0 0.75rem;
+  box-sizing: border-box;
+}
 .goods-list[data-v-83a5a03c] {
-  padding: 0.75rem 0.75rem 0;
+  padding: 0.75rem;
   box-sizing: border-box;
   overflow: hidden;
 }

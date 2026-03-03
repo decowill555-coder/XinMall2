@@ -1,4 +1,4 @@
-﻿﻿<template>
+﻿<template>
   <view class="wallet-page">
     <ui-sub-navbar title="我的钱包" />
     
@@ -42,7 +42,7 @@
         <text class="section-more" @click="goAllTransactions">全部</text>
       </view>
       
-      <scroll-view scroll-y class="transaction-scroll">
+      <scroll-view scroll-y class="transaction-scroll" :style="{ height: scrollHeight + 'px' }">
         <view v-if="transactions.length === 0" class="empty-state">
           <ui-icon name="file-text" :size="80" color="#A1A1A6" />
           <text class="empty-text">暂无交易记录</text>
@@ -69,8 +69,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
 
-const balance = ref(12568.50);
+const { safeAreaBottom, scrollHeight } = usePageLayout({
+  hasSubNavbar: true,
+  headerEstimatedHeight: 468
+});
+
+const balance = ref(8888.88);
 const frozenAmount = ref(500.00);
 const income = ref(3580.00);
 const expense = ref(1200.00);
@@ -187,7 +193,8 @@ const goAllTransactions = () => {
 }
 
 .transaction-scroll {
-  height: calc(100vh - 88rpx - 300rpx - 120rpx - 88rpx);
+  overflow: hidden;
+}
   padding: 0 $space-md;
 }
 

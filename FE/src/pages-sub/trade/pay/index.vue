@@ -1,8 +1,8 @@
-﻿﻿<template>
+<template>
   <view class="pay-page">
     <ui-sub-navbar title="支付" />
     
-    <view class="pay-content">
+    <view class="pay-content" :style="{ paddingTop: safeAreaTop + 'px' }">
       <view class="amount-card">
         <text class="amount-label">支付金额</text>
         <view class="amount-value">
@@ -43,7 +43,7 @@
       </view>
     </view>
     
-    <view class="pay-footer">
+    <view class="pay-footer" :style="{ paddingBottom: (safeAreaBottom + 12) + 'px' }">
       <ui-button type="primary" block :loading="paying" @click="handlePay">
         立即支付 ¥{{ amount }}
       </ui-button>
@@ -53,6 +53,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { safeAreaTop, safeAreaBottom } = usePageLayout({
+  hasSubNavbar: true
+});
 
 const amount = ref('9398.00');
 const orderInfo = ref('iPhone 15 Pro Max 256GB 等2件商品');
@@ -207,8 +212,8 @@ onUnmounted(() => {
   right: 0;
   bottom: 0;
   padding: $space-md;
-  padding-bottom: calc(#{$space-md} + env(safe-area-inset-bottom));
   background: $color-white;
   box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
+  z-index: 100;
 }
 </style>

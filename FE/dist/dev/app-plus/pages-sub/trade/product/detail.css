@@ -50,7 +50,7 @@ to {
   padding-bottom: 3.75rem;
 }
 .detail-scroll[data-v-4fbb2fe7] {
-  height: calc(100vh - 2.75rem - 3.75rem);
+  overflow: hidden;
 }
 .product-swiper[data-v-4fbb2fe7] {
   width: 100%;

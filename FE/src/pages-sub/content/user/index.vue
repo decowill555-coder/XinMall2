@@ -1,8 +1,8 @@
-﻿﻿<template>
+﻿<template>
   <view class="user-page">
     <ui-sub-navbar title="Ta的主页" />
     
-    <scroll-view scroll-y class="user-scroll">
+    <scroll-view scroll-y class="user-scroll" :style="{ height: scrollHeight + 'px' }">
       <view class="user-header">
         <ui-avatar :src="userInfo.avatar" :size="120" />
         <text class="user-name">{{ userInfo.name }}</text>
@@ -61,6 +61,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { scrollHeight } = usePageLayout({
+  hasSubNavbar: true
+});
 
 const activeTab = ref(0);
 
@@ -124,7 +129,7 @@ const goGoods = (item: any) => {
 }
 
 .user-scroll {
-  height: calc(100vh - 88rpx);
+  overflow: hidden;
 }
 
 .user-header {

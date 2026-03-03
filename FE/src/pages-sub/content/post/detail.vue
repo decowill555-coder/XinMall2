@@ -1,8 +1,8 @@
-﻿﻿<template>
+﻿<template>
   <view class="post-detail-page">
     <ui-sub-navbar title="帖子详情" />
     
-    <scroll-view scroll-y class="detail-scroll">
+    <scroll-view scroll-y class="detail-scroll" :style="{ height: scrollHeight + 'px' }">
       <view class="author-card">
         <view class="author-info" @click="goUser">
           <ui-avatar :src="post.authorAvatar" ::size="80" />
@@ -98,9 +98,15 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
 
 const commentText = ref('');
 const showComments = ref(false);
+
+const { safeAreaBottom, scrollHeight } = usePageLayout({
+  hasSubNavbar: true,
+  headerEstimatedHeight: 100
+});
 
 const post = ref({
   id: 1,
@@ -201,7 +207,7 @@ const submitComment = () => {
 }
 
 .detail-scroll {
-  height: calc(100vh - 88rpx - 100rpx);
+  overflow: hidden;
 }
 
 .author-card {

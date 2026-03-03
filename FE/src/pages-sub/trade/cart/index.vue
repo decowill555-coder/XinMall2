@@ -1,8 +1,8 @@
-﻿﻿<template>
+<template>
   <view class="cart-page">
     <ui-sub-navbar title="购物车" />
     
-    <scroll-view scroll-y class="cart-scroll">
+    <scroll-view scroll-y class="cart-scroll" :style="{ height: scrollHeight + 'px' }">
       <view v-if="cartList.length === 0" class="empty-state">
         <ui-icon name="shopping-cart" :size="80" color="#A1A1A6" />
         <text class="empty-text">购物车空空如也</text>
@@ -31,7 +31,7 @@
       </view>
     </scroll-view>
     
-    <view v-if="cartList.length > 0" class="cart-footer">
+    <view v-if="cartList.length > 0" class="cart-footer" :style="{ paddingBottom: (safeAreaBottom + 12) + 'px' }">
       <view class="footer-left">
         <view class="check-all" @click="toggleSelectAll">
           <ui-icon 
@@ -57,6 +57,11 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { safeAreaBottom, scrollHeight } = usePageLayout({
+  hasSubNavbar: true
+});
 
 const cartList = ref([
   { id: 1, cover: 'https://picsum.photos/200/200?random=301', title: 'iPhone 15 Pro Max 256GB', spec: '钛金属原色', price: 7999, quantity: 1, selected: true },
@@ -99,92 +104,93 @@ const goConfirm = () => {
 }
 
 .cart-scroll {
-  height: calc(100vh - 88rpx - 120rpx);
+  overflow: hidden;
 }
 
 .empty-state {
-  @include flex-column-center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   padding-top: 200rpx;
   
   .empty-text {
     font-size: $font-size-md;
-    color: $color-text-disabled;
+    color: $color-text-sub;
     margin: $space-md 0;
   }
 }
 
 .cart-list {
-  padding: $space-sm $space-md;
-}
-
-.cart-item {
-  display: flex;
-  align-items: center;
   padding: $space-md;
-  background: $color-white;
-  border-radius: $radius-md;
-  margin-bottom: $space-sm;
   
-  .item-check {
-    margin-right: $space-sm;
-  }
-  
-  .item-info {
-    flex: 1;
-    margin-left: $space-md;
+  .cart-item {
+    display: flex;
+    align-items: center;
+    padding: $space-md;
+    background: $color-white;
+    border-radius: $radius-md;
+    margin-bottom: $space-sm;
     
-    .item-title {
-      font-size: $font-size-md;
-      color: $color-text-main;
-      @include text-ellipsis(2);
+    .item-check {
+      margin-right: $space-sm;
     }
     
-    .item-spec {
-      font-size: $font-size-sm;
-      color: $color-text-sub;
-      margin: $space-xs 0;
-    }
-    
-    .item-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: $space-sm;
+    .item-info {
+      flex: 1;
+      margin-left: $space-md;
+      
+      .item-title {
+        font-size: $font-size-md;
+        color: $color-text-main;
+        @include text-ellipsis(2);
+      }
+      
+      .item-spec {
+        font-size: $font-size-sm;
+        color: $color-text-sub;
+        margin: $space-xs 0;
+      }
+      
+      .item-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: $space-sm;
+      }
     }
   }
 }
 
 .cart-footer {
   position: fixed;
+  bottom: 0;
   left: 0;
   right: 0;
-  bottom: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 120rpx;
-  padding: 0 $space-md;
-  padding-bottom: calc(#{$space-md} + env(safe-area-inset-bottom));
+  padding: $space-md;
   background: $color-white;
-  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
+  border-top: 1rpx solid $color-divider;
+  z-index: 100;
   
   .footer-left {
     .check-all {
       display: flex;
       align-items: center;
-      font-size: $font-size-md;
-      color: $color-text-main;
+      gap: $space-xs;
     }
   }
   
   .footer-right {
     display: flex;
     align-items: center;
+    gap: $space-md;
     
     .total-price {
       display: flex;
-      align-items: baseline;
-      margin-right: $space-md;
+      align-items: center;
       
       .label {
         font-size: $font-size-sm;

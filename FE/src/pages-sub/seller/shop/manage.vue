@@ -1,8 +1,8 @@
-﻿﻿<template>
+﻿<template>
   <view class="shop-manage-page">
     <ui-sub-navbar title="店铺管理" />
     
-    <scroll-view scroll-y class="manage-scroll">
+    <scroll-view scroll-y class="manage-scroll" :style="{ height: scrollHeight + 'px' }">
       <view class="shop-card">
         <ui-avatar :src="shopInfo.logo" :size="100" />
         <view class="shop-info">
@@ -54,7 +54,7 @@
       </view>
     </scroll-view>
     
-    <view class="manage-footer">
+    <view class="manage-footer" :style="{ paddingBottom: (safeAreaBottom + 12) + 'px' }">
       <ui-button type="primary" block @click="handleSave">保存修改</ui-button>
     </view>
   </view>
@@ -62,6 +62,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { safeAreaBottom, scrollHeight } = usePageLayout({
+  hasSubNavbar: true,
+  headerEstimatedHeight: 120
+});
 
 const showCategory = ref(false);
 
@@ -103,7 +109,8 @@ const handleSave = () => {
 }
 
 .manage-scroll {
-  height: calc(100vh - 88rpx - 120rpx);
+  overflow: hidden;
+}
   padding: $space-sm $space-md;
 }
 

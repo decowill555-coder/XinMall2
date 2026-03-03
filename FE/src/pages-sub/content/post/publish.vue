@@ -1,8 +1,8 @@
-﻿﻿<template>
+﻿<template>
   <view class="publish-post-page">
     <ui-sub-navbar title="发布帖子" />
     
-    <scroll-view scroll-y class="publish-scroll">
+    <scroll-view scroll-y class="publish-scroll" :style="{ height: scrollHeight + 'px' }">
       <view class="content-section">
         <textarea 
           class="content-input" 
@@ -72,6 +72,12 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { safeAreaBottom, scrollHeight } = usePageLayout({
+  hasSubNavbar: true,
+  headerEstimatedHeight: 120
+});
 
 const content = ref('');
 const images = ref<string[]>([]);
@@ -123,7 +129,7 @@ const handlePublish = () => {
 }
 
 .publish-scroll {
-  height: calc(100vh - 88rpx - 120rpx);
+  overflow: hidden;
 }
 
 .content-section {

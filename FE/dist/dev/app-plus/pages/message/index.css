@@ -243,8 +243,13 @@ to {
   min-height: 100vh;
   background: #F2F4F8;
 }
-.page-content[data-v-bdafde18] {
-  padding-bottom: 3.75rem;
+.page-header[data-v-bdafde18] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: #F2F4F8;
 }
 .header-card[data-v-bdafde18] {
   margin: 0.75rem;
@@ -255,8 +260,10 @@ to {
   margin: 0 0.75rem;
   border-radius: 0.75rem;
 }
+.page-content[data-v-bdafde18] {
+  padding-bottom: 0;
+}
 .message-list[data-v-bdafde18] {
-  height: calc(100vh - 6.25rem - 3.75rem);
   padding: 0.75rem;
   box-sizing: border-box;
   overflow: hidden;

@@ -1,8 +1,8 @@
-﻿﻿<template>
+﻿<template>
   <view class="product-detail-page">
     <ui-sub-navbar title="商品详情" />
     
-    <scroll-view scroll-y class="detail-scroll">
+    <scroll-view scroll-y class="detail-scroll" :style="{ height: scrollHeight + 'px' }">
       <swiper class="product-swiper" :indicator-dots="true" :autoplay="false">
         <swiper-item v-for="(img, index) in product.images" :key="index">
           <image class="swiper-image" :src="img" mode="aspectFill" />
@@ -84,7 +84,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useAppStore } from '@/stores';
+
+const appStore = useAppStore();
+
+const safeAreaTop = computed(() => appStore.safeAreaInsets.top);
+const safeAreaBottom = computed(() => appStore.safeAreaInsets.bottom);
+
+const scrollHeight = computed(() => {
+  const systemInfo = uni.getSystemInfoSync();
+  const navBarHeight = 44;
+  const bottomActionHeight = 60;
+  return systemInfo.windowHeight - safeAreaTop.value - navBarHeight - bottomActionHeight - safeAreaBottom.value;
+});
 
 const product = ref({
   id: 1,
@@ -148,7 +161,7 @@ const handleBuy = () => {
 }
 
 .detail-scroll {
-  height: calc(100vh - 88rpx - 120rpx);
+  overflow: hidden;
 }
 
 .product-swiper {

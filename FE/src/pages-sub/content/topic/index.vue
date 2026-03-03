@@ -1,4 +1,4 @@
-﻿﻿<template>
+﻿<template>
   <view class="topic-page">
     <ui-sub-navbar :title="'#'+topicName" />
     
@@ -21,7 +21,7 @@
       <ui-tabs v-model="sortType" :list="sortList" type="line" />
     </view>
     
-    <scroll-view scroll-y class="post-scroll" @scrolltolower="loadMore">
+    <scroll-view scroll-y class="post-scroll" :style="{ height: scrollHeight + 'px' }" @scrolltolower="loadMore">
       <view class="post-list">
         <view v-for="item in postList" :key="item.id" class="post-item" @click="goDetail(item)">
           <view class="post-header">
@@ -60,8 +60,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
 
-const topicName = ref('iPhone15');
+const { scrollHeight } = usePageLayout({
+  hasSubNavbar: true,
+  headerEstimatedHeight: 368
+});
+
+const topicName = ref('数码测评');
 const sortType = ref(0);
 
 const topicInfo = ref({
@@ -169,7 +175,7 @@ const loadMore = () => {
 }
 
 .post-scroll {
-  height: calc(100vh - 88rpx - 280rpx - 88rpx);
+  overflow: hidden;
 }
 
 .post-list {

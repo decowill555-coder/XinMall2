@@ -1,8 +1,8 @@
-﻿﻿<template>
+﻿<template>
   <view class="shop-auth-page">
     <ui-sub-navbar title="店铺认证" />
     
-    <scroll-view scroll-y class="auth-scroll">
+    <scroll-view scroll-y class="auth-scroll" :style="{ height: scrollHeight + 'px' }">
       <view class="auth-tips">
         <ui-icon name="store" ::size="40" color="#1ABC9C" />
         <text class="tips-text">店铺认证后可开通店铺、发布商品等功能</text>
@@ -62,7 +62,7 @@
       </view>
     </scroll-view>
     
-    <view class="auth-footer">
+    <view class="auth-footer" :style="{ paddingBottom: (safeAreaBottom + 12) + 'px' }">
       <ui-button type="primary" block :disabled="!canSubmit" @click="handleSubmit">
         提交认证
       </ui-button>
@@ -72,6 +72,12 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { safeAreaBottom, scrollHeight } = usePageLayout({
+  hasSubNavbar: true,
+  headerEstimatedHeight: 120
+});
 
 const agreed = ref(false);
 const showCategoryPicker = ref(false);
@@ -130,7 +136,8 @@ const handleSubmit = () => {
 }
 
 .auth-scroll {
-  height: calc(100vh - 88rpx - 120rpx);
+  overflow: hidden;
+}
   padding: $space-sm $space-md;
 }
 

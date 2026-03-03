@@ -49,7 +49,7 @@ to {
   background: #F2F4F8;
 }
 .cart-scroll[data-v-ed7b7cc2] {
-  height: calc(100vh - 2.75rem - 3.75rem);
+  overflow: hidden;
 }
 .empty-state[data-v-ed7b7cc2] {
   display: flex;
@@ -60,13 +60,13 @@ to {
 }
 .empty-state .empty-text[data-v-ed7b7cc2] {
   font-size: 0.875rem;
-  color: #A1A1A6;
+  color: #6E6E73;
   margin: 0.75rem 0;
 }
 .cart-list[data-v-ed7b7cc2] {
-  padding: 0.5rem 0.75rem;
+  padding: 0.75rem;
 }
-.cart-item[data-v-ed7b7cc2] {
+.cart-list .cart-item[data-v-ed7b7cc2] {
   display: flex;
   align-items: center;
   padding: 0.75rem;
@@ -74,14 +74,14 @@ to {
   border-radius: 0.5rem;
   margin-bottom: 0.5rem;
 }
-.cart-item .item-check[data-v-ed7b7cc2] {
+.cart-list .cart-item .item-check[data-v-ed7b7cc2] {
   margin-right: 0.5rem;
 }
-.cart-item .item-info[data-v-ed7b7cc2] {
+.cart-list .cart-item .item-info[data-v-ed7b7cc2] {
   flex: 1;
   margin-left: 0.75rem;
 }
-.cart-item .item-info .item-title[data-v-ed7b7cc2] {
+.cart-list .cart-item .item-info .item-title[data-v-ed7b7cc2] {
   font-size: 0.875rem;
   color: #1D1D1F;
   display: -webkit-box;
@@ -89,12 +89,12 @@ to {
   -webkit-line-clamp: 2;
   overflow: hidden;
 }
-.cart-item .item-info .item-spec[data-v-ed7b7cc2] {
+.cart-list .cart-item .item-info .item-spec[data-v-ed7b7cc2] {
   font-size: 0.75rem;
   color: #6E6E73;
   margin: 0.25rem 0;
 }
-.cart-item .item-info .item-bottom[data-v-ed7b7cc2] {
+.cart-list .cart-item .item-info .item-bottom[data-v-ed7b7cc2] {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -102,32 +102,30 @@ to {
 }
 .cart-footer[data-v-ed7b7cc2] {
   position: fixed;
+  bottom: 0;
   left: 0;
   right: 0;
-  bottom: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 3.75rem;
-  padding: 0 0.75rem;
-  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+  padding: 0.75rem;
   background: #FFFFFF;
-  box-shadow: 0 -0.125rem 0.625rem rgba(0, 0, 0, 0.05);
+  border-top: 0.03125rem solid rgba(0, 0, 0, 0.06);
+  z-index: 100;
 }
 .cart-footer .footer-left .check-all[data-v-ed7b7cc2] {
   display: flex;
   align-items: center;
-  font-size: 0.875rem;
-  color: #1D1D1F;
+  gap: 0.25rem;
 }
 .cart-footer .footer-right[data-v-ed7b7cc2] {
   display: flex;
   align-items: center;
+  gap: 0.75rem;
 }
 .cart-footer .footer-right .total-price[data-v-ed7b7cc2] {
   display: flex;
-  align-items: baseline;
-  margin-right: 0.75rem;
+  align-items: center;
 }
 .cart-footer .footer-right .total-price .label[data-v-ed7b7cc2] {
   font-size: 0.75rem;

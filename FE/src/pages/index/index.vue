@@ -1,6 +1,6 @@
 ﻿<template>
   <view class="index-page">
-    <view class="fixed-header">
+    <view class="fixed-header" :style="{ paddingTop: (safeAreaTop + headerExtraTop) + 'px' }">
       <view class="search-bar">
         <ui-search 
           v-model="keyword" 
@@ -15,8 +15,21 @@
       </view>
     </view>
     
-    <view class="page-content">
-      <scroll-view scroll-y class="goods-scroll" @scrolltolower="loadMore">
+    <view class="page-content" :style="{ paddingTop: headerHeight + 'px' }">
+      <scroll-view 
+        scroll-y 
+        class="goods-scroll" 
+        :style="{ height: scrollHeight + 'px' }" 
+        @scrolltolower="loadMore"
+      >
+        <view class="swiper">
+          <ui-swiper
+            :list="bannerList"
+            height="360rpx"
+            @click="onBannerClick"
+          />
+        </view>
+        
         <view class="goods-list">
           <ui-waterfalls :list="goodsList" :columns="2" :gap="12" @click="goDetail">
             <template #item="{ item }">
@@ -36,11 +49,57 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed, onMounted, nextTick } from 'vue';
+import { onReady } from '@dcloudio/uni-app';
+import { useAppStore } from '@/stores';
+
+const appStore = useAppStore();
 
 const keyword = ref('');
 const activeTab = ref(0);
 const loading = ref(false);
+
+const safeAreaTop = computed(() => appStore.safeAreaInsets.top);
+const safeAreaBottom = computed(() => appStore.safeAreaInsets.bottom);
+const isH5 = computed(() => appStore.isH5);
+
+const headerExtraTop = computed(() => isH5.value ? 12 : 0);
+
+const headerHeight = ref(0);
+const scrollHeight = ref(0);
+
+const calcLayout = () => {
+  const systemInfo = uni.getSystemInfoSync();
+  const screenWidth = systemInfo.screenWidth || 375;
+  const rpxToPx = (rpx: number) => (rpx * screenWidth) / 750;
+  const tabbarHeight = rpxToPx(100);
+  
+  const query = uni.createSelectorQuery();
+  query.select('.fixed-header').boundingClientRect((rect: any) => {
+    if (rect && rect.height > 0) {
+      headerHeight.value = rect.height;
+      scrollHeight.value = systemInfo.windowHeight - rect.height - tabbarHeight - safeAreaBottom.value;
+    }
+  }).exec();
+};
+
+onReady(() => {
+  nextTick(() => {
+    calcLayout();
+  });
+});
+
+onMounted(() => {
+  const systemInfo = uni.getSystemInfoSync();
+  const screenWidth = systemInfo.screenWidth || 375;
+  const rpxToPx = (rpx: number) => (rpx * screenWidth) / 750;
+  
+  const estimatedHeader = rpxToPx(200) + safeAreaTop.value + headerExtraTop.value;
+  const tabbarHeight = rpxToPx(100);
+  
+  headerHeight.value = estimatedHeader;
+  scrollHeight.value = systemInfo.windowHeight - estimatedHeader - tabbarHeight - safeAreaBottom.value;
+});
 
 const categoryList = ref([
   { name: '推荐' },
@@ -52,6 +111,11 @@ const categoryList = ref([
   { name: '游戏' },
   { name: '配件' }
 ]);
+
+const bannerList = [
+  { image: 'https://picsum.photos/100/100?random=u1', title: '新品上市', link: '/pages/product/1' },
+  { image: 'https://picsum.photos/100/100?random=u2', title: '限时特惠', link: '/pages/product/2' },
+];
 
 const goodsList = ref([
   {
@@ -200,6 +264,12 @@ const goUser = (item: any) => {
   uni.navigateTo({ url: `/pages-sub/content/user/index?id=${item.userId}` });
 };
 
+const onBannerClick = ({ item, index }: { item: any; index: number }) => {
+  if (item.link) {
+    uni.navigateTo({ url: item.link });
+  }
+};
+
 const loadMore = () => {
   if (loading.value) return;
   loading.value = true;
@@ -243,17 +313,20 @@ const loadMore = () => {
 }
 
 .page-content {
-  padding-top: 200rpx;
-  padding-bottom: 120rpx;
+  padding-bottom: 0;
 }
 
 .goods-scroll {
-  height: calc(100vh - 200rpx - 120rpx);
   overflow: hidden;
 }
 
+.swiper {
+  padding: $space-xl $space-md 0 $space-md;
+  box-sizing: border-box;
+}
+
 .goods-list {
-  padding: $space-md $space-md 0;
+  padding: $space-md;
   box-sizing: border-box;
   overflow: hidden;
 }

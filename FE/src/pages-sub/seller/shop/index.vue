@@ -1,8 +1,8 @@
-﻿﻿<template>
+﻿<template>
   <view class="shop-page">
     <ui-sub-navbar title="我的店铺" />
     
-    <scroll-view scroll-y class="shop-scroll">
+    <scroll-view scroll-y class="shop-scroll" :style="{ height: scrollHeight + 'px' }">
       <view class="shop-header">
         <view class="shop-info">
           <ui-avatar :src="shopInfo.logo" :size="120" />
@@ -104,7 +104,7 @@
       </view>
     </scroll-view>
     
-    <view class="shop-footer">
+    <view class="shop-footer" :style="{ paddingBottom: (safeAreaBottom + 12) + 'px' }">
       <ui-button type="primary" block @click="goPublish">发布新商品</ui-button>
     </view>
   </view>
@@ -112,6 +112,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { safeAreaBottom, scrollHeight } = usePageLayout({
+  hasSubNavbar: true,
+  headerEstimatedHeight: 120
+});
 
 const shopInfo = ref({
   logo: 'https://picsum.photos/200/200?random=shop',
@@ -166,7 +172,7 @@ const goEdit = (item: any) => {
 }
 
 .shop-scroll {
-  height: calc(100vh - 88rpx - 120rpx);
+  overflow: hidden;
 }
 
 .shop-header {

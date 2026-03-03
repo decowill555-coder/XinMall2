@@ -1,12 +1,14 @@
-﻿<template>
+<template>
   <view class="follow-page">
-    <view class="page-content">
+    <view class="page-header" :style="{ paddingTop: (safeAreaTop + headerExtraTop) + 'px' }">
       <ui-card :glass="true" :shadow="true" radius="lg" padding="lg" class="header-card">
         <ui-text size="xl" weight="bold" color="main">关注</ui-text>
         <ui-text size="sm" color="sub" class="subtitle">发现好物好价</ui-text>
       </ui-card>
-      
-      <scroll-view scroll-y class="content-scroll" @scrolltolower="loadMore">
+    </view>
+    
+    <view class="page-content" :style="{ paddingTop: headerHeight + 'px' }">
+      <scroll-view scroll-y class="content-scroll" :style="{ height: scrollHeight + 'px' }" @scrolltolower="loadMore">
         <view class="post-list">
           <ui-waterfalls :list="postList" :columns="2" :gap="12" @click="goPostDetail">
             <template #item="{ item }">
@@ -36,6 +38,13 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { safeAreaTop, headerExtraTop, headerHeight, scrollHeight } = usePageLayout({
+  hasTabbar: true,
+  headerSelector: '.page-header',
+  headerEstimatedHeight: 120
+});
 
 const loading = ref(false);
 
@@ -132,8 +141,12 @@ const loadMore = () => {
   background: $color-bg-page;
 }
 
-.page-content {
-  padding-bottom: 120rpx;
+.page-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
 }
 
 .header-card {
@@ -145,8 +158,11 @@ const loadMore = () => {
   }
 }
 
+.page-content {
+  padding-bottom: 0;
+}
+
 .content-scroll {
-  height: calc(100vh - 200rpx - 120rpx);
   overflow: hidden;
 }
 

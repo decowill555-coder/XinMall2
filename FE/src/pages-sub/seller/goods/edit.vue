@@ -1,8 +1,8 @@
-﻿﻿<template>
+﻿<template>
   <view class="goods-edit-page">
     <ui-sub-navbar title="编辑商品" />
     
-    <scroll-view scroll-y class="edit-scroll">
+    <scroll-view scroll-y class="edit-scroll" :style="{ height: scrollHeight + 'px' }">
       <view class="form-section">
         <view class="form-item">
           <text class="form-label">商品图片</text>
@@ -82,7 +82,7 @@
       </view>
     </scroll-view>
     
-    <view class="edit-footer">
+    <view class="edit-footer" :style="{ paddingBottom: (safeAreaBottom + 12) + 'px' }">
       <ui-button block @click="handleSaveDraft">存草稿</ui-button>
       <ui-button type="primary" block @click="handleSubmit">保存商品</ui-button>
     </view>
@@ -91,6 +91,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { safeAreaBottom, scrollHeight } = usePageLayout({
+  hasSubNavbar: true,
+  headerEstimatedHeight: 120
+});
 
 const conditions = ['全新', '99新', '95新', '9新', '85新', '8新及以下'];
 
@@ -143,7 +149,8 @@ const handleSubmit = () => {
 }
 
 .edit-scroll {
-  height: calc(100vh - 88rpx - 120rpx);
+  overflow: hidden;
+}
   padding: $space-sm $space-md;
 }
 

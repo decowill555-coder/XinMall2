@@ -1,4 +1,4 @@
-﻿﻿<template>
+﻿<template>
   <view class="after-sale-list-page">
     <ui-sub-navbar title="售后管理" />
     
@@ -6,7 +6,7 @@
       <ui-tabs v-model="activeTab" :list="tabList" type="line" />
     </view>
     
-    <scroll-view scroll-y class="list-scroll">
+    <scroll-view scroll-y class="list-scroll" :style="{ height: scrollHeight + 'px' }">
       <view v-if="afterSaleList.length === 0" class="empty-state">
         <ui-icon name="refresh" :size="80" color="#A1A1A6" />
         <text class="empty-text">暂无售后记录</text>
@@ -52,6 +52,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { scrollHeight } = usePageLayout({
+  hasSubNavbar: true,
+  headerEstimatedHeight: 176
+});
 
 const activeTab = ref(0);
 
@@ -146,7 +152,8 @@ const handleReject = (item: any) => {
 }
 
 .list-scroll {
-  height: calc(100vh - 88rpx - 88rpx);
+  overflow: hidden;
+}
   padding: $space-sm $space-md;
 }
 

@@ -138,6 +138,7 @@
   "tabBar": {
     "custom": true,
     "color": "#999999",
+    "height": "0px",
     "selectedColor": "#1ABC9C",
     "borderStyle": "white",
     "backgroundColor": "#FFFFFF",

@@ -1,4 +1,4 @@
-﻿﻿<template>
+﻿<template>
   <view class="goods-list-page">
     <ui-sub-navbar title="商品管理" />
     
@@ -6,7 +6,7 @@
       <ui-tabs v-model="activeTab" :list="tabList" type="line" />
     </view>
     
-    <scroll-view scroll-y class="goods-scroll">
+    <scroll-view scroll-y class="goods-scroll" :style="{ height: scrollHeight + 'px' }">
       <view v-if="goodsList.length === 0" class="empty-state">
         <ui-icon name="package" :size="80" color="#A1A1A6" />
         <text class="empty-text">暂无商品</text>
@@ -40,7 +40,7 @@
       </view>
     </scroll-view>
     
-    <view class="list-footer">
+    <view class="list-footer" :style="{ paddingBottom: (safeAreaBottom + 12) + 'px' }">
       <ui-button type="primary" block @click="goPublish">发布新商品</ui-button>
     </view>
   </view>
@@ -48,6 +48,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { safeAreaBottom, scrollHeight } = usePageLayout({
+  hasSubNavbar: true,
+  headerEstimatedHeight: 208
+});
 
 const activeTab = ref(0);
 
@@ -115,8 +121,8 @@ const handleDelete = (item: any) => {
 }
 
 .goods-scroll {
-  height: calc(100vh - 88rpx - 88rpx - 120rpx);
   padding: $space-sm $space-md;
+  overflow: hidden;
 }
 
 .empty-state {

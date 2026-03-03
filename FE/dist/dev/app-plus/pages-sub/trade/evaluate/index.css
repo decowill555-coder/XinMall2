@@ -49,8 +49,8 @@ to {
   background: #F2F4F8;
 }
 .evaluate-scroll[data-v-e7f5ae20] {
-  height: calc(100vh - 2.75rem - 3.75rem);
   padding: 0.5rem 0.75rem;
+  overflow: hidden;
 }
 .goods-card[data-v-e7f5ae20] {
   background: #FFFFFF;
@@ -141,7 +141,7 @@ to {
   right: 0;
   bottom: 0;
   padding: 0.75rem;
-  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
   background: #FFFFFF;
   box-shadow: 0 -0.125rem 0.625rem rgba(0, 0, 0, 0.05);
+  z-index: 100;
 }

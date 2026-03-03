@@ -1,6 +1,6 @@
-﻿<template>
+<template>
   <view class="my-page">
-    <view class="page-content">
+    <view class="page-header" :style="{ paddingTop: (safeAreaTop + headerExtraTop) + 'px' }">
       <view class="user-header">
         <view class="user-info" @click="goProfile">
           <ui-avatar :src="userInfo.avatar" :size="120" :bordered="true" />
@@ -34,93 +34,97 @@
           </view>
         </ui-card>
       </view>
-      
-      <ui-card :glass="true" :shadow="true" radius="lg" padding="md" class="order-section">
-        <template #header>
-          <view class="section-header">
-            <ui-text size="lg" weight="bold" color="main">我的订单</ui-text>
-            <view class="section-more" @click="goOrders">
-              <ui-text size="sm" color="sub">全部订单</ui-text>
-              <ui-icon name="arrow-right" ::size="32" color="#6E6E73" />
+    </view>
+    
+    <view class="page-content" :style="{ paddingTop: headerHeight + 'px' }">
+      <scroll-view scroll-y class="content-scroll" :style="{ height: scrollHeight + 'px' }">
+        <ui-card :glass="true" :shadow="true" radius="lg" padding="md" class="order-section">
+          <template #header>
+            <view class="section-header">
+              <ui-text size="lg" weight="bold" color="main">我的订单</ui-text>
+              <view class="section-more" @click="goOrders">
+                <ui-text size="sm" color="sub">全部订单</ui-text>
+                <ui-icon name="arrow-right" ::size="32" color="#6E6E73" />
+              </view>
+            </view>
+          </template>
+          
+          <view class="order-tabs">
+            <view class="order-item" @click="goOrders('pending')">
+              <view class="order-icon">
+                <ui-badge v-if="orderCounts.pending > 0" :value="orderCounts.pending">
+                  <ui-icon name="wallet" ::size="40" />
+                </ui-badge>
+                <ui-icon v-else name="wallet" ::size="40" />
+              </view>
+              <ui-text size="xs" color="sub">待付款</ui-text>
+            </view>
+            <view class="order-item" @click="goOrders('shipped')">
+              <view class="order-icon">
+                <ui-badge v-if="orderCounts.shipped > 0" :value="orderCounts.shipped">
+                  <ui-icon name="truck" ::size="40" />
+                </ui-badge>
+                <ui-icon v-else name="truck" ::size="40" />
+              </view>
+              <ui-text size="xs" color="sub">待发货</ui-text>
+            </view>
+            <view class="order-item" @click="goOrders('received')">
+              <view class="order-icon">
+                <ui-badge v-if="orderCounts.received > 0" :value="orderCounts.received">
+                  <ui-icon name="package" ::size="40" />
+                </ui-badge>
+                <ui-icon v-else name="package" ::size="40" />
+              </view>
+              <ui-text size="xs" color="sub">待收货</ui-text>
+            </view>
+            <view class="order-item" @click="goOrders('reviewed')">
+              <view class="order-icon">
+                <ui-badge v-if="orderCounts.reviewed > 0" :value="orderCounts.reviewed">
+                  <ui-icon name="star" ::size="40" />
+                </ui-badge>
+                <ui-icon v-else name="star" ::size="40" />
+              </view>
+              <ui-text size="xs" color="sub">待评价</ui-text>
+            </view>
+            <view class="order-item" @click="goOrders('refund')">
+              <view class="order-icon">
+                <ui-badge v-if="orderCounts.refund > 0" :value="orderCounts.refund">
+                  <ui-icon name="refresh" ::size="40" />
+                </ui-badge>
+                <ui-icon v-else name="refresh" ::size="40" />
+              </view>
+              <ui-text size="xs" color="sub">退款/售后</ui-text>
             </view>
           </view>
-        </template>
+        </ui-card>
         
-        <view class="order-tabs">
-          <view class="order-item" @click="goOrders('pending')">
-            <view class="order-icon">
-              <ui-badge v-if="orderCounts.pending > 0" :value="orderCounts.pending">
-                <ui-icon name="wallet" ::size="40" />
-              </ui-badge>
-              <ui-icon v-else name="wallet" ::size="40" />
-            </view>
-            <ui-text size="xs" color="sub">待付款</ui-text>
-          </view>
-          <view class="order-item" @click="goOrders('shipped')">
-            <view class="order-icon">
-              <ui-badge v-if="orderCounts.shipped > 0" :value="orderCounts.shipped">
-                <ui-icon name="truck" ::size="40" />
-              </ui-badge>
-              <ui-icon v-else name="truck" ::size="40" />
-            </view>
-            <ui-text size="xs" color="sub">待发货</ui-text>
-          </view>
-          <view class="order-item" @click="goOrders('received')">
-            <view class="order-icon">
-              <ui-badge v-if="orderCounts.received > 0" :value="orderCounts.received">
-                <ui-icon name="package" ::size="40" />
-              </ui-badge>
-              <ui-icon v-else name="package" ::size="40" />
-            </view>
-            <ui-text size="xs" color="sub">待收货</ui-text>
-          </view>
-          <view class="order-item" @click="goOrders('reviewed')">
-            <view class="order-icon">
-              <ui-badge v-if="orderCounts.reviewed > 0" :value="orderCounts.reviewed">
-                <ui-icon name="star" ::size="40" />
-              </ui-badge>
-              <ui-icon v-else name="star" ::size="40" />
-            </view>
-            <ui-text size="xs" color="sub">待评价</ui-text>
-          </view>
-          <view class="order-item" @click="goOrders('refund')">
-            <view class="order-icon">
-              <ui-badge v-if="orderCounts.refund > 0" :value="orderCounts.refund">
-                <ui-icon name="refresh" ::size="40" />
-              </ui-badge>
-              <ui-icon v-else name="refresh" ::size="40" />
-            </view>
-            <ui-text size="xs" color="sub">退款/售后</ui-text>
-          </view>
+        <view class="menu-section">
+          <ui-card :glass="true" :shadow="false" radius="lg" padding="sm" class="menu-group">
+            <ui-cell title="我的店铺" icon="store" is-link separated @click="goShop" />
+            <ui-cell title="我的发布" icon="edit" is-link separated @click="goMyPublish" />
+            <ui-cell title="我的收藏" icon="heart" is-link separated @click="goCollection" />
+            <ui-cell title="浏览足迹" icon="eye" is-link separated @click="goHistory" />
+          </ui-card>
+          
+          <ui-card :glass="true" :shadow="false" radius="lg" padding="sm" class="menu-group">
+            <ui-cell title="地址管理" icon="map-pin" is-link separated @click="goAddress" />
+            <ui-cell title="我的钱包" icon="credit-card" is-link separated @click="goWallet" />
+            <ui-cell title="实名认证" icon="shield" is-link separated @click="goAuth">
+              <template #right-icon>
+                <ui-text size="sm" :color="userInfo.isVerified ? 'success' : 'sub'">
+                  {{ userInfo.isVerified ? '已认证' : '未认证' }}
+                </ui-text>
+              </template>
+            </ui-cell>
+          </ui-card>
+          
+          <ui-card :glass="true" :shadow="false" radius="lg" padding="sm" class="menu-group">
+            <ui-cell title="帮助中心" icon="help-circle" is-link separated @click="goHelp" />
+            <ui-cell title="意见反馈" icon="message" is-link separated @click="goFeedback" />
+            <ui-cell title="设置" icon="settings" is-link separated @click="goSettings" />
+          </ui-card>
         </view>
-      </ui-card>
-      
-      <view class="menu-section">
-        <ui-card :glass="true" :shadow="false" radius="lg" padding="sm" class="menu-group">
-          <ui-cell title="我的店铺" icon="store" is-link separated @click="goShop" />
-          <ui-cell title="我的发布" icon="edit" is-link separated @click="goMyPublish" />
-          <ui-cell title="我的收藏" icon="heart" is-link separated @click="goCollection" />
-          <ui-cell title="浏览足迹" icon="eye" is-link separated @click="goHistory" />
-        </ui-card>
-        
-        <ui-card :glass="true" :shadow="false" radius="lg" padding="sm" class="menu-group">
-          <ui-cell title="地址管理" icon="map-pin" is-link separated @click="goAddress" />
-          <ui-cell title="我的钱包" icon="credit-card" is-link separated @click="goWallet" />
-          <ui-cell title="实名认证" icon="shield" is-link separated @click="goAuth">
-            <template #right-icon>
-              <ui-text size="sm" :color="userInfo.isVerified ? 'success' : 'sub'">
-                {{ userInfo.isVerified ? '已认证' : '未认证' }}
-              </ui-text>
-            </template>
-          </ui-cell>
-        </ui-card>
-        
-        <ui-card :glass="true" :shadow="false" radius="lg" padding="sm" class="menu-group">
-          <ui-cell title="帮助中心" icon="help-circle" is-link separated @click="goHelp" />
-          <ui-cell title="意见反馈" icon="message" is-link separated @click="goFeedback" />
-          <ui-cell title="设置" icon="settings" is-link separated @click="goSettings" />
-        </ui-card>
-      </view>
+      </scroll-view>
     </view>
     
     <TheTabbar current="my" />
@@ -129,6 +133,13 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { safeAreaTop, headerExtraTop, headerHeight, scrollHeight } = usePageLayout({
+  hasTabbar: true,
+  headerSelector: '.page-header',
+  headerEstimatedHeight: 280
+});
 
 const userInfo = ref({
   avatar: 'https://picsum.photos/200/200?random=100',
@@ -219,8 +230,12 @@ const goSettings = () => {
   background: $color-bg-page;
 }
 
-.page-content {
-  padding-bottom: 120rpx;
+.page-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
 }
 
 .user-header {
@@ -270,6 +285,14 @@ const goSettings = () => {
       background: rgba($color-white, 0.3);
     }
   }
+}
+
+.page-content {
+  padding-bottom: 0;
+}
+
+.content-scroll {
+  overflow: hidden;
 }
 
 .order-section {

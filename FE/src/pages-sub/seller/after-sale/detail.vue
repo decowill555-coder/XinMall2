@@ -1,8 +1,8 @@
-﻿﻿<template>
+﻿<template>
   <view class="after-sale-detail-page">
     <ui-sub-navbar title="售后详情" />
     
-    <scroll-view scroll-y class="detail-scroll">
+    <scroll-view scroll-y class="detail-scroll" :style="{ height: scrollHeight + 'px' }">
       <view class="status-card">
         <view class="status-icon">
           <ui-icon :name="statusConfig.icon" :size="40" :color="statusConfig.color" />
@@ -57,7 +57,7 @@
       </view>
     </scroll-view>
     
-    <view class="detail-footer" v-if="afterSale.status === 'pending'">
+    <view class="detail-footer" v-if="afterSale.status === 'pending'" :style="{ paddingBottom: (safeAreaBottom + 12) + 'px' }">
       <ui-button block @click="handleReject">拒绝</ui-button>
       <ui-button type="primary" block @click="handleAgree">同意</ui-button>
     </view>
@@ -66,6 +66,12 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { safeAreaBottom, scrollHeight } = usePageLayout({
+  hasSubNavbar: true,
+  headerEstimatedHeight: 120
+});
 
 const afterSale = ref({
   id: 1,
@@ -127,7 +133,8 @@ const handleReject = () => {
 }
 
 .detail-scroll {
-  height: calc(100vh - 88rpx - 120rpx);
+  overflow: hidden;
+}
   padding: $space-sm $space-md;
 }
 

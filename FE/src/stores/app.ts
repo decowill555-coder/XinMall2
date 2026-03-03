@@ -72,6 +72,15 @@ export const useAppStore = defineStore('app', () => {
   });
 
   const systemInfo = ref<UniApp.GetSystemInfoSyncRes | null>(null);
+  
+  const platform = ref<string>('unknown');
+  
+  const isH5 = computed(() => {
+    const sys = systemInfo.value;
+    if (!sys) return false;
+    const uniPlatform = (sys as any).uniPlatform || '';
+    return uniPlatform === 'h5' || typeof window !== 'undefined';
+  });
 
   const isPageLoading = computed(() => 
     Object.values(pageLoading.value).some(loading => loading)
@@ -217,6 +226,7 @@ export const useAppStore = defineStore('app', () => {
   const updateSafeArea = () => {
     const sys = uni.getSystemInfoSync();
     systemInfo.value = sys;
+    platform.value = (sys as any).uniPlatform || sys.platform || 'unknown';
     
     safeAreaInsets.value = {
       top: sys.safeAreaInsets?.top || 0,
@@ -285,6 +295,8 @@ export const useAppStore = defineStore('app', () => {
     pullDownRefreshing,
     safeAreaInsets,
     systemInfo,
+    platform,
+    isH5,
     isPageLoading,
     hasSafeArea,
     showLoading,

@@ -243,8 +243,12 @@ to {
   min-height: 100vh;
   background: #F2F4F8;
 }
-.page-content[data-v-276ac604] {
-  padding-bottom: 3.75rem;
+.page-header[data-v-276ac604] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
 }
 .user-header[data-v-276ac604] {
   background: linear-gradient(135deg, #1ABC9C 0%, #16A085 100%);
@@ -285,6 +289,12 @@ to {
   width: 1px;
   height: 1.5rem;
   background: rgba(255, 255, 255, 0.3);
+}
+.page-content[data-v-276ac604] {
+  padding-bottom: 0;
+}
+.content-scroll[data-v-276ac604] {
+  overflow: hidden;
 }
 .order-section[data-v-276ac604] {
   margin: 0.75rem;

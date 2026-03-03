@@ -1,8 +1,8 @@
-﻿﻿<template>
+﻿<template>
   <view class="history-page">
     <ui-sub-navbar title="浏览足迹" />
     
-    <scroll-view scroll-y class="history-scroll">
+    <scroll-view scroll-y class="history-scroll" :style="{ height: scrollHeight + 'px' }">
       <view v-if="historyList.length === 0" class="empty-state">
         <ui-icon name="eye" :size="80" color="#A1A1A6" />
         <text class="empty-text">暂无浏览记录</text>
@@ -38,6 +38,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { safeAreaBottom, scrollHeight } = usePageLayout({
+  hasSubNavbar: true,
+  headerEstimatedHeight: 120
+});
 
 const historyList = ref([
   {
@@ -87,7 +93,7 @@ const clearHistory = () => {
 }
 
 .history-scroll {
-  height: calc(100vh - 88rpx - 120rpx);
+  overflow: hidden;
 }
 
 .empty-state {

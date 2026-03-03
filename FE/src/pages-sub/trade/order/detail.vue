@@ -1,8 +1,8 @@
-﻿﻿<template>
+<template>
   <view class="order-detail-page">
     <ui-sub-navbar title="订单详情" />
     
-    <scroll-view scroll-y class="detail-scroll">
+    <scroll-view scroll-y class="detail-scroll" :style="{ height: scrollHeight + 'px' }">
       <view class="status-card">
         <view class="status-icon">
           <ui-icon :name="statusConfig.icon" :size="48" :color="statusConfig.color" />
@@ -70,7 +70,7 @@
       </view>
     </scroll-view>
     
-    <view class="detail-footer">
+    <view class="detail-footer" :style="{ paddingBottom: (safeAreaBottom + 12) + 'px' }">
       <ui-button v-if="order.status === 'pending'" type="primary" block @click="handlePay">立即付款</ui-button>
       <ui-button v-if="order.status === 'received'" type="primary" block @click="handleConfirm">确认收货</ui-button>
       <ui-button v-if="order.status === 'completed'" block @click="goEvaluate">去评价</ui-button>
@@ -80,6 +80,12 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { safeAreaBottom, scrollHeight } = usePageLayout({
+  hasSubNavbar: true,
+  headerEstimatedHeight: 120
+});
 
 const order = ref({
   id: 1,
@@ -141,8 +147,8 @@ const goEvaluate = () => {
 }
 
 .detail-scroll {
-  height: calc(100vh - 88rpx - 120rpx);
   padding: $space-sm $space-md;
+  overflow: hidden;
 }
 
 .status-card {
@@ -303,8 +309,8 @@ const goEvaluate = () => {
   right: 0;
   bottom: 0;
   padding: $space-md;
-  padding-bottom: calc(#{$space-md} + env(safe-area-inset-bottom));
   background: $color-white;
   box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
+  z-index: 100;
 }
 </style>

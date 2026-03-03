@@ -1,8 +1,8 @@
-﻿﻿<template>
+﻿<template>
   <view class="address-list-page">
     <ui-sub-navbar title="收货地址" />
     
-    <scroll-view scroll-y class="address-scroll">
+    <scroll-view scroll-y class="address-scroll" :style="{ height: scrollHeight + 'px' }">
       <view v-if="addressList.length === 0" class="empty-state">
         <ui-icon name="map-pin" :size="80" color="#A1A1A6" />
         <text class="empty-text">暂无收货地址</text>
@@ -45,6 +45,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { safeAreaBottom, scrollHeight } = usePageLayout({
+  hasSubNavbar: true,
+  headerEstimatedHeight: 120
+});
 
 const addressList = ref([
   {

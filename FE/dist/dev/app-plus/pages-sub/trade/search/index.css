@@ -60,7 +60,7 @@ to {
   margin-left: 0.5rem;
 }
 .search-scroll[data-v-480a0fb1] {
-  height: calc(100vh - 3.125rem);
+  overflow: hidden;
 }
 .search-default[data-v-480a0fb1] {
   padding: 0.75rem;

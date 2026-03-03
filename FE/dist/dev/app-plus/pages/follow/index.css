@@ -243,8 +243,12 @@ to {
   min-height: 100vh;
   background: #F2F4F8;
 }
-.page-content[data-v-f295973f] {
-  padding-bottom: 3.75rem;
+.page-header[data-v-f295973f] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
 }
 .header-card[data-v-f295973f] {
   margin: 0.75rem;
@@ -253,8 +257,10 @@ to {
   display: block;
   margin-top: 0.25rem;
 }
+.page-content[data-v-f295973f] {
+  padding-bottom: 0;
+}
 .content-scroll[data-v-f295973f] {
-  height: calc(100vh - 6.25rem - 3.75rem);
   overflow: hidden;
 }
 .post-list[data-v-f295973f] {

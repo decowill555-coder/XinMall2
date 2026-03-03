@@ -1,6 +1,6 @@
-﻿<template>
+<template>
   <view class="message-page">
-    <view class="page-content">
+    <view class="page-header" :style="{ paddingTop: (safeAreaTop + headerExtraTop) + 'px' }">
       <ui-card :glass="true" :shadow="true" radius="lg" padding="lg" class="header-card">
         <ui-text size="xl" weight="bold" color="main">消息</ui-text>
       </ui-card>
@@ -8,8 +8,10 @@
       <view class="message-tabs">
         <ui-tabs v-model="activeTab" :list="tabList" type="line" />
       </view>
-      
-      <scroll-view scroll-y class="message-list">
+    </view>
+    
+    <view class="page-content" :style="{ paddingTop: headerHeight + 'px' }">
+      <scroll-view scroll-y class="message-list" :style="{ height: scrollHeight + 'px' }">
         <view v-if="activeTab === 0" class="message-group">
           <ui-card :glass="true" :shadow="false" radius="lg" padding="none" class="group-card">
             <view class="group-title">
@@ -102,6 +104,13 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { safeAreaTop, headerExtraTop, headerHeight, scrollHeight } = usePageLayout({
+  hasTabbar: true,
+  headerSelector: '.page-header',
+  headerEstimatedHeight: 180
+});
 
 const activeTab = ref(0);
 
@@ -223,8 +232,13 @@ const handleInteract = (item: any) => {
   background: $color-bg-page;
 }
 
-.page-content {
-  padding-bottom: 120rpx;
+.page-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: $color-bg-page;
 }
 
 .header-card {
@@ -238,8 +252,11 @@ const handleInteract = (item: any) => {
   border-radius: $radius-lg;
 }
 
+.page-content {
+  padding-bottom: 0;
+}
+
 .message-list {
-  height: calc(100vh - 200rpx - 120rpx);
   padding: $space-md;
   box-sizing: border-box;
   overflow: hidden;

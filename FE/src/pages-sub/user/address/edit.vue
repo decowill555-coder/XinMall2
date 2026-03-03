@@ -1,8 +1,8 @@
-﻿﻿<template>
+﻿<template>
   <view class="address-edit-page">
     <ui-sub-navbar :title="isEdit ? '编辑地址' : '新增地址'" />
     
-    <scroll-view scroll-y class="edit-scroll">
+    <scroll-view scroll-y class="edit-scroll" :style="{ height: scrollHeight + 'px' }">
       <view class="form-section">
         <view class="form-item">
           <text class="form-label">收货人</text>
@@ -55,6 +55,12 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { safeAreaBottom, scrollHeight } = usePageLayout({
+  hasSubNavbar: true,
+  headerEstimatedHeight: 120
+});
 
 const isEdit = ref(false);
 const tagList = ref(['家', '公司', '学校']);
@@ -112,7 +118,8 @@ const handleSave = () => {
 }
 
 .edit-scroll {
-  height: calc(100vh - 88rpx - 120rpx);
+  overflow: hidden;
+}
   padding: $space-sm $space-md;
 }
 

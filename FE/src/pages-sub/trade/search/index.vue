@@ -1,5 +1,5 @@
-﻿﻿<template>
-  <view class="search-page">
+<template>
+  <view class="search-page" :style="{ paddingTop: (safeAreaTop + headerExtraTop) + 'px' }">
     <view class="search-header">
       <ui-search 
         v-model="keyword" 
@@ -10,7 +10,7 @@
       <text class="cancel-btn" @click="goBack">取消</text>
     </view>
     
-    <scroll-view scroll-y class="search-scroll">
+    <scroll-view scroll-y class="search-scroll" :style="{ height: scrollHeight + 'px' }">
       <view v-if="!hasSearched" class="search-default">
         <view class="history-section" v-if="historyList.length > 0">
           <view class="section-header">
@@ -78,6 +78,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { safeAreaTop, headerExtraTop, scrollHeight } = usePageLayout({
+  hasSubNavbar: false,
+  headerEstimatedHeight: 100
+});
 
 const keyword = ref('');
 const hasSearched = ref(false);
@@ -154,7 +160,7 @@ const goDetail = (item: any) => {
 }
 
 .search-scroll {
-  height: calc(100vh - 100rpx);
+  overflow: hidden;
 }
 
 .search-default {

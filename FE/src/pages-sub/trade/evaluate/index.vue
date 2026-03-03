@@ -1,8 +1,8 @@
-﻿﻿<template>
+<template>
   <view class="evaluate-page">
     <ui-sub-navbar title="评价" />
     
-    <scroll-view scroll-y class="evaluate-scroll">
+    <scroll-view scroll-y class="evaluate-scroll" :style="{ height: scrollHeight + 'px' }">
       <view class="goods-card">
         <view v-for="item in goodsList" :key="item.id" class="goods-item">
           <ui-image :src="item.cover" width="120rpx" height="120rpx" radius="8rpx" />
@@ -61,7 +61,7 @@
       </view>
     </scroll-view>
     
-    <view class="evaluate-footer">
+    <view class="evaluate-footer" :style="{ paddingBottom: (safeAreaBottom + 12) + 'px' }">
       <ui-button type="primary" block :disabled="!canSubmit" @click="handleSubmit">
         提交评价
       </ui-button>
@@ -71,6 +71,12 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { usePageLayout } from '@/composables/usePageLayout';
+
+const { safeAreaBottom, scrollHeight } = usePageLayout({
+  hasSubNavbar: true,
+  headerEstimatedHeight: 120
+});
 
 const content = ref('');
 const images = ref<string[]>([]);
@@ -127,8 +133,8 @@ const handleSubmit = () => {
 }
 
 .evaluate-scroll {
-  height: calc(100vh - 88rpx - 120rpx);
   padding: $space-sm $space-md;
+  overflow: hidden;
 }
 
 .goods-card {
@@ -231,8 +237,8 @@ const handleSubmit = () => {
   right: 0;
   bottom: 0;
   padding: $space-md;
-  padding-bottom: calc(#{$space-md} + env(safe-area-inset-bottom));
   background: $color-white;
   box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
+  z-index: 100;
 }
 </style>
