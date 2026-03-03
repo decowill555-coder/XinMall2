@@ -261,7 +261,7 @@ to {
   margin: 0.5rem 0;
 }
 .page-content[data-v-83a5a03c] {
-  padding-bottom: 0;
+  min-height: 100vh;
 }
 .goods-scroll[data-v-83a5a03c] {
   overflow: hidden;

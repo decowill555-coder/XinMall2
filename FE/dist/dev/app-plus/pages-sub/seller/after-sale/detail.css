@@ -49,8 +49,7 @@ to {
   background: #F2F4F8;
 }
 .detail-scroll[data-v-bac67d0f] {
-  height: calc(100vh - 2.75rem - 3.75rem);
-  padding: 0.5rem 0.75rem;
+  overflow: hidden;
 }
 .status-card[data-v-bac67d0f] {
   display: flex;

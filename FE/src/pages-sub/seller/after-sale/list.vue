@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view class="after-sale-list-page">
     <ui-sub-navbar title="售后管理" />
     
@@ -153,8 +153,6 @@ const handleReject = (item: any) => {
 
 .list-scroll {
   overflow: hidden;
-}
-  padding: $space-sm $space-md;
 }
 
 .empty-state {

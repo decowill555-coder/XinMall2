@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view class="address-edit-page">
     <ui-sub-navbar :title="isEdit ? '编辑地址' : '新增地址'" />
     
@@ -119,8 +119,6 @@ const handleSave = () => {
 
 .edit-scroll {
   overflow: hidden;
-}
-  padding: $space-sm $space-md;
 }
 
 .form-section {

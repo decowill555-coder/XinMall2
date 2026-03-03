@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view class="wallet-page">
     <ui-sub-navbar title="我的钱包" />
     
@@ -194,8 +194,6 @@ const goAllTransactions = () => {
 
 .transaction-scroll {
   overflow: hidden;
-}
-  padding: 0 $space-md;
 }
 
 .empty-state {

@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view class="after-sale-detail-page">
     <ui-sub-navbar title="售后详情" />
     
@@ -134,8 +134,6 @@ const handleReject = () => {
 
 .detail-scroll {
   overflow: hidden;
-}
-  padding: $space-sm $space-md;
 }
 
 .status-card {

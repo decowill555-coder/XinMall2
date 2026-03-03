@@ -53,8 +53,7 @@ to {
   padding: 0 0.75rem;
 }
 .list-scroll[data-v-029bba7d] {
-  height: calc(100vh - 2.75rem - 2.75rem);
-  padding: 0.5rem 0.75rem;
+  overflow: hidden;
 }
 .empty-state[data-v-029bba7d] {
   display: flex;

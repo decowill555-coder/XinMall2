@@ -147,7 +147,7 @@ const goEvaluate = () => {
 }
 
 .detail-scroll {
-  padding: $space-sm $space-md;
+  
   overflow: hidden;
 }
 

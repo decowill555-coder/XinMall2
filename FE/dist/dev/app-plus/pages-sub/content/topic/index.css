@@ -92,7 +92,7 @@ to {
   padding: 0 0.75rem;
 }
 .post-scroll[data-v-2318d30d] {
-  height: calc(100vh - 2.75rem - 8.75rem - 2.75rem);
+  overflow: hidden;
 }
 .post-list[data-v-2318d30d] {
   padding: 0.5rem 0.75rem;

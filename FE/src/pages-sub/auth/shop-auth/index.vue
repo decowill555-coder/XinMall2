@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view class="shop-auth-page">
     <ui-sub-navbar title="店铺认证" />
     
@@ -137,8 +137,6 @@ const handleSubmit = () => {
 
 .auth-scroll {
   overflow: hidden;
-}
-  padding: $space-sm $space-md;
 }
 
 .auth-tips {

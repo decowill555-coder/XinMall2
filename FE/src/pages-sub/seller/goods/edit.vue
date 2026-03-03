@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view class="goods-edit-page">
     <ui-sub-navbar title="编辑商品" />
     
@@ -150,8 +150,6 @@ const handleSubmit = () => {
 
 .edit-scroll {
   overflow: hidden;
-}
-  padding: $space-sm $space-md;
 }
 
 .form-section {

@@ -53,7 +53,7 @@ to {
   padding: 0 0.75rem;
 }
 .collection-scroll[data-v-2546e59a] {
-  height: calc(100vh - 2.75rem - 2.75rem);
+  overflow: hidden;
   padding: 0.5rem 0.75rem;
 }
 .empty-state[data-v-2546e59a] {

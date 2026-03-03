@@ -124,8 +124,7 @@ to {
   color: #6E6E73;
 }
 .transaction-scroll[data-v-7c3f1ea1] {
-  height: calc(100vh - 2.75rem - 9.375rem - 3.75rem - 2.75rem);
-  padding: 0 0.75rem;
+  overflow: hidden;
 }
 .empty-state[data-v-7c3f1ea1] {
   display: flex;

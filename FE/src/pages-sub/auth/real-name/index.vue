@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view class="real-name-page">
     <ui-sub-navbar title="实名认证" />
     
@@ -122,8 +122,6 @@ const handleSubmit = () => {
 
 .auth-scroll {
   overflow: hidden;
-}
-  padding: $space-sm $space-md;
 }
 
 .auth-tips {

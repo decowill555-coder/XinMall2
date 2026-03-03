@@ -152,7 +152,6 @@ const goEvaluate = (order: any) => {
 }
 
 .order-scroll {
-  padding: $space-sm $space-md;
   overflow: hidden;
 }
 

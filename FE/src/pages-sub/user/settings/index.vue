@@ -1,4 +1,4 @@
-﻿<template>
+﻿﻿<template>
   <view class="settings-page">
     <ui-sub-navbar title="设置" />
     
@@ -104,7 +104,6 @@ const handleLogout = () => {
 
 .settings-scroll {
   overflow: hidden;
-}
   padding: $space-sm $space-md;
 }
 

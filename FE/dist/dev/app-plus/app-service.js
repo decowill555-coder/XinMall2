@@ -6866,19 +6866,28 @@ This will fail in production.`);
         4
         /* STYLE */
       ),
-      vue.createElementVNode("view", { class: "manage-footer" }, [
-        vue.createVNode(_component_ui_button, {
-          type: "primary",
-          block: "",
-          onClick: $setup.handleSave
-        }, {
-          default: vue.withCtx(() => [
-            vue.createTextVNode("保存修改")
-          ]),
-          _: 1
-          /* STABLE */
-        })
-      ])
+      vue.createElementVNode(
+        "view",
+        {
+          class: "manage-footer",
+          style: vue.normalizeStyle({ paddingBottom: $setup.safeAreaBottom + 12 + "px" })
+        },
+        [
+          vue.createVNode(_component_ui_button, {
+            type: "primary",
+            block: "",
+            onClick: $setup.handleSave
+          }, {
+            default: vue.withCtx(() => [
+              vue.createTextVNode("保存修改")
+            ]),
+            _: 1
+            /* STABLE */
+          })
+        ],
+        4
+        /* STYLE */
+      )
     ]);
   }
   const PagesSubSellerShopManage = /* @__PURE__ */ _export_sfc(_sfc_main$L, [["render", _sfc_render$L], ["__scopeId", "data-v-5562ac6d"], ["__file", "C:/Users/willdc/Documents/WorkPlace/XinMall/XinMall2/FE/src/pages-sub/seller/shop/manage.vue"]]);
@@ -7342,29 +7351,38 @@ This will fail in production.`);
         4
         /* STYLE */
       ),
-      vue.createElementVNode("view", { class: "edit-footer" }, [
-        vue.createVNode(_component_ui_button, {
-          block: "",
-          onClick: $setup.handleSaveDraft
-        }, {
-          default: vue.withCtx(() => [
-            vue.createTextVNode("存草稿")
-          ]),
-          _: 1
-          /* STABLE */
-        }),
-        vue.createVNode(_component_ui_button, {
-          type: "primary",
-          block: "",
-          onClick: $setup.handleSubmit
-        }, {
-          default: vue.withCtx(() => [
-            vue.createTextVNode("保存商品")
-          ]),
-          _: 1
-          /* STABLE */
-        })
-      ])
+      vue.createElementVNode(
+        "view",
+        {
+          class: "edit-footer",
+          style: vue.normalizeStyle({ paddingBottom: $setup.safeAreaBottom + 12 + "px" })
+        },
+        [
+          vue.createVNode(_component_ui_button, {
+            block: "",
+            onClick: $setup.handleSaveDraft
+          }, {
+            default: vue.withCtx(() => [
+              vue.createTextVNode("存草稿")
+            ]),
+            _: 1
+            /* STABLE */
+          }),
+          vue.createVNode(_component_ui_button, {
+            type: "primary",
+            block: "",
+            onClick: $setup.handleSubmit
+          }, {
+            default: vue.withCtx(() => [
+              vue.createTextVNode("保存商品")
+            ]),
+            _: 1
+            /* STABLE */
+          })
+        ],
+        4
+        /* STYLE */
+      )
     ]);
   }
   const PagesSubSellerGoodsEdit = /* @__PURE__ */ _export_sfc(_sfc_main$J, [["render", _sfc_render$J], ["__scopeId", "data-v-c08b7465"], ["__file", "C:/Users/willdc/Documents/WorkPlace/XinMall/XinMall2/FE/src/pages-sub/seller/goods/edit.vue"]]);
@@ -7830,32 +7848,39 @@ This will fail in production.`);
         4
         /* STYLE */
       ),
-      $setup.afterSale.status === "pending" ? (vue.openBlock(), vue.createElementBlock("view", {
-        key: 0,
-        class: "detail-footer"
-      }, [
-        vue.createVNode(_component_ui_button, {
-          block: "",
-          onClick: $setup.handleReject
-        }, {
-          default: vue.withCtx(() => [
-            vue.createTextVNode("拒绝")
-          ]),
-          _: 1
-          /* STABLE */
-        }),
-        vue.createVNode(_component_ui_button, {
-          type: "primary",
-          block: "",
-          onClick: $setup.handleAgree
-        }, {
-          default: vue.withCtx(() => [
-            vue.createTextVNode("同意")
-          ]),
-          _: 1
-          /* STABLE */
-        })
-      ])) : vue.createCommentVNode("v-if", true)
+      $setup.afterSale.status === "pending" ? (vue.openBlock(), vue.createElementBlock(
+        "view",
+        {
+          key: 0,
+          class: "detail-footer",
+          style: vue.normalizeStyle({ paddingBottom: $setup.safeAreaBottom + 12 + "px" })
+        },
+        [
+          vue.createVNode(_component_ui_button, {
+            block: "",
+            onClick: $setup.handleReject
+          }, {
+            default: vue.withCtx(() => [
+              vue.createTextVNode("拒绝")
+            ]),
+            _: 1
+            /* STABLE */
+          }),
+          vue.createVNode(_component_ui_button, {
+            type: "primary",
+            block: "",
+            onClick: $setup.handleAgree
+          }, {
+            default: vue.withCtx(() => [
+              vue.createTextVNode("同意")
+            ]),
+            _: 1
+            /* STABLE */
+          })
+        ],
+        4
+        /* STYLE */
+      )) : vue.createCommentVNode("v-if", true)
     ]);
   }
   const PagesSubSellerAfterSaleDetail = /* @__PURE__ */ _export_sfc(_sfc_main$H, [["render", _sfc_render$H], ["__scopeId", "data-v-bac67d0f"], ["__file", "C:/Users/willdc/Documents/WorkPlace/XinMall/XinMall2/FE/src/pages-sub/seller/after-sale/detail.vue"]]);
@@ -7865,6 +7890,10 @@ This will fail in production.`);
       __expose();
       const commentText = vue.ref("");
       const showComments = vue.ref(false);
+      const { safeAreaBottom, scrollHeight } = usePageLayout({
+        hasSubNavbar: true,
+        headerEstimatedHeight: 100
+      });
       const post = vue.ref({
         id: 1,
         authorAvatar: "https://picsum.photos/100/100?random=author",
@@ -7944,7 +7973,7 @@ This will fail in production.`);
         commentText.value = "";
         uni.showToast({ title: "评论成功", icon: "success" });
       };
-      const __returned__ = { commentText, showComments, post, comments, goUser, toggleFollow, toggleLike, handleShare, previewImage, goTopic, goGoods, likeComment, replyComment, submitComment };
+      const __returned__ = { commentText, showComments, safeAreaBottom, scrollHeight, post, comments, goUser, toggleFollow, toggleLike, handleShare, previewImage, goTopic, goGoods, likeComment, replyComment, submitComment };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
       return __returned__;
     }
@@ -7959,257 +7988,264 @@ This will fail in production.`);
     const _component_ui_icon = vue.resolveComponent("ui-icon");
     return vue.openBlock(), vue.createElementBlock("view", { class: "post-detail-page" }, [
       vue.createVNode(_component_ui_sub_navbar, { title: "帖子详情" }),
-      vue.createElementVNode("scroll-view", {
-        "scroll-y": "",
-        class: "detail-scroll"
-      }, [
-        vue.createElementVNode("view", { class: "author-card" }, [
-          vue.createElementVNode("view", {
-            class: "author-info",
-            onClick: $setup.goUser
-          }, [
-            vue.createVNode(_component_ui_avatar, {
-              src: $setup.post.authorAvatar,
-              ":size": 80
-            }, null, 8, ["src"]),
-            vue.createElementVNode("view", { class: "author-detail" }, [
-              vue.createElementVNode(
-                "text",
-                { class: "author-name" },
-                vue.toDisplayString($setup.post.authorName),
-                1
-                /* TEXT */
-              ),
-              vue.createElementVNode(
-                "text",
-                { class: "author-time" },
-                vue.toDisplayString($setup.post.createTime),
-                1
-                /* TEXT */
-              )
-            ])
+      vue.createElementVNode(
+        "scroll-view",
+        {
+          "scroll-y": "",
+          class: "detail-scroll",
+          style: vue.normalizeStyle({ height: $setup.scrollHeight + "px" })
+        },
+        [
+          vue.createElementVNode("view", { class: "author-card" }, [
+            vue.createElementVNode("view", {
+              class: "author-info",
+              onClick: $setup.goUser
+            }, [
+              vue.createVNode(_component_ui_avatar, {
+                src: $setup.post.authorAvatar,
+                ":size": 80
+              }, null, 8, ["src"]),
+              vue.createElementVNode("view", { class: "author-detail" }, [
+                vue.createElementVNode(
+                  "text",
+                  { class: "author-name" },
+                  vue.toDisplayString($setup.post.authorName),
+                  1
+                  /* TEXT */
+                ),
+                vue.createElementVNode(
+                  "text",
+                  { class: "author-time" },
+                  vue.toDisplayString($setup.post.createTime),
+                  1
+                  /* TEXT */
+                )
+              ])
+            ]),
+            vue.createVNode(_component_ui_button, {
+              size: "sm",
+              type: $setup.post.isFollowed ? "default" : "primary",
+              onClick: $setup.toggleFollow
+            }, {
+              default: vue.withCtx(() => [
+                vue.createTextVNode(
+                  vue.toDisplayString($setup.post.isFollowed ? "已关注" : "关注"),
+                  1
+                  /* TEXT */
+                )
+              ]),
+              _: 1
+              /* STABLE */
+            }, 8, ["type"])
           ]),
-          vue.createVNode(_component_ui_button, {
-            size: "sm",
-            type: $setup.post.isFollowed ? "default" : "primary",
-            onClick: $setup.toggleFollow
-          }, {
-            default: vue.withCtx(() => [
-              vue.createTextVNode(
-                vue.toDisplayString($setup.post.isFollowed ? "已关注" : "关注"),
+          vue.createElementVNode("view", { class: "post-content" }, [
+            vue.createElementVNode(
+              "text",
+              { class: "post-title" },
+              vue.toDisplayString($setup.post.title),
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode(
+              "text",
+              { class: "post-text" },
+              vue.toDisplayString($setup.post.content),
+              1
+              /* TEXT */
+            ),
+            ((_a = $setup.post.images) == null ? void 0 : _a.length) ? (vue.openBlock(), vue.createElementBlock("view", {
+              key: 0,
+              class: "post-images"
+            }, [
+              (vue.openBlock(true), vue.createElementBlock(
+                vue.Fragment,
+                null,
+                vue.renderList($setup.post.images, (img, index) => {
+                  return vue.openBlock(), vue.createBlock(_component_ui_image, {
+                    key: index,
+                    src: img,
+                    width: "100%",
+                    height: "400rpx",
+                    radius: "8rpx",
+                    mode: "aspectFill",
+                    onClick: ($event) => $setup.previewImage(index)
+                  }, null, 8, ["src", "onClick"]);
+                }),
+                128
+                /* KEYED_FRAGMENT */
+              ))
+            ])) : vue.createCommentVNode("v-if", true),
+            vue.createElementVNode("view", { class: "post-tags" }, [
+              (vue.openBlock(true), vue.createElementBlock(
+                vue.Fragment,
+                null,
+                vue.renderList($setup.post.tags, (tag) => {
+                  return vue.openBlock(), vue.createElementBlock("text", {
+                    key: tag,
+                    class: "tag-item",
+                    onClick: ($event) => $setup.goTopic(tag)
+                  }, "#" + vue.toDisplayString(tag), 9, ["onClick"]);
+                }),
+                128
+                /* KEYED_FRAGMENT */
+              ))
+            ]),
+            $setup.post.relatedGoods ? (vue.openBlock(), vue.createElementBlock("view", {
+              key: 1,
+              class: "post-goods"
+            }, [
+              vue.createElementVNode("text", { class: "goods-label" }, "相关商品"),
+              vue.createElementVNode("view", {
+                class: "goods-card",
+                onClick: $setup.goGoods
+              }, [
+                vue.createVNode(_component_ui_image, {
+                  src: $setup.post.relatedGoods.cover,
+                  width: "120rpx",
+                  height: "120rpx",
+                  radius: "8rpx"
+                }, null, 8, ["src"]),
+                vue.createElementVNode("view", { class: "goods-info" }, [
+                  vue.createElementVNode(
+                    "text",
+                    { class: "goods-title" },
+                    vue.toDisplayString($setup.post.relatedGoods.title),
+                    1
+                    /* TEXT */
+                  ),
+                  vue.createVNode(_component_ui_price, {
+                    value: $setup.post.relatedGoods.price,
+                    size: 28
+                  }, null, 8, ["value"])
+                ])
+              ])
+            ])) : vue.createCommentVNode("v-if", true)
+          ]),
+          vue.createElementVNode("view", { class: "interact-bar" }, [
+            vue.createElementVNode("view", {
+              class: "interact-item",
+              onClick: $setup.toggleLike
+            }, [
+              vue.createVNode(_component_ui_icon, {
+                name: $setup.post.isLiked ? "heart-fill" : "heart",
+                ":size": 40,
+                color: $setup.post.isLiked ? "#FF3D00" : "#6E6E73"
+              }, null, 8, ["name", "color"]),
+              vue.createElementVNode(
+                "text",
+                null,
+                vue.toDisplayString($setup.post.likeCount),
                 1
                 /* TEXT */
               )
             ]),
-            _: 1
-            /* STABLE */
-          }, 8, ["type"])
-        ]),
-        vue.createElementVNode("view", { class: "post-content" }, [
-          vue.createElementVNode(
-            "text",
-            { class: "post-title" },
-            vue.toDisplayString($setup.post.title),
-            1
-            /* TEXT */
-          ),
-          vue.createElementVNode(
-            "text",
-            { class: "post-text" },
-            vue.toDisplayString($setup.post.content),
-            1
-            /* TEXT */
-          ),
-          ((_a = $setup.post.images) == null ? void 0 : _a.length) ? (vue.openBlock(), vue.createElementBlock("view", {
-            key: 0,
-            class: "post-images"
-          }, [
-            (vue.openBlock(true), vue.createElementBlock(
-              vue.Fragment,
-              null,
-              vue.renderList($setup.post.images, (img, index) => {
-                return vue.openBlock(), vue.createBlock(_component_ui_image, {
-                  key: index,
-                  src: img,
-                  width: "100%",
-                  height: "400rpx",
-                  radius: "8rpx",
-                  mode: "aspectFill",
-                  onClick: ($event) => $setup.previewImage(index)
-                }, null, 8, ["src", "onClick"]);
-              }),
-              128
-              /* KEYED_FRAGMENT */
-            ))
-          ])) : vue.createCommentVNode("v-if", true),
-          vue.createElementVNode("view", { class: "post-tags" }, [
-            (vue.openBlock(true), vue.createElementBlock(
-              vue.Fragment,
-              null,
-              vue.renderList($setup.post.tags, (tag) => {
-                return vue.openBlock(), vue.createElementBlock("text", {
-                  key: tag,
-                  class: "tag-item",
-                  onClick: ($event) => $setup.goTopic(tag)
-                }, "#" + vue.toDisplayString(tag), 9, ["onClick"]);
-              }),
-              128
-              /* KEYED_FRAGMENT */
-            ))
-          ]),
-          $setup.post.relatedGoods ? (vue.openBlock(), vue.createElementBlock("view", {
-            key: 1,
-            class: "post-goods"
-          }, [
-            vue.createElementVNode("text", { class: "goods-label" }, "相关商品"),
             vue.createElementVNode("view", {
-              class: "goods-card",
-              onClick: $setup.goGoods
+              class: "interact-item",
+              onClick: _cache[0] || (_cache[0] = ($event) => $setup.showComments = true)
             }, [
-              vue.createVNode(_component_ui_image, {
-                src: $setup.post.relatedGoods.cover,
-                width: "120rpx",
-                height: "120rpx",
-                radius: "8rpx"
-              }, null, 8, ["src"]),
-              vue.createElementVNode("view", { class: "goods-info" }, [
-                vue.createElementVNode(
-                  "text",
-                  { class: "goods-title" },
-                  vue.toDisplayString($setup.post.relatedGoods.title),
-                  1
-                  /* TEXT */
-                ),
-                vue.createVNode(_component_ui_price, {
-                  value: $setup.post.relatedGoods.price,
-                  size: 28
-                }, null, 8, ["value"])
-              ])
+              vue.createVNode(_component_ui_icon, {
+                name: "message",
+                ":size": 40
+              }),
+              vue.createElementVNode(
+                "text",
+                null,
+                vue.toDisplayString($setup.post.commentCount),
+                1
+                /* TEXT */
+              )
+            ]),
+            vue.createElementVNode("view", {
+              class: "interact-item",
+              onClick: $setup.handleShare
+            }, [
+              vue.createVNode(_component_ui_icon, {
+                name: "share",
+                ":size": 40
+              }),
+              vue.createElementVNode("text", null, "分享")
             ])
-          ])) : vue.createCommentVNode("v-if", true)
-        ]),
-        vue.createElementVNode("view", { class: "interact-bar" }, [
-          vue.createElementVNode("view", {
-            class: "interact-item",
-            onClick: $setup.toggleLike
-          }, [
-            vue.createVNode(_component_ui_icon, {
-              name: $setup.post.isLiked ? "heart-fill" : "heart",
-              ":size": 40,
-              color: $setup.post.isLiked ? "#FF3D00" : "#6E6E73"
-            }, null, 8, ["name", "color"]),
+          ]),
+          vue.createElementVNode("view", { class: "comment-section" }, [
             vue.createElementVNode(
               "text",
-              null,
-              vue.toDisplayString($setup.post.likeCount),
+              { class: "section-title" },
+              "评论 (" + vue.toDisplayString($setup.comments.length) + ")",
               1
               /* TEXT */
-            )
-          ]),
-          vue.createElementVNode("view", {
-            class: "interact-item",
-            onClick: _cache[0] || (_cache[0] = ($event) => $setup.showComments = true)
-          }, [
-            vue.createVNode(_component_ui_icon, {
-              name: "message",
-              ":size": 40
-            }),
-            vue.createElementVNode(
-              "text",
-              null,
-              vue.toDisplayString($setup.post.commentCount),
-              1
-              /* TEXT */
-            )
-          ]),
-          vue.createElementVNode("view", {
-            class: "interact-item",
-            onClick: $setup.handleShare
-          }, [
-            vue.createVNode(_component_ui_icon, {
-              name: "share",
-              ":size": 40
-            }),
-            vue.createElementVNode("text", null, "分享")
-          ])
-        ]),
-        vue.createElementVNode("view", { class: "comment-section" }, [
-          vue.createElementVNode(
-            "text",
-            { class: "section-title" },
-            "评论 (" + vue.toDisplayString($setup.comments.length) + ")",
-            1
-            /* TEXT */
-          ),
-          vue.createElementVNode("view", { class: "comment-list" }, [
-            (vue.openBlock(true), vue.createElementBlock(
-              vue.Fragment,
-              null,
-              vue.renderList($setup.comments, (item) => {
-                return vue.openBlock(), vue.createElementBlock("view", {
-                  key: item.id,
-                  class: "comment-item"
-                }, [
-                  vue.createVNode(_component_ui_avatar, {
-                    src: item.avatar,
-                    size: 64
-                  }, null, 8, ["src"]),
-                  vue.createElementVNode("view", { class: "comment-content" }, [
-                    vue.createElementVNode("view", { class: "comment-header" }, [
-                      vue.createElementVNode(
-                        "text",
-                        { class: "comment-name" },
-                        vue.toDisplayString(item.userName),
-                        1
-                        /* TEXT */
-                      ),
-                      vue.createElementVNode(
-                        "text",
-                        { class: "comment-time" },
-                        vue.toDisplayString(item.time),
-                        1
-                        /* TEXT */
-                      )
-                    ]),
-                    vue.createElementVNode(
-                      "text",
-                      { class: "comment-text" },
-                      vue.toDisplayString(item.content),
-                      1
-                      /* TEXT */
-                    ),
-                    vue.createElementVNode("view", { class: "comment-actions" }, [
-                      vue.createElementVNode("view", {
-                        class: "action-item",
-                        onClick: ($event) => $setup.likeComment(item)
-                      }, [
-                        vue.createVNode(_component_ui_icon, {
-                          name: item.isLiked ? "heart-fill" : "heart",
-                          size: 32,
-                          color: item.isLiked ? "#FF3D00" : "#A1A1A6"
-                        }, null, 8, ["name", "color"]),
+            ),
+            vue.createElementVNode("view", { class: "comment-list" }, [
+              (vue.openBlock(true), vue.createElementBlock(
+                vue.Fragment,
+                null,
+                vue.renderList($setup.comments, (item) => {
+                  return vue.openBlock(), vue.createElementBlock("view", {
+                    key: item.id,
+                    class: "comment-item"
+                  }, [
+                    vue.createVNode(_component_ui_avatar, {
+                      src: item.avatar,
+                      size: 64
+                    }, null, 8, ["src"]),
+                    vue.createElementVNode("view", { class: "comment-content" }, [
+                      vue.createElementVNode("view", { class: "comment-header" }, [
                         vue.createElementVNode(
                           "text",
-                          null,
-                          vue.toDisplayString(item.likeCount),
+                          { class: "comment-name" },
+                          vue.toDisplayString(item.userName),
+                          1
+                          /* TEXT */
+                        ),
+                        vue.createElementVNode(
+                          "text",
+                          { class: "comment-time" },
+                          vue.toDisplayString(item.time),
                           1
                           /* TEXT */
                         )
-                      ], 8, ["onClick"]),
-                      vue.createElementVNode("text", {
-                        class: "action-item",
-                        onClick: ($event) => $setup.replyComment(item)
-                      }, "回复", 8, ["onClick"])
+                      ]),
+                      vue.createElementVNode(
+                        "text",
+                        { class: "comment-text" },
+                        vue.toDisplayString(item.content),
+                        1
+                        /* TEXT */
+                      ),
+                      vue.createElementVNode("view", { class: "comment-actions" }, [
+                        vue.createElementVNode("view", {
+                          class: "action-item",
+                          onClick: ($event) => $setup.likeComment(item)
+                        }, [
+                          vue.createVNode(_component_ui_icon, {
+                            name: item.isLiked ? "heart-fill" : "heart",
+                            size: 32,
+                            color: item.isLiked ? "#FF3D00" : "#A1A1A6"
+                          }, null, 8, ["name", "color"]),
+                          vue.createElementVNode(
+                            "text",
+                            null,
+                            vue.toDisplayString(item.likeCount),
+                            1
+                            /* TEXT */
+                          )
+                        ], 8, ["onClick"]),
+                        vue.createElementVNode("text", {
+                          class: "action-item",
+                          onClick: ($event) => $setup.replyComment(item)
+                        }, "回复", 8, ["onClick"])
+                      ])
                     ])
-                  ])
-                ]);
-              }),
-              128
-              /* KEYED_FRAGMENT */
-            ))
+                  ]);
+                }),
+                128
+                /* KEYED_FRAGMENT */
+              ))
+            ])
           ])
-        ])
-      ]),
+        ],
+        4
+        /* STYLE */
+      ),
       vue.createElementVNode("view", { class: "comment-input" }, [
         vue.withDirectives(vue.createElementVNode(
           "input",
@@ -8244,6 +8280,10 @@ This will fail in production.`);
     __name: "publish",
     setup(__props, { expose: __expose }) {
       __expose();
+      const { safeAreaBottom, scrollHeight } = usePageLayout({
+        hasSubNavbar: true,
+        headerEstimatedHeight: 120
+      });
       const content = vue.ref("");
       const images = vue.ref([]);
       const selectedTopic = vue.ref("");
@@ -8286,7 +8326,7 @@ This will fail in production.`);
           }, 1500);
         }, 1e3);
       };
-      const __returned__ = { content, images, selectedTopic, relatedGoods, syncToFeed, allowComment, showTopicPicker, hotTopics, canPublish, selectGoods, handlePublish };
+      const __returned__ = { safeAreaBottom, scrollHeight, content, images, selectedTopic, relatedGoods, syncToFeed, allowComment, showTopicPicker, hotTopics, canPublish, selectGoods, handlePublish };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
       return __returned__;
     }
@@ -8299,122 +8339,129 @@ This will fail in production.`);
     const _component_ui_button = vue.resolveComponent("ui-button");
     return vue.openBlock(), vue.createElementBlock("view", { class: "publish-post-page" }, [
       vue.createVNode(_component_ui_sub_navbar, { title: "发布帖子" }),
-      vue.createElementVNode("scroll-view", {
-        "scroll-y": "",
-        class: "publish-scroll"
-      }, [
-        vue.createElementVNode("view", { class: "content-section" }, [
-          vue.withDirectives(vue.createElementVNode(
-            "textarea",
-            {
-              class: "content-input",
-              "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $setup.content = $event),
-              placeholder: "分享你的数码生活...",
-              maxlength: 2e3
-            },
-            null,
-            512
-            /* NEED_PATCH */
-          ), [
-            [vue.vModelText, $setup.content]
-          ]),
-          vue.createElementVNode(
-            "text",
-            { class: "word-count" },
-            vue.toDisplayString($setup.content.length) + "/2000",
-            1
-            /* TEXT */
-          )
-        ]),
-        vue.createElementVNode("view", { class: "image-section" }, [
-          vue.createVNode(_component_ui_upload, {
-            modelValue: $setup.images,
-            "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => $setup.images = $event),
-            "max-count": 9
-          }, null, 8, ["modelValue"])
-        ]),
-        vue.createElementVNode("view", { class: "option-section" }, [
-          vue.createElementVNode("view", {
-            class: "option-item",
-            onClick: _cache[2] || (_cache[2] = ($event) => $setup.showTopicPicker = true)
-          }, [
-            vue.createElementVNode("text", { class: "option-label" }, "话题"),
-            vue.createElementVNode("view", { class: "option-value" }, [
-              $setup.selectedTopic ? (vue.openBlock(), vue.createElementBlock(
-                "text",
-                { key: 0 },
-                "#" + vue.toDisplayString($setup.selectedTopic),
-                1
-                /* TEXT */
-              )) : (vue.openBlock(), vue.createElementBlock("text", {
-                key: 1,
-                class: "placeholder"
-              }, "选择话题")),
-              vue.createVNode(_component_ui_icon, {
-                name: "arrow-right",
-                ":size": 32
-              })
-            ])
-          ]),
-          vue.createElementVNode("view", {
-            class: "option-item",
-            onClick: $setup.selectGoods
-          }, [
-            vue.createElementVNode("text", { class: "option-label" }, "关联商品"),
-            vue.createElementVNode("view", { class: "option-value" }, [
-              $setup.relatedGoods ? (vue.openBlock(), vue.createElementBlock(
-                "text",
-                { key: 0 },
-                vue.toDisplayString($setup.relatedGoods.title),
-                1
-                /* TEXT */
-              )) : (vue.openBlock(), vue.createElementBlock("text", {
-                key: 1,
-                class: "placeholder"
-              }, "选择商品")),
-              vue.createVNode(_component_ui_icon, {
-                name: "arrow-right",
-                ":size": 32
-              })
-            ])
-          ]),
-          vue.createElementVNode("view", { class: "option-item" }, [
-            vue.createElementVNode("text", { class: "option-label" }, "同步到动态"),
-            vue.createVNode(_component_ui_switch, {
-              modelValue: $setup.syncToFeed,
-              "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => $setup.syncToFeed = $event)
-            }, null, 8, ["modelValue"])
-          ]),
-          vue.createElementVNode("view", { class: "option-item" }, [
-            vue.createElementVNode("text", { class: "option-label" }, "允许评论"),
-            vue.createVNode(_component_ui_switch, {
-              modelValue: $setup.allowComment,
-              "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => $setup.allowComment = $event)
-            }, null, 8, ["modelValue"])
-          ])
-        ]),
-        $setup.hotTopics.length ? (vue.openBlock(), vue.createElementBlock("view", {
-          key: 0,
-          class: "hot-topics"
-        }, [
-          vue.createElementVNode("text", { class: "section-title" }, "热门话题"),
-          vue.createElementVNode("view", { class: "topic-list" }, [
-            (vue.openBlock(true), vue.createElementBlock(
-              vue.Fragment,
+      vue.createElementVNode(
+        "scroll-view",
+        {
+          "scroll-y": "",
+          class: "publish-scroll",
+          style: vue.normalizeStyle({ height: $setup.scrollHeight + "px" })
+        },
+        [
+          vue.createElementVNode("view", { class: "content-section" }, [
+            vue.withDirectives(vue.createElementVNode(
+              "textarea",
+              {
+                class: "content-input",
+                "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $setup.content = $event),
+                placeholder: "分享你的数码生活...",
+                maxlength: 2e3
+              },
               null,
-              vue.renderList($setup.hotTopics, (topic) => {
-                return vue.openBlock(), vue.createElementBlock("text", {
-                  key: topic,
-                  class: "topic-item",
-                  onClick: ($event) => $setup.selectedTopic = topic
-                }, " #" + vue.toDisplayString(topic), 9, ["onClick"]);
-              }),
-              128
-              /* KEYED_FRAGMENT */
-            ))
-          ])
-        ])) : vue.createCommentVNode("v-if", true)
-      ]),
+              512
+              /* NEED_PATCH */
+            ), [
+              [vue.vModelText, $setup.content]
+            ]),
+            vue.createElementVNode(
+              "text",
+              { class: "word-count" },
+              vue.toDisplayString($setup.content.length) + "/2000",
+              1
+              /* TEXT */
+            )
+          ]),
+          vue.createElementVNode("view", { class: "image-section" }, [
+            vue.createVNode(_component_ui_upload, {
+              modelValue: $setup.images,
+              "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => $setup.images = $event),
+              "max-count": 9
+            }, null, 8, ["modelValue"])
+          ]),
+          vue.createElementVNode("view", { class: "option-section" }, [
+            vue.createElementVNode("view", {
+              class: "option-item",
+              onClick: _cache[2] || (_cache[2] = ($event) => $setup.showTopicPicker = true)
+            }, [
+              vue.createElementVNode("text", { class: "option-label" }, "话题"),
+              vue.createElementVNode("view", { class: "option-value" }, [
+                $setup.selectedTopic ? (vue.openBlock(), vue.createElementBlock(
+                  "text",
+                  { key: 0 },
+                  "#" + vue.toDisplayString($setup.selectedTopic),
+                  1
+                  /* TEXT */
+                )) : (vue.openBlock(), vue.createElementBlock("text", {
+                  key: 1,
+                  class: "placeholder"
+                }, "选择话题")),
+                vue.createVNode(_component_ui_icon, {
+                  name: "arrow-right",
+                  ":size": 32
+                })
+              ])
+            ]),
+            vue.createElementVNode("view", {
+              class: "option-item",
+              onClick: $setup.selectGoods
+            }, [
+              vue.createElementVNode("text", { class: "option-label" }, "关联商品"),
+              vue.createElementVNode("view", { class: "option-value" }, [
+                $setup.relatedGoods ? (vue.openBlock(), vue.createElementBlock(
+                  "text",
+                  { key: 0 },
+                  vue.toDisplayString($setup.relatedGoods.title),
+                  1
+                  /* TEXT */
+                )) : (vue.openBlock(), vue.createElementBlock("text", {
+                  key: 1,
+                  class: "placeholder"
+                }, "选择商品")),
+                vue.createVNode(_component_ui_icon, {
+                  name: "arrow-right",
+                  ":size": 32
+                })
+              ])
+            ]),
+            vue.createElementVNode("view", { class: "option-item" }, [
+              vue.createElementVNode("text", { class: "option-label" }, "同步到动态"),
+              vue.createVNode(_component_ui_switch, {
+                modelValue: $setup.syncToFeed,
+                "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => $setup.syncToFeed = $event)
+              }, null, 8, ["modelValue"])
+            ]),
+            vue.createElementVNode("view", { class: "option-item" }, [
+              vue.createElementVNode("text", { class: "option-label" }, "允许评论"),
+              vue.createVNode(_component_ui_switch, {
+                modelValue: $setup.allowComment,
+                "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => $setup.allowComment = $event)
+              }, null, 8, ["modelValue"])
+            ])
+          ]),
+          $setup.hotTopics.length ? (vue.openBlock(), vue.createElementBlock("view", {
+            key: 0,
+            class: "hot-topics"
+          }, [
+            vue.createElementVNode("text", { class: "section-title" }, "热门话题"),
+            vue.createElementVNode("view", { class: "topic-list" }, [
+              (vue.openBlock(true), vue.createElementBlock(
+                vue.Fragment,
+                null,
+                vue.renderList($setup.hotTopics, (topic) => {
+                  return vue.openBlock(), vue.createElementBlock("text", {
+                    key: topic,
+                    class: "topic-item",
+                    onClick: ($event) => $setup.selectedTopic = topic
+                  }, " #" + vue.toDisplayString(topic), 9, ["onClick"]);
+                }),
+                128
+                /* KEYED_FRAGMENT */
+              ))
+            ])
+          ])) : vue.createCommentVNode("v-if", true)
+        ],
+        4
+        /* STYLE */
+      ),
       vue.createElementVNode("view", { class: "publish-footer" }, [
         vue.createVNode(_component_ui_button, {
           type: "primary",
@@ -8436,7 +8483,11 @@ This will fail in production.`);
     __name: "index",
     setup(__props, { expose: __expose }) {
       __expose();
-      const topicName = vue.ref("iPhone15");
+      const { scrollHeight } = usePageLayout({
+        hasSubNavbar: true,
+        headerEstimatedHeight: 368
+      });
+      const topicName = vue.ref("数码测评");
       const sortType = vue.ref(0);
       const topicInfo = vue.ref({
         desc: "分享 iPhone 15 系列使用体验、技巧和问题",
@@ -8485,7 +8536,7 @@ This will fail in production.`);
       const loadMore = () => {
         uni.showToast({ title: "加载更多...", icon: "none" });
       };
-      const __returned__ = { topicName, sortType, topicInfo, sortList, postList, goDetail, loadMore };
+      const __returned__ = { scrollHeight, topicName, sortType, topicInfo, sortList, postList, goDetail, loadMore };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
       return __returned__;
     }
@@ -8551,6 +8602,7 @@ This will fail in production.`);
         {
           "scroll-y": "",
           class: "post-scroll",
+          style: vue.normalizeStyle({ height: $setup.scrollHeight + "px" }),
           onScrolltolower: $setup.loadMore
         },
         [
@@ -8649,8 +8701,8 @@ This will fail in production.`);
             ))
           ])
         ],
-        32
-        /* NEED_HYDRATION */
+        36
+        /* STYLE, NEED_HYDRATION */
       )
     ]);
   }
@@ -8659,6 +8711,9 @@ This will fail in production.`);
     __name: "index",
     setup(__props, { expose: __expose }) {
       __expose();
+      const { scrollHeight } = usePageLayout({
+        hasSubNavbar: true
+      });
       const activeTab = vue.ref(0);
       const tabList = vue.ref([
         { name: "帖子" },
@@ -8702,7 +8757,7 @@ This will fail in production.`);
       const goGoods = (item) => {
         uni.navigateTo({ url: `/pages-sub/trade/product/detail?id=${item.id}` });
       };
-      const __returned__ = { activeTab, tabList, userInfo, postList, goodsList, toggleFollow, goChat, showFollowers, showFollowing, goPost, goGoods };
+      const __returned__ = { scrollHeight, activeTab, tabList, userInfo, postList, goodsList, toggleFollow, goChat, showFollowers, showFollowing, goPost, goGoods };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
       return __returned__;
     }
@@ -8716,192 +8771,199 @@ This will fail in production.`);
     const _component_ui_price = vue.resolveComponent("ui-price");
     return vue.openBlock(), vue.createElementBlock("view", { class: "user-page" }, [
       vue.createVNode(_component_ui_sub_navbar, { title: "Ta的主页" }),
-      vue.createElementVNode("scroll-view", {
-        "scroll-y": "",
-        class: "user-scroll"
-      }, [
-        vue.createElementVNode("view", { class: "user-header" }, [
-          vue.createVNode(_component_ui_avatar, {
-            src: $setup.userInfo.avatar,
-            size: 120
-          }, null, 8, ["src"]),
-          vue.createElementVNode(
-            "text",
-            { class: "user-name" },
-            vue.toDisplayString($setup.userInfo.name),
-            1
-            /* TEXT */
-          ),
-          vue.createElementVNode(
-            "text",
-            { class: "user-desc" },
-            vue.toDisplayString($setup.userInfo.signature),
-            1
-            /* TEXT */
-          ),
-          vue.createElementVNode("view", { class: "user-stats" }, [
-            vue.createElementVNode("view", {
-              class: "stat-item",
-              onClick: $setup.showFollowers
-            }, [
-              vue.createElementVNode(
-                "text",
-                { class: "stat-value" },
-                vue.toDisplayString($setup.userInfo.followers),
-                1
-                /* TEXT */
-              ),
-              vue.createElementVNode("text", { class: "stat-label" }, "粉丝")
-            ]),
-            vue.createElementVNode("view", {
-              class: "stat-item",
-              onClick: $setup.showFollowing
-            }, [
-              vue.createElementVNode(
-                "text",
-                { class: "stat-value" },
-                vue.toDisplayString($setup.userInfo.following),
-                1
-                /* TEXT */
-              ),
-              vue.createElementVNode("text", { class: "stat-label" }, "关注")
-            ]),
-            vue.createElementVNode("view", { class: "stat-item" }, [
-              vue.createElementVNode(
-                "text",
-                { class: "stat-value" },
-                vue.toDisplayString($setup.userInfo.likes),
-                1
-                /* TEXT */
-              ),
-              vue.createElementVNode("text", { class: "stat-label" }, "获赞")
-            ])
-          ]),
-          vue.createElementVNode("view", { class: "user-actions" }, [
-            vue.createVNode(_component_ui_button, {
-              type: $setup.userInfo.isFollowed ? "default" : "primary",
-              size: "sm",
-              onClick: $setup.toggleFollow
-            }, {
-              default: vue.withCtx(() => [
-                vue.createTextVNode(
-                  vue.toDisplayString($setup.userInfo.isFollowed ? "已关注" : "关注"),
+      vue.createElementVNode(
+        "scroll-view",
+        {
+          "scroll-y": "",
+          class: "user-scroll",
+          style: vue.normalizeStyle({ height: $setup.scrollHeight + "px" })
+        },
+        [
+          vue.createElementVNode("view", { class: "user-header" }, [
+            vue.createVNode(_component_ui_avatar, {
+              src: $setup.userInfo.avatar,
+              size: 120
+            }, null, 8, ["src"]),
+            vue.createElementVNode(
+              "text",
+              { class: "user-name" },
+              vue.toDisplayString($setup.userInfo.name),
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode(
+              "text",
+              { class: "user-desc" },
+              vue.toDisplayString($setup.userInfo.signature),
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode("view", { class: "user-stats" }, [
+              vue.createElementVNode("view", {
+                class: "stat-item",
+                onClick: $setup.showFollowers
+              }, [
+                vue.createElementVNode(
+                  "text",
+                  { class: "stat-value" },
+                  vue.toDisplayString($setup.userInfo.followers),
                   1
                   /* TEXT */
-                )
+                ),
+                vue.createElementVNode("text", { class: "stat-label" }, "粉丝")
               ]),
-              _: 1
-              /* STABLE */
-            }, 8, ["type"]),
-            vue.createVNode(_component_ui_button, {
-              size: "sm",
-              onClick: $setup.goChat
-            }, {
-              default: vue.withCtx(() => [
-                vue.createTextVNode("私信")
+              vue.createElementVNode("view", {
+                class: "stat-item",
+                onClick: $setup.showFollowing
+              }, [
+                vue.createElementVNode(
+                  "text",
+                  { class: "stat-value" },
+                  vue.toDisplayString($setup.userInfo.following),
+                  1
+                  /* TEXT */
+                ),
+                vue.createElementVNode("text", { class: "stat-label" }, "关注")
               ]),
-              _: 1
-              /* STABLE */
-            })
-          ])
-        ]),
-        vue.createElementVNode("view", { class: "tabs-bar" }, [
-          vue.createVNode(_component_ui_tabs, {
-            modelValue: $setup.activeTab,
-            "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $setup.activeTab = $event),
-            list: $setup.tabList,
-            type: "line"
-          }, null, 8, ["modelValue", "list"])
-        ]),
-        vue.createElementVNode("view", { class: "content-area" }, [
-          $setup.activeTab === 0 ? (vue.openBlock(), vue.createElementBlock("view", {
-            key: 0,
-            class: "post-list"
-          }, [
-            (vue.openBlock(true), vue.createElementBlock(
-              vue.Fragment,
-              null,
-              vue.renderList($setup.postList, (item) => {
-                return vue.openBlock(), vue.createElementBlock("view", {
-                  key: item.id,
-                  class: "post-item",
-                  onClick: ($event) => $setup.goPost(item)
-                }, [
-                  vue.createVNode(_component_ui_image, {
-                    src: item.cover,
-                    width: "100%",
-                    height: "300rpx",
-                    radius: "8rpx"
-                  }, null, 8, ["src"]),
-                  vue.createElementVNode(
-                    "text",
-                    { class: "post-title" },
-                    vue.toDisplayString(item.title),
+              vue.createElementVNode("view", { class: "stat-item" }, [
+                vue.createElementVNode(
+                  "text",
+                  { class: "stat-value" },
+                  vue.toDisplayString($setup.userInfo.likes),
+                  1
+                  /* TEXT */
+                ),
+                vue.createElementVNode("text", { class: "stat-label" }, "获赞")
+              ])
+            ]),
+            vue.createElementVNode("view", { class: "user-actions" }, [
+              vue.createVNode(_component_ui_button, {
+                type: $setup.userInfo.isFollowed ? "default" : "primary",
+                size: "sm",
+                onClick: $setup.toggleFollow
+              }, {
+                default: vue.withCtx(() => [
+                  vue.createTextVNode(
+                    vue.toDisplayString($setup.userInfo.isFollowed ? "已关注" : "关注"),
                     1
                     /* TEXT */
-                  ),
-                  vue.createElementVNode("view", { class: "post-stats" }, [
+                  )
+                ]),
+                _: 1
+                /* STABLE */
+              }, 8, ["type"]),
+              vue.createVNode(_component_ui_button, {
+                size: "sm",
+                onClick: $setup.goChat
+              }, {
+                default: vue.withCtx(() => [
+                  vue.createTextVNode("私信")
+                ]),
+                _: 1
+                /* STABLE */
+              })
+            ])
+          ]),
+          vue.createElementVNode("view", { class: "tabs-bar" }, [
+            vue.createVNode(_component_ui_tabs, {
+              modelValue: $setup.activeTab,
+              "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $setup.activeTab = $event),
+              list: $setup.tabList,
+              type: "line"
+            }, null, 8, ["modelValue", "list"])
+          ]),
+          vue.createElementVNode("view", { class: "content-area" }, [
+            $setup.activeTab === 0 ? (vue.openBlock(), vue.createElementBlock("view", {
+              key: 0,
+              class: "post-list"
+            }, [
+              (vue.openBlock(true), vue.createElementBlock(
+                vue.Fragment,
+                null,
+                vue.renderList($setup.postList, (item) => {
+                  return vue.openBlock(), vue.createElementBlock("view", {
+                    key: item.id,
+                    class: "post-item",
+                    onClick: ($event) => $setup.goPost(item)
+                  }, [
+                    vue.createVNode(_component_ui_image, {
+                      src: item.cover,
+                      width: "100%",
+                      height: "300rpx",
+                      radius: "8rpx"
+                    }, null, 8, ["src"]),
                     vue.createElementVNode(
                       "text",
-                      { class: "stat" },
-                      vue.toDisplayString(item.likeCount) + "赞",
-                      1
-                      /* TEXT */
-                    ),
-                    vue.createElementVNode(
-                      "text",
-                      { class: "stat" },
-                      vue.toDisplayString(item.commentCount) + "评论",
-                      1
-                      /* TEXT */
-                    )
-                  ])
-                ], 8, ["onClick"]);
-              }),
-              128
-              /* KEYED_FRAGMENT */
-            ))
-          ])) : vue.createCommentVNode("v-if", true),
-          $setup.activeTab === 1 ? (vue.openBlock(), vue.createElementBlock("view", {
-            key: 1,
-            class: "goods-list"
-          }, [
-            (vue.openBlock(true), vue.createElementBlock(
-              vue.Fragment,
-              null,
-              vue.renderList($setup.goodsList, (item) => {
-                return vue.openBlock(), vue.createElementBlock("view", {
-                  key: item.id,
-                  class: "goods-item",
-                  onClick: ($event) => $setup.goGoods(item)
-                }, [
-                  vue.createVNode(_component_ui_image, {
-                    src: item.cover,
-                    width: "100%",
-                    height: "300rpx",
-                    radius: "8rpx"
-                  }, null, 8, ["src"]),
-                  vue.createElementVNode("view", { class: "goods-info" }, [
-                    vue.createElementVNode(
-                      "text",
-                      { class: "goods-title" },
+                      { class: "post-title" },
                       vue.toDisplayString(item.title),
                       1
                       /* TEXT */
                     ),
-                    vue.createVNode(_component_ui_price, {
-                      value: item.price,
-                      size: 28
-                    }, null, 8, ["value"])
-                  ])
-                ], 8, ["onClick"]);
-              }),
-              128
-              /* KEYED_FRAGMENT */
-            ))
-          ])) : vue.createCommentVNode("v-if", true)
-        ])
-      ])
+                    vue.createElementVNode("view", { class: "post-stats" }, [
+                      vue.createElementVNode(
+                        "text",
+                        { class: "stat" },
+                        vue.toDisplayString(item.likeCount) + "赞",
+                        1
+                        /* TEXT */
+                      ),
+                      vue.createElementVNode(
+                        "text",
+                        { class: "stat" },
+                        vue.toDisplayString(item.commentCount) + "评论",
+                        1
+                        /* TEXT */
+                      )
+                    ])
+                  ], 8, ["onClick"]);
+                }),
+                128
+                /* KEYED_FRAGMENT */
+              ))
+            ])) : vue.createCommentVNode("v-if", true),
+            $setup.activeTab === 1 ? (vue.openBlock(), vue.createElementBlock("view", {
+              key: 1,
+              class: "goods-list"
+            }, [
+              (vue.openBlock(true), vue.createElementBlock(
+                vue.Fragment,
+                null,
+                vue.renderList($setup.goodsList, (item) => {
+                  return vue.openBlock(), vue.createElementBlock("view", {
+                    key: item.id,
+                    class: "goods-item",
+                    onClick: ($event) => $setup.goGoods(item)
+                  }, [
+                    vue.createVNode(_component_ui_image, {
+                      src: item.cover,
+                      width: "100%",
+                      height: "300rpx",
+                      radius: "8rpx"
+                    }, null, 8, ["src"]),
+                    vue.createElementVNode("view", { class: "goods-info" }, [
+                      vue.createElementVNode(
+                        "text",
+                        { class: "goods-title" },
+                        vue.toDisplayString(item.title),
+                        1
+                        /* TEXT */
+                      ),
+                      vue.createVNode(_component_ui_price, {
+                        value: item.price,
+                        size: 28
+                      }, null, 8, ["value"])
+                    ])
+                  ], 8, ["onClick"]);
+                }),
+                128
+                /* KEYED_FRAGMENT */
+              ))
+            ])) : vue.createCommentVNode("v-if", true)
+          ])
+        ],
+        4
+        /* STYLE */
+      )
     ]);
   }
   const PagesSubContentUserIndex = /* @__PURE__ */ _export_sfc(_sfc_main$D, [["render", _sfc_render$D], ["__scopeId", "data-v-29821f84"], ["__file", "C:/Users/willdc/Documents/WorkPlace/XinMall/XinMall2/FE/src/pages-sub/content/user/index.vue"]]);
@@ -9090,6 +9152,10 @@ This will fail in production.`);
     __name: "list",
     setup(__props, { expose: __expose }) {
       __expose();
+      const { safeAreaBottom, scrollHeight } = usePageLayout({
+        hasSubNavbar: true,
+        headerEstimatedHeight: 120
+      });
       const addressList = vue.ref([
         {
           id: 1,
@@ -9146,7 +9212,7 @@ This will fail in production.`);
           }
         });
       };
-      const __returned__ = { addressList, goAdd, goEdit, selectAddress, setDefault, handleDelete };
+      const __returned__ = { safeAreaBottom, scrollHeight, addressList, goAdd, goEdit, selectAddress, setDefault, handleDelete };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
       return __returned__;
     }
@@ -9158,120 +9224,127 @@ This will fail in production.`);
     const _component_ui_tag = vue.resolveComponent("ui-tag");
     return vue.openBlock(), vue.createElementBlock("view", { class: "address-list-page" }, [
       vue.createVNode(_component_ui_sub_navbar, { title: "收货地址" }),
-      vue.createElementVNode("scroll-view", {
-        "scroll-y": "",
-        class: "address-scroll"
-      }, [
-        $setup.addressList.length === 0 ? (vue.openBlock(), vue.createElementBlock("view", {
-          key: 0,
-          class: "empty-state"
-        }, [
-          vue.createVNode(_component_ui_icon, {
-            name: "map-pin",
-            size: 80,
-            color: "#A1A1A6"
-          }),
-          vue.createElementVNode("text", { class: "empty-text" }, "暂无收货地址"),
-          vue.createVNode(_component_ui_button, {
-            type: "primary",
-            size: "sm",
-            onClick: $setup.goAdd
-          }, {
-            default: vue.withCtx(() => [
-              vue.createTextVNode("添加地址")
-            ]),
-            _: 1
-            /* STABLE */
-          })
-        ])) : (vue.openBlock(), vue.createElementBlock("view", {
-          key: 1,
-          class: "address-list"
-        }, [
-          (vue.openBlock(true), vue.createElementBlock(
-            vue.Fragment,
-            null,
-            vue.renderList($setup.addressList, (item) => {
-              return vue.openBlock(), vue.createElementBlock("view", {
-                key: item.id,
-                class: "address-item",
-                onClick: ($event) => $setup.selectAddress(item)
-              }, [
-                vue.createElementVNode("view", { class: "address-content" }, [
-                  vue.createElementVNode("view", { class: "address-header" }, [
-                    vue.createElementVNode(
-                      "text",
-                      { class: "name" },
-                      vue.toDisplayString(item.name),
-                      1
-                      /* TEXT */
-                    ),
-                    vue.createElementVNode(
-                      "text",
-                      { class: "phone" },
-                      vue.toDisplayString(item.phone),
-                      1
-                      /* TEXT */
-                    ),
-                    item.isDefault ? (vue.openBlock(), vue.createBlock(_component_ui_tag, {
-                      key: 0,
-                      type: "primary",
-                      size: "xs"
-                    }, {
-                      default: vue.withCtx(() => [
-                        vue.createTextVNode("默认")
-                      ]),
-                      _: 1
-                      /* STABLE */
-                    })) : vue.createCommentVNode("v-if", true)
-                  ]),
-                  vue.createElementVNode(
-                    "text",
-                    { class: "address-detail" },
-                    vue.toDisplayString(item.province) + vue.toDisplayString(item.city) + vue.toDisplayString(item.district) + vue.toDisplayString(item.detail),
-                    1
-                    /* TEXT */
-                  )
-                ]),
-                vue.createElementVNode("view", { class: "address-actions" }, [
-                  vue.createElementVNode("view", {
-                    class: "action-item",
-                    onClick: vue.withModifiers(($event) => $setup.setDefault(item), ["stop"])
-                  }, [
-                    vue.createVNode(_component_ui_icon, {
-                      name: item.isDefault ? "check-circle-fill" : "circle",
-                      ":size": 40,
-                      color: item.isDefault ? "#1ABC9C" : "#A1A1A6"
-                    }, null, 8, ["name", "color"]),
-                    vue.createElementVNode("text", null, "默认")
-                  ], 8, ["onClick"]),
-                  vue.createElementVNode("view", {
-                    class: "action-item",
-                    onClick: vue.withModifiers(($event) => $setup.goEdit(item), ["stop"])
-                  }, [
-                    vue.createVNode(_component_ui_icon, {
-                      name: "edit",
-                      ":size": 40
-                    }),
-                    vue.createElementVNode("text", null, "编辑")
-                  ], 8, ["onClick"]),
-                  vue.createElementVNode("view", {
-                    class: "action-item",
-                    onClick: vue.withModifiers(($event) => $setup.handleDelete(item), ["stop"])
-                  }, [
-                    vue.createVNode(_component_ui_icon, {
-                      name: "trash",
-                      ":size": 40
-                    }),
-                    vue.createElementVNode("text", null, "删除")
-                  ], 8, ["onClick"])
-                ])
-              ], 8, ["onClick"]);
+      vue.createElementVNode(
+        "scroll-view",
+        {
+          "scroll-y": "",
+          class: "address-scroll",
+          style: vue.normalizeStyle({ height: $setup.scrollHeight + "px" })
+        },
+        [
+          $setup.addressList.length === 0 ? (vue.openBlock(), vue.createElementBlock("view", {
+            key: 0,
+            class: "empty-state"
+          }, [
+            vue.createVNode(_component_ui_icon, {
+              name: "map-pin",
+              size: 80,
+              color: "#A1A1A6"
             }),
-            128
-            /* KEYED_FRAGMENT */
-          ))
-        ]))
-      ]),
+            vue.createElementVNode("text", { class: "empty-text" }, "暂无收货地址"),
+            vue.createVNode(_component_ui_button, {
+              type: "primary",
+              size: "sm",
+              onClick: $setup.goAdd
+            }, {
+              default: vue.withCtx(() => [
+                vue.createTextVNode("添加地址")
+              ]),
+              _: 1
+              /* STABLE */
+            })
+          ])) : (vue.openBlock(), vue.createElementBlock("view", {
+            key: 1,
+            class: "address-list"
+          }, [
+            (vue.openBlock(true), vue.createElementBlock(
+              vue.Fragment,
+              null,
+              vue.renderList($setup.addressList, (item) => {
+                return vue.openBlock(), vue.createElementBlock("view", {
+                  key: item.id,
+                  class: "address-item",
+                  onClick: ($event) => $setup.selectAddress(item)
+                }, [
+                  vue.createElementVNode("view", { class: "address-content" }, [
+                    vue.createElementVNode("view", { class: "address-header" }, [
+                      vue.createElementVNode(
+                        "text",
+                        { class: "name" },
+                        vue.toDisplayString(item.name),
+                        1
+                        /* TEXT */
+                      ),
+                      vue.createElementVNode(
+                        "text",
+                        { class: "phone" },
+                        vue.toDisplayString(item.phone),
+                        1
+                        /* TEXT */
+                      ),
+                      item.isDefault ? (vue.openBlock(), vue.createBlock(_component_ui_tag, {
+                        key: 0,
+                        type: "primary",
+                        size: "xs"
+                      }, {
+                        default: vue.withCtx(() => [
+                          vue.createTextVNode("默认")
+                        ]),
+                        _: 1
+                        /* STABLE */
+                      })) : vue.createCommentVNode("v-if", true)
+                    ]),
+                    vue.createElementVNode(
+                      "text",
+                      { class: "address-detail" },
+                      vue.toDisplayString(item.province) + vue.toDisplayString(item.city) + vue.toDisplayString(item.district) + vue.toDisplayString(item.detail),
+                      1
+                      /* TEXT */
+                    )
+                  ]),
+                  vue.createElementVNode("view", { class: "address-actions" }, [
+                    vue.createElementVNode("view", {
+                      class: "action-item",
+                      onClick: vue.withModifiers(($event) => $setup.setDefault(item), ["stop"])
+                    }, [
+                      vue.createVNode(_component_ui_icon, {
+                        name: item.isDefault ? "check-circle-fill" : "circle",
+                        ":size": 40,
+                        color: item.isDefault ? "#1ABC9C" : "#A1A1A6"
+                      }, null, 8, ["name", "color"]),
+                      vue.createElementVNode("text", null, "默认")
+                    ], 8, ["onClick"]),
+                    vue.createElementVNode("view", {
+                      class: "action-item",
+                      onClick: vue.withModifiers(($event) => $setup.goEdit(item), ["stop"])
+                    }, [
+                      vue.createVNode(_component_ui_icon, {
+                        name: "edit",
+                        ":size": 40
+                      }),
+                      vue.createElementVNode("text", null, "编辑")
+                    ], 8, ["onClick"]),
+                    vue.createElementVNode("view", {
+                      class: "action-item",
+                      onClick: vue.withModifiers(($event) => $setup.handleDelete(item), ["stop"])
+                    }, [
+                      vue.createVNode(_component_ui_icon, {
+                        name: "trash",
+                        ":size": 40
+                      }),
+                      vue.createElementVNode("text", null, "删除")
+                    ], 8, ["onClick"])
+                  ])
+                ], 8, ["onClick"]);
+              }),
+              128
+              /* KEYED_FRAGMENT */
+            ))
+          ]))
+        ],
+        4
+        /* STYLE */
+      ),
       vue.createElementVNode("view", { class: "list-footer" }, [
         vue.createVNode(_component_ui_button, {
           type: "primary",
@@ -9292,6 +9365,10 @@ This will fail in production.`);
     __name: "edit",
     setup(__props, { expose: __expose }) {
       __expose();
+      const { safeAreaBottom, scrollHeight } = usePageLayout({
+        hasSubNavbar: true,
+        headerEstimatedHeight: 120
+      });
       const isEdit = vue.ref(false);
       const tagList = vue.ref(["家", "公司", "学校"]);
       const form = vue.ref({
@@ -9335,7 +9412,7 @@ This will fail in production.`);
           }, 1500);
         }, 1e3);
       };
-      const __returned__ = { isEdit, tagList, form, chooseLocation, handleSave };
+      const __returned__ = { safeAreaBottom, scrollHeight, isEdit, tagList, form, chooseLocation, handleSave };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
       return __returned__;
     }
@@ -9349,111 +9426,118 @@ This will fail in production.`);
       vue.createVNode(_component_ui_sub_navbar, {
         title: $setup.isEdit ? "编辑地址" : "新增地址"
       }, null, 8, ["title"]),
-      vue.createElementVNode("scroll-view", {
-        "scroll-y": "",
-        class: "edit-scroll"
-      }, [
-        vue.createElementVNode("view", { class: "form-section" }, [
-          vue.createElementVNode("view", { class: "form-item" }, [
-            vue.createElementVNode("text", { class: "form-label" }, "收货人"),
-            vue.withDirectives(vue.createElementVNode(
-              "input",
-              {
-                class: "form-input",
-                "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $setup.form.name = $event),
-                placeholder: "请输入收货人姓名"
-              },
-              null,
-              512
-              /* NEED_PATCH */
-            ), [
-              [vue.vModelText, $setup.form.name]
-            ])
-          ]),
-          vue.createElementVNode("view", { class: "form-item" }, [
-            vue.createElementVNode("text", { class: "form-label" }, "手机号"),
-            vue.withDirectives(vue.createElementVNode(
-              "input",
-              {
-                class: "form-input",
-                type: "tel",
-                "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => $setup.form.phone = $event),
-                placeholder: "请输入手机号",
-                maxlength: "11"
-              },
-              null,
-              512
-              /* NEED_PATCH */
-            ), [
-              [vue.vModelText, $setup.form.phone]
-            ])
-          ]),
-          vue.createElementVNode("view", {
-            class: "form-item",
-            onClick: $setup.chooseLocation
-          }, [
-            vue.createElementVNode("text", { class: "form-label" }, "所在地区"),
-            vue.createElementVNode("view", { class: "form-select" }, [
-              vue.createElementVNode(
-                "text",
+      vue.createElementVNode(
+        "scroll-view",
+        {
+          "scroll-y": "",
+          class: "edit-scroll",
+          style: vue.normalizeStyle({ height: $setup.scrollHeight + "px" })
+        },
+        [
+          vue.createElementVNode("view", { class: "form-section" }, [
+            vue.createElementVNode("view", { class: "form-item" }, [
+              vue.createElementVNode("text", { class: "form-label" }, "收货人"),
+              vue.withDirectives(vue.createElementVNode(
+                "input",
                 {
-                  class: vue.normalizeClass({ placeholder: !$setup.form.region })
+                  class: "form-input",
+                  "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $setup.form.name = $event),
+                  placeholder: "请输入收货人姓名"
                 },
-                vue.toDisplayString($setup.form.region || "请选择省市区"),
-                3
-                /* TEXT, CLASS */
-              ),
-              vue.createVNode(_component_ui_icon, {
-                name: "arrow-right",
-                ":size": 32
-              })
-            ])
-          ]),
-          vue.createElementVNode("view", { class: "form-item" }, [
-            vue.createElementVNode("text", { class: "form-label" }, "详细地址"),
-            vue.withDirectives(vue.createElementVNode(
-              "textarea",
-              {
-                class: "form-textarea",
-                "onUpdate:modelValue": _cache[2] || (_cache[2] = ($event) => $setup.form.detail = $event),
-                placeholder: "请输入详细地址（街道、楼栋、门牌号）"
-              },
-              null,
-              512
-              /* NEED_PATCH */
-            ), [
-              [vue.vModelText, $setup.form.detail]
-            ])
-          ]),
-          vue.createElementVNode("view", { class: "form-item" }, [
-            vue.createElementVNode("text", { class: "form-label" }, "地址标签"),
-            vue.createElementVNode("view", { class: "tag-list" }, [
-              (vue.openBlock(true), vue.createElementBlock(
-                vue.Fragment,
                 null,
-                vue.renderList($setup.tagList, (tag) => {
-                  return vue.openBlock(), vue.createElementBlock("view", {
-                    key: tag,
-                    class: vue.normalizeClass(["tag-item", { active: $setup.form.tag === tag }]),
-                    onClick: ($event) => $setup.form.tag = tag
-                  }, vue.toDisplayString(tag), 11, ["onClick"]);
-                }),
-                128
-                /* KEYED_FRAGMENT */
-              ))
+                512
+                /* NEED_PATCH */
+              ), [
+                [vue.vModelText, $setup.form.name]
+              ])
+            ]),
+            vue.createElementVNode("view", { class: "form-item" }, [
+              vue.createElementVNode("text", { class: "form-label" }, "手机号"),
+              vue.withDirectives(vue.createElementVNode(
+                "input",
+                {
+                  class: "form-input",
+                  type: "tel",
+                  "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => $setup.form.phone = $event),
+                  placeholder: "请输入手机号",
+                  maxlength: "11"
+                },
+                null,
+                512
+                /* NEED_PATCH */
+              ), [
+                [vue.vModelText, $setup.form.phone]
+              ])
+            ]),
+            vue.createElementVNode("view", {
+              class: "form-item",
+              onClick: $setup.chooseLocation
+            }, [
+              vue.createElementVNode("text", { class: "form-label" }, "所在地区"),
+              vue.createElementVNode("view", { class: "form-select" }, [
+                vue.createElementVNode(
+                  "text",
+                  {
+                    class: vue.normalizeClass({ placeholder: !$setup.form.region })
+                  },
+                  vue.toDisplayString($setup.form.region || "请选择省市区"),
+                  3
+                  /* TEXT, CLASS */
+                ),
+                vue.createVNode(_component_ui_icon, {
+                  name: "arrow-right",
+                  ":size": 32
+                })
+              ])
+            ]),
+            vue.createElementVNode("view", { class: "form-item" }, [
+              vue.createElementVNode("text", { class: "form-label" }, "详细地址"),
+              vue.withDirectives(vue.createElementVNode(
+                "textarea",
+                {
+                  class: "form-textarea",
+                  "onUpdate:modelValue": _cache[2] || (_cache[2] = ($event) => $setup.form.detail = $event),
+                  placeholder: "请输入详细地址（街道、楼栋、门牌号）"
+                },
+                null,
+                512
+                /* NEED_PATCH */
+              ), [
+                [vue.vModelText, $setup.form.detail]
+              ])
+            ]),
+            vue.createElementVNode("view", { class: "form-item" }, [
+              vue.createElementVNode("text", { class: "form-label" }, "地址标签"),
+              vue.createElementVNode("view", { class: "tag-list" }, [
+                (vue.openBlock(true), vue.createElementBlock(
+                  vue.Fragment,
+                  null,
+                  vue.renderList($setup.tagList, (tag) => {
+                    return vue.openBlock(), vue.createElementBlock("view", {
+                      key: tag,
+                      class: vue.normalizeClass(["tag-item", { active: $setup.form.tag === tag }]),
+                      onClick: ($event) => $setup.form.tag = tag
+                    }, vue.toDisplayString(tag), 11, ["onClick"]);
+                  }),
+                  128
+                  /* KEYED_FRAGMENT */
+                ))
+              ])
+            ])
+          ]),
+          vue.createElementVNode("view", { class: "switch-section" }, [
+            vue.createElementVNode("view", { class: "switch-item" }, [
+              vue.createElementVNode("text", { class: "switch-label" }, "设为默认地址"),
+              vue.createVNode(_component_ui_switch, {
+                modelValue: $setup.form.isDefault,
+                "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => $setup.form.isDefault = $event)
+              }, null, 8, ["modelValue"])
             ])
           ])
-        ]),
-        vue.createElementVNode("view", { class: "switch-section" }, [
-          vue.createElementVNode("view", { class: "switch-item" }, [
-            vue.createElementVNode("text", { class: "switch-label" }, "设为默认地址"),
-            vue.createVNode(_component_ui_switch, {
-              modelValue: $setup.form.isDefault,
-              "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => $setup.form.isDefault = $event)
-            }, null, 8, ["modelValue"])
-          ])
-        ])
-      ]),
+        ],
+        4
+        /* STYLE */
+      ),
       vue.createElementVNode("view", { class: "edit-footer" }, [
         vue.createVNode(_component_ui_button, {
           type: "primary",
@@ -9474,6 +9558,10 @@ This will fail in production.`);
     __name: "index",
     setup(__props, { expose: __expose }) {
       __expose();
+      const { safeAreaBottom, scrollHeight } = usePageLayout({
+        hasSubNavbar: true,
+        headerEstimatedHeight: 176
+      });
       const activeTab = vue.ref(0);
       const tabList = vue.ref([
         { name: "商品" },
@@ -9502,7 +9590,7 @@ This will fail in production.`);
           }
         });
       };
-      const __returned__ = { activeTab, tabList, collectionList, goDetail, cancelCollect };
+      const __returned__ = { safeAreaBottom, scrollHeight, activeTab, tabList, collectionList, goDetail, cancelCollect };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
       return __returned__;
     }
@@ -9524,110 +9612,117 @@ This will fail in production.`);
           type: "line"
         }, null, 8, ["modelValue", "list"])
       ]),
-      vue.createElementVNode("scroll-view", {
-        "scroll-y": "",
-        class: "collection-scroll"
-      }, [
-        $setup.collectionList.length === 0 ? (vue.openBlock(), vue.createElementBlock("view", {
-          key: 0,
-          class: "empty-state"
-        }, [
-          vue.createVNode(_component_ui_icon, {
-            name: "heart",
-            size: 80,
-            color: "#A1A1A6"
-          }),
-          vue.createElementVNode("text", { class: "empty-text" }, "暂无收藏")
-        ])) : (vue.openBlock(), vue.createElementBlock("view", {
-          key: 1,
-          class: "collection-list"
-        }, [
-          (vue.openBlock(true), vue.createElementBlock(
-            vue.Fragment,
-            null,
-            vue.renderList($setup.collectionList, (item) => {
-              var _a;
-              return vue.openBlock(), vue.createElementBlock("view", {
-                key: item.id,
-                class: "collection-item",
-                onClick: ($event) => $setup.goDetail(item)
-              }, [
-                vue.createVNode(_component_ui_image, {
-                  src: item.cover,
-                  width: "180rpx",
-                  height: "180rpx",
-                  radius: "8rpx"
-                }, null, 8, ["src"]),
-                vue.createElementVNode("view", { class: "item-info" }, [
-                  vue.createElementVNode(
-                    "text",
-                    { class: "item-title" },
-                    vue.toDisplayString(item.title),
-                    1
-                    /* TEXT */
-                  ),
-                  vue.createElementVNode("view", { class: "item-tags" }, [
-                    (vue.openBlock(true), vue.createElementBlock(
-                      vue.Fragment,
-                      null,
-                      vue.renderList((_a = item.tags) == null ? void 0 : _a.slice(0, 2), (tag) => {
-                        return vue.openBlock(), vue.createBlock(
-                          _component_ui_tag,
-                          {
-                            key: tag,
-                            type: "primary",
-                            size: "sm"
-                          },
-                          {
-                            default: vue.withCtx(() => [
-                              vue.createTextVNode(
-                                vue.toDisplayString(tag),
-                                1
-                                /* TEXT */
-                              )
-                            ]),
-                            _: 2
-                            /* DYNAMIC */
-                          },
-                          1024
-                          /* DYNAMIC_SLOTS */
-                        );
-                      }),
-                      128
-                      /* KEYED_FRAGMENT */
-                    ))
-                  ]),
-                  vue.createElementVNode("view", { class: "item-bottom" }, [
-                    vue.createVNode(_component_ui_price, {
-                      value: item.price,
-                      size: 28
-                    }, null, 8, ["value"]),
+      vue.createElementVNode(
+        "scroll-view",
+        {
+          "scroll-y": "",
+          class: "collection-scroll",
+          style: vue.normalizeStyle({ height: $setup.scrollHeight + "px" })
+        },
+        [
+          $setup.collectionList.length === 0 ? (vue.openBlock(), vue.createElementBlock("view", {
+            key: 0,
+            class: "empty-state"
+          }, [
+            vue.createVNode(_component_ui_icon, {
+              name: "heart",
+              size: 80,
+              color: "#A1A1A6"
+            }),
+            vue.createElementVNode("text", { class: "empty-text" }, "暂无收藏")
+          ])) : (vue.openBlock(), vue.createElementBlock("view", {
+            key: 1,
+            class: "collection-list"
+          }, [
+            (vue.openBlock(true), vue.createElementBlock(
+              vue.Fragment,
+              null,
+              vue.renderList($setup.collectionList, (item) => {
+                var _a;
+                return vue.openBlock(), vue.createElementBlock("view", {
+                  key: item.id,
+                  class: "collection-item",
+                  onClick: ($event) => $setup.goDetail(item)
+                }, [
+                  vue.createVNode(_component_ui_image, {
+                    src: item.cover,
+                    width: "180rpx",
+                    height: "180rpx",
+                    radius: "8rpx"
+                  }, null, 8, ["src"]),
+                  vue.createElementVNode("view", { class: "item-info" }, [
                     vue.createElementVNode(
                       "text",
-                      { class: "item-time" },
-                      vue.toDisplayString(item.collectTime),
+                      { class: "item-title" },
+                      vue.toDisplayString(item.title),
                       1
                       /* TEXT */
-                    )
-                  ])
-                ]),
-                vue.createElementVNode("view", {
-                  class: "item-action",
-                  onClick: vue.withModifiers(($event) => $setup.cancelCollect(item), ["stop"])
-                }, [
-                  vue.createVNode(_component_ui_icon, {
-                    name: "heart-fill",
-                    ":size": 40,
-                    color: "#FF3D00"
-                  })
-                ], 8, ["onClick"])
-              ], 8, ["onClick"]);
-            }),
-            128
-            /* KEYED_FRAGMENT */
-          ))
-        ]))
-      ])
+                    ),
+                    vue.createElementVNode("view", { class: "item-tags" }, [
+                      (vue.openBlock(true), vue.createElementBlock(
+                        vue.Fragment,
+                        null,
+                        vue.renderList((_a = item.tags) == null ? void 0 : _a.slice(0, 2), (tag) => {
+                          return vue.openBlock(), vue.createBlock(
+                            _component_ui_tag,
+                            {
+                              key: tag,
+                              type: "primary",
+                              size: "sm"
+                            },
+                            {
+                              default: vue.withCtx(() => [
+                                vue.createTextVNode(
+                                  vue.toDisplayString(tag),
+                                  1
+                                  /* TEXT */
+                                )
+                              ]),
+                              _: 2
+                              /* DYNAMIC */
+                            },
+                            1024
+                            /* DYNAMIC_SLOTS */
+                          );
+                        }),
+                        128
+                        /* KEYED_FRAGMENT */
+                      ))
+                    ]),
+                    vue.createElementVNode("view", { class: "item-bottom" }, [
+                      vue.createVNode(_component_ui_price, {
+                        value: item.price,
+                        size: 28
+                      }, null, 8, ["value"]),
+                      vue.createElementVNode(
+                        "text",
+                        { class: "item-time" },
+                        vue.toDisplayString(item.collectTime),
+                        1
+                        /* TEXT */
+                      )
+                    ])
+                  ]),
+                  vue.createElementVNode("view", {
+                    class: "item-action",
+                    onClick: vue.withModifiers(($event) => $setup.cancelCollect(item), ["stop"])
+                  }, [
+                    vue.createVNode(_component_ui_icon, {
+                      name: "heart-fill",
+                      ":size": 40,
+                      color: "#FF3D00"
+                    })
+                  ], 8, ["onClick"])
+                ], 8, ["onClick"]);
+              }),
+              128
+              /* KEYED_FRAGMENT */
+            ))
+          ]))
+        ],
+        4
+        /* STYLE */
+      )
     ]);
   }
   const PagesSubUserCollectionIndex = /* @__PURE__ */ _export_sfc(_sfc_main$z, [["render", _sfc_render$z], ["__scopeId", "data-v-2546e59a"], ["__file", "C:/Users/willdc/Documents/WorkPlace/XinMall/XinMall2/FE/src/pages-sub/user/collection/index.vue"]]);
@@ -9635,6 +9730,10 @@ This will fail in production.`);
     __name: "index",
     setup(__props, { expose: __expose }) {
       __expose();
+      const { safeAreaBottom, scrollHeight } = usePageLayout({
+        hasSubNavbar: true,
+        headerEstimatedHeight: 120
+      });
       const historyList = vue.ref([
         {
           date: "今天",
@@ -9672,7 +9771,7 @@ This will fail in production.`);
           }
         });
       };
-      const __returned__ = { historyList, goDetail, clearHistory };
+      const __returned__ = { safeAreaBottom, scrollHeight, historyList, goDetail, clearHistory };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
       return __returned__;
     }
@@ -9686,122 +9785,129 @@ This will fail in production.`);
     const _component_ui_button = vue.resolveComponent("ui-button");
     return vue.openBlock(), vue.createElementBlock("view", { class: "history-page" }, [
       vue.createVNode(_component_ui_sub_navbar, { title: "浏览足迹" }),
-      vue.createElementVNode("scroll-view", {
-        "scroll-y": "",
-        class: "history-scroll"
-      }, [
-        $setup.historyList.length === 0 ? (vue.openBlock(), vue.createElementBlock("view", {
-          key: 0,
-          class: "empty-state"
-        }, [
-          vue.createVNode(_component_ui_icon, {
-            name: "eye",
-            size: 80,
-            color: "#A1A1A6"
-          }),
-          vue.createElementVNode("text", { class: "empty-text" }, "暂无浏览记录")
-        ])) : (vue.openBlock(), vue.createElementBlock("view", {
-          key: 1,
-          class: "history-list"
-        }, [
-          (vue.openBlock(true), vue.createElementBlock(
-            vue.Fragment,
-            null,
-            vue.renderList($setup.historyList, (group) => {
-              return vue.openBlock(), vue.createElementBlock("view", {
-                key: group.date,
-                class: "history-group"
-              }, [
-                vue.createElementVNode(
-                  "text",
-                  { class: "group-date" },
-                  vue.toDisplayString(group.date),
-                  1
-                  /* TEXT */
-                ),
-                vue.createElementVNode("view", { class: "group-list" }, [
-                  (vue.openBlock(true), vue.createElementBlock(
-                    vue.Fragment,
-                    null,
-                    vue.renderList(group.list, (item) => {
-                      var _a;
-                      return vue.openBlock(), vue.createElementBlock("view", {
-                        key: item.id,
-                        class: "history-item",
-                        onClick: ($event) => $setup.goDetail(item)
-                      }, [
-                        vue.createVNode(_component_ui_image, {
-                          src: item.cover,
-                          width: "160rpx",
-                          height: "160rpx",
-                          radius: "8rpx"
-                        }, null, 8, ["src"]),
-                        vue.createElementVNode("view", { class: "item-info" }, [
-                          vue.createElementVNode(
-                            "text",
-                            { class: "item-title" },
-                            vue.toDisplayString(item.title),
-                            1
-                            /* TEXT */
-                          ),
-                          vue.createElementVNode("view", { class: "item-tags" }, [
-                            (vue.openBlock(true), vue.createElementBlock(
-                              vue.Fragment,
-                              null,
-                              vue.renderList((_a = item.tags) == null ? void 0 : _a.slice(0, 2), (tag) => {
-                                return vue.openBlock(), vue.createBlock(
-                                  _component_ui_tag,
-                                  {
-                                    key: tag,
-                                    type: "primary",
-                                    size: "sm"
-                                  },
-                                  {
-                                    default: vue.withCtx(() => [
-                                      vue.createTextVNode(
-                                        vue.toDisplayString(tag),
-                                        1
-                                        /* TEXT */
-                                      )
-                                    ]),
-                                    _: 2
-                                    /* DYNAMIC */
-                                  },
-                                  1024
-                                  /* DYNAMIC_SLOTS */
-                                );
-                              }),
-                              128
-                              /* KEYED_FRAGMENT */
-                            ))
-                          ]),
-                          vue.createElementVNode("view", { class: "item-bottom" }, [
-                            vue.createVNode(_component_ui_price, {
-                              value: item.price,
-                              ":size": 40
-                            }, null, 8, ["value"]),
+      vue.createElementVNode(
+        "scroll-view",
+        {
+          "scroll-y": "",
+          class: "history-scroll",
+          style: vue.normalizeStyle({ height: $setup.scrollHeight + "px" })
+        },
+        [
+          $setup.historyList.length === 0 ? (vue.openBlock(), vue.createElementBlock("view", {
+            key: 0,
+            class: "empty-state"
+          }, [
+            vue.createVNode(_component_ui_icon, {
+              name: "eye",
+              size: 80,
+              color: "#A1A1A6"
+            }),
+            vue.createElementVNode("text", { class: "empty-text" }, "暂无浏览记录")
+          ])) : (vue.openBlock(), vue.createElementBlock("view", {
+            key: 1,
+            class: "history-list"
+          }, [
+            (vue.openBlock(true), vue.createElementBlock(
+              vue.Fragment,
+              null,
+              vue.renderList($setup.historyList, (group) => {
+                return vue.openBlock(), vue.createElementBlock("view", {
+                  key: group.date,
+                  class: "history-group"
+                }, [
+                  vue.createElementVNode(
+                    "text",
+                    { class: "group-date" },
+                    vue.toDisplayString(group.date),
+                    1
+                    /* TEXT */
+                  ),
+                  vue.createElementVNode("view", { class: "group-list" }, [
+                    (vue.openBlock(true), vue.createElementBlock(
+                      vue.Fragment,
+                      null,
+                      vue.renderList(group.list, (item) => {
+                        var _a;
+                        return vue.openBlock(), vue.createElementBlock("view", {
+                          key: item.id,
+                          class: "history-item",
+                          onClick: ($event) => $setup.goDetail(item)
+                        }, [
+                          vue.createVNode(_component_ui_image, {
+                            src: item.cover,
+                            width: "160rpx",
+                            height: "160rpx",
+                            radius: "8rpx"
+                          }, null, 8, ["src"]),
+                          vue.createElementVNode("view", { class: "item-info" }, [
                             vue.createElementVNode(
                               "text",
-                              { class: "item-time" },
-                              vue.toDisplayString(item.viewTime),
+                              { class: "item-title" },
+                              vue.toDisplayString(item.title),
                               1
                               /* TEXT */
-                            )
+                            ),
+                            vue.createElementVNode("view", { class: "item-tags" }, [
+                              (vue.openBlock(true), vue.createElementBlock(
+                                vue.Fragment,
+                                null,
+                                vue.renderList((_a = item.tags) == null ? void 0 : _a.slice(0, 2), (tag) => {
+                                  return vue.openBlock(), vue.createBlock(
+                                    _component_ui_tag,
+                                    {
+                                      key: tag,
+                                      type: "primary",
+                                      size: "sm"
+                                    },
+                                    {
+                                      default: vue.withCtx(() => [
+                                        vue.createTextVNode(
+                                          vue.toDisplayString(tag),
+                                          1
+                                          /* TEXT */
+                                        )
+                                      ]),
+                                      _: 2
+                                      /* DYNAMIC */
+                                    },
+                                    1024
+                                    /* DYNAMIC_SLOTS */
+                                  );
+                                }),
+                                128
+                                /* KEYED_FRAGMENT */
+                              ))
+                            ]),
+                            vue.createElementVNode("view", { class: "item-bottom" }, [
+                              vue.createVNode(_component_ui_price, {
+                                value: item.price,
+                                ":size": 40
+                              }, null, 8, ["value"]),
+                              vue.createElementVNode(
+                                "text",
+                                { class: "item-time" },
+                                vue.toDisplayString(item.viewTime),
+                                1
+                                /* TEXT */
+                              )
+                            ])
                           ])
-                        ])
-                      ], 8, ["onClick"]);
-                    }),
-                    128
-                    /* KEYED_FRAGMENT */
-                  ))
-                ])
-              ]);
-            }),
-            128
-            /* KEYED_FRAGMENT */
-          ))
-        ]))
-      ]),
+                        ], 8, ["onClick"]);
+                      }),
+                      128
+                      /* KEYED_FRAGMENT */
+                    ))
+                  ])
+                ]);
+              }),
+              128
+              /* KEYED_FRAGMENT */
+            ))
+          ]))
+        ],
+        4
+        /* STYLE */
+      ),
       vue.createElementVNode("view", { class: "history-footer" }, [
         vue.createVNode(_component_ui_button, {
           block: "",
@@ -9821,6 +9927,9 @@ This will fail in production.`);
     __name: "index",
     setup(__props, { expose: __expose }) {
       __expose();
+      const { scrollHeight } = usePageLayout({
+        hasSubNavbar: true
+      });
       const goAccount = () => uni.showToast({ title: "账号与安全", icon: "none" });
       const goPrivacy = () => uni.showToast({ title: "隐私设置", icon: "none" });
       const goNotification = () => uni.showToast({ title: "通知设置", icon: "none" });
@@ -9867,7 +9976,7 @@ This will fail in production.`);
           }
         });
       };
-      const __returned__ = { goAccount, goPrivacy, goNotification, goGeneral, goLanguage, goFontSize, goAbout, goAgreement, goPrivacyPolicy, goHelp, clearCache, checkUpdate, handleLogout };
+      const __returned__ = { scrollHeight, goAccount, goPrivacy, goNotification, goGeneral, goLanguage, goFontSize, goAbout, goAgreement, goPrivacyPolicy, goHelp, clearCache, checkUpdate, handleLogout };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
       return __returned__;
     }
@@ -9878,110 +9987,117 @@ This will fail in production.`);
     const _component_ui_button = vue.resolveComponent("ui-button");
     return vue.openBlock(), vue.createElementBlock("view", { class: "settings-page" }, [
       vue.createVNode(_component_ui_sub_navbar, { title: "设置" }),
-      vue.createElementVNode("scroll-view", {
-        "scroll-y": "",
-        class: "settings-scroll"
-      }, [
-        vue.createElementVNode("view", { class: "settings-group" }, [
-          vue.createVNode(_component_ui_cell, {
-            title: "账号与安全",
-            icon: "shield",
-            "is-link": "",
-            onClick: $setup.goAccount
-          }),
-          vue.createVNode(_component_ui_cell, {
-            title: "隐私设置",
-            icon: "lock",
-            "is-link": "",
-            onClick: $setup.goPrivacy
-          }),
-          vue.createVNode(_component_ui_cell, {
-            title: "通知设置",
-            icon: "bell",
-            "is-link": "",
-            onClick: $setup.goNotification
-          })
-        ]),
-        vue.createElementVNode("view", { class: "settings-group" }, [
-          vue.createVNode(_component_ui_cell, {
-            title: "通用设置",
-            icon: "settings",
-            "is-link": "",
-            onClick: $setup.goGeneral
-          }),
-          vue.createVNode(_component_ui_cell, {
-            title: "语言",
-            icon: "globe",
-            value: "简体中文",
-            "is-link": "",
-            onClick: $setup.goLanguage
-          }),
-          vue.createVNode(_component_ui_cell, {
-            title: "字体大小",
-            icon: "type",
-            value: "标准",
-            "is-link": "",
-            onClick: $setup.goFontSize
-          })
-        ]),
-        vue.createElementVNode("view", { class: "settings-group" }, [
-          vue.createVNode(_component_ui_cell, {
-            title: "清除缓存",
-            icon: "trash",
-            value: "12.5MB",
-            onClick: $setup.clearCache
-          }),
-          vue.createVNode(_component_ui_cell, {
-            title: "关于我们",
-            icon: "info-circle",
-            "is-link": "",
-            onClick: $setup.goAbout
-          }),
-          vue.createVNode(_component_ui_cell, {
-            title: "用户协议",
-            icon: "file-text",
-            "is-link": "",
-            onClick: $setup.goAgreement
-          }),
-          vue.createVNode(_component_ui_cell, {
-            title: "隐私政策",
-            icon: "file-text",
-            "is-link": "",
-            onClick: $setup.goPrivacyPolicy
-          })
-        ]),
-        vue.createElementVNode("view", { class: "settings-group" }, [
-          vue.createVNode(_component_ui_cell, {
-            title: "检查更新",
-            icon: "refresh",
-            value: "v1.0.0",
-            onClick: $setup.checkUpdate
-          }),
-          vue.createVNode(_component_ui_cell, {
-            title: "帮助与反馈",
-            icon: "help-circle",
-            "is-link": "",
-            onClick: $setup.goHelp
-          })
-        ]),
-        vue.createElementVNode("view", { class: "logout-section" }, [
-          vue.createVNode(_component_ui_button, {
-            type: "danger",
-            plain: "",
-            block: "",
-            onClick: $setup.handleLogout
-          }, {
-            default: vue.withCtx(() => [
-              vue.createTextVNode("退出登录")
-            ]),
-            _: 1
-            /* STABLE */
-          })
-        ]),
-        vue.createElementVNode("view", { class: "version-info" }, [
-          vue.createElementVNode("text", null, "当前版本 v1.0.0")
-        ])
-      ])
+      vue.createElementVNode(
+        "scroll-view",
+        {
+          "scroll-y": "",
+          class: "settings-scroll",
+          style: vue.normalizeStyle({ height: $setup.scrollHeight + "px" })
+        },
+        [
+          vue.createElementVNode("view", { class: "settings-group" }, [
+            vue.createVNode(_component_ui_cell, {
+              title: "账号与安全",
+              icon: "shield",
+              "is-link": "",
+              onClick: $setup.goAccount
+            }),
+            vue.createVNode(_component_ui_cell, {
+              title: "隐私设置",
+              icon: "lock",
+              "is-link": "",
+              onClick: $setup.goPrivacy
+            }),
+            vue.createVNode(_component_ui_cell, {
+              title: "通知设置",
+              icon: "bell",
+              "is-link": "",
+              onClick: $setup.goNotification
+            })
+          ]),
+          vue.createElementVNode("view", { class: "settings-group" }, [
+            vue.createVNode(_component_ui_cell, {
+              title: "通用设置",
+              icon: "settings",
+              "is-link": "",
+              onClick: $setup.goGeneral
+            }),
+            vue.createVNode(_component_ui_cell, {
+              title: "语言",
+              icon: "globe",
+              value: "简体中文",
+              "is-link": "",
+              onClick: $setup.goLanguage
+            }),
+            vue.createVNode(_component_ui_cell, {
+              title: "字体大小",
+              icon: "type",
+              value: "标准",
+              "is-link": "",
+              onClick: $setup.goFontSize
+            })
+          ]),
+          vue.createElementVNode("view", { class: "settings-group" }, [
+            vue.createVNode(_component_ui_cell, {
+              title: "清除缓存",
+              icon: "trash",
+              value: "12.5MB",
+              onClick: $setup.clearCache
+            }),
+            vue.createVNode(_component_ui_cell, {
+              title: "关于我们",
+              icon: "info-circle",
+              "is-link": "",
+              onClick: $setup.goAbout
+            }),
+            vue.createVNode(_component_ui_cell, {
+              title: "用户协议",
+              icon: "file-text",
+              "is-link": "",
+              onClick: $setup.goAgreement
+            }),
+            vue.createVNode(_component_ui_cell, {
+              title: "隐私政策",
+              icon: "file-text",
+              "is-link": "",
+              onClick: $setup.goPrivacyPolicy
+            })
+          ]),
+          vue.createElementVNode("view", { class: "settings-group" }, [
+            vue.createVNode(_component_ui_cell, {
+              title: "检查更新",
+              icon: "refresh",
+              value: "v1.0.0",
+              onClick: $setup.checkUpdate
+            }),
+            vue.createVNode(_component_ui_cell, {
+              title: "帮助与反馈",
+              icon: "help-circle",
+              "is-link": "",
+              onClick: $setup.goHelp
+            })
+          ]),
+          vue.createElementVNode("view", { class: "logout-section" }, [
+            vue.createVNode(_component_ui_button, {
+              type: "danger",
+              plain: "",
+              block: "",
+              onClick: $setup.handleLogout
+            }, {
+              default: vue.withCtx(() => [
+                vue.createTextVNode("退出登录")
+              ]),
+              _: 1
+              /* STABLE */
+            })
+          ]),
+          vue.createElementVNode("view", { class: "version-info" }, [
+            vue.createElementVNode("text", null, "当前版本 v1.0.0")
+          ])
+        ],
+        4
+        /* STYLE */
+      )
     ]);
   }
   const PagesSubUserSettingsIndex = /* @__PURE__ */ _export_sfc(_sfc_main$x, [["render", _sfc_render$x], ["__scopeId", "data-v-daf51fb5"], ["__file", "C:/Users/willdc/Documents/WorkPlace/XinMall/XinMall2/FE/src/pages-sub/user/settings/index.vue"]]);
@@ -9989,7 +10105,11 @@ This will fail in production.`);
     __name: "index",
     setup(__props, { expose: __expose }) {
       __expose();
-      const balance = vue.ref(12568.5);
+      const { safeAreaBottom, scrollHeight } = usePageLayout({
+        hasSubNavbar: true,
+        headerEstimatedHeight: 468
+      });
+      const balance = vue.ref(8888.88);
       const frozenAmount = vue.ref(500);
       const income = vue.ref(3580);
       const expense = vue.ref(1200);
@@ -10012,7 +10132,7 @@ This will fail in production.`);
       const goAllTransactions = () => {
         uni.showToast({ title: "全部交易记录", icon: "none" });
       };
-      const __returned__ = { balance, frozenAmount, income, expense, transactions, handleWithdraw, handleRecharge, goBankCard, goAllTransactions };
+      const __returned__ = { safeAreaBottom, scrollHeight, balance, frozenAmount, income, expense, transactions, handleWithdraw, handleRecharge, goBankCard, goAllTransactions };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
       return __returned__;
     }
@@ -10104,71 +10224,78 @@ This will fail in production.`);
             onClick: $setup.goAllTransactions
           }, "全部")
         ]),
-        vue.createElementVNode("scroll-view", {
-          "scroll-y": "",
-          class: "transaction-scroll"
-        }, [
-          $setup.transactions.length === 0 ? (vue.openBlock(), vue.createElementBlock("view", {
-            key: 0,
-            class: "empty-state"
-          }, [
-            vue.createVNode(_component_ui_icon, {
-              name: "file-text",
-              size: 80,
-              color: "#A1A1A6"
-            }),
-            vue.createElementVNode("text", { class: "empty-text" }, "暂无交易记录")
-          ])) : (vue.openBlock(), vue.createElementBlock("view", {
-            key: 1,
-            class: "transaction-list"
-          }, [
-            (vue.openBlock(true), vue.createElementBlock(
-              vue.Fragment,
-              null,
-              vue.renderList($setup.transactions, (item) => {
-                return vue.openBlock(), vue.createElementBlock("view", {
-                  key: item.id,
-                  class: "transaction-item"
-                }, [
-                  vue.createElementVNode("view", { class: "item-left" }, [
-                    vue.createVNode(_component_ui_icon, {
-                      name: item.type === "income" ? "arrow-down" : "arrow-up",
-                      ":size": 40,
-                      color: item.type === "income" ? "#1ABC9C" : "#FF3D00"
-                    }, null, 8, ["name", "color"]),
-                    vue.createElementVNode("view", { class: "item-info" }, [
-                      vue.createElementVNode(
-                        "text",
-                        { class: "item-title" },
-                        vue.toDisplayString(item.title),
-                        1
-                        /* TEXT */
-                      ),
-                      vue.createElementVNode(
-                        "text",
-                        { class: "item-time" },
-                        vue.toDisplayString(item.time),
-                        1
-                        /* TEXT */
-                      )
-                    ])
-                  ]),
-                  vue.createElementVNode(
-                    "text",
-                    {
-                      class: vue.normalizeClass(["item-amount", item.type])
-                    },
-                    vue.toDisplayString(item.type === "income" ? "+" : "-") + vue.toDisplayString(item.amount.toFixed(2)),
-                    3
-                    /* TEXT, CLASS */
-                  )
-                ]);
+        vue.createElementVNode(
+          "scroll-view",
+          {
+            "scroll-y": "",
+            class: "transaction-scroll",
+            style: vue.normalizeStyle({ height: $setup.scrollHeight + "px" })
+          },
+          [
+            $setup.transactions.length === 0 ? (vue.openBlock(), vue.createElementBlock("view", {
+              key: 0,
+              class: "empty-state"
+            }, [
+              vue.createVNode(_component_ui_icon, {
+                name: "file-text",
+                size: 80,
+                color: "#A1A1A6"
               }),
-              128
-              /* KEYED_FRAGMENT */
-            ))
-          ]))
-        ])
+              vue.createElementVNode("text", { class: "empty-text" }, "暂无交易记录")
+            ])) : (vue.openBlock(), vue.createElementBlock("view", {
+              key: 1,
+              class: "transaction-list"
+            }, [
+              (vue.openBlock(true), vue.createElementBlock(
+                vue.Fragment,
+                null,
+                vue.renderList($setup.transactions, (item) => {
+                  return vue.openBlock(), vue.createElementBlock("view", {
+                    key: item.id,
+                    class: "transaction-item"
+                  }, [
+                    vue.createElementVNode("view", { class: "item-left" }, [
+                      vue.createVNode(_component_ui_icon, {
+                        name: item.type === "income" ? "arrow-down" : "arrow-up",
+                        ":size": 40,
+                        color: item.type === "income" ? "#1ABC9C" : "#FF3D00"
+                      }, null, 8, ["name", "color"]),
+                      vue.createElementVNode("view", { class: "item-info" }, [
+                        vue.createElementVNode(
+                          "text",
+                          { class: "item-title" },
+                          vue.toDisplayString(item.title),
+                          1
+                          /* TEXT */
+                        ),
+                        vue.createElementVNode(
+                          "text",
+                          { class: "item-time" },
+                          vue.toDisplayString(item.time),
+                          1
+                          /* TEXT */
+                        )
+                      ])
+                    ]),
+                    vue.createElementVNode(
+                      "text",
+                      {
+                        class: vue.normalizeClass(["item-amount", item.type])
+                      },
+                      vue.toDisplayString(item.type === "income" ? "+" : "-") + vue.toDisplayString(item.amount.toFixed(2)),
+                      3
+                      /* TEXT, CLASS */
+                    )
+                  ]);
+                }),
+                128
+                /* KEYED_FRAGMENT */
+              ))
+            ]))
+          ],
+          4
+          /* STYLE */
+        )
       ])
     ]);
   }
@@ -10177,6 +10304,10 @@ This will fail in production.`);
     __name: "index",
     setup(__props, { expose: __expose }) {
       __expose();
+      const { safeAreaBottom, scrollHeight } = usePageLayout({
+        hasSubNavbar: true,
+        headerEstimatedHeight: 120
+      });
       const agreed = vue.ref(false);
       const form = vue.ref({
         realName: "",
@@ -10214,7 +10345,7 @@ This will fail in production.`);
           }, 1500);
         }, 1500);
       };
-      const __returned__ = { agreed, form, canSubmit, uploadImage, goAgreement, handleSubmit };
+      const __returned__ = { safeAreaBottom, scrollHeight, agreed, form, canSubmit, uploadImage, goAgreement, handleSubmit };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
       return __returned__;
     }
@@ -10227,129 +10358,145 @@ This will fail in production.`);
     const _component_ui_button = vue.resolveComponent("ui-button");
     return vue.openBlock(), vue.createElementBlock("view", { class: "real-name-page" }, [
       vue.createVNode(_component_ui_sub_navbar, { title: "实名认证" }),
-      vue.createElementVNode("scroll-view", {
-        "scroll-y": "",
-        class: "auth-scroll"
-      }, [
-        vue.createElementVNode("view", { class: "auth-tips" }, [
-          vue.createVNode(_component_ui_icon, {
-            name: "shield",
-            ":size": 40,
-            color: "#1ABC9C"
-          }),
-          vue.createElementVNode("text", { class: "tips-text" }, "实名认证后可发布商品、提现等功能")
-        ]),
-        vue.createElementVNode("view", { class: "form-section" }, [
-          vue.createElementVNode("view", { class: "form-item" }, [
-            vue.createElementVNode("text", { class: "form-label" }, "真实姓名"),
-            vue.withDirectives(vue.createElementVNode(
-              "input",
-              {
-                class: "form-input",
-                "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $setup.form.realName = $event),
-                placeholder: "请输入身份证上的姓名"
-              },
-              null,
-              512
-              /* NEED_PATCH */
-            ), [
-              [vue.vModelText, $setup.form.realName]
-            ])
+      vue.createElementVNode(
+        "scroll-view",
+        {
+          "scroll-y": "",
+          class: "auth-scroll",
+          style: vue.normalizeStyle({ height: $setup.scrollHeight + "px" })
+        },
+        [
+          vue.createElementVNode("view", { class: "auth-tips" }, [
+            vue.createVNode(_component_ui_icon, {
+              name: "shield",
+              ":size": 40,
+              color: "#1ABC9C"
+            }),
+            vue.createElementVNode("text", { class: "tips-text" }, "实名认证后可发布商品、提现等功能")
           ]),
-          vue.createElementVNode("view", { class: "form-item" }, [
-            vue.createElementVNode("text", { class: "form-label" }, "身份证号"),
-            vue.withDirectives(vue.createElementVNode(
-              "input",
-              {
-                class: "form-input",
-                "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => $setup.form.idCard = $event),
-                placeholder: "请输入身份证号码",
-                maxlength: "18"
-              },
-              null,
-              512
-              /* NEED_PATCH */
-            ), [
-              [vue.vModelText, $setup.form.idCard]
-            ])
-          ])
-        ]),
-        vue.createElementVNode("view", { class: "upload-section" }, [
-          vue.createElementVNode("text", { class: "section-title" }, "身份证照片"),
-          vue.createElementVNode("view", { class: "upload-list" }, [
-            vue.createElementVNode("view", {
-              class: "upload-item",
-              onClick: _cache[2] || (_cache[2] = ($event) => $setup.uploadImage("front"))
-            }, [
-              !$setup.form.frontImage ? (vue.openBlock(), vue.createElementBlock("view", {
-                key: 0,
-                class: "upload-placeholder"
-              }, [
-                vue.createVNode(_component_ui_icon, {
-                  name: "camera",
-                  ":size": 40
-                }),
-                vue.createElementVNode("text", null, "上传身份证人像面")
-              ])) : (vue.openBlock(), vue.createBlock(_component_ui_image, {
-                key: 1,
-                src: $setup.form.frontImage,
-                width: "100%",
-                height: "100%",
-                radius: "8rpx"
-              }, null, 8, ["src"]))
+          vue.createElementVNode("view", { class: "form-section" }, [
+            vue.createElementVNode("view", { class: "form-item" }, [
+              vue.createElementVNode("text", { class: "form-label" }, "真实姓名"),
+              vue.withDirectives(vue.createElementVNode(
+                "input",
+                {
+                  class: "form-input",
+                  "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $setup.form.realName = $event),
+                  placeholder: "请输入身份证上的姓名"
+                },
+                null,
+                512
+                /* NEED_PATCH */
+              ), [
+                [vue.vModelText, $setup.form.realName]
+              ])
             ]),
-            vue.createElementVNode("view", {
-              class: "upload-item",
-              onClick: _cache[3] || (_cache[3] = ($event) => $setup.uploadImage("back"))
-            }, [
-              !$setup.form.backImage ? (vue.openBlock(), vue.createElementBlock("view", {
-                key: 0,
-                class: "upload-placeholder"
-              }, [
-                vue.createVNode(_component_ui_icon, {
-                  name: "camera",
-                  ":size": 40
-                }),
-                vue.createElementVNode("text", null, "上传身份证国徽面")
-              ])) : (vue.openBlock(), vue.createBlock(_component_ui_image, {
-                key: 1,
-                src: $setup.form.backImage,
-                width: "100%",
-                height: "100%",
-                radius: "8rpx"
-              }, null, 8, ["src"]))
+            vue.createElementVNode("view", { class: "form-item" }, [
+              vue.createElementVNode("text", { class: "form-label" }, "身份证号"),
+              vue.withDirectives(vue.createElementVNode(
+                "input",
+                {
+                  class: "form-input",
+                  "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => $setup.form.idCard = $event),
+                  placeholder: "请输入身份证号码",
+                  maxlength: "18"
+                },
+                null,
+                512
+                /* NEED_PATCH */
+              ), [
+                [vue.vModelText, $setup.form.idCard]
+              ])
             ])
           ]),
-          vue.createElementVNode("text", { class: "upload-tips" }, "请确保证照片清晰、完整、无遮挡")
-        ]),
-        vue.createElementVNode("view", { class: "agreement-section" }, [
-          vue.createVNode(_component_ui_checkbox, {
-            modelValue: $setup.agreed,
-            "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => $setup.agreed = $event)
-          }, null, 8, ["modelValue"]),
-          vue.createElementVNode("text", { class: "agreement-text" }, [
-            vue.createTextVNode(" 我已阅读并同意 "),
-            vue.createElementVNode("text", {
-              class: "link",
-              onClick: $setup.goAgreement
-            }, "《实名认证服务协议》")
-          ])
-        ])
-      ]),
-      vue.createElementVNode("view", { class: "auth-footer" }, [
-        vue.createVNode(_component_ui_button, {
-          type: "primary",
-          block: "",
-          disabled: !$setup.canSubmit,
-          onClick: $setup.handleSubmit
-        }, {
-          default: vue.withCtx(() => [
-            vue.createTextVNode(" 提交认证 ")
+          vue.createElementVNode("view", { class: "upload-section" }, [
+            vue.createElementVNode("text", { class: "section-title" }, "身份证照片"),
+            vue.createElementVNode("view", { class: "upload-list" }, [
+              vue.createElementVNode("view", {
+                class: "upload-item",
+                onClick: _cache[2] || (_cache[2] = ($event) => $setup.uploadImage("front"))
+              }, [
+                !$setup.form.frontImage ? (vue.openBlock(), vue.createElementBlock("view", {
+                  key: 0,
+                  class: "upload-placeholder"
+                }, [
+                  vue.createVNode(_component_ui_icon, {
+                    name: "camera",
+                    ":size": 40
+                  }),
+                  vue.createElementVNode("text", null, "上传身份证人像面")
+                ])) : (vue.openBlock(), vue.createBlock(_component_ui_image, {
+                  key: 1,
+                  src: $setup.form.frontImage,
+                  width: "100%",
+                  height: "100%",
+                  radius: "8rpx"
+                }, null, 8, ["src"]))
+              ]),
+              vue.createElementVNode("view", {
+                class: "upload-item",
+                onClick: _cache[3] || (_cache[3] = ($event) => $setup.uploadImage("back"))
+              }, [
+                !$setup.form.backImage ? (vue.openBlock(), vue.createElementBlock("view", {
+                  key: 0,
+                  class: "upload-placeholder"
+                }, [
+                  vue.createVNode(_component_ui_icon, {
+                    name: "camera",
+                    ":size": 40
+                  }),
+                  vue.createElementVNode("text", null, "上传身份证国徽面")
+                ])) : (vue.openBlock(), vue.createBlock(_component_ui_image, {
+                  key: 1,
+                  src: $setup.form.backImage,
+                  width: "100%",
+                  height: "100%",
+                  radius: "8rpx"
+                }, null, 8, ["src"]))
+              ])
+            ]),
+            vue.createElementVNode("text", { class: "upload-tips" }, "请确保证照片清晰、完整、无遮挡")
           ]),
-          _: 1
-          /* STABLE */
-        }, 8, ["disabled"])
-      ])
+          vue.createElementVNode("view", { class: "agreement-section" }, [
+            vue.createVNode(_component_ui_checkbox, {
+              modelValue: $setup.agreed,
+              "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => $setup.agreed = $event)
+            }, null, 8, ["modelValue"]),
+            vue.createElementVNode("text", { class: "agreement-text" }, [
+              vue.createTextVNode(" 我已阅读并同意 "),
+              vue.createElementVNode("text", {
+                class: "link",
+                onClick: $setup.goAgreement
+              }, "《实名认证服务协议》")
+            ])
+          ])
+        ],
+        4
+        /* STYLE */
+      ),
+      vue.createElementVNode(
+        "view",
+        {
+          class: "auth-footer",
+          style: vue.normalizeStyle({ paddingBottom: $setup.safeAreaBottom + 12 + "px" })
+        },
+        [
+          vue.createVNode(_component_ui_button, {
+            type: "primary",
+            block: "",
+            disabled: !$setup.canSubmit,
+            onClick: $setup.handleSubmit
+          }, {
+            default: vue.withCtx(() => [
+              vue.createTextVNode(" 提交认证 ")
+            ]),
+            _: 1
+            /* STABLE */
+          }, 8, ["disabled"])
+        ],
+        4
+        /* STYLE */
+      )
     ]);
   }
   const PagesSubAuthRealNameIndex = /* @__PURE__ */ _export_sfc(_sfc_main$v, [["render", _sfc_render$v], ["__scopeId", "data-v-3e370b20"], ["__file", "C:/Users/willdc/Documents/WorkPlace/XinMall/XinMall2/FE/src/pages-sub/auth/real-name/index.vue"]]);
@@ -10357,6 +10504,10 @@ This will fail in production.`);
     __name: "index",
     setup(__props, { expose: __expose }) {
       __expose();
+      const { safeAreaBottom, scrollHeight } = usePageLayout({
+        hasSubNavbar: true,
+        headerEstimatedHeight: 120
+      });
       const agreed = vue.ref(false);
       const showCategoryPicker = vue.ref(false);
       const form = vue.ref({
@@ -10394,7 +10545,7 @@ This will fail in production.`);
           }, 1500);
         }, 1500);
       };
-      const __returned__ = { agreed, showCategoryPicker, form, canSubmit, uploadLicense, goAgreement, handleSubmit };
+      const __returned__ = { safeAreaBottom, scrollHeight, agreed, showCategoryPicker, form, canSubmit, uploadLicense, goAgreement, handleSubmit };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
       return __returned__;
     }
@@ -10407,180 +10558,196 @@ This will fail in production.`);
     const _component_ui_button = vue.resolveComponent("ui-button");
     return vue.openBlock(), vue.createElementBlock("view", { class: "shop-auth-page" }, [
       vue.createVNode(_component_ui_sub_navbar, { title: "店铺认证" }),
-      vue.createElementVNode("scroll-view", {
-        "scroll-y": "",
-        class: "auth-scroll"
-      }, [
-        vue.createElementVNode("view", { class: "auth-tips" }, [
-          vue.createVNode(_component_ui_icon, {
-            name: "store",
-            ":size": 40,
-            color: "#1ABC9C"
-          }),
-          vue.createElementVNode("text", { class: "tips-text" }, "店铺认证后可开通店铺、发布商品等功能")
-        ]),
-        vue.createElementVNode("view", { class: "form-section" }, [
-          vue.createElementVNode("view", { class: "form-item" }, [
-            vue.createElementVNode("text", { class: "form-label" }, "店铺名称"),
-            vue.withDirectives(vue.createElementVNode(
-              "input",
-              {
-                class: "form-input",
-                "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $setup.form.shopName = $event),
-                placeholder: "请输入店铺名称",
-                maxlength: "20"
-              },
-              null,
-              512
-              /* NEED_PATCH */
-            ), [
-              [vue.vModelText, $setup.form.shopName]
-            ])
+      vue.createElementVNode(
+        "scroll-view",
+        {
+          "scroll-y": "",
+          class: "auth-scroll",
+          style: vue.normalizeStyle({ height: $setup.scrollHeight + "px" })
+        },
+        [
+          vue.createElementVNode("view", { class: "auth-tips" }, [
+            vue.createVNode(_component_ui_icon, {
+              name: "store",
+              ":size": 40,
+              color: "#1ABC9C"
+            }),
+            vue.createElementVNode("text", { class: "tips-text" }, "店铺认证后可开通店铺、发布商品等功能")
           ]),
-          vue.createElementVNode("view", { class: "form-item" }, [
-            vue.createElementVNode("text", { class: "form-label" }, "店铺简介"),
-            vue.withDirectives(vue.createElementVNode(
-              "textarea",
-              {
-                class: "form-textarea",
-                "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => $setup.form.shopDesc = $event),
-                placeholder: "请输入店铺简介",
-                maxlength: "200"
-              },
-              null,
-              512
-              /* NEED_PATCH */
-            ), [
-              [vue.vModelText, $setup.form.shopDesc]
-            ])
-          ]),
-          vue.createElementVNode("view", { class: "form-item" }, [
-            vue.createElementVNode("text", { class: "form-label" }, "经营类目"),
-            vue.createElementVNode("view", {
-              class: "form-select",
-              onClick: _cache[2] || (_cache[2] = ($event) => $setup.showCategoryPicker = true)
-            }, [
-              vue.createElementVNode(
-                "text",
+          vue.createElementVNode("view", { class: "form-section" }, [
+            vue.createElementVNode("view", { class: "form-item" }, [
+              vue.createElementVNode("text", { class: "form-label" }, "店铺名称"),
+              vue.withDirectives(vue.createElementVNode(
+                "input",
                 {
-                  class: vue.normalizeClass({ placeholder: !$setup.form.category })
+                  class: "form-input",
+                  "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $setup.form.shopName = $event),
+                  placeholder: "请输入店铺名称",
+                  maxlength: "20"
                 },
-                vue.toDisplayString($setup.form.category || "请选择经营类目"),
-                3
-                /* TEXT, CLASS */
-              ),
-              vue.createVNode(_component_ui_icon, {
-                name: "arrow-right",
-                ":size": 32
-              })
+                null,
+                512
+                /* NEED_PATCH */
+              ), [
+                [vue.vModelText, $setup.form.shopName]
+              ])
+            ]),
+            vue.createElementVNode("view", { class: "form-item" }, [
+              vue.createElementVNode("text", { class: "form-label" }, "店铺简介"),
+              vue.withDirectives(vue.createElementVNode(
+                "textarea",
+                {
+                  class: "form-textarea",
+                  "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => $setup.form.shopDesc = $event),
+                  placeholder: "请输入店铺简介",
+                  maxlength: "200"
+                },
+                null,
+                512
+                /* NEED_PATCH */
+              ), [
+                [vue.vModelText, $setup.form.shopDesc]
+              ])
+            ]),
+            vue.createElementVNode("view", { class: "form-item" }, [
+              vue.createElementVNode("text", { class: "form-label" }, "经营类目"),
+              vue.createElementVNode("view", {
+                class: "form-select",
+                onClick: _cache[2] || (_cache[2] = ($event) => $setup.showCategoryPicker = true)
+              }, [
+                vue.createElementVNode(
+                  "text",
+                  {
+                    class: vue.normalizeClass({ placeholder: !$setup.form.category })
+                  },
+                  vue.toDisplayString($setup.form.category || "请选择经营类目"),
+                  3
+                  /* TEXT, CLASS */
+                ),
+                vue.createVNode(_component_ui_icon, {
+                  name: "arrow-right",
+                  ":size": 32
+                })
+              ])
             ])
-          ])
-        ]),
-        vue.createElementVNode("view", { class: "upload-section" }, [
-          vue.createElementVNode("text", { class: "section-title" }, "营业执照"),
-          vue.createElementVNode("view", {
-            class: "upload-item",
-            onClick: $setup.uploadLicense
-          }, [
-            !$setup.form.licenseImage ? (vue.openBlock(), vue.createElementBlock("view", {
-              key: 0,
-              class: "upload-placeholder"
+          ]),
+          vue.createElementVNode("view", { class: "upload-section" }, [
+            vue.createElementVNode("text", { class: "section-title" }, "营业执照"),
+            vue.createElementVNode("view", {
+              class: "upload-item",
+              onClick: $setup.uploadLicense
             }, [
-              vue.createVNode(_component_ui_icon, {
-                name: "camera",
-                ":size": 40
-              }),
-              vue.createElementVNode("text", null, "上传营业执照")
-            ])) : (vue.openBlock(), vue.createBlock(_component_ui_image, {
-              key: 1,
-              src: $setup.form.licenseImage,
-              width: "100%",
-              height: "100%",
-              radius: "8rpx"
-            }, null, 8, ["src"]))
+              !$setup.form.licenseImage ? (vue.openBlock(), vue.createElementBlock("view", {
+                key: 0,
+                class: "upload-placeholder"
+              }, [
+                vue.createVNode(_component_ui_icon, {
+                  name: "camera",
+                  ":size": 40
+                }),
+                vue.createElementVNode("text", null, "上传营业执照")
+              ])) : (vue.openBlock(), vue.createBlock(_component_ui_image, {
+                key: 1,
+                src: $setup.form.licenseImage,
+                width: "100%",
+                height: "100%",
+                radius: "8rpx"
+              }, null, 8, ["src"]))
+            ]),
+            vue.createElementVNode("text", { class: "upload-tips" }, "请确保营业执照清晰、完整、在有效期内")
           ]),
-          vue.createElementVNode("text", { class: "upload-tips" }, "请确保营业执照清晰、完整、在有效期内")
-        ]),
-        vue.createElementVNode("view", { class: "form-section" }, [
-          vue.createElementVNode("view", { class: "form-item" }, [
-            vue.createElementVNode("text", { class: "form-label" }, "法人姓名"),
-            vue.withDirectives(vue.createElementVNode(
-              "input",
-              {
-                class: "form-input",
-                "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => $setup.form.legalPerson = $event),
-                placeholder: "请输入法人姓名"
-              },
-              null,
-              512
-              /* NEED_PATCH */
-            ), [
-              [vue.vModelText, $setup.form.legalPerson]
+          vue.createElementVNode("view", { class: "form-section" }, [
+            vue.createElementVNode("view", { class: "form-item" }, [
+              vue.createElementVNode("text", { class: "form-label" }, "法人姓名"),
+              vue.withDirectives(vue.createElementVNode(
+                "input",
+                {
+                  class: "form-input",
+                  "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => $setup.form.legalPerson = $event),
+                  placeholder: "请输入法人姓名"
+                },
+                null,
+                512
+                /* NEED_PATCH */
+              ), [
+                [vue.vModelText, $setup.form.legalPerson]
+              ])
+            ]),
+            vue.createElementVNode("view", { class: "form-item" }, [
+              vue.createElementVNode("text", { class: "form-label" }, "联系电话"),
+              vue.withDirectives(vue.createElementVNode(
+                "input",
+                {
+                  class: "form-input",
+                  type: "tel",
+                  "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => $setup.form.phone = $event),
+                  placeholder: "请输入联系电话",
+                  maxlength: "11"
+                },
+                null,
+                512
+                /* NEED_PATCH */
+              ), [
+                [vue.vModelText, $setup.form.phone]
+              ])
+            ]),
+            vue.createElementVNode("view", { class: "form-item" }, [
+              vue.createElementVNode("text", { class: "form-label" }, "经营地址"),
+              vue.withDirectives(vue.createElementVNode(
+                "input",
+                {
+                  class: "form-input",
+                  "onUpdate:modelValue": _cache[5] || (_cache[5] = ($event) => $setup.form.address = $event),
+                  placeholder: "请输入经营地址"
+                },
+                null,
+                512
+                /* NEED_PATCH */
+              ), [
+                [vue.vModelText, $setup.form.address]
+              ])
             ])
           ]),
-          vue.createElementVNode("view", { class: "form-item" }, [
-            vue.createElementVNode("text", { class: "form-label" }, "联系电话"),
-            vue.withDirectives(vue.createElementVNode(
-              "input",
-              {
-                class: "form-input",
-                type: "tel",
-                "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => $setup.form.phone = $event),
-                placeholder: "请输入联系电话",
-                maxlength: "11"
-              },
-              null,
-              512
-              /* NEED_PATCH */
-            ), [
-              [vue.vModelText, $setup.form.phone]
-            ])
-          ]),
-          vue.createElementVNode("view", { class: "form-item" }, [
-            vue.createElementVNode("text", { class: "form-label" }, "经营地址"),
-            vue.withDirectives(vue.createElementVNode(
-              "input",
-              {
-                class: "form-input",
-                "onUpdate:modelValue": _cache[5] || (_cache[5] = ($event) => $setup.form.address = $event),
-                placeholder: "请输入经营地址"
-              },
-              null,
-              512
-              /* NEED_PATCH */
-            ), [
-              [vue.vModelText, $setup.form.address]
+          vue.createElementVNode("view", { class: "agreement-section" }, [
+            vue.createVNode(_component_ui_checkbox, {
+              modelValue: $setup.agreed,
+              "onUpdate:modelValue": _cache[6] || (_cache[6] = ($event) => $setup.agreed = $event)
+            }, null, 8, ["modelValue"]),
+            vue.createElementVNode("text", { class: "agreement-text" }, [
+              vue.createTextVNode(" 我已阅读并同意 "),
+              vue.createElementVNode("text", {
+                class: "link",
+                onClick: $setup.goAgreement
+              }, "《店铺认证服务协议》")
             ])
           ])
-        ]),
-        vue.createElementVNode("view", { class: "agreement-section" }, [
-          vue.createVNode(_component_ui_checkbox, {
-            modelValue: $setup.agreed,
-            "onUpdate:modelValue": _cache[6] || (_cache[6] = ($event) => $setup.agreed = $event)
-          }, null, 8, ["modelValue"]),
-          vue.createElementVNode("text", { class: "agreement-text" }, [
-            vue.createTextVNode(" 我已阅读并同意 "),
-            vue.createElementVNode("text", {
-              class: "link",
-              onClick: $setup.goAgreement
-            }, "《店铺认证服务协议》")
-          ])
-        ])
-      ]),
-      vue.createElementVNode("view", { class: "auth-footer" }, [
-        vue.createVNode(_component_ui_button, {
-          type: "primary",
-          block: "",
-          disabled: !$setup.canSubmit,
-          onClick: $setup.handleSubmit
-        }, {
-          default: vue.withCtx(() => [
-            vue.createTextVNode(" 提交认证 ")
-          ]),
-          _: 1
-          /* STABLE */
-        }, 8, ["disabled"])
-      ])
+        ],
+        4
+        /* STYLE */
+      ),
+      vue.createElementVNode(
+        "view",
+        {
+          class: "auth-footer",
+          style: vue.normalizeStyle({ paddingBottom: $setup.safeAreaBottom + 12 + "px" })
+        },
+        [
+          vue.createVNode(_component_ui_button, {
+            type: "primary",
+            block: "",
+            disabled: !$setup.canSubmit,
+            onClick: $setup.handleSubmit
+          }, {
+            default: vue.withCtx(() => [
+              vue.createTextVNode(" 提交认证 ")
+            ]),
+            _: 1
+            /* STABLE */
+          }, 8, ["disabled"])
+        ],
+        4
+        /* STYLE */
+      )
     ]);
   }
   const PagesSubAuthShopAuthIndex = /* @__PURE__ */ _export_sfc(_sfc_main$u, [["render", _sfc_render$u], ["__scopeId", "data-v-c1c19908"], ["__file", "C:/Users/willdc/Documents/WorkPlace/XinMall/XinMall2/FE/src/pages-sub/auth/shop-auth/index.vue"]]);

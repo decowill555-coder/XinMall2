@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view class="shop-manage-page">
     <ui-sub-navbar title="店铺管理" />
     
@@ -110,8 +110,6 @@ const handleSave = () => {
 
 .manage-scroll {
   overflow: hidden;
-}
-  padding: $space-sm $space-md;
 }
 
 .shop-card {

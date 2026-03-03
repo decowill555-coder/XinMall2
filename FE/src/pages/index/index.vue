@@ -313,7 +313,7 @@ const loadMore = () => {
 }
 
 .page-content {
-  padding-bottom: 0;
+  min-height: 100vh;
 }
 
 .goods-scroll {

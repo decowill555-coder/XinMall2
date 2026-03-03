@@ -1,4 +1,4 @@
-﻿<template>
+﻿﻿<template>
   <view class="collection-page">
     <ui-sub-navbar title="我的收藏" />
     
@@ -90,7 +90,6 @@ const cancelCollect = (item: any) => {
 
 .collection-scroll {
   overflow: hidden;
-}
   padding: $space-sm $space-md;
 }
 
