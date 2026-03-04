@@ -1,4 +1,4 @@
-﻿﻿<template>
+﻿﻿﻿﻿﻿﻿﻿<template>
   <view class="collection-page">
     <ui-sub-navbar title="我的收藏" />
     
@@ -35,13 +35,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { useCollectionStore } from '@/stores';
+import { formatTimeAgo } from '@/utils/date';
 
 const { safeAreaBottom, scrollHeight } = usePageLayout({
   hasSubNavbar: true,
   headerEstimatedHeight: 176
 });
+
+const collectionStore = useCollectionStore();
 
 const activeTab = ref(0);
 
@@ -50,14 +54,31 @@ const tabList = ref([
   { name: '帖子' }
 ]);
 
-const collectionList = ref([
-  { id: 1, cover: 'https://picsum.photos/200/200?random=col1', title: 'iPhone 15 Pro Max 256GB 钛金属原色', price: 7999, tags: ['99新', '在保'], collectTime: '3天前' },
-  { id: 2, cover: 'https://picsum.photos/200/200?random=col2', title: 'MacBook Pro 14寸 M3芯片', price: 12999, tags: ['全新', '官方'], collectTime: '5天前' },
-  { id: 3, cover: 'https://picsum.photos/200/200?random=col3', title: 'AirPods Pro 第二代', price: 1399, tags: ['全新', '正品'], collectTime: '1周前' }
-]);
+const collectionList = computed(() => {
+  if (activeTab.value === 0) {
+    return collectionStore.productCollections.map(item => ({
+      id: item.id,
+      targetId: item.targetId,
+      cover: item.cover,
+      title: item.title,
+      price: item.price,
+      tags: item.tags,
+      collectTime: formatTimeAgo(item.createdAt)
+    }));
+  }
+  return collectionStore.topicCollections.map(item => ({
+    id: item.id,
+    targetId: item.targetId,
+    cover: item.cover,
+    title: item.title,
+    price: item.price,
+    tags: item.tags,
+    collectTime: formatTimeAgo(item.createdAt)
+  }));
+});
 
 const goDetail = (item: any) => {
-  uni.navigateTo({ url: `/pages-sub/trade/product/detail?id=${item.id}` });
+  uni.navigateTo({ url: `/pages-sub/trade/product/detail?id=${item.targetId}` });
 };
 
 const cancelCollect = (item: any) => {
@@ -66,11 +87,8 @@ const cancelCollect = (item: any) => {
     content: '确定取消收藏吗？',
     success: (res) => {
       if (res.confirm) {
-        const index = collectionList.value.findIndex(c => c.id === item.id);
-        if (index > -1) {
-          collectionList.value.splice(index, 1);
-          uni.showToast({ title: '已取消收藏', icon: 'success' });
-        }
+        collectionStore.removeCollection(item.targetId, activeTab.value === 0 ? 'product' : 'topic');
+        uni.showToast({ title: '已取消收藏', icon: 'success' });
       }
     }
   });

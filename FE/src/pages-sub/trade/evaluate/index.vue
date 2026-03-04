@@ -3,59 +3,61 @@
     <ui-sub-navbar title="评价" />
     
     <scroll-view scroll-y class="evaluate-scroll" :style="{ height: scrollHeight + 'px' }">
-      <view class="goods-card">
-        <view v-for="item in goodsList" :key="item.id" class="goods-item">
-          <ui-image :src="item.cover" width="120rpx" height="120rpx" radius="8rpx" />
-          <view class="goods-info">
-            <text class="goods-title">{{ item.title }}</text>
-            <text class="goods-spec">{{ item.spec }}</text>
+      <view class="evaluate-content">
+        <view class="goods-card">
+          <view v-for="item in goodsList" :key="item.id" class="goods-item">
+            <ui-image :src="item.cover" width="120rpx" height="120rpx" radius="8rpx" />
+            <view class="goods-info">
+              <text class="goods-title">{{ item.title }}</text>
+              <text class="goods-spec">{{ item.spec }}</text>
+            </view>
           </view>
         </view>
-      </view>
-      
-      <view class="rating-card">
-        <text class="section-title">商品评分</text>
-        <view class="rating-item">
-          <text class="rating-label">描述相符</text>
-          <ui-rate v-model="ratings.desc" />
+        
+        <view class="rating-card">
+          <text class="section-title">商品评分</text>
+          <view class="rating-item">
+            <text class="rating-label">描述相符</text>
+            <ui-rate v-model="ratings.desc" />
+          </view>
+          <view class="rating-item">
+            <text class="rating-label">物流服务</text>
+            <ui-rate v-model="ratings.logistics" />
+          </view>
+          <view class="rating-item">
+            <text class="rating-label">服务态度</text>
+            <ui-rate v-model="ratings.service" />
+          </view>
         </view>
-        <view class="rating-item">
-          <text class="rating-label">物流服务</text>
-          <ui-rate v-model="ratings.logistics" />
+        
+        <view class="content-card">
+          <text class="section-title">评价内容</text>
+          <textarea 
+            v-model="content" 
+            class="content-input" 
+            placeholder="分享你的购物体验吧~"
+            :maxlength="500"
+          />
+          <text class="word-count">{{ content.length }}/500</text>
         </view>
-        <view class="rating-item">
-          <text class="rating-label">服务态度</text>
-          <ui-rate v-model="ratings.service" />
+        
+        <view class="image-card">
+          <text class="section-title">上传图片（选填）</text>
+          <ui-upload v-model="images" :max-count="9" />
         </view>
-      </view>
-      
-      <view class="content-card">
-        <text class="section-title">评价内容</text>
-        <textarea 
-          v-model="content" 
-          class="content-input" 
-          placeholder="分享你的购物体验吧~"
-          :maxlength="500"
-        />
-        <text class="word-count">{{ content.length }}/500</text>
-      </view>
-      
-      <view class="image-card">
-        <text class="section-title">上传图片（选填）</text>
-        <ui-upload v-model="images" :max-count="9" />
-      </view>
-      
-      <view class="tags-card">
-        <text class="section-title">快捷标签</text>
-        <view class="tags-list">
-          <view 
-            v-for="tag in tagList" 
-            :key="tag" 
-            class="tag-item"
-            :class="{ active: selectedTags.includes(tag) }"
-            @click="toggleTag(tag)"
-          >
-            {{ tag }}
+        
+        <view class="tags-card">
+          <text class="section-title">快捷标签</text>
+          <view class="tags-list">
+            <view 
+              v-for="tag in tagList" 
+              :key="tag" 
+              class="tag-item"
+              :class="{ active: selectedTags.includes(tag) }"
+              @click="toggleTag(tag)"
+            >
+              {{ tag }}
+            </view>
           </view>
         </view>
       </view>
@@ -133,9 +135,12 @@ const handleSubmit = () => {
 }
 
 .evaluate-scroll {
-  padding: $space-sm $space-md;
   overflow: hidden;
 }
+.evaluate-content {
+  padding: $space-md;
+}
+
 
 .goods-card {
   background: $color-white;

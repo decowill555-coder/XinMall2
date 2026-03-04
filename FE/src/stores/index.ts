@@ -6,6 +6,10 @@ import { useCollectionStore } from './collection';
 import { useSessionStore } from './session';
 import { useAuthStore } from './auth';
 import { useThemeStore } from './theme';
+import { useCartStore } from './cart';
+import { useOrderStore } from './order';
+import { useProductDetailStore } from './product-detail';
+import { usePublishStore } from './publish';
 
 export {
   useUserStore,
@@ -15,7 +19,11 @@ export {
   useCollectionStore,
   useSessionStore,
   useAuthStore,
-  useThemeStore
+  useThemeStore,
+  useCartStore,
+  useOrderStore,
+  useProductDetailStore,
+  usePublishStore
 };
 
 export const stores = {
@@ -26,5 +34,9 @@ export const stores = {
   collection: useCollectionStore,
   session: useSessionStore,
   auth: useAuthStore,
-  theme: useThemeStore
+  theme: useThemeStore,
+  cart: useCartStore,
+  order: useOrderStore,
+  productDetail: useProductDetailStore,
+  publish: usePublishStore
 };

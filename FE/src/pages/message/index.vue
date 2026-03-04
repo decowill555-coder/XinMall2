@@ -103,14 +103,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { useChatStore } from '@/stores';
+import { formatTimeAgo } from '@/utils/date';
 
 const { safeAreaTop, headerExtraTop, headerHeight, scrollHeight } = usePageLayout({
   hasTabbar: true,
   headerSelector: '.page-header',
   headerEstimatedHeight: 180
 });
+
+const chatStore = useChatStore();
 
 const activeTab = ref(0);
 
@@ -120,40 +124,16 @@ const tabList = ref([
   { name: '互动' }
 ]);
 
-const tradeMessages = ref([
-  {
-    id: 1,
-    avatar: 'https://picsum.photos/100/100?random=20',
-    title: '卖家：数码达人',
-    lastMessage: '好的，明天发货，请注意查收',
-    time: '刚刚',
-    unread: 2
-  },
-  {
-    id: 2,
-    avatar: 'https://picsum.photos/100/100?random=21',
-    title: '买家：小明',
-    lastMessage: '请问这个还在吗？可以便宜点吗？',
-    time: '10分钟前',
-    unread: 0
-  },
-  {
-    id: 3,
-    avatar: 'https://picsum.photos/100/100?random=22',
-    title: '卖家：科技博主',
-    lastMessage: '已经为您安排发货了，单号：SF123456789',
-    time: '1小时前',
-    unread: 1
-  },
-  {
-    id: 4,
-    avatar: 'https://picsum.photos/100/100?random=23',
-    title: '系统客服',
-    lastMessage: '您的订单已签收，请确认收货',
-    time: '昨天',
-    unread: 0
-  }
-]);
+const tradeMessages = computed(() => 
+  chatStore.sortedConversations.map(c => ({
+    id: c.id,
+    avatar: c.targetUserAvatar,
+    title: `卖家：${c.targetUserName}`,
+    lastMessage: c.lastMessage,
+    time: formatTimeAgo(c.lastMessageTime),
+    unread: c.unreadCount
+  }))
+);
 
 const systemMessages = ref([
   {
@@ -162,7 +142,7 @@ const systemMessages = ref([
     iconColor: '#00C853',
     title: '订单发货通知',
     content: '您购买的 iPhone 15 Pro Max 已发货，预计3天内送达',
-    time: '2小时前'
+    time: formatTimeAgo(Date.now() - 2 * 60 * 60 * 1000)
   },
   {
     id: 2,
@@ -170,7 +150,7 @@ const systemMessages = ref([
     iconColor: '#00B8D4',
     title: '实名认证成功',
     content: '恭喜您完成实名认证，现在可以发布商品了',
-    time: '昨天'
+    time: formatTimeAgo(Date.now() - 24 * 60 * 60 * 1000)
   },
   {
     id: 3,
@@ -178,7 +158,23 @@ const systemMessages = ref([
     iconColor: '#FF3D00',
     title: '商品审核未通过',
     content: '您发布的商品"测试商品"因信息不完整被驳回，请补充后重新提交',
-    time: '3天前'
+    time: formatTimeAgo(Date.now() - 3 * 24 * 60 * 60 * 1000)
+  },
+  {
+    id: 4,
+    icon: 'check-circle',
+    iconColor: '#00C853',
+    title: '交易成功',
+    content: '您出售的"MacBook Pro 2023"已成功交易，款项已到账',
+    time: formatTimeAgo(Date.now() - 5 * 60 * 1000)
+  },
+  {
+    id: 5,
+    icon: 'info-circle',
+    iconColor: '#00B8D4',
+    title: '账户安全提醒',
+    content: '您的账号于今日在新设备登录，如非本人操作请及时修改密码',
+    time: formatTimeAgo(Date.now() - 30 * 60 * 1000)
   }
 ]);
 
@@ -188,21 +184,42 @@ const interactMessages = ref([
     avatar: 'https://picsum.photos/100/100?random=30',
     userName: '数码爱好者',
     content: '赞了你的帖子《iPhone 15 Pro 深度测评》',
-    time: '30分钟前'
+    time: formatTimeAgo(Date.now() - 30 * 60 * 1000)
   },
   {
     id: 2,
     avatar: 'https://picsum.photos/100/100?random=31',
     userName: '科技小白',
     content: '关注了你',
-    time: '1小时前'
+    time: formatTimeAgo(Date.now() - 60 * 60 * 1000)
   },
   {
     id: 3,
     avatar: 'https://picsum.photos/100/100?random=32',
     userName: '摄影师老李',
     content: '评论了你的帖子：拍得真好！请问用的什么镜头？',
-    time: '2小时前'
+    time: formatTimeAgo(Date.now() - 2 * 60 * 60 * 1000)
+  },
+  {
+    id: 4,
+    avatar: 'https://picsum.photos/100/100?random=33',
+    userName: '游戏玩家',
+    content: '赞了你的帖子《PS5 开箱体验》',
+    time: formatTimeAgo(Date.now() - 3 * 60 * 60 * 1000)
+  },
+  {
+    id: 5,
+    avatar: 'https://picsum.photos/100/100?random=34',
+    userName: '设计师小王',
+    content: '收藏了你的帖子《UI设计趋势2024》',
+    time: formatTimeAgo(Date.now() - 5 * 60 * 60 * 1000)
+  },
+  {
+    id: 6,
+    avatar: 'https://picsum.photos/100/100?random=35',
+    userName: '健身达人',
+    content: '评论了你的帖子：这个健身计划很棒，已收藏！',
+    time: formatTimeAgo(Date.now() - 24 * 60 * 60 * 1000)
   }
 ]);
 
@@ -214,6 +231,7 @@ const isEmpty = computed(() => {
 });
 
 const goChat = (item: any) => {
+  chatStore.setCurrentConversation(item.id);
   uni.showToast({ title: '聊天功能开发中', icon: 'none' });
 };
 
@@ -224,6 +242,55 @@ const handleSystemMessage = (item: any) => {
 const handleInteract = (item: any) => {
   uni.navigateTo({ url: `/pages-sub/content/user/index?id=${item.id}` });
 };
+
+onMounted(() => {
+  if (chatStore.conversations.length === 0) {
+    chatStore.setConversations([
+      {
+        id: 'conv-1',
+        targetUserId: 'user-1',
+        targetUserName: '数码达人',
+        targetUserAvatar: 'https://picsum.photos/100/100?random=seller1',
+        lastMessage: '好的，明天发货',
+        lastMessageTime: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
+        unreadCount: 2,
+        isOnline: true,
+        isMuted: false,
+        isPinned: false,
+        createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 10 * 60 * 1000).toISOString()
+      },
+      {
+        id: 'conv-2',
+        targetUserId: 'user-2',
+        targetUserName: '二手书店',
+        targetUserAvatar: 'https://picsum.photos/100/100?random=seller2',
+        lastMessage: '这本书还有吗？',
+        lastMessageTime: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+        unreadCount: 0,
+        isOnline: false,
+        isMuted: false,
+        isPinned: false,
+        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
+      },
+      {
+        id: 'conv-3',
+        targetUserId: 'user-3',
+        targetUserName: '游戏玩家',
+        targetUserAvatar: 'https://picsum.photos/100/100?random=seller3',
+        lastMessage: 'PS5 能便宜点吗？',
+        lastMessageTime: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+        unreadCount: 1,
+        isOnline: true,
+        isMuted: false,
+        isPinned: true,
+        createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+      }
+    ]);
+  }
+});
 </script>
 
 <style lang="scss" scoped>

@@ -3,69 +3,72 @@
     <ui-sub-navbar title="订单详情" />
     
     <scroll-view scroll-y class="detail-scroll" :style="{ height: scrollHeight + 'px' }">
-      <view class="status-card">
-        <view class="status-icon">
-          <ui-icon :name="statusConfig.icon" :size="48" :color="statusConfig.color" />
-        </view>
-        <text class="status-text">{{ statusConfig.text }}</text>
-        <text class="status-desc">{{ statusConfig.desc }}</text>
-      </view>
-      
-      <view class="address-card">
-        <view class="address-header">
-          <ui-icon name="map-pin" ::size="40" />
-          <text class="address-name">{{ address.name }}</text>
-          <text class="address-phone">{{ address.phone }}</text>
-        </view>
-        <text class="address-detail">{{ address.detail }}</text>
-      </view>
-      
-      <view class="goods-card">
-        <view class="shop-header">
-          <ui-icon name="store" ::size="40" />
-          <text class="shop-name">{{ order.shopName }}</text>
+      <view class="detail-content">
+        
+        <view class="status-card">
+          <view class="status-icon">
+            <ui-icon :name="statusConfig.icon" :size="48" :color="statusConfig.color" />
+          </view>
+          <text class="status-text">{{ statusConfig.text }}</text>
+          <text class="status-desc">{{ statusConfig.desc }}</text>
         </view>
         
-        <view v-for="item in order.goods" :key="item.id" class="goods-item">
-          <ui-image :src="item.cover" width="160rpx" height="160rpx" radius="8rpx" />
-          <view class="goods-info">
-            <text class="goods-title">{{ item.title }}</text>
-            <text class="goods-spec">{{ item.spec }}</text>
-            <view class="goods-bottom">
-              <ui-price :value="item.price" ::size="40" />
-              <text class="goods-quantity">x{{ item.quantity }}</text>
+        <view class="address-card">
+          <view class="address-header">
+            <ui-icon name="map-pin" ::size="40" />
+            <text class="address-name">{{ address.name }}</text>
+            <text class="address-phone">{{ address.phone }}</text>
+          </view>
+          <text class="address-detail">{{ address.detail }}</text>
+        </view>
+        
+        <view class="goods-card">
+          <view class="shop-header">
+            <ui-icon name="store" ::size="40" />
+            <text class="shop-name">{{ order.shopName }}</text>
+          </view>
+          
+          <view v-for="item in order.goods" :key="item.id" class="goods-item">
+            <ui-image :src="item.cover" width="160rpx" height="160rpx" radius="8rpx" />
+            <view class="goods-info">
+              <text class="goods-title">{{ item.title }}</text>
+              <text class="goods-spec">{{ item.spec }}</text>
+              <view class="goods-bottom">
+                <ui-price :value="item.price" ::size="40" />
+                <text class="goods-quantity">x{{ item.quantity }}</text>
+              </view>
             </view>
           </view>
         </view>
-      </view>
-      
-      <view class="info-card">
-        <view class="info-item">
-          <text class="info-label">订单编号</text>
-          <text class="info-value">{{ order.orderNo }}</text>
+        
+        <view class="info-card">
+          <view class="info-item">
+            <text class="info-label">订单编号</text>
+            <text class="info-value">{{ order.orderNo }}</text>
+          </view>
+          <view class="info-item">
+            <text class="info-label">下单时间</text>
+            <text class="info-value">{{ order.createTime }}</text>
+          </view>
+          <view class="info-item">
+            <text class="info-label">支付方式</text>
+            <text class="info-value">{{ order.payMethod }}</text>
+          </view>
         </view>
-        <view class="info-item">
-          <text class="info-label">下单时间</text>
-          <text class="info-value">{{ order.createTime }}</text>
-        </view>
-        <view class="info-item">
-          <text class="info-label">支付方式</text>
-          <text class="info-value">{{ order.payMethod }}</text>
-        </view>
-      </view>
-      
-      <view class="price-card">
-        <view class="price-item">
-          <text class="price-label">商品总额</text>
-          <text class="price-value">¥{{ order.goodsTotal }}</text>
-        </view>
-        <view class="price-item">
-          <text class="price-label">运费</text>
-          <text class="price-value">¥{{ order.freight }}</text>
-        </view>
-        <view class="price-item total">
-          <text class="price-label">实付款</text>
-          <ui-price :value="order.totalPrice" ::size="40" />
+        
+        <view class="price-card">
+          <view class="price-item">
+            <text class="price-label">商品总额</text>
+            <text class="price-value">¥{{ order.goodsTotal }}</text>
+          </view>
+          <view class="price-item">
+            <text class="price-label">运费</text>
+            <text class="price-value">¥{{ order.freight }}</text>
+          </view>
+          <view class="price-item total">
+            <text class="price-label">实付款</text>
+            <ui-price :value="order.totalPrice" ::size="40" />
+          </view>
         </view>
       </view>
     </scroll-view>
@@ -147,8 +150,11 @@ const goEvaluate = () => {
 }
 
 .detail-scroll {
-  
   overflow: hidden;
+}
+
+.detail-content {
+  padding: $space-md;
 }
 
 .status-card {

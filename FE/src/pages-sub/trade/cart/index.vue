@@ -3,35 +3,35 @@
     <ui-sub-navbar title="购物车" />
     
     <scroll-view scroll-y class="cart-scroll" :style="{ height: scrollHeight + 'px' }">
-      <view v-if="cartList.length === 0" class="empty-state">
+      <view v-if="!cartStore.hasItems" class="empty-state">
         <ui-icon name="shopping-cart" :size="80" color="#A1A1A6" />
         <text class="empty-text">购物车空空如也</text>
         <ui-button type="primary" size="sm" @click="goShopping">去逛逛</ui-button>
       </view>
       
       <view v-else class="cart-list">
-        <view v-for="item in cartList" :key="item.id" class="cart-item">
+        <view v-for="item in cartStore.items" :key="item.id" class="cart-item">
           <view class="item-check" @click="toggleSelect(item)">
             <ui-icon 
-              :name="item.selected ? 'check-circle-fill' : 'circle'" 
+              :name="item.isSelected ? 'check-circle-fill' : 'circle'" 
               ::size="40" 
-              :color="item.selected ? '#1ABC9C' : '#A1A1A6'" 
+              :color="item.isSelected ? '#1ABC9C' : '#A1A1A6'" 
             />
           </view>
           <ui-image :src="item.cover" width="180rpx" height="180rpx" radius="12rpx" />
           <view class="item-info">
-            <text class="item-title">{{ item.title }}</text>
-            <text class="item-spec">{{ item.spec }}</text>
+            <text class="item-title">{{ item.name }}</text>
+            <text class="item-spec">{{ item.skuSpecs.map(s => s.value).join(' / ') }}</text>
             <view class="item-bottom">
               <ui-price :value="item.price" type="main" :size="28" />
-              <ui-stepper v-model="item.quantity" :min="1" :max="99" />
+              <ui-stepper :model-value="item.quantity" :min="1" :max="99" @change="(val: number) => updateQuantity(item.id, val)" />
             </view>
           </view>
         </view>
       </view>
     </scroll-view>
     
-    <view v-if="cartList.length > 0" class="cart-footer" :style="{ paddingBottom: (safeAreaBottom + 12) + 'px' }">
+    <view v-if="cartStore.hasItems" class="cart-footer" :style="{ paddingBottom: (safeAreaBottom + 12) + 'px' }">
       <view class="footer-left">
         <view class="check-all" @click="toggleSelectAll">
           <ui-icon 
@@ -58,34 +58,32 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { useCartStore } from '@/stores';
 
 const { safeAreaBottom, scrollHeight } = usePageLayout({
   hasSubNavbar: true
 });
 
-const cartList = ref([
-  { id: 1, cover: 'https://picsum.photos/200/200?random=301', title: 'iPhone 15 Pro Max 256GB', spec: '钛金属原色', price: 7999, quantity: 1, selected: true },
-  { id: 2, cover: 'https://picsum.photos/200/200?random=302', title: 'AirPods Pro 第二代', spec: 'USB-C', price: 1399, quantity: 2, selected: true },
-  { id: 3, cover: 'https://picsum.photos/200/200?random=303', title: 'MacBook Pro 14寸', spec: 'M3芯片 16G+512G', price: 12999, quantity: 1, selected: false }
-]);
+const cartStore = useCartStore();
 
-const isAllSelected = computed(() => cartList.value.every(item => item.selected));
+const isAllSelected = computed(() => 
+  cartStore.hasItems && cartStore.items.every(item => item.isSelected)
+);
 
-const selectedCount = computed(() => cartList.value.filter(item => item.selected).length);
+const selectedCount = computed(() => cartStore.selectedCount);
 
-const totalPrice = computed(() => {
-  return cartList.value
-    .filter(item => item.selected)
-    .reduce((sum, item) => sum + item.price * item.quantity, 0);
-});
+const totalPrice = computed(() => cartStore.totalPrice);
 
 const toggleSelect = (item: any) => {
-  item.selected = !item.selected;
+  cartStore.toggleSelection(item.id);
 };
 
 const toggleSelectAll = () => {
-  const newState = !isAllSelected.value;
-  cartList.value.forEach(item => item.selected = newState);
+  cartStore.toggleAllSelection(!isAllSelected.value);
+};
+
+const updateQuantity = (id: string, quantity: number) => {
+  cartStore.updateQuantity(id, quantity);
 };
 
 const goShopping = () => {

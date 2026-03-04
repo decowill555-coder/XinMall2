@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
 
 const { safeAreaBottom, scrollHeight } = usePageLayout({
@@ -63,12 +63,22 @@ const tabList = ref([
   { name: '下架' }
 ]);
 
-const goodsList = ref([
+const allGoods = ref([
   { id: 1, cover: 'https://picsum.photos/200/200?random=l1', title: 'iPhone 15 Pro Max 256GB 钛金属原色', price: 7999, stock: 10, status: 'on', isRecommend: true },
   { id: 2, cover: 'https://picsum.photos/200/200?random=l2', title: 'MacBook Pro 14寸 M3芯片', price: 12999, stock: 5, status: 'on', isRecommend: false },
   { id: 3, cover: 'https://picsum.photos/200/200?random=l3', title: 'AirPods Pro 第二代', price: 1399, stock: 30, status: 'on', isRecommend: true },
   { id: 4, cover: 'https://picsum.photos/200/200?random=l4', title: 'iPad Pro 12.9寸 M2', price: 6999, stock: 0, status: 'off', isRecommend: false }
 ]);
+
+const goodsList = computed(() => {
+  if (activeTab.value === 0) {
+    return allGoods.value;
+  } else if (activeTab.value === 1) {
+    return allGoods.value.filter(item => item.status === 'on');
+  } else {
+    return allGoods.value.filter(item => item.status === 'off');
+  }
+});
 
 const goPublish = () => {
   uni.navigateTo({ url: '/pages-sub/seller/publish/entry' });
@@ -98,9 +108,9 @@ const handleDelete = (item: any) => {
     content: '确定删除该商品吗？删除后无法恢复',
     success: (res) => {
       if (res.confirm) {
-        const index = goodsList.value.findIndex(g => g.id === item.id);
+        const index = allGoods.value.findIndex(g => g.id === item.id);
         if (index > -1) {
-          goodsList.value.splice(index, 1);
+          allGoods.value.splice(index, 1);
           uni.showToast({ title: '删除成功', icon: 'success' });
         }
       }
@@ -121,7 +131,7 @@ const handleDelete = (item: any) => {
 }
 
 .goods-scroll {
-  padding: $space-sm $space-md;
+  
   overflow: hidden;
 }
 
@@ -137,6 +147,8 @@ const handleDelete = (item: any) => {
 }
 
 .goods-list {
+  padding: $space-md;
+
   .goods-item {
     display: flex;
     padding: $space-md;

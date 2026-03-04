@@ -3,7 +3,6 @@
     <view class="page-header" :style="{ paddingTop: (safeAreaTop + headerExtraTop) + 'px' }">
       <ui-card :glass="true" :shadow="true" radius="lg" padding="lg" class="header-card">
         <ui-text size="xl" weight="bold" color="main">关注</ui-text>
-        <ui-text size="sm" color="sub" class="subtitle">发现好物好价</ui-text>
       </ui-card>
     </view>
     
@@ -152,10 +151,7 @@ const loadMore = () => {
 .header-card {
   margin: $space-md;
   
-  .subtitle {
-    display: block;
-    margin-top: $space-xs;
-  }
+  
 }
 
 .page-content {

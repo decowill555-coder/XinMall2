@@ -3,34 +3,37 @@
     <ui-sub-navbar title="收货地址" />
     
     <scroll-view scroll-y class="address-scroll" :style="{ height: scrollHeight + 'px' }">
-      <view v-if="addressList.length === 0" class="empty-state">
-        <ui-icon name="map-pin" :size="80" color="#A1A1A6" />
-        <text class="empty-text">暂无收货地址</text>
-        <ui-button type="primary" size="sm" @click="goAdd">添加地址</ui-button>
-      </view>
-      
-      <view v-else class="address-list">
-        <view v-for="item in addressList" :key="item.id" class="address-item" @click="selectAddress(item)">
-          <view class="address-content">
-            <view class="address-header">
-              <text class="name">{{ item.name }}</text>
-              <text class="phone">{{ item.phone }}</text>
-              <ui-tag v-if="item.isDefault" type="primary" size="xs">默认</ui-tag>
+      <view class="address-content">
+        
+        <view v-if="addressList.length === 0" class="empty-state">
+          <ui-icon name="map-pin" :size="80" color="#A1A1A6" />
+          <text class="empty-text">暂无收货地址</text>
+          <ui-button type="primary" size="sm" @click="goAdd">添加地址</ui-button>
+        </view>
+        
+        <view v-else class="address-list">
+          <view v-for="item in addressList" :key="item.id" class="address-item" @click="selectAddress(item)">
+            <view class="address-content">
+              <view class="address-header">
+                <text class="name">{{ item.name }}</text>
+                <text class="phone">{{ item.phone }}</text>
+                <ui-tag v-if="item.isDefault" type="primary" size="xs">默认</ui-tag>
+              </view>
+              <text class="address-detail">{{ item.province }}{{ item.city }}{{ item.district }}{{ item.detail }}</text>
             </view>
-            <text class="address-detail">{{ item.province }}{{ item.city }}{{ item.district }}{{ item.detail }}</text>
-          </view>
-          <view class="address-actions">
-            <view class="action-item" @click.stop="setDefault(item)">
-              <ui-icon :name="item.isDefault ? 'check-circle-fill' : 'circle'" ::size="40" :color="item.isDefault ? '#1ABC9C' : '#A1A1A6'" />
-              <text>默认</text>
-            </view>
-            <view class="action-item" @click.stop="goEdit(item)">
-              <ui-icon name="edit" ::size="40" />
-              <text>编辑</text>
-            </view>
-            <view class="action-item" @click.stop="handleDelete(item)">
-              <ui-icon name="trash" ::size="40" />
-              <text>删除</text>
+            <view class="address-actions">
+              <view class="action-item" @click.stop="setDefault(item)">
+                <ui-icon :name="item.isDefault ? 'check-circle-fill' : 'circle'" ::size="40" :color="item.isDefault ? '#1ABC9C' : '#A1A1A6'" />
+                <text>默认</text>
+              </view>
+              <view class="action-item" @click.stop="goEdit(item)">
+                <ui-icon name="edit" ::size="40" />
+                <text>编辑</text>
+              </view>
+              <view class="action-item" @click.stop="handleDelete(item)">
+                <ui-icon name="trash" ::size="40" />
+                <text>删除</text>
+              </view>
             </view>
           </view>
         </view>
@@ -123,7 +126,10 @@ const handleDelete = (item: any) => {
 
 .address-scroll {
   height: calc(100vh - 88rpx - 120rpx);
-  padding: $space-sm $space-md;
+}
+
+.address-content {
+  padding: $space-md;
 }
 
 .empty-state {

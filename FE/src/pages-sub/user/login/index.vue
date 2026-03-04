@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view class="login-page">
     <view class="login-header">
       <image class="logo" src="/static/logo.png" mode="aspectFit" />
@@ -53,6 +53,10 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useUserStore, useAuthStore } from '@/stores';
+
+const userStore = useUserStore();
+const authStore = useAuthStore();
 
 const phone = ref('');
 const password = ref('');
@@ -61,17 +65,27 @@ const agreed = ref(false);
 
 const canLogin = computed(() => phone.value.length === 11 && password.value.length >= 6 && agreed.value);
 
-const handleLogin = () => {
+const handleLogin = async () => {
   if (!canLogin.value) return;
   
   uni.showLoading({ title: '登录中...' });
-  setTimeout(() => {
+  
+  try {
+    const mockToken = `token_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    userStore.setToken(mockToken);
+    
+    authStore.setAuth('user_001', 'user');
+    
     uni.hideLoading();
     uni.showToast({ title: '登录成功', icon: 'success' });
+    
     setTimeout(() => {
       uni.switchTab({ url: '/pages/my/index' });
     }, 1500);
-  }, 1000);
+  } catch (error) {
+    uni.hideLoading();
+    uni.showToast({ title: '登录失败', icon: 'none' });
+  }
 };
 
 const goRegister = () => {

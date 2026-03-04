@@ -10,7 +10,9 @@ const parseDate = (date: string | number | Date): Date => {
   if (date instanceof Date) return date;
   if (typeof date === 'number') return new Date(date);
   if (typeof date === 'string') {
-    // iOS 必须使用 '/' 分隔
+    if (date.includes('T')) {
+      return new Date(date);
+    }
     return new Date(date.replace(/-/g, '/'));
   }
   return new Date();

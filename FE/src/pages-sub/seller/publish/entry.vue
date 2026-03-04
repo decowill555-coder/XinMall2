@@ -1,4 +1,4 @@
-﻿﻿<template>
+﻿<template>
   <view class="publish-page">
     <ui-sub-navbar title="发布闲置" />
     
@@ -6,9 +6,10 @@
       <view class="form-section">
         <view class="form-label">商品标题</view>
         <ui-input 
-          v-model="form.title" 
+          :model-value="form.title" 
           placeholder="标题越详细越容易卖出" 
           :maxlength="50"
+          @update:model-value="publishStore.state.title = $event"
         />
       </view>
       
@@ -16,23 +17,24 @@
         <view class="form-label">商品描述</view>
         <textarea 
           class="desc-textarea" 
-          v-model="form.description"
+          :value="form.description"
           placeholder="描述商品的来源、使用情况、优缺点等..."
           :maxlength="500"
+          @input="publishStore.state.description = $event.detail.value"
         />
         <text class="word-count">{{ form.description.length }}/500</text>
       </view>
       
       <view class="form-section">
         <view class="form-label">上传图片</view>
-        <ui-upload v-model="form.images" :max-count="9" />
+        <ui-upload :model-value="form.images" :max-count="9" @update:model-value="publishStore.state.images = $event" />
       </view>
       
       <view class="form-section">
         <view class="form-label">商品分类</view>
         <view class="category-select" @click="showCategoryPicker = true">
-          <text :class="{ placeholder: !form.category }">
-            {{ form.category || '请选择分类' }}
+          <text :class="{ placeholder: !form.spuId }">
+            {{ form.spuId || '请选择分类' }}
           </text>
           <ui-icon name="arrow-right" ::size="32" />
         </view>
@@ -46,7 +48,7 @@
             :key="item"
             class="condition-item"
             :class="{ active: form.condition === item }"
-            @click="form.condition = item"
+            @click="publishStore.updateCondition(item === '全新' ? 100 : parseInt(item))"
           >
             {{ item }}
           </view>
@@ -59,69 +61,72 @@
           <text class="price-symbol">¥</text>
           <input 
             type="digit" 
-            v-model="form.price" 
+            :value="form.price" 
             placeholder="0"
             class="price-field"
+            @input="publishStore.updatePrice(parseFloat($event.detail.value) || 0)"
           />
         </view>
       </view>
       
       <view class="form-section">
         <view class="form-label">是否支持议价</view>
-        <ui-switch v-model="form.canBargin" />
+        <ui-switch :model-value="form.isAgreementSigned" @update:model-value="publishStore.toggleAgreement($event)" />
       </view>
       
       <view class="form-section">
         <view class="form-label">商品规格 (选填)</view>
         <ui-input 
-          v-model="form.specs" 
+          :model-value="form.selectedSkuId || ''" 
           placeholder="如: iPhone 13 Pro Max / 256G / 远峰蓝" 
         />
       </view>
       
       <view class="publish-btn-wrapper">
-        <ui-button block @click="handlePublish">发布闲置</ui-button>
+        <ui-button block :disabled="form.isSubmitting" @click="handlePublish">
+          {{ form.isSubmitting ? '发布中...' : '发布闲置' }}
+        </ui-button>
       </view>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed } from 'vue';
+import { usePublishStore, useAuthStore } from '@/stores';
 
-const form = ref({
-  title: '',
-  description: '',
-  images: [] as string[],
-  category: '',
-  condition: '',
-  price: '',
-  canBargin: false,
-  specs: ''
-});
+const publishStore = usePublishStore();
+const authStore = useAuthStore();
+
+const form = computed(() => publishStore.state);
 
 const conditions = ['全新', '99新', '95新', '9新', '85新', '8新及以下'];
-const showCategoryPicker = ref(false);
+const showCategoryPicker = false;
 
 const handlePublish = () => {
-  if (!form.value.title) {
-    uni.showToast({ title: '请输入商品标题', icon: 'none' });
+  if (!form.value.title && !form.value.description) {
+    uni.showToast({ title: '请输入商品信息', icon: 'none' });
     return;
   }
-  if (!form.value.description) {
-    uni.showToast({ title: '请输入商品描述', icon: 'none' });
-    return;
-  }
-  if (!form.value.price) {
-    uni.showToast({ title: '请输入商品价格', icon: 'none' });
+  if (!publishStore.isFormValid) {
+    uni.showToast({ title: '请完善商品信息', icon: 'none' });
     return;
   }
   
-  uni.showLoading({ title: '发布中...' });
+  if (!authStore.isAuthenticated) {
+    uni.showToast({ title: '请先登录', icon: 'none' });
+    setTimeout(() => {
+      uni.navigateTo({ url: '/pages-sub/user/login/index' });
+    }, 1500);
+    return;
+  }
+  
+  publishStore.setSubmitting(true);
   
   setTimeout(() => {
-    uni.hideLoading();
+    publishStore.setSubmitting(false);
     uni.showToast({ title: '发布成功', icon: 'success' });
+    publishStore.reset();
     setTimeout(() => {
       uni.navigateBack();
     }, 1500);

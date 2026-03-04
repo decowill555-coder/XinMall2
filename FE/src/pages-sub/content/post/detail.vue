@@ -1,4 +1,4 @@
-﻿<template>
+﻿﻿<template>
   <view class="post-detail-page">
     <ui-sub-navbar title="帖子详情" />
     
@@ -99,6 +99,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { formatTimeAgo } from '@/utils/date';
 
 const commentText = ref('');
 const showComments = ref(false);
@@ -112,7 +113,7 @@ const post = ref({
   id: 1,
   authorAvatar: 'https://picsum.photos/100/100?random=author',
   authorName: '数码达人',
-  createTime: '2小时前',
+  createTime: formatTimeAgo(Date.now() - 2 * 60 * 60 * 1000),
   isFollowed: false,
   title: 'iPhone 15 Pro Max 深度测评：性能与影像全面升级',
   content: '作为一名资深数码爱好者，今天给大家带来 iPhone 15 Pro Max 的深度测评。这款手机搭载了全新的 A17 Pro 芯片，性能提升明显，影像系统也有了很大升级。下面从几个方面详细说说使用感受...',
@@ -134,9 +135,9 @@ const post = ref({
 });
 
 const comments = ref([
-  { id: 1, avatar: 'https://picsum.photos/100/100?random=c1', userName: '科技小白', time: '1小时前', content: '写得很详细，学习了！', isLiked: false, likeCount: 12 },
-  { id: 2, avatar: 'https://picsum.photos/100/100?random=c2', userName: '数码爱好者', time: '30分钟前', content: '请问续航怎么样？日常使用能坚持一天吗？', isLiked: true, likeCount: 5 },
-  { id: 3, avatar: 'https://picsum.photos/100/100?random=c3', userName: '摄影师老李', time: '10分钟前', content: '影像部分的测评很专业，赞一个', isLiked: false, likeCount: 3 }
+  { id: 1, avatar: 'https://picsum.photos/100/100?random=c1', userName: '科技小白', time: formatTimeAgo(Date.now() - 60 * 60 * 1000), content: '写得很详细，学习了！', isLiked: false, likeCount: 12 },
+  { id: 2, avatar: 'https://picsum.photos/100/100?random=c2', userName: '数码爱好者', time: formatTimeAgo(Date.now() - 30 * 60 * 1000), content: '请问续航怎么样？日常使用能坚持一天吗？', isLiked: true, likeCount: 5 },
+  { id: 3, avatar: 'https://picsum.photos/100/100?random=c3', userName: '摄影师老李', time: formatTimeAgo(Date.now() - 10 * 60 * 1000), content: '影像部分的测评很专业，赞一个', isLiked: false, likeCount: 3 }
 ]);
 
 const goUser = () => {
@@ -188,7 +189,7 @@ const submitComment = () => {
     id: Date.now(),
     avatar: 'https://picsum.photos/100/100?random=me',
     userName: '我',
-    time: '刚刚',
+    time: formatTimeAgo(Date.now()),
     content: commentText.value,
     isLiked: false,
     likeCount: 0

@@ -3,49 +3,51 @@
     <ui-sub-navbar title="实名认证" />
     
     <scroll-view scroll-y class="auth-scroll" :style="{ height: scrollHeight + 'px' }">
-      <view class="auth-tips">
-        <ui-icon name="shield" ::size="40" color="#1ABC9C" />
-        <text class="tips-text">实名认证后可发布商品、提现等功能</text>
-      </view>
-      
-      <view class="form-section">
-        <view class="form-item">
-          <text class="form-label">真实姓名</text>
-          <input class="form-input" v-model="form.realName" placeholder="请输入身份证上的姓名" />
+      <view class="auth-content">
+        <view class="auth-tips">
+          <ui-icon name="shield" ::size="40" color="#1ABC9C" />
+          <text class="tips-text">实名认证后可发布商品、提现等功能</text>
         </view>
-        <view class="form-item">
-          <text class="form-label">身份证号</text>
-          <input class="form-input" v-model="form.idCard" placeholder="请输入身份证号码" maxlength="18" />
-        </view>
-      </view>
-      
-      <view class="upload-section">
-        <text class="section-title">身份证照片</text>
-        <view class="upload-list">
-          <view class="upload-item" @click="uploadImage('front')">
-            <view v-if="!form.frontImage" class="upload-placeholder">
-              <ui-icon name="camera" ::size="40" />
-              <text>上传身份证人像面</text>
-            </view>
-            <ui-image v-else :src="form.frontImage" width="100%" height="100%" radius="8rpx" />
+        
+        <view class="form-section">
+          <view class="form-item">
+            <text class="form-label">真实姓名</text>
+            <input class="form-input" v-model="form.realName" placeholder="请输入身份证上的姓名" />
           </view>
-          <view class="upload-item" @click="uploadImage('back')">
-            <view v-if="!form.backImage" class="upload-placeholder">
-              <ui-icon name="camera" ::size="40" />
-              <text>上传身份证国徽面</text>
-            </view>
-            <ui-image v-else :src="form.backImage" width="100%" height="100%" radius="8rpx" />
+          <view class="form-item">
+            <text class="form-label">身份证号</text>
+            <input class="form-input" v-model="form.idCard" placeholder="请输入身份证号码" maxlength="18" />
           </view>
         </view>
-        <text class="upload-tips">请确保证照片清晰、完整、无遮挡</text>
-      </view>
-      
-      <view class="agreement-section">
-        <ui-checkbox v-model="agreed" />
-        <text class="agreement-text">
-          我已阅读并同意
-          <text class="link" @click="goAgreement">《实名认证服务协议》</text>
-        </text>
+        
+        <view class="upload-section">
+          <text class="section-title">身份证照片</text>
+          <view class="upload-list">
+            <view class="upload-item" @click="uploadImage('front')">
+              <view v-if="!form.frontImage" class="upload-placeholder">
+                <ui-icon name="camera" ::size="40" />
+                <text>上传身份证人像面</text>
+              </view>
+              <ui-image v-else :src="form.frontImage" width="100%" height="100%" radius="8rpx" />
+            </view>
+            <view class="upload-item" @click="uploadImage('back')">
+              <view v-if="!form.backImage" class="upload-placeholder">
+                <ui-icon name="camera" ::size="40" />
+                <text>上传身份证国徽面</text>
+              </view>
+              <ui-image v-else :src="form.backImage" width="100%" height="100%" radius="8rpx" />
+            </view>
+          </view>
+          <text class="upload-tips">请确保证照片清晰、完整、无遮挡</text>
+        </view>
+        
+        <view class="agreement-section">
+          <ui-checkbox v-model="agreed" />
+          <text class="agreement-text">
+            我已阅读并同意
+            <text class="link" @click="goAgreement">《实名认证服务协议》</text>
+          </text>
+        </view>
       </view>
     </scroll-view>
     
@@ -122,6 +124,10 @@ const handleSubmit = () => {
 
 .auth-scroll {
   overflow: hidden;
+}
+
+.auth-content {
+  padding: $space-md;
 }
 
 .auth-tips {

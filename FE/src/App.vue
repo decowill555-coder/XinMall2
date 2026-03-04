@@ -8,11 +8,19 @@
 
 <script setup lang="ts">
 import { onLaunch, onShow, onHide } from '@dcloudio/uni-app';
+import { useAppStore, useThemeStore, useUserStore, useAuthStore } from '@/stores';
 
-console.log('App setup running');
+const appStore = useAppStore();
+const themeStore = useThemeStore();
+const userStore = useUserStore();
+const authStore = useAuthStore();
 
 onLaunch(() => {
   console.log('App Launch');
+  
+  appStore.init();
+  themeStore.initTheme();
+  authStore.initialize();
 });
 
 onShow(() => {

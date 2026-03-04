@@ -3,46 +3,49 @@
     <ui-sub-navbar :title="isEdit ? '编辑地址' : '新增地址'" />
     
     <scroll-view scroll-y class="edit-scroll" :style="{ height: scrollHeight + 'px' }">
-      <view class="form-section">
-        <view class="form-item">
-          <text class="form-label">收货人</text>
-          <input class="form-input" v-model="form.name" placeholder="请输入收货人姓名" />
-        </view>
-        <view class="form-item">
-          <text class="form-label">手机号</text>
-          <input class="form-input" type="tel" v-model="form.phone" placeholder="请输入手机号" maxlength="11" />
-        </view>
-        <view class="form-item" @click="chooseLocation">
-          <text class="form-label">所在地区</text>
-          <view class="form-select">
-            <text :class="{ placeholder: !form.region }">{{ form.region || '请选择省市区' }}</text>
-            <ui-icon name="arrow-right" ::size="32" />
+      <view class="address-content">
+        
+        <view class="form-section">
+          <view class="form-item">
+            <text class="form-label">收货人</text>
+            <input class="form-input" v-model="form.name" placeholder="请输入收货人姓名" />
           </view>
-        </view>
-        <view class="form-item">
-          <text class="form-label">详细地址</text>
-          <textarea class="form-textarea" v-model="form.detail" placeholder="请输入详细地址（街道、楼栋、门牌号）" />
-        </view>
-        <view class="form-item">
-          <text class="form-label">地址标签</text>
-          <view class="tag-list">
-            <view 
-              v-for="tag in tagList" 
-              :key="tag"
-              class="tag-item"
-              :class="{ active: form.tag === tag }"
-              @click="form.tag = tag"
-            >
-              {{ tag }}
+          <view class="form-item">
+            <text class="form-label">手机号</text>
+            <input class="form-input" type="tel" v-model="form.phone" placeholder="请输入手机号" maxlength="11" />
+          </view>
+          <view class="form-item" @click="chooseLocation">
+            <text class="form-label">所在地区</text>
+            <view class="form-select">
+              <text :class="{ placeholder: !form.region }">{{ form.region || '请选择省市区' }}</text>
+              <ui-icon name="arrow-right" ::size="32" />
+            </view>
+          </view>
+          <view class="form-item">
+            <text class="form-label">详细地址</text>
+            <textarea class="form-textarea" v-model="form.detail" placeholder="请输入详细地址（街道、楼栋、门牌号）" />
+          </view>
+          <view class="form-item">
+            <text class="form-label">地址标签</text>
+            <view class="tag-list">
+              <view 
+                v-for="tag in tagList" 
+                :key="tag"
+                class="tag-item"
+                :class="{ active: form.tag === tag }"
+                @click="form.tag = tag"
+              >
+                {{ tag }}
+              </view>
             </view>
           </view>
         </view>
-      </view>
-      
-      <view class="switch-section">
-        <view class="switch-item">
-          <text class="switch-label">设为默认地址</text>
-          <ui-switch v-model="form.isDefault" />
+        
+        <view class="switch-section">
+          <view class="switch-item">
+            <text class="switch-label">设为默认地址</text>
+            <ui-switch v-model="form.isDefault" />
+          </view>
         </view>
       </view>
     </scroll-view>
@@ -119,6 +122,10 @@ const handleSave = () => {
 
 .edit-scroll {
   overflow: hidden;
+}
+
+.address-content {
+  padding: $space-md;
 }
 
 .form-section {

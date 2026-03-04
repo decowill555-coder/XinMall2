@@ -3,36 +3,38 @@
     <ui-sub-navbar title="设置" />
     
     <scroll-view scroll-y class="settings-scroll" :style="{ height: scrollHeight + 'px' }">
-      <view class="settings-group">
-        <ui-cell title="账号与安全" icon="shield" is-link @click="goAccount" />
-        <ui-cell title="隐私设置" icon="lock" is-link @click="goPrivacy" />
-        <ui-cell title="通知设置" icon="bell" is-link @click="goNotification" />
-      </view>
-      
-      <view class="settings-group">
-        <ui-cell title="通用设置" icon="settings" is-link @click="goGeneral" />
-        <ui-cell title="语言" icon="globe" value="简体中文" is-link @click="goLanguage" />
-        <ui-cell title="字体大小" icon="type" value="标准" is-link @click="goFontSize" />
-      </view>
-      
-      <view class="settings-group">
-        <ui-cell title="清除缓存" icon="trash" value="12.5MB" @click="clearCache" />
-        <ui-cell title="关于我们" icon="info-circle" is-link @click="goAbout" />
-        <ui-cell title="用户协议" icon="file-text" is-link @click="goAgreement" />
-        <ui-cell title="隐私政策" icon="file-text" is-link @click="goPrivacyPolicy" />
-      </view>
-      
-      <view class="settings-group">
-        <ui-cell title="检查更新" icon="refresh" value="v1.0.0" @click="checkUpdate" />
-        <ui-cell title="帮助与反馈" icon="help-circle" is-link @click="goHelp" />
-      </view>
-      
-      <view class="logout-section">
-        <ui-button type="danger" plain block @click="handleLogout">退出登录</ui-button>
-      </view>
-      
-      <view class="version-info">
-        <text>当前版本 v1.0.0</text>
+      <view class="settings-content">
+        <view class="settings-group">
+          <ui-cell title="账号与安全" icon="shield" is-link @click="goAccount" />
+          <ui-cell title="隐私设置" icon="lock" is-link @click="goPrivacy" />
+          <ui-cell title="通知设置" icon="bell" is-link @click="goNotification" />
+        </view>
+        
+        <view class="settings-group">
+          <ui-cell title="通用设置" icon="settings" is-link @click="goGeneral" />
+          <ui-cell title="语言" icon="globe" value="简体中文" is-link @click="goLanguage" />
+          <ui-cell title="字体大小" icon="type" value="标准" is-link @click="goFontSize" />
+        </view>
+        
+        <view class="settings-group">
+          <ui-cell title="清除缓存" icon="trash" value="12.5MB" @click="clearCache" />
+          <ui-cell title="关于我们" icon="info-circle" is-link @click="goAbout" />
+          <ui-cell title="用户协议" icon="file-text" is-link @click="goAgreement" />
+          <ui-cell title="隐私政策" icon="file-text" is-link @click="goPrivacyPolicy" />
+        </view>
+        
+        <view class="settings-group">
+          <ui-cell title="检查更新" icon="refresh" value="v1.0.0" @click="checkUpdate" />
+          <ui-cell title="帮助与反馈" icon="help-circle" is-link @click="goHelp" />
+        </view>
+        
+        <view class="logout-section">
+          <ui-button type="danger" plain block @click="handleLogout">退出登录</ui-button>
+        </view>
+        
+        <view class="version-info">
+          <text>当前版本 v1.0.0</text>
+        </view>
       </view>
     </scroll-view>
   </view>
@@ -104,8 +106,13 @@ const handleLogout = () => {
 
 .settings-scroll {
   overflow: hidden;
-  padding: $space-sm $space-md;
 }
+
+.settings-content {
+  padding: $space-md;
+}
+
+
 
 .settings-group {
   background: $color-white;

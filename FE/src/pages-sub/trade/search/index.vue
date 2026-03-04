@@ -1,13 +1,22 @@
 <template>
   <view class="search-page" :style="{ paddingTop: (safeAreaTop + headerExtraTop) + 'px' }">
     <view class="search-header">
-      <ui-search 
-        v-model="keyword" 
-        placeholder="搜索数码产品型号..." 
-        :focus="true"
-        @search="handleSearch"
-      />
-      <text class="cancel-btn" @click="goBack">取消</text>
+      <view class="back-btn" @click="goBack">
+        <ui-icon name="arrow-left" :size="40" color="#333" />
+      </view>
+      <view class="search-input-wrapper">
+        <ui-search 
+          v-model="keyword" 
+          placeholder="搜索数码产品型号..." 
+          :hot-keywords="hotKeywords"
+          :auto-focus="autoFocus"
+          @search="handleSearch"
+          @hot-click="handleHotClick"
+        />
+      </view>
+      <view class="search-btn" @click="handleSearch">
+        <text>搜索</text>
+      </view>
     </view>
     
     <scroll-view scroll-y class="search-scroll" :style="{ height: scrollHeight + 'px' }">
@@ -77,31 +86,66 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { useSearchHistoryStore } from '@/stores';
 
 const { safeAreaTop, headerExtraTop, scrollHeight } = usePageLayout({
   hasSubNavbar: false,
   headerEstimatedHeight: 100
 });
 
+const searchHistoryStore = useSearchHistoryStore();
+
 const keyword = ref('');
 const hasSearched = ref(false);
+const autoFocus = ref(false);
 
-const historyList = ref([
-  'iPhone 15', 'MacBook Pro', 'AirPods', 'Sony 耳机'
-]);
+const hotKeywords = computed(() => {
+  const hot = searchHistoryStore.hotKeywords;
+  if (hot.length > 0) {
+    return hot.map(h => ({ keyword: h.keyword, id: h.id }));
+  }
+  return [
+    { keyword: 'iPhone 15 Pro Max', id: 1 },
+    { keyword: 'MacBook Pro M3', id: 2 },
+    { keyword: 'AirPods Pro 2', id: 3 },
+    { keyword: 'iPad Pro 2024', id: 4 },
+    { keyword: 'Nintendo Switch OLED', id: 5 },
+    { keyword: 'Sony 相机', id: 6 },
+    { keyword: '华为 Mate 60 Pro', id: 7 },
+    { keyword: '小米 14 Ultra', id: 8 }
+  ];
+});
 
-const hotList = ref([
-  { keyword: 'iPhone 15 Pro Max', isHot: true },
-  { keyword: 'MacBook Pro M3', isHot: true },
-  { keyword: 'AirPods Pro 2', isHot: false },
-  { keyword: 'iPad Pro', isHot: false },
-  { keyword: 'Nintendo Switch', isHot: false },
-  { keyword: 'Sony 相机', isHot: false },
-  { keyword: '华为 Mate 60', isHot: true },
-  { keyword: '小米 14', isHot: false }
-]);
+onLoad((options: any) => {
+  if (options.keyword) {
+    keyword.value = decodeURIComponent(options.keyword);
+    handleSearch();
+  } else {
+    autoFocus.value = true;
+  }
+});
+
+const historyList = computed(() => 
+  searchHistoryStore.recentHistory.map(h => h.keyword)
+);
+
+const hotList = computed(() => {
+  const hot = searchHistoryStore.hotKeywords;
+  if (hot.length > 0) return hot.map(h => ({ keyword: h.keyword, isHot: h.trend === 'up' }));
+  return [
+    { keyword: 'iPhone 15 Pro Max', isHot: true },
+    { keyword: 'MacBook Pro M3', isHot: true },
+    { keyword: 'AirPods Pro 2', isHot: false },
+    { keyword: 'iPad Pro', isHot: false },
+    { keyword: 'Nintendo Switch', isHot: false },
+    { keyword: 'Sony 相机', isHot: false },
+    { keyword: '华为 Mate 60', isHot: true },
+    { keyword: '小米 14', isHot: false }
+  ];
+});
 
 const resultList = ref([
   { id: 1, cover: 'https://picsum.photos/200/200?random=801', title: 'iPhone 15 Pro Max 256GB 钛金属原色', price: 7999, sales: 128, tags: ['99新', '在保'] },
@@ -112,14 +156,13 @@ const resultList = ref([
 const handleSearch = () => {
   if (!keyword.value.trim()) return;
   
-  if (!historyList.value.includes(keyword.value)) {
-    historyList.value.unshift(keyword.value);
-    if (historyList.value.length > 10) {
-      historyList.value.pop();
-    }
-  }
-  
+  searchHistoryStore.addHistory(keyword.value.trim(), 'product');
   hasSearched.value = true;
+};
+
+const handleHotClick = (item: any) => {
+  keyword.value = item.keyword;
+  handleSearch();
 };
 
 const searchByKeyword = (word: string) => {
@@ -128,7 +171,7 @@ const searchByKeyword = (word: string) => {
 };
 
 const clearHistory = () => {
-  historyList.value = [];
+  searchHistoryStore.clearHistory();
 };
 
 const goBack = () => {
@@ -152,10 +195,24 @@ const goDetail = (item: any) => {
   padding: $space-sm $space-md;
   background: $color-white;
   
-  .cancel-btn {
-    font-size: $font-size-md;
-    color: $color-text-sub;
+  .back-btn {
+    padding: $space-xs;
+    margin-right: $space-sm;
+  }
+  
+  .search-input-wrapper {
+    flex: 1;
+  }
+  
+  .search-btn {
+    padding: $space-sm $space-md;
     margin-left: $space-sm;
+    
+    text {
+      font-size: $font-size-md;
+      color: $color-brand-primary;
+      font-weight: $font-weight-medium;
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view class="index-page">
     <view class="fixed-header" :style="{ paddingTop: (safeAreaTop + headerExtraTop) + 'px' }">
       <view class="search-bar">
@@ -6,7 +6,9 @@
           v-model="keyword" 
           placeholder="搜索数码产品型号..." 
           :disabled="true"
+          :hot-keywords="hotKeywords"
           @click="goSearch"
+          @hot-click="handleHotClick"
         />
       </view>
       
@@ -50,7 +52,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, nextTick } from 'vue';
-import { onReady } from '@dcloudio/uni-app';
+import { onReady, onShow } from '@dcloudio/uni-app';
 import { useAppStore } from '@/stores';
 
 const appStore = useAppStore();
@@ -58,6 +60,21 @@ const appStore = useAppStore();
 const keyword = ref('');
 const activeTab = ref(0);
 const loading = ref(false);
+
+onShow(() => {
+  keyword.value = '';
+});
+
+const hotKeywords = ref([
+  { keyword: 'iPhone 15 Pro Max', id: 1 },
+  { keyword: 'MacBook Pro M3', id: 2 },
+  { keyword: 'AirPods Pro 2', id: 3 },
+  { keyword: 'iPad Pro 2024', id: 4 },
+  { keyword: '华为 Mate 60 Pro', id: 5 },
+  { keyword: '小米 14 Ultra', id: 6 },
+  { keyword: 'Sony WH-1000XM5', id: 7 },
+  { keyword: 'Nintendo Switch OLED', id: 8 }
+]);
 
 const safeAreaTop = computed(() => appStore.safeAreaInsets.top);
 const safeAreaBottom = computed(() => appStore.safeAreaInsets.bottom);
@@ -256,6 +273,12 @@ const goSearch = () => {
   uni.navigateTo({ url: '/pages-sub/trade/search/index' });
 };
 
+const handleHotClick = (item: any) => {
+  uni.navigateTo({ 
+    url: `/pages-sub/trade/search/index?keyword=${encodeURIComponent(item.keyword)}`
+  });
+};
+
 const goDetail = (item: any) => {
   uni.navigateTo({ url: `/pages-sub/trade/product/detail?id=${item.id}` });
 };
@@ -313,10 +336,14 @@ const loadMore = () => {
 }
 
 .page-content {
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 0;
   min-height: 100vh;
 }
 
 .goods-scroll {
+  min-height: 100vh;
   overflow: hidden;
 }
 

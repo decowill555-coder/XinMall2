@@ -109,6 +109,7 @@ const handleSave = () => {
 }
 
 .manage-scroll {
+  padding:0px;
   overflow: hidden;
 }
 

@@ -42,10 +42,10 @@
           <template #header>
             <view class="section-header">
               <ui-text size="lg" weight="bold" color="main">我的订单</ui-text>
-              <view class="section-more" @click="goOrders">
-                <ui-text size="sm" color="sub">全部订单</ui-text>
-                <ui-icon name="arrow-right" ::size="32" color="#6E6E73" />
-              </view>
+                <view class="section-more" @click="goOrders">
+                  <ui-text size="sm" color="sub">全部订单</ui-text>
+                  <ui-icon name="arrow-right" ::size="32" color="#6E6E73" />
+                </view>
             </view>
           </template>
           
@@ -132,8 +132,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { useUserStore, useAuthStore, useOrderStore } from '@/stores';
 
 const { safeAreaTop, headerExtraTop, headerHeight, scrollHeight } = usePageLayout({
   hasTabbar: true,
@@ -141,26 +142,34 @@ const { safeAreaTop, headerExtraTop, headerHeight, scrollHeight } = usePageLayou
   headerEstimatedHeight: 280
 });
 
-const userInfo = ref({
-  avatar: 'https://picsum.photos/200/200?random=100',
-  name: '数码达人',
-  signature: '专注数码产品测评与分享',
-  isVerified: true,
-  isSeller: true,
-  followers: 2568,
-  following: 128,
-  likes: 8999
-});
+const userStore = useUserStore();
+const authStore = useAuthStore();
+const orderStore = useOrderStore();
 
-const orderCounts = ref({
-  pending: 2,
-  shipped: 1,
-  received: 3,
-  reviewed: 1,
-  refund: 0
-});
+const userInfo = computed(() => ({
+  avatar: userStore.userInfo?.avatar || 'https://picsum.photos/200/200?random=100',
+  name: userStore.userInfo?.nickname || '未登录',
+  signature: userStore.userInfo?.signature || '点击登录',
+  isVerified: authStore.isAuthenticated,
+  isSeller: authStore.isSeller,
+  followers: userStore.userInfo?.followers || 0,
+  following: userStore.userInfo?.following || 0,
+  likes: userStore.userInfo?.likes || 0
+}));
+
+const orderCounts = computed(() => ({
+  pending: orderStore.orderCountByStatus.pending,
+  shipped: orderStore.orderCountByStatus.paid,
+  received: orderStore.orderCountByStatus.shipped,
+  reviewed: orderStore.orderCountByStatus.completed,
+  refund: orderStore.orderCountByStatus.refunding
+}));
 
 const goProfile = () => {
+  if (!authStore.isAuthenticated) {
+    uni.navigateTo({ url: '/pages-sub/user/login/index' });
+    return;
+  }
   uni.showToast({ title: '个人资料功能开发中', icon: 'none' });
 };
 
