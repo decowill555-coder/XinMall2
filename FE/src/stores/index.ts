@@ -1,6 +1,7 @@
 import { useUserStore } from './user';
 import { useChatStore } from './chat';
 import { useSearchHistoryStore } from './search-history';
+import { useSearchFilterStore } from './search-filter';
 import { useAppStore } from './app';
 import { useCollectionStore } from './collection';
 import { useSessionStore } from './session';
@@ -15,6 +16,7 @@ export {
   useUserStore,
   useChatStore,
   useSearchHistoryStore,
+  useSearchFilterStore,
   useAppStore,
   useCollectionStore,
   useSessionStore,
@@ -30,6 +32,7 @@ export const stores = {
   user: useUserStore,
   chat: useChatStore,
   searchHistory: useSearchHistoryStore,
+  searchFilter: useSearchFilterStore,
   app: useAppStore,
   collection: useCollectionStore,
   session: useSessionStore,
