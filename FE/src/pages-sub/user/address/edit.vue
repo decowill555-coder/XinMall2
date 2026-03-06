@@ -6,39 +6,27 @@
       <view class="address-content">
         
         <view class="form-section">
-          <view class="form-item">
-            <text class="form-label">收货人</text>
-            <input class="form-input" v-model="form.name" placeholder="请输入收货人姓名" />
-          </view>
-          <view class="form-item">
-            <text class="form-label">手机号</text>
-            <input class="form-input" type="tel" v-model="form.phone" placeholder="请输入手机号" maxlength="11" />
-          </view>
-          <view class="form-item" @click="chooseLocation">
-            <text class="form-label">所在地区</text>
-            <view class="form-select">
+          <ui-form-item label="收货人">
+            <ui-input v-model="form.name" placeholder="请输入收货人姓名" />
+          </ui-form-item>
+          <ui-form-item label="手机号">
+            <ui-input v-model="form.phone" type="tel" placeholder="请输入手机号" :maxlength="11" />
+          </ui-form-item>
+          <ui-form-item label="所在地区">
+            <view class="form-select" @click="chooseLocation">
               <text :class="{ placeholder: !form.region }">{{ form.region || '请选择省市区' }}</text>
-              <ui-icon name="arrow-right" ::size="32" />
+              <ui-icon name="chevron-right" :size="32" />
             </view>
-          </view>
-          <view class="form-item">
-            <text class="form-label">详细地址</text>
-            <textarea class="form-textarea" v-model="form.detail" placeholder="请输入详细地址（街道、楼栋、门牌号）" />
-          </view>
-          <view class="form-item">
-            <text class="form-label">地址标签</text>
-            <view class="tag-list">
-              <view 
-                v-for="tag in tagList" 
-                :key="tag"
-                class="tag-item"
-                :class="{ active: form.tag === tag }"
-                @click="form.tag = tag"
-              >
-                {{ tag }}
-              </view>
-            </view>
-          </view>
+          </ui-form-item>
+          <ui-form-item label="详细地址">
+            <ui-textarea v-model="form.detail" placeholder="请输入详细地址（街道、楼栋、门牌号）" :rows="3" />
+          </ui-form-item>
+          <ui-form-item label="地址标签">
+            <ui-condition-picker 
+              v-model="form.tagIndex" 
+              :options="tagOptions"
+            />
+          </ui-form-item>
         </view>
         
         <view class="switch-section">
@@ -50,9 +38,9 @@
       </view>
     </scroll-view>
     
-    <view class="edit-footer">
+    <ui-bottom-bar>
       <ui-button type="primary" block @click="handleSave">保存</ui-button>
-    </view>
+    </ui-bottom-bar>
   </view>
 </template>
 
@@ -60,20 +48,25 @@
 import { ref, computed } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
 
-const { safeAreaBottom, scrollHeight } = usePageLayout({
+const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
   headerEstimatedHeight: 120
 });
 
 const isEdit = ref(false);
-const tagList = ref(['家', '公司', '学校']);
+
+const tagOptions = computed(() => [
+  { label: '家', value: 0 },
+  { label: '公司', value: 1 },
+  { label: '学校', value: 2 }
+]);
 
 const form = ref({
   name: '',
   phone: '',
   region: '',
   detail: '',
-  tag: '',
+  tagIndex: 0,
   isDefault: false
 });
 
@@ -129,77 +122,37 @@ const handleSave = () => {
 }
 
 .form-section {
-  background: $color-white;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
   border-radius: $radius-md;
   padding: $space-md;
   
-  .form-item {
-    margin-bottom: $space-lg;
+  .form-select {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 88rpx;
+    padding: 0 $space-md;
+    background: var(--glass-crystal-high, rgba(255, 255, 255, 0.6));
+    backdrop-filter: blur($blur-sm);
+    -webkit-backdrop-filter: blur($blur-sm);
+    border: 1rpx solid var(--glass-border-subtle, rgba(0, 0, 0, 0.04));
+    border-radius: $radius-md;
     
-    &:last-child { margin-bottom: 0; }
-    
-    .form-label {
-      font-size: $font-size-sm;
-      color: $color-text-sub;
-      margin-bottom: $space-sm;
-    }
-    
-    .form-input {
-      width: 100%;
-      height: 80rpx;
-      padding: 0 $space-md;
-      background: $color-bg-gray;
-      border-radius: $radius-sm;
+    text {
       font-size: $font-size-md;
       color: $color-text-main;
-      box-sizing: border-box;
-    }
-    
-    .form-textarea {
-      width: 100%;
-      height: 120rpx;
-      padding: $space-md;
-      background: $color-bg-gray;
-      border-radius: $radius-sm;
-      font-size: $font-size-md;
-      color: $color-text-main;
-      box-sizing: border-box;
-    }
-    
-    .form-select {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 80rpx;
-      padding: 0 $space-md;
-      background: $color-bg-gray;
-      border-radius: $radius-sm;
       
-      .placeholder { color: $color-text-placeholder; }
-    }
-    
-    .tag-list {
-      display: flex;
-      gap: $space-sm;
-      
-      .tag-item {
-        padding: $space-sm $space-md;
-        background: $color-bg-gray;
-        border-radius: $radius-sm;
-        font-size: $font-size-sm;
-        color: $color-text-sub;
-        
-        &.active {
-          color: $color-primary;
-          background: rgba($color-primary, 0.1);
-        }
-      }
+      &.placeholder { color: $color-text-placeholder; }
     }
   }
 }
 
 .switch-section {
-  background: $color-white;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
   border-radius: $radius-md;
   padding: 0 $space-md;
   margin-top: $space-sm;
@@ -215,16 +168,5 @@ const handleSave = () => {
       color: $color-text-main;
     }
   }
-}
-
-.edit-footer {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: $space-md;
-  padding-bottom: calc(#{$space-md} + env(safe-area-inset-bottom));
-  background: $color-white;
-  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
 }
 </style>

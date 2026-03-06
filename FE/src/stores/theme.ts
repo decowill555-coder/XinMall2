@@ -191,7 +191,6 @@ export const useThemeStore = defineStore('theme', () => {
       '--color-bg-white': '#FFFFFF',
       '--color-bg-gray': '#FAF8F7',
       '--color-bg-glass': 'rgba(255, 255, 255, 0.65)',
-      '--color-bg-solid': '#FFFFFF',
       '--color-text-main': '#2C2624',
       '--color-text-sub': '#867A76',
       '--color-text-disabled': '#C4C0BE',
@@ -247,7 +246,6 @@ export const useThemeStore = defineStore('theme', () => {
       '--color-bg-white': '#16161E',
       '--color-bg-gray': '#0F0E16',
       '--color-bg-glass': 'rgba(255, 255, 255, 0.06)',
-      '--color-bg-solid': '#16161E',
       
       '--color-text-main': '#F2F2F7',
       '--color-text-sub': '#A1A1AA',

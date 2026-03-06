@@ -64,7 +64,7 @@ const emit = defineEmits(['stat-click']);
       
       .shop-desc {
         font-size: $font-size-sm;
-        color: var(--glass-shine, rgba(255, 255, 255, 0.8));
+        color: rgba(255, 255, 255, 0.8);
         margin: $space-xs 0;
       }
       
@@ -80,7 +80,7 @@ const emit = defineEmits(['stat-click']);
     justify-content: space-around;
     margin-top: $space-lg;
     padding: $space-md;
-    background: var(--glass-crystal, rgba(255, 255, 255, 0.15));
+    background: rgba(255, 255, 255, 0.15);
     border-radius: $radius-lg;
     
     .stat-item {
@@ -95,7 +95,7 @@ const emit = defineEmits(['stat-click']);
       .stat-label {
         display: block;
         font-size: $font-size-xs;
-        color: var(--glass-shine, rgba(255, 255, 255, 0.8));
+        color: rgba(255, 255, 255, 0.8);
         margin-top: $space-xs;
       }
     }

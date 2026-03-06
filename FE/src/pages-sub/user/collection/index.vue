@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿<template>
+﻿﻿﻿﻿<template>
   <view class="collection-page">
     <ui-sub-navbar title="我的收藏" />
     
@@ -7,27 +7,27 @@
     </view>
     
     <scroll-view scroll-y class="collection-scroll" :style="{ height: scrollHeight + 'px' }">
-      <view v-if="collectionList.length === 0" class="empty-state">
-        <ui-icon name="heart" :size="80" color="#A1A1A6" />
-        <text class="empty-text">暂无收藏</text>
-      </view>
+      <view class="collection-content">
+        <ui-empty v-if="collectionList.length === 0" icon="heart" text="暂无收藏" />
       
-      <view v-else class="collection-list">
-        <view v-for="item in collectionList" :key="item.id" class="collection-item" @click="goDetail(item)">
-          <ui-image :src="item.cover" width="180rpx" height="180rpx" radius="8rpx" />
-          <view class="item-info">
-            <text class="item-title">{{ item.title }}</text>
-            <view class="item-tags">
-              <ui-tag v-for="tag in item.tags?.slice(0, 2)" :key="tag" type="primary" size="sm">{{ tag }}</ui-tag>
-            </view>
-            <view class="item-bottom">
-              <ui-price :value="item.price" :size="28" />
-              <text class="item-time">{{ item.collectTime }}</text>
-            </view>
-          </view>
-          <view class="item-action" @click.stop="cancelCollect(item)">
-            <ui-icon name="heart-fill" ::size="40" color="#FF3D00" />
-          </view>
+        <view v-else class="collection-list">
+          <ui-goods-list-item 
+            v-for="item in collectionList" 
+            :key="item.id"
+            :cover="item.cover"
+            :title="item.title"
+            :tags="getTags(item.tags)"
+            :price="item.price"
+            :time="item.collectTime"
+            image-size="180rpx"
+            @click="goDetail(item)"
+          >
+            <template #right>
+              <view class="item-action" @click.stop="cancelCollect(item)">
+                <ui-icon name="heart-fill" :size="40" color="#FF3D00" />
+              </view>
+            </template>
+          </ui-goods-list-item>
         </view>
       </view>
     </scroll-view>
@@ -40,7 +40,7 @@ import { usePageLayout } from '@/composables/usePageLayout';
 import { useCollectionStore } from '@/stores';
 import { formatTimeAgo } from '@/utils/date';
 
-const { safeAreaBottom, scrollHeight } = usePageLayout({
+const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
   headerEstimatedHeight: 176
 });
@@ -77,6 +77,11 @@ const collectionList = computed(() => {
   }));
 });
 
+const getTags = (tags?: string[]) => {
+  if (!tags) return [];
+  return tags.slice(0, 2).map(tag => ({ text: tag, type: 'primary' as const }));
+};
+
 const goDetail = (item: any) => {
   uni.navigateTo({ url: `/pages-sub/trade/product/detail?id=${item.targetId}` });
 };
@@ -102,67 +107,25 @@ const cancelCollect = (item: any) => {
 }
 
 .filter-bar {
-  background: $color-white;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
   padding: 0 $space-md;
 }
 
 .collection-scroll {
   overflow: hidden;
+}
+
+.collection-content {
   padding: $space-sm $space-md;
 }
 
-.empty-state {
-  @include flex-column-center;
-  padding-top: 200rpx;
-  
-  .empty-text {
-    font-size: $font-size-md;
-    color: $color-text-disabled;
-    margin-top: $space-md;
-  }
-}
-
 .collection-list {
-  .collection-item {
+  .item-action {
+    padding: $space-sm;
     display: flex;
     align-items: center;
-    padding: $space-md;
-    background: $color-white;
-    border-radius: $radius-md;
-    margin-bottom: $space-sm;
-    
-    .item-info {
-      flex: 1;
-      margin-left: $space-md;
-      
-      .item-title {
-        font-size: $font-size-sm;
-        color: $color-text-main;
-        @include text-ellipsis(2);
-      }
-      
-      .item-tags {
-        display: flex;
-        gap: $space-xs;
-        margin: $space-xs 0;
-      }
-      
-      .item-bottom {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: $space-sm;
-        
-        .item-time {
-          font-size: $font-size-xs;
-          color: $color-text-disabled;
-        }
-      }
-    }
-    
-    .item-action {
-      padding: $space-sm;
-    }
   }
 }
 </style>

@@ -3,36 +3,30 @@
     <ui-sub-navbar title="浏览足迹" />
     
     <scroll-view scroll-y class="history-scroll" :style="{ height: scrollHeight + 'px' }">
-      <view v-if="historyList.length === 0" class="empty-state">
-        <ui-icon name="eye" :size="80" color="#A1A1A6" />
-        <text class="empty-text">暂无浏览记录</text>
-      </view>
+      <ui-empty v-if="historyList.length === 0" icon="eye" text="暂无浏览记录" />
       
       <view v-else class="history-list">
         <view v-for="group in historyList" :key="group.date" class="history-group">
           <text class="group-date">{{ group.date }}</text>
           <view class="group-list">
-            <view v-for="item in group.list" :key="item.id" class="history-item" @click="goDetail(item)">
-              <ui-image :src="item.cover" width="160rpx" height="160rpx" radius="8rpx" />
-              <view class="item-info">
-                <text class="item-title">{{ item.title }}</text>
-                <view class="item-tags">
-                  <ui-tag v-for="tag in item.tags?.slice(0, 2)" :key="tag" type="primary" size="sm">{{ tag }}</ui-tag>
-                </view>
-                <view class="item-bottom">
-                  <ui-price :value="item.price" ::size="40" />
-                  <text class="item-time">{{ item.viewTime }}</text>
-                </view>
-              </view>
-            </view>
+            <ui-goods-list-item 
+              v-for="item in group.list" 
+              :key="item.id"
+              :cover="item.cover"
+              :title="item.title"
+              :tags="getTags(item.tags)"
+              :price="item.price"
+              :time="item.viewTime"
+              @click="goDetail(item)"
+            />
           </view>
         </view>
       </view>
     </scroll-view>
     
-    <view class="history-footer">
+    <ui-bottom-bar>
       <ui-button block @click="clearHistory">清空浏览记录</ui-button>
-    </view>
+    </ui-bottom-bar>
   </view>
 </template>
 
@@ -40,7 +34,7 @@
 import { ref } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
 
-const { safeAreaBottom, scrollHeight } = usePageLayout({
+const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
   headerEstimatedHeight: 120
 });
@@ -67,6 +61,11 @@ const historyList = ref([
     ]
   }
 ]);
+
+const getTags = (tags?: string[]) => {
+  if (!tags) return [];
+  return tags.slice(0, 2).map(tag => ({ text: tag, type: 'primary' as const }));
+};
 
 const goDetail = (item: any) => {
   uni.navigateTo({ url: `/pages-sub/trade/product/detail?id=${item.id}` });
@@ -96,17 +95,6 @@ const clearHistory = () => {
   overflow: hidden;
 }
 
-.empty-state {
-  @include flex-column-center;
-  padding-top: 200rpx;
-  
-  .empty-text {
-    font-size: $font-size-md;
-    color: $color-text-disabled;
-    margin-top: $space-md;
-  }
-}
-
 .history-list {
   .history-group {
     .group-date {
@@ -118,55 +106,7 @@ const clearHistory = () => {
     
     .group-list {
       padding: 0 $space-md;
-      
-      .history-item {
-        display: flex;
-        padding: $space-md;
-        background: $color-white;
-        border-radius: $radius-md;
-        margin-bottom: $space-sm;
-        
-        .item-info {
-          flex: 1;
-          margin-left: $space-md;
-          
-          .item-title {
-            font-size: $font-size-sm;
-            color: $color-text-main;
-            @include text-ellipsis(2);
-          }
-          
-          .item-tags {
-            display: flex;
-            gap: $space-xs;
-            margin: $space-xs 0;
-          }
-          
-          .item-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: $space-sm;
-            
-            .item-time {
-              font-size: $font-size-xs;
-              color: $color-text-disabled;
-            }
-          }
-        }
-      }
     }
   }
-}
-
-.history-footer {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: $space-md;
-  padding-bottom: calc(#{$space-md} + env(safe-area-inset-bottom));
-  background: $color-white;
-  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
 }
 </style>

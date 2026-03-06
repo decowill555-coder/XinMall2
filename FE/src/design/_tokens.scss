@@ -55,9 +55,6 @@
   --color-text-placeholder: #A9A5A2;
   --color-text-white: #FFFFFF;
   --color-white: #FFFFFF;
-  
-  // 6.1 实心背景色 - 用于卡片、弹窗等
-  --color-bg-solid: #FFFFFF;
 
   // 7. 边框色
   --color-border: rgba(44, 38, 36, 0.08);
@@ -140,9 +137,6 @@
   --color-text-placeholder: #6B7280;
   --color-text-white: #FFFFFF;
   --color-white: #FFFFFF;
-  
-  // 3.1 实心背景色 - 用于卡片、弹窗等（深色模式下使用深色背景）
-  --color-bg-solid: #16161E;
 
   // 4. 边框色
   --color-border: rgba(255, 255, 255, 0.1);
@@ -246,10 +240,6 @@
     --color-text-sub: #A1A1AA;
     --color-text-disabled: #52525B;
     --color-text-placeholder: #6B7280;
-    --color-white: #FFFFFF;
-    
-    // 实心背景色
-    --color-bg-solid: #16161E;
 
     // 边框
     --color-border: rgba(255, 255, 255, 0.1);
@@ -327,7 +317,6 @@ $color-bg-card:       var(--color-bg-card, rgba(255, 255, 255, 0.65));
 $color-bg-white:      var(--color-bg-white, #FFFFFF);
 $color-bg-gray:       var(--color-bg-gray, #FAF8F7);
 $color-bg-glass:      var(--color-bg-glass, rgba(255, 255, 255, 0.65));
-$color-bg-solid:      var(--color-bg-solid, #FFFFFF);
 
 // 文本色 (暖灰层级)
 $color-text-main:     var(--color-text-main, #2C2624);

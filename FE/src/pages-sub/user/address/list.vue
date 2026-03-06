@@ -6,43 +6,34 @@
       <view class="address-content">
         
         <view v-if="addressList.length === 0" class="empty-state">
-          <ui-icon name="map-pin" :size="80" color="#A1A1A6" />
+          <ui-icon name="map-pin" :size="80" />
           <text class="empty-text">暂无收货地址</text>
           <ui-button type="primary" size="sm" @click="goAdd">添加地址</ui-button>
         </view>
         
         <view v-else class="address-list">
-          <view v-for="item in addressList" :key="item.id" class="address-item" @click="selectAddress(item)">
-            <view class="address-content">
-              <view class="address-header">
-                <text class="name">{{ item.name }}</text>
-                <text class="phone">{{ item.phone }}</text>
-                <ui-tag v-if="item.isDefault" type="primary" size="xs">默认</ui-tag>
-              </view>
-              <text class="address-detail">{{ item.province }}{{ item.city }}{{ item.district }}{{ item.detail }}</text>
-            </view>
-            <view class="address-actions">
-              <view class="action-item" @click.stop="setDefault(item)">
-                <ui-icon :name="item.isDefault ? 'check-circle-fill' : 'circle'" ::size="40" :color="item.isDefault ? '#1ABC9C' : '#A1A1A6'" />
-                <text>默认</text>
-              </view>
-              <view class="action-item" @click.stop="goEdit(item)">
-                <ui-icon name="edit" ::size="40" />
-                <text>编辑</text>
-              </view>
-              <view class="action-item" @click.stop="handleDelete(item)">
-                <ui-icon name="trash" ::size="40" />
-                <text>删除</text>
-              </view>
-            </view>
-          </view>
+          <ui-address-card 
+            v-for="item in addressList" 
+            :key="item.id"
+            :name="item.name"
+            :phone="item.phone"
+            :province="item.province"
+            :city="item.city"
+            :district="item.district"
+            :detail="item.detail"
+            :is-default="item.isDefault"
+            @click="selectAddress(item)"
+            @set-default="setDefault(item)"
+            @edit="goEdit(item)"
+            @delete="handleDelete(item)"
+          />
         </view>
       </view>
     </scroll-view>
     
-    <view class="list-footer">
+    <ui-bottom-bar>
       <ui-button type="primary" block @click="goAdd">新增地址</ui-button>
-    </view>
+    </ui-bottom-bar>
   </view>
 </template>
 
@@ -50,7 +41,7 @@
 import { ref } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
 
-const { safeAreaBottom, scrollHeight } = usePageLayout({
+const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
   headerEstimatedHeight: 120
 });
@@ -125,7 +116,7 @@ const handleDelete = (item: any) => {
 }
 
 .address-scroll {
-  height: calc(100vh - 88rpx - 120rpx);
+  overflow: hidden;
 }
 
 .address-content {
@@ -144,65 +135,7 @@ const handleDelete = (item: any) => {
 }
 
 .address-list {
-  .address-item {
-    background: $color-white;
-    border-radius: $radius-md;
-    padding: $space-md;
-    margin-bottom: $space-sm;
-    
-    .address-content {
-      .address-header {
-        display: flex;
-        align-items: center;
-        margin-bottom: $space-xs;
-        
-        .name {
-          font-size: $font-size-md;
-          font-weight: $font-weight-medium;
-          color: $color-text-main;
-        }
-        
-        .phone {
-          font-size: $font-size-md;
-          color: $color-text-sub;
-          margin-left: $space-md;
-        }
-      }
-      
-      .address-detail {
-        font-size: $font-size-sm;
-        color: $color-text-sub;
-        line-height: 1.5;
-      }
-    }
-    
-    .address-actions {
-      display: flex;
-      gap: $space-lg;
-      margin-top: $space-md;
-      padding-top: $space-md;
-      border-top: 1rpx solid $color-divider;
-      
-      .action-item {
-        display: flex;
-        align-items: center;
-        font-size: $font-size-xs;
-        color: $color-text-sub;
-        
-        text { margin-left: $space-xs; }
-      }
-    }
-  }
-}
-
-.list-footer {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: $space-md;
-  padding-bottom: calc(#{$space-md} + env(safe-area-inset-bottom));
-  background: $color-white;
-  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
 }
 </style>

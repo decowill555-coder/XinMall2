@@ -33,7 +33,7 @@ withDefaults(defineProps<Props>(), {
   
   &.has-border {
     border-top: 1rpx solid var(--color-divider, rgba(0, 0, 0, 0.06));
-    box-shadow: var(--shadow-card, 0 -4rpx 20rpx rgba(0, 0, 0, 0.05));
+    box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
   }
 }
 </style>

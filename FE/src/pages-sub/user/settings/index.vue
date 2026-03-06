@@ -1,4 +1,4 @@
-﻿﻿<template>
+﻿<template>
   <view class="settings-page">
     <ui-sub-navbar title="设置" />
     
@@ -11,6 +11,7 @@
         </view>
         
         <view class="settings-group">
+          <ui-cell title="主题设置" icon="palette" is-link @click="goTheme" />
           <ui-cell title="通用设置" icon="settings" is-link @click="goGeneral" />
           <ui-cell title="语言" icon="globe" value="简体中文" is-link @click="goLanguage" />
           <ui-cell title="字体大小" icon="type" value="标准" is-link @click="goFontSize" />
@@ -50,6 +51,7 @@ const { scrollHeight } = usePageLayout({
 const goAccount = () => uni.showToast({ title: '账号与安全', icon: 'none' });
 const goPrivacy = () => uni.showToast({ title: '隐私设置', icon: 'none' });
 const goNotification = () => uni.showToast({ title: '通知设置', icon: 'none' });
+const goTheme = () => uni.navigateTo({ url: '/pages-sub/user/theme/index' });
 const goGeneral = () => uni.showToast({ title: '通用设置', icon: 'none' });
 const goLanguage = () => uni.showToast({ title: '语言设置', icon: 'none' });
 const goFontSize = () => uni.showToast({ title: '字体大小', icon: 'none' });

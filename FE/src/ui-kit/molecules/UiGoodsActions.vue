@@ -60,12 +60,12 @@ const emit = defineEmits(['click']);
     
     &.warning {
       color: var(--color-warning, #FF9500);
-      background: var(--color-warning-glass, rgba(255, 149, 0, 0.1));
+      background: rgba(255, 149, 0, 0.1);
     }
     
     &.danger {
       color: var(--color-error, #FF3B30);
-      background: var(--color-error-glass, rgba(255, 59, 48, 0.1));
+      background: rgba(255, 59, 48, 0.1);
     }
   }
 }

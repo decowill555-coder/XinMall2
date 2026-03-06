@@ -1,20 +1,17 @@
-﻿﻿<template>
+﻿<template>
   <view class="post-detail-page">
     <ui-sub-navbar title="帖子详情" />
     
     <scroll-view scroll-y class="detail-scroll" :style="{ height: scrollHeight + 'px' }">
-      <view class="author-card">
-        <view class="author-info" @click="goUser">
-          <ui-avatar :src="post.authorAvatar" ::size="80" />
-          <view class="author-detail">
-            <text class="author-name">{{ post.authorName }}</text>
-            <text class="author-time">{{ post.createTime }}</text>
-          </view>
-        </view>
-        <ui-button size="sm" :type="post.isFollowed ? 'default' : 'primary'" @click="toggleFollow">
-          {{ post.isFollowed ? '已关注' : '关注' }}
-        </ui-button>
-      </view>
+      <ui-author-card 
+        :avatar="post.authorAvatar"
+        :name="post.authorName"
+        :time="post.createTime"
+        :is-followed="post.isFollowed"
+        show-follow
+        @click="goUser"
+        @follow="toggleFollow"
+      />
       
       <view class="post-content">
         <text class="post-title">{{ post.title }}</text>
@@ -49,50 +46,39 @@
         </view>
       </view>
       
-      <view class="interact-bar">
-        <view class="interact-item" @click="toggleLike">
-          <ui-icon :name="post.isLiked ? 'heart-fill' : 'heart'" ::size="40" :color="post.isLiked ? '#FF3D00' : '#6E6E73'" />
-          <text>{{ post.likeCount }}</text>
-        </view>
-        <view class="interact-item" @click="showComments = true">
-          <ui-icon name="message" ::size="40" />
-          <text>{{ post.commentCount }}</text>
-        </view>
-        <view class="interact-item" @click="handleShare">
-          <ui-icon name="share" ::size="40" />
-          <text>分享</text>
-        </view>
-      </view>
+      <ui-interact-bar 
+        :is-liked="post.isLiked"
+        :like-count="post.likeCount"
+        :comment-count="post.commentCount"
+        @like="toggleLike"
+        @comment="showComments = true"
+        @share="handleShare"
+      />
       
       <view class="comment-section">
         <text class="section-title">评论 ({{ comments.length }})</text>
         
         <view class="comment-list">
-          <view v-for="item in comments" :key="item.id" class="comment-item">
-            <ui-avatar :src="item.avatar" :size="64" />
-            <view class="comment-content">
-              <view class="comment-header">
-                <text class="comment-name">{{ item.userName }}</text>
-                <text class="comment-time">{{ item.time }}</text>
-              </view>
-              <text class="comment-text">{{ item.content }}</text>
-              <view class="comment-actions">
-                <view class="action-item" @click="likeComment(item)">
-                  <ui-icon :name="item.isLiked ? 'heart-fill' : 'heart'" :size="32" :color="item.isLiked ? '#FF3D00' : '#A1A1A6'" />
-                  <text>{{ item.likeCount }}</text>
-                </view>
-                <text class="action-item" @click="replyComment(item)">回复</text>
-              </view>
-            </view>
-          </view>
+          <ui-comment-item 
+            v-for="item in comments" 
+            :key="item.id"
+            :avatar="item.avatar"
+            :user-name="item.userName"
+            :time="item.time"
+            :content="item.content"
+            :is-liked="item.isLiked"
+            :like-count="item.likeCount"
+            @like="likeComment(item)"
+            @reply="replyComment(item)"
+          />
         </view>
       </view>
     </scroll-view>
     
-    <view class="comment-input">
-      <input class="input-field" v-model="commentText" placeholder="说点什么..." />
-      <ui-button size="sm" type="primary" :disabled="!commentText" @click="submitComment">发送</ui-button>
-    </view>
+    <ui-comment-input 
+      v-model="commentText" 
+      @submit="submitComment"
+    />
   </view>
 </template>
 
@@ -211,38 +197,11 @@ const submitComment = () => {
   overflow: hidden;
 }
 
-.author-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: $space-md;
-  background: $color-white;
-  
-  .author-info {
-    display: flex;
-    align-items: center;
-    
-    .author-detail {
-      margin-left: $space-sm;
-      
-      .author-name {
-        font-size: $font-size-md;
-        font-weight: $font-weight-medium;
-        color: $color-text-main;
-      }
-      
-      .author-time {
-        font-size: $font-size-xs;
-        color: $color-text-disabled;
-        margin-top: $space-xs;
-      }
-    }
-  }
-}
-
 .post-content {
   padding: $space-md;
-  background: $color-white;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
   
   .post-title {
     font-size: $font-size-lg;
@@ -273,14 +232,14 @@ const submitComment = () => {
     
     .tag-item {
       font-size: $font-size-sm;
-      color: $color-primary;
+      color: var(--color-primary, #FF6A00);
     }
   }
   
   .post-goods {
     margin-top: $space-lg;
     padding-top: $space-md;
-    border-top: 1rpx solid $color-divider;
+    border-top: 1rpx solid var(--color-divider, rgba(0, 0, 0, 0.06));
     
     .goods-label {
       font-size: $font-size-sm;
@@ -292,7 +251,7 @@ const submitComment = () => {
       align-items: center;
       margin-top: $space-sm;
       padding: $space-sm;
-      background: $color-bg-gray;
+      background: var(--color-bg-gray, rgba(0, 0, 0, 0.03));
       border-radius: $radius-md;
       
       .goods-info {
@@ -309,28 +268,12 @@ const submitComment = () => {
   }
 }
 
-.interact-bar {
-  display: flex;
-  justify-content: space-around;
-  padding: $space-md;
-  background: $color-white;
-  border-top: 1rpx solid $color-divider;
-  
-  .interact-item {
-    @include flex-column-center;
-    
-    text {
-      font-size: $font-size-xs;
-      color: $color-text-sub;
-      margin-top: $space-xs;
-    }
-  }
-}
-
 .comment-section {
   margin-top: $space-sm;
   padding: $space-md;
-  background: $color-white;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
   
   .section-title {
     font-size: $font-size-md;
@@ -340,77 +283,6 @@ const submitComment = () => {
   
   .comment-list {
     margin-top: $space-md;
-    
-    .comment-item {
-      display: flex;
-      padding: $space-sm 0;
-      
-      .comment-content {
-        flex: 1;
-        margin-left: $space-sm;
-        
-        .comment-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          
-          .comment-name {
-            font-size: $font-size-sm;
-            font-weight: $font-weight-medium;
-            color: $color-text-main;
-          }
-          
-          .comment-time {
-            font-size: $font-size-xs;
-            color: $color-text-disabled;
-          }
-        }
-        
-        .comment-text {
-          font-size: $font-size-sm;
-          color: $color-text-main;
-          line-height: 1.5;
-          margin: $space-xs 0;
-        }
-        
-        .comment-actions {
-          display: flex;
-          gap: $space-md;
-          
-          .action-item {
-            display: flex;
-            align-items: center;
-            font-size: $font-size-xs;
-            color: $color-text-sub;
-            
-            text { margin-left: 4rpx; }
-          }
-        }
-      }
-    }
-  }
-}
-
-.comment-input {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  gap: $space-sm;
-  padding: $space-sm $space-md;
-  padding-bottom: calc(#{$space-sm} + env(safe-area-inset-bottom));
-  background: $color-white;
-  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
-  
-  .input-field {
-    flex: 1;
-    height: 72rpx;
-    padding: 0 $space-md;
-    background: $color-bg-gray;
-    border-radius: $radius-full;
-    font-size: $font-size-md;
   }
 }
 </style>

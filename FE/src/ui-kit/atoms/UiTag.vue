@@ -72,36 +72,36 @@ const emit = defineEmits(['click']);
   &--primary { 
     background: linear-gradient(135deg, var(--color-primary, #FF6A00) 0%, var(--color-primary-dark, #E55D00) 100%);
     color: var(--color-text-white, #FFFFFF);
-    box-shadow: 0 4rpx 12rpx var(--color-primary-glass, rgba(255, 106, 0, 0.2));
-    border: 1rpx solid var(--glass-border-subtle, rgba(255, 255, 255, 0.3));
+    box-shadow: 0 4rpx 12rpx rgba(255, 106, 0, 0.2);
+    border: 1rpx solid rgba(255, 255, 255, 0.3);
   }
   
   &--success { 
-    background: linear-gradient(135deg, var(--color-success, #34C759) 0%, var(--color-success-dark, #248A3D) 100%);
+    background: linear-gradient(135deg, var(--color-success, #34C759) 0%, rgba(52, 199, 89, 0.8) 100%);
     color: var(--color-text-white, #FFFFFF);
-    box-shadow: 0 4rpx 12rpx var(--color-success-glass, rgba(52, 199, 89, 0.2));
-    border: 1rpx solid var(--glass-border-subtle, rgba(255, 255, 255, 0.3));
+    box-shadow: 0 4rpx 12rpx rgba(52, 199, 89, 0.2);
+    border: 1rpx solid rgba(255, 255, 255, 0.3);
   }
   
   &--warning { 
-    background: linear-gradient(135deg, var(--color-warning, #FF9500) 0%, var(--color-warning-dark, #D4A300) 100%);
+    background: linear-gradient(135deg, var(--color-warning, #FF9500) 0%, rgba(255, 149, 0, 0.8) 100%);
     color: var(--color-text-white, #FFFFFF);
-    box-shadow: 0 4rpx 12rpx var(--color-warning-glass, rgba(255, 149, 0, 0.2));
-    border: 1rpx solid var(--glass-border-subtle, rgba(255, 255, 255, 0.3));
+    box-shadow: 0 4rpx 12rpx rgba(255, 149, 0, 0.2);
+    border: 1rpx solid rgba(255, 255, 255, 0.3);
   }
   
   &--danger { 
-    background: linear-gradient(135deg, var(--color-error, #FF3B30) 0%, var(--color-error-dark, #D70015) 100%);
+    background: linear-gradient(135deg, var(--color-error, #FF3B30) 0%, rgba(255, 59, 48, 0.8) 100%);
     color: var(--color-text-white, #FFFFFF);
-    box-shadow: 0 4rpx 12rpx var(--color-error-glass, rgba(255, 59, 48, 0.2));
-    border: 1rpx solid var(--glass-border-subtle, rgba(255, 255, 255, 0.3));
+    box-shadow: 0 4rpx 12rpx rgba(255, 59, 48, 0.2);
+    border: 1rpx solid rgba(255, 255, 255, 0.3);
   }
   
   &--info { 
-    background: linear-gradient(135deg, var(--color-info, #007AFF) 0%, var(--color-info-dark, #3634A3) 100%);
+    background: linear-gradient(135deg, var(--color-info, #007AFF) 0%, rgba(0, 122, 255, 0.8) 100%);
     color: var(--color-text-white, #FFFFFF);
-    box-shadow: 0 4rpx 12rpx var(--color-info-glass, rgba(0, 122, 255, 0.15));
-    border: 1rpx solid var(--glass-border-subtle, rgba(255, 255, 255, 0.3));
+    box-shadow: 0 4rpx 12rpx rgba(0, 122, 255, 0.15);
+    border: 1rpx solid rgba(255, 255, 255, 0.3);
   }
 
   &--plain {
@@ -117,32 +117,32 @@ const emit = defineEmits(['click']);
     
     &.ui-tag--success { 
       color: var(--color-success, #34C759); 
-      background: var(--color-success-glass, rgba(52, 199, 89, 0.1)); 
-      border-color: var(--color-success, rgba(52, 199, 89, 0.3));
+      background: rgba(52, 199, 89, 0.1); 
+      border-color: rgba(52, 199, 89, 0.3);
       backdrop-filter: blur($blur-sm);
       -webkit-backdrop-filter: blur($blur-sm);
     }
     
     &.ui-tag--warning { 
       color: var(--color-warning, #FF9500); 
-      background: var(--color-warning-glass, rgba(255, 149, 0, 0.1)); 
-      border-color: var(--color-warning, rgba(255, 149, 0, 0.3));
+      background: rgba(255, 149, 0, 0.1); 
+      border-color: rgba(255, 149, 0, 0.3);
       backdrop-filter: blur($blur-sm);
       -webkit-backdrop-filter: blur($blur-sm);
     }
     
     &.ui-tag--danger { 
       color: var(--color-error, #FF3B30); 
-      background: var(--color-error-glass, rgba(255, 59, 48, 0.1)); 
-      border-color: var(--color-error, rgba(255, 59, 48, 0.3));
+      background: rgba(255, 59, 48, 0.1); 
+      border-color: rgba(255, 59, 48, 0.3);
       backdrop-filter: blur($blur-sm);
       -webkit-backdrop-filter: blur($blur-sm);
     }
     
     &.ui-tag--info { 
       color: var(--color-info, #007AFF); 
-      background: var(--color-info-glass, rgba(0, 122, 255, 0.1)); 
-      border-color: var(--color-info, rgba(0, 122, 255, 0.3));
+      background: rgba(0, 122, 255, 0.1); 
+      border-color: rgba(0, 122, 255, 0.3);
       backdrop-filter: blur($blur-sm);
       -webkit-backdrop-filter: blur($blur-sm);
     }

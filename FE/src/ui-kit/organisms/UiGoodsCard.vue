@@ -1,4 +1,4 @@
-﻿﻿<!-- src/ui-kit/organisms/UiGoodsCard.vue -->
+﻿﻿﻿<!-- src/ui-kit/organisms/UiGoodsCard.vue -->
 <template>
   <view 
     class="ui-goods-card" 
@@ -137,12 +137,16 @@ const toUser = () => {
   border: 1rpx solid var(--glass-border-light, rgba(255, 255, 255, 0.6));
   border-radius: $radius-md;
   overflow: hidden;
-  box-shadow: var(--shadow-card, 0 8rpx 32rpx rgba(0, 0, 0, 0.03));
+  box-shadow: 
+    0 8rpx 32rpx rgba(0, 0, 0, 0.03),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.6);
   transition: all $duration-fast $ease-spring;
 
   &:active {
     transform: scale(0.98);
-    box-shadow: var(--shadow-card, 0 4rpx 16rpx rgba(0, 0, 0, 0.02));
+    box-shadow: 
+      0 4rpx 16rpx rgba(0, 0, 0, 0.02),
+      inset 0 0 0 1rpx rgba(255, 255, 255, 0.4);
   }
 
   // === 瀑布流样式 ===
@@ -162,12 +166,14 @@ const toUser = () => {
         position: absolute;
         top: 10rpx;
         right: 10rpx;
-        background: linear-gradient(135deg, var(--overlay-bg, rgba(0, 0, 0, 0.5)) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.3) 100%);
         border-radius: 50%;
         padding: 8rpx;
         backdrop-filter: blur($blur-sm);
         -webkit-backdrop-filter: blur($blur-sm);
-        box-shadow: var(--shadow-card, 0 4rpx 12rpx rgba(0, 0, 0, 0.2));
+        box-shadow: 
+          0 4rpx 12rpx rgba(0, 0, 0, 0.2),
+          inset 0 0 0 1rpx rgba(255, 255, 255, 0.2);
       }
     }
 
@@ -236,14 +242,16 @@ const toUser = () => {
         position: absolute;
         top: 8rpx;
         left: 8rpx;
-        background: linear-gradient(135deg, var(--overlay-bg, rgba(0, 0, 0, 0.7)) 0%, rgba(0, 0, 0, 0.5) 100%);
-        color: var(--color-text-white, #FFFFFF);
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 100%);
+        color: $color-white;
         font-size: $font-size-xs;
         padding: 4rpx 8rpx;
         border-radius: $radius-xs;
         backdrop-filter: blur($blur-sm);
         -webkit-backdrop-filter: blur($blur-sm);
-        box-shadow: var(--shadow-card, 0 2rpx 8rpx rgba(0, 0, 0, 0.2));
+        box-shadow: 
+          0 2rpx 8rpx rgba(0, 0, 0, 0.2),
+          inset 0 0 0 1rpx rgba(255, 255, 255, 0.2);
       }
     }
 

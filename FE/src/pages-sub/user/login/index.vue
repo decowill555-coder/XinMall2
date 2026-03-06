@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <view class="login-page">
     <view class="login-header">
       <image class="logo" src="/static/logo.png" mode="aspectFit" />
@@ -8,13 +8,13 @@
     
     <view class="login-form">
       <view class="form-item">
-        <ui-icon name="phone" ::size="40" />
+        <ui-icon name="phone" :size="40" />
         <input type="number" v-model="phone" placeholder="请输入手机号" maxlength="11" />
       </view>
       <view class="form-item">
-        <ui-icon name="lock" ::size="40" />
+        <ui-icon name="lock" :size="40" />
         <input :password="!showPassword" v-model="password" placeholder="请输入密码" />
-        <ui-icon :name="showPassword ? 'eye' : 'eye-off'" ::size="40" @click="showPassword = !showPassword" />
+        <ui-icon :name="showPassword ? 'eye' : 'eye-off'" :size="40" @click="showPassword = !showPassword" />
       </view>
       
       <ui-button type="primary" block :disabled="!canLogin" @click="handleLogin">登录</ui-button>
@@ -29,11 +29,11 @@
       <ui-divider>其他登录方式</ui-divider>
       <view class="login-icons">
         <view class="icon-item" @click="loginByWechat">
-          <ui-icon name="message" ::size="40" color="#07C160" />
+          <ui-icon name="message" :size="40" color="#07C160" />
           <text>微信</text>
         </view>
         <view class="icon-item" @click="loginByAlipay">
-          <ui-icon name="credit-card" ::size="40" color="#1677FF" />
+          <ui-icon name="credit-card" :size="40" color="#1677FF" />
           <text>支付宝</text>
         </view>
       </view>
@@ -80,7 +80,12 @@ const handleLogin = async () => {
     uni.showToast({ title: '登录成功', icon: 'success' });
     
     setTimeout(() => {
-      uni.switchTab({ url: '/pages/my/index' });
+      const pages = getCurrentPages();
+      if (pages.length > 1) {
+        uni.navigateBack();
+      } else {
+        uni.switchTab({ url: '/pages/index/index' });
+      }
     }, 1500);
   } catch (error) {
     uni.hideLoading();

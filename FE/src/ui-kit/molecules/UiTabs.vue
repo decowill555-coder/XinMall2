@@ -130,8 +130,10 @@ const onClick = (index: number) => {
       &.is-active {
         background: linear-gradient(135deg, var(--color-primary, #FF6A00) 0%, var(--color-primary-dark, #E55D00) 100%);
         color: var(--color-text-white, #FFFFFF);
-        box-shadow: var(--shadow-glow-primary, 0 4rpx 16rpx rgba(255, 106, 0, 0.25));
-        border-color: var(--glass-border-subtle, rgba(255, 255, 255, 0.3));
+        box-shadow: 
+          0 4rpx 16rpx rgba(255, 106, 0, 0.25),
+          inset 0 0 0 1rpx rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.3);
       }
     }
   }

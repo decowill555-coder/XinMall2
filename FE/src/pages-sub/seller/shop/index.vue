@@ -3,86 +3,26 @@
     <ui-sub-navbar title="我的店铺" />
     
     <scroll-view scroll-y class="shop-scroll" :style="{ height: scrollHeight + 'px' }">
-      <view class="shop-header">
-        <view class="shop-info">
-          <ui-avatar :src="shopInfo.logo" :size="120" />
-          <view class="shop-detail">
-            <text class="shop-name">{{ shopInfo.name }}</text>
-            <text class="shop-desc">{{ shopInfo.desc }}</text>
-            <view class="shop-tags">
-              <ui-tag v-if="shopInfo.isVerified" type="success" size="sm">已认证</ui-tag>
-              <ui-tag type="primary" size="sm">营业中</ui-tag>
-            </view>
-          </view>
-        </view>
-        
-        <view class="shop-stats">
-          <view class="stat-item">
-            <text class="stat-value">{{ shopInfo.goodsCount }}</text>
-            <text class="stat-label">商品</text>
-          </view>
-          <view class="stat-item">
-            <text class="stat-value">{{ shopInfo.salesCount }}</text>
-            <text class="stat-label">销量</text>
-          </view>
-          <view class="stat-item">
-            <text class="stat-value">{{ shopInfo.followers }}</text>
-            <text class="stat-label">粉丝</text>
-          </view>
-        </view>
-      </view>
+      <ui-shop-header 
+        :logo="shopInfo.logo"
+        :name="shopInfo.name"
+        :desc="shopInfo.desc"
+        :stats="shopStats"
+      >
+        <template #tags>
+          <ui-tag v-if="shopInfo.isVerified" type="success" size="sm">已认证</ui-tag>
+          <ui-tag type="primary" size="sm">营业中</ui-tag>
+        </template>
+      </ui-shop-header>
       
-      <view class="quick-actions">
-        <view class="action-item" @click="goPublish">
-          <view class="action-icon">
-            <ui-icon name="plus" ::size="40" />
-          </view>
-          <text class="action-text">发布商品</text>
-        </view>
-        <view class="action-item" @click="goGoodsList">
-          <view class="action-icon">
-            <ui-icon name="package" ::size="40" />
-          </view>
-          <text class="action-text">商品管理</text>
-        </view>
-        <view class="action-item" @click="goOrderList">
-          <view class="action-icon">
-            <ui-icon name="file-text" ::size="40" />
-          </view>
-          <text class="action-text">订单管理</text>
-        </view>
-        <view class="action-item" @click="goAfterSale">
-          <view class="action-icon">
-            <ui-icon name="refresh" ::size="40" />
-          </view>
-          <text class="action-text">售后管理</text>
-        </view>
-      </view>
+      <ui-quick-actions :actions="quickActions" @click="handleAction" />
       
-      <view class="order-overview">
-        <view class="section-header">
-          <text class="section-title">订单概览</text>
-          <text class="section-more" @click="goOrderList">查看全部</text>
-        </view>
-        <view class="order-tabs">
-          <view class="order-item" @click="goOrderList('pending')">
-            <text class="order-count">{{ orderCounts.pending }}</text>
-            <text class="order-label">待发货</text>
-          </view>
-          <view class="order-item" @click="goOrderList('shipped')">
-            <text class="order-count">{{ orderCounts.shipped }}</text>
-            <text class="order-label">已发货</text>
-          </view>
-          <view class="order-item" @click="goOrderList('completed')">
-            <text class="order-count">{{ orderCounts.completed }}</text>
-            <text class="order-label">已完成</text>
-          </view>
-          <view class="order-item" @click="goAfterSale">
-            <text class="order-count">{{ orderCounts.refund }}</text>
-            <text class="order-label">售后</text>
-          </view>
-        </view>
-      </view>
+      <ui-order-overview 
+        title="订单概览"
+        :items="orderOverviewItems"
+        @click="handleOrderClick"
+        @more="goOrderList"
+      />
       
       <view class="goods-section">
         <view class="section-header">
@@ -95,7 +35,7 @@
               <ui-image :src="item.cover" width="200rpx" height="200rpx" radius="8rpx" />
               <text class="goods-title">{{ item.title }}</text>
               <view class="goods-bottom">
-                <ui-price :value="item.price" ::size="40" />
+                <ui-price :value="item.price" :size="40" />
                 <text class="goods-stock">库存{{ item.stock }}</text>
               </view>
             </view>
@@ -111,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
 
 const { safeAreaBottom, scrollHeight } = usePageLayout({
@@ -129,6 +69,19 @@ const shopInfo = ref({
   followers: 3680
 });
 
+const shopStats = computed(() => [
+  { value: shopInfo.value.goodsCount, label: '商品' },
+  { value: shopInfo.value.salesCount, label: '销量' },
+  { value: shopInfo.value.followers, label: '粉丝' }
+]);
+
+const quickActions = computed(() => [
+  { icon: 'plus', text: '发布商品' },
+  { icon: 'package', text: '商品管理' },
+  { icon: 'file-text', text: '订单管理' },
+  { icon: 'refresh', text: '售后管理' }
+]);
+
 const orderCounts = ref({
   pending: 5,
   shipped: 12,
@@ -136,12 +89,34 @@ const orderCounts = ref({
   refund: 2
 });
 
+const orderOverviewItems = computed(() => [
+  { count: orderCounts.value.pending, label: '待发货' },
+  { count: orderCounts.value.shipped, label: '已发货' },
+  { count: orderCounts.value.completed, label: '已完成' },
+  { count: orderCounts.value.refund, label: '售后' }
+]);
+
 const goodsList = ref([
   { id: 1, cover: 'https://picsum.photos/200/200?random=g1', title: 'iPhone 15 Pro Max', price: 7999, stock: 10 },
   { id: 2, cover: 'https://picsum.photos/200/200?random=g2', title: 'MacBook Pro 14', price: 12999, stock: 5 },
   { id: 3, cover: 'https://picsum.photos/200/200?random=g3', title: 'AirPods Pro 2', price: 1399, stock: 30 },
   { id: 4, cover: 'https://picsum.photos/200/200?random=g4', title: 'iPad Pro 12.9', price: 6999, stock: 8 }
 ]);
+
+const handleAction = (index: number) => {
+  const actions = [goPublish, goGoodsList, goOrderList, goAfterSale];
+  actions[index]?.();
+};
+
+const handleOrderClick = (index: number) => {
+  const types = ['pending', 'shipped', 'completed', 'refund'];
+  const type = types[index];
+  if (type === 'refund') {
+    goAfterSale();
+  } else {
+    goOrderList(type);
+  }
+};
 
 const goPublish = () => {
   uni.navigateTo({ url: '/pages-sub/seller/publish/entry' });
@@ -175,136 +150,10 @@ const goEdit = (item: any) => {
   overflow: hidden;
 }
 
-.shop-header {
-  background: linear-gradient(135deg, $color-primary 0%, $color-primary-dark 100%);
-  padding: $space-lg $space-md;
-  
-  .shop-info {
-    display: flex;
-    align-items: center;
-    
-    .shop-detail {
-      flex: 1;
-      margin-left: $space-md;
-      
-      .shop-name {
-        font-size: $font-size-lg;
-        font-weight: $font-weight-bold;
-        color: $color-white;
-      }
-      
-      .shop-desc {
-        font-size: $font-size-sm;
-        color: rgba($color-white, 0.8);
-        margin: $space-xs 0;
-      }
-      
-      .shop-tags {
-        display: flex;
-        gap: $space-xs;
-      }
-    }
-  }
-  
-  .shop-stats {
-    display: flex;
-    justify-content: space-around;
-    margin-top: $space-lg;
-    padding: $space-md;
-    background: rgba($color-white, 0.15);
-    border-radius: $radius-lg;
-    
-    .stat-item {
-      text-align: center;
-      
-      .stat-value {
-        font-size: $font-size-xl;
-        font-weight: $font-weight-bold;
-        color: $color-white;
-      }
-      
-      .stat-label {
-        font-size: $font-size-xs;
-        color: rgba($color-white, 0.8);
-        margin-top: $space-xs;
-      }
-    }
-  }
-}
-
-.quick-actions {
-  display: flex;
-  justify-content: space-around;
-  padding: $space-lg $space-md;
-  background: $color-white;
-  margin-bottom: $space-sm;
-  
-  .action-item {
-    @include flex-column-center;
-    
-    .action-icon {
-      width: 80rpx;
-      height: 80rpx;
-      @include flex-center;
-      background: $color-bg-gray;
-      border-radius: 50%;
-      margin-bottom: $space-xs;
-    }
-    
-    .action-text {
-      font-size: $font-size-xs;
-      color: $color-text-main;
-    }
-  }
-}
-
-.order-overview {
-  background: $color-white;
-  padding: $space-md;
-  margin-bottom: $space-sm;
-  
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: $space-md;
-    
-    .section-title {
-      font-size: $font-size-md;
-      font-weight: $font-weight-medium;
-      color: $color-text-main;
-    }
-    
-    .section-more {
-      font-size: $font-size-sm;
-      color: $color-text-sub;
-    }
-  }
-  
-  .order-tabs {
-    display: flex;
-    justify-content: space-around;
-    
-    .order-item {
-      @include flex-column-center;
-      
-      .order-count {
-        font-size: $font-size-xl;
-        font-weight: $font-weight-bold;
-        color: $color-text-main;
-      }
-      
-      .order-label {
-        font-size: $font-size-xs;
-        color: $color-text-sub;
-        margin-top: $space-xs;
-      }
-    }
-  }
-}
-
 .goods-section {
-  background: $color-white;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
   padding: $space-md;
   
   .section-header {
@@ -364,8 +213,9 @@ const goEdit = (item: any) => {
   right: 0;
   bottom: 0;
   padding: $space-md;
-  padding-bottom: calc(#{$space-md} + env(safe-area-inset-bottom));
-  background: $color-white;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.95));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
   box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
 }
 </style>
