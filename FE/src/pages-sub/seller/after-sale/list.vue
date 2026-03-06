@@ -7,43 +7,30 @@
     </view>
     
     <scroll-view scroll-y class="list-scroll" :style="{ height: scrollHeight + 'px' }">
-      <view v-if="afterSaleList.length === 0" class="empty-state">
-        <ui-icon name="refresh" :size="80" color="#A1A1A6" />
-        <text class="empty-text">暂无售后记录</text>
-      </view>
-      
-      <view v-else class="after-sale-list">
-        <view v-for="item in afterSaleList" :key="item.id" class="after-sale-item" @click="goDetail(item)">
-          <view class="item-header">
-            <text class="order-no">订单号: {{ item.orderNo }}</text>
-            <text class="status" :class="item.statusClass">{{ item.statusText }}</text>
-          </view>
-          
-          <view class="item-goods">
-            <ui-image :src="item.goodsCover" width="100rpx" height="100rpx" radius="8rpx" />
-            <view class="goods-info">
-              <text class="goods-title">{{ item.goodsTitle }}</text>
-              <text class="goods-spec">{{ item.goodsSpec }}</text>
-            </view>
-          </view>
-          
-          <view class="item-info">
-            <text class="info-label">售后类型</text>
-            <text class="info-value">{{ item.type }}</text>
-          </view>
-          <view class="item-info">
-            <text class="info-label">申请原因</text>
-            <text class="info-value">{{ item.reason }}</text>
-          </view>
-          <view class="item-info">
-            <text class="info-label">申请时间</text>
-            <text class="info-value">{{ item.createTime }}</text>
-          </view>
-          
-          <view class="item-actions" v-if="item.status === 'pending'">
-            <ui-button size="sm" @click.stop="handleReject(item)">拒绝</ui-button>
-            <ui-button size="sm" type="primary" @click.stop="handleAgree(item)">同意</ui-button>
-          </view>
+      <view class="after-content">
+        <ui-empty 
+          v-if="afterSaleList.length === 0" 
+          icon="refresh" 
+          text="暂无售后记录"
+        />
+        
+        <view v-else class="after-sale-list">
+          <ui-after-sale-card 
+            v-for="item in afterSaleList" 
+            :key="item.id"
+            :order-no="item.orderNo"
+            :cover="item.goodsCover"
+            :title="item.goodsTitle"
+            :spec="item.goodsSpec"
+            :type="item.type"
+            :reason="item.reason"
+            :time="item.createTime"
+            :status="item.status"
+            :show-actions="item.status === 'pending'"
+            @click="goDetail(item)"
+            @agree="handleAgree(item)"
+            @reject="handleReject(item)"
+          />
         </view>
       </view>
     </scroll-view>
@@ -78,8 +65,6 @@ const afterSaleList = ref([
     type: '退货退款',
     reason: '商品与描述不符',
     status: 'pending',
-    statusText: '待处理',
-    statusClass: 'warning',
     createTime: '2024-01-15 10:30'
   },
   {
@@ -91,8 +76,6 @@ const afterSaleList = ref([
     type: '仅退款',
     reason: '质量问题',
     status: 'processing',
-    statusText: '处理中',
-    statusClass: 'primary',
     createTime: '2024-01-14 15:20'
   },
   {
@@ -104,8 +87,6 @@ const afterSaleList = ref([
     type: '换货',
     reason: '收到商品有划痕',
     status: 'completed',
-    statusText: '已完成',
-    statusClass: 'success',
     createTime: '2024-01-13 09:15'
   }
 ]);
@@ -147,100 +128,16 @@ const handleReject = (item: any) => {
 }
 
 .filter-bar {
-  background: $color-white;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
   padding: 0 $space-md;
 }
 
 .list-scroll {
   overflow: hidden;
 }
-
-.empty-state {
-  @include flex-column-center;
-  padding-top: 200rpx;
-  
-  .empty-text {
-    font-size: $font-size-md;
-    color: $color-text-disabled;
-    margin-top: $space-md;
-  }
-}
-
-.after-sale-list {
-  .after-sale-item {
-    background: $color-white;
-    border-radius: $radius-md;
-    padding: $space-md;
-    margin-bottom: $space-sm;
-    
-    .item-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: $space-md;
-      padding-bottom: $space-sm;
-      border-bottom: 1rpx solid $color-divider;
-      
-      .order-no {
-        font-size: $font-size-sm;
-        color: $color-text-sub;
-      }
-      
-      .status {
-        font-size: $font-size-sm;
-        
-        &.warning { color: $color-warning; }
-        &.primary { color: $color-primary; }
-        &.success { color: $color-success; }
-      }
-    }
-    
-    .item-goods {
-      display: flex;
-      margin-bottom: $space-md;
-      
-      .goods-info {
-        flex: 1;
-        margin-left: $space-sm;
-        
-        .goods-title {
-          font-size: $font-size-sm;
-          color: $color-text-main;
-          @include text-ellipsis(1);
-        }
-        
-        .goods-spec {
-          font-size: $font-size-xs;
-          color: $color-text-sub;
-          margin-top: $space-xs;
-        }
-      }
-    }
-    
-    .item-info {
-      display: flex;
-      justify-content: space-between;
-      padding: $space-xs 0;
-      
-      .info-label {
-        font-size: $font-size-sm;
-        color: $color-text-sub;
-      }
-      
-      .info-value {
-        font-size: $font-size-sm;
-        color: $color-text-main;
-      }
-    }
-    
-    .item-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: $space-sm;
-      margin-top: $space-md;
-      padding-top: $space-md;
-      border-top: 1rpx solid $color-divider;
-    }
-  }
+.after-content{
+  padding: $space-sm $space-md;
 }
 </style>

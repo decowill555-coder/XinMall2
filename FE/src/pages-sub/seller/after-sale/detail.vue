@@ -3,13 +3,13 @@
     <ui-sub-navbar title="售后详情" />
     
     <scroll-view scroll-y class="detail-scroll" :style="{ height: scrollHeight + 'px' }">
-      <view class="status-card">
-        <view class="status-icon">
-          <ui-icon :name="statusConfig.icon" :size="40" :color="statusConfig.color" />
-        </view>
-        <text class="status-text">{{ statusConfig.text }}</text>
-        <text class="status-desc">{{ statusConfig.desc }}</text>
-      </view>
+      <ui-status-card 
+        class="status-card"
+        :icon="statusConfig.icon"
+        :title="statusConfig.title"
+        :desc="statusConfig.desc"
+        :type="afterSale.status"
+      />
       
       <view class="info-card">
         <view class="card-title">售后信息</view>
@@ -38,29 +38,21 @@
           <view class="goods-info">
             <text class="goods-title">{{ afterSale.goodsTitle }}</text>
             <text class="goods-spec">{{ afterSale.goodsSpec }}</text>
-            <ui-price :value="afterSale.goodsPrice" ::size="40" />
+            <ui-price :value="afterSale.goodsPrice" :size="40" />
           </view>
         </view>
       </view>
       
       <view class="timeline-card">
         <view class="card-title">处理进度</view>
-        <view class="timeline">
-          <view v-for="(item, index) in timeline" :key="index" class="timeline-item">
-            <view class="timeline-dot" :class="{ active: index === 0 }"></view>
-            <view class="timeline-content">
-              <text class="timeline-title">{{ item.title }}</text>
-              <text class="timeline-time">{{ item.time }}</text>
-            </view>
-          </view>
-        </view>
+        <ui-timeline :items="timeline" />
       </view>
     </scroll-view>
     
-    <view class="detail-footer" v-if="afterSale.status === 'pending'" :style="{ paddingBottom: (safeAreaBottom + 12) + 'px' }">
+    <ui-bottom-bar v-if="afterSale.status === 'pending'">
       <ui-button block @click="handleReject">拒绝</ui-button>
       <ui-button type="primary" block @click="handleAgree">同意</ui-button>
-    </view>
+    </ui-bottom-bar>
   </view>
 </template>
 
@@ -68,7 +60,7 @@
 import { ref, computed } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
 
-const { safeAreaBottom, scrollHeight } = usePageLayout({
+const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
   headerEstimatedHeight: 120
 });
@@ -93,9 +85,9 @@ const timeline = ref([
 
 const statusConfig = computed(() => {
   const configs: Record<string, any> = {
-    pending: { icon: 'clock', color: '#FF9500', text: '待处理', desc: '请在48小时内处理' },
-    processing: { icon: 'refresh', color: '#007AFF', text: '处理中', desc: '请等待买家退货' },
-    completed: { icon: 'check-circle', color: '#34C759', text: '已完成', desc: '售后已完成' }
+    pending: { icon: 'clock', color: '#FF9500', title: '待处理', desc: '请在48小时内处理' },
+    processing: { icon: 'refresh', color: '#007AFF', title: '处理中', desc: '请等待买家退货' },
+    completed: { icon: 'check-circle', color: '#34C759', title: '已完成', desc: '售后已完成' }
   };
   return configs[afterSale.value.status] || configs.pending;
 });
@@ -137,39 +129,16 @@ const handleReject = () => {
 }
 
 .status-card {
-  @include flex-column-center;
-  padding: $space-xl;
-  background: $color-white;
-  border-radius: $radius-md;
-  margin-bottom: $space-sm;
-  
-  .status-icon {
-    width: 80rpx;
-    height: 80rpx;
-    background: $color-bg-gray;
-    border-radius: 50%;
-    @include flex-center;
-    margin-bottom: $space-sm;
-  }
-  
-  .status-text {
-    font-size: $font-size-lg;
-    font-weight: $font-weight-bold;
-    color: $color-text-main;
-  }
-  
-  .status-desc {
-    font-size: $font-size-sm;
-    color: $color-text-sub;
-    margin-top: $space-xs;
-  }
+  margin: $space-sm $space-md;
 }
 
 .info-card, .goods-card, .timeline-card {
-  background: $color-white;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
   border-radius: $radius-md;
   padding: $space-md;
-  margin-bottom: $space-sm;
+  margin: 0 $space-md $space-sm;
   
   .card-title {
     font-size: $font-size-md;
@@ -217,55 +186,5 @@ const handleReject = () => {
       margin: $space-xs 0;
     }
   }
-}
-
-.timeline {
-  .timeline-item {
-    display: flex;
-    padding-bottom: $space-md;
-    
-    &:last-child { padding-bottom: 0; }
-    
-    .timeline-dot {
-      width: 16rpx;
-      height: 16rpx;
-      background: $color-border-light;
-      border-radius: 50%;
-      margin-right: $space-md;
-      margin-top: 6rpx;
-      
-      &.active {
-        background: $color-primary;
-      }
-    }
-    
-    .timeline-content {
-      flex: 1;
-      
-      .timeline-title {
-        font-size: $font-size-sm;
-        color: $color-text-main;
-      }
-      
-      .timeline-time {
-        font-size: $font-size-xs;
-        color: $color-text-disabled;
-        margin-top: $space-xs;
-      }
-    }
-  }
-}
-
-.detail-footer {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  gap: $space-sm;
-  padding: $space-md;
-  padding-bottom: calc(#{$space-md} + env(safe-area-inset-bottom));
-  background: $color-white;
-  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
 }
 </style>
