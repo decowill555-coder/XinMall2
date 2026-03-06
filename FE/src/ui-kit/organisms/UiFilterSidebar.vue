@@ -309,7 +309,7 @@ const handleConfirm = () => {
   width: 80%;
   max-width: 600rpx;
   height: 100%;
-  background: rgba(255, 255, 255, 0.98);
+  background: var(--glass-solid, rgba(255, 255, 255, 0.98));
   backdrop-filter: blur($blur-xxl);
   -webkit-backdrop-filter: blur($blur-xxl);
   transform: translateX(100%);
@@ -324,7 +324,7 @@ const handleConfirm = () => {
   align-items: center;
   justify-content: space-between;
   padding: $space-lg $space-md;
-  border-bottom: 1rpx solid rgba(0, 0, 0, 0.04);
+  border-bottom: 1rpx solid var(--color-divider, rgba(0, 0, 0, 0.04));
   flex-shrink: 0;
   
   .header-title {
@@ -339,7 +339,7 @@ const handleConfirm = () => {
     transition: all $duration-fast;
     
     &:active {
-      background: rgba(0, 0, 0, 0.05);
+      background: var(--color-border, rgba(0, 0, 0, 0.05));
     }
   }
 }
@@ -351,7 +351,7 @@ const handleConfirm = () => {
 
 .filter-section {
   padding: $space-md;
-  border-bottom: 1rpx solid rgba(0, 0, 0, 0.04);
+  border-bottom: 1rpx solid var(--color-divider, rgba(0, 0, 0, 0.04));
   
   .section-title {
     font-size: $font-size-md;
@@ -372,7 +372,7 @@ const handleConfirm = () => {
     flex: 1;
     height: 72rpx;
     padding: 0 $space-md;
-    background: rgba(0, 0, 0, 0.03);
+    background: var(--color-bg-gray, rgba(0, 0, 0, 0.03));
     border-radius: $radius-md;
     font-size: $font-size-md;
     color: $color-text-main;
@@ -454,8 +454,8 @@ const handleConfirm = () => {
   display: flex;
   gap: $space-md;
   padding: $space-md;
-  border-top: 1rpx solid rgba(0, 0, 0, 0.04);
-  background: rgba(255, 255, 255, 0.95);
+  border-top: 1rpx solid var(--color-divider, rgba(0, 0, 0, 0.04));
+  background: var(--glass-solid, rgba(255, 255, 255, 0.95));
   flex-shrink: 0;
   
   .reset-btn {
@@ -464,14 +464,14 @@ const handleConfirm = () => {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.03);
+    background: var(--color-bg-gray, rgba(0, 0, 0, 0.03));
     border-radius: $radius-full;
     font-size: $font-size-md;
     color: $color-text-main;
     transition: all $duration-fast;
     
     &:active {
-      background: rgba(0, 0, 0, 0.06);
+      background: var(--color-border, rgba(0, 0, 0, 0.06));
     }
   }
   

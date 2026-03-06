@@ -18,9 +18,8 @@ export interface HotSpuItem {
 export const spuApi = {
   searchSpu: (keyword: string) => {
     return http<SpuItem[]>({
-      url: '/spu/search',
-      method: 'GET',
-      data: { keyword }
+      url: `/spu/search?keyword=${encodeURIComponent(keyword)}`,
+      method: 'GET'
     });
   },
 
@@ -33,9 +32,8 @@ export const spuApi = {
 
   getHotSpus: (limit: number = 10) => {
     return http<HotSpuItem[]>({
-      url: '/spu/hot',
-      method: 'GET',
-      data: { limit }
+      url: `/spu/hot?limit=${limit}`,
+      method: 'GET'
     });
   }
 };

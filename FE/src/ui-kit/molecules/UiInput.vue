@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view 
     class="ui-input-wrapper"
     :class="{ 
@@ -110,47 +110,35 @@ const togglePassword = () => {
   width: 100%;
   height: 88rpx;
   padding: 0 $space-md;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.6) 0%,
-    rgba(255, 255, 255, 0.4) 100%
-  );
+  background: var(--glass-crystal-high, rgba(255, 255, 255, 0.6));
   backdrop-filter: blur($blur-sm);
   -webkit-backdrop-filter: blur($blur-sm);
-  border: 1rpx solid $glass-border-subtle;
+  border: 1rpx solid var(--glass-border-subtle, rgba(0, 0, 0, 0.04));
   border-radius: $radius-md;
   transition: all $duration-fast $ease-spring;
   box-sizing: border-box;
   box-shadow: $glass-shadow-sm;
 
   &.is-focus {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.85) 0%,
-      rgba(255, 255, 255, 0.65) 100%
-    );
+    background: var(--glass-solid, rgba(255, 255, 255, 0.85));
     backdrop-filter: blur($blur-md);
     -webkit-backdrop-filter: blur($blur-md);
-    border-color: $color-primary;
+    border-color: var(--color-primary, #FF6A00);
     box-shadow: 
-      0 0 0 4rpx rgba($color-primary, 0.08),
+      0 0 0 4rpx rgba(255, 106, 0, 0.08),
       inset 0 0 0 1rpx rgba(255, 255, 255, 0.6);
   }
 
   &.is-error {
-    border-color: $color-error;
-    background: linear-gradient(
-      135deg,
-      rgba($color-error, 0.08) 0%,
-      rgba($color-error, 0.05) 100%
-    );
+    border-color: var(--color-error, #FF3B30);
+    background: var(--color-error-glass, rgba(255, 59, 48, 0.08));
     backdrop-filter: blur($blur-sm);
     -webkit-backdrop-filter: blur($blur-sm);
-    box-shadow: 0 0 0 4rpx rgba($color-error, 0.08);
+    box-shadow: 0 0 0 4rpx rgba(255, 59, 48, 0.08);
   }
   
   &.is-disabled {
-    background: rgba(0,0,0,0.03);
+    background: var(--color-bg-gray, rgba(0, 0, 0, 0.03));
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     opacity: 0.6;

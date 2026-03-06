@@ -142,15 +142,15 @@ defineExpose({
   align-items: center;
   justify-content: center;
   padding: $space-sm $space-md;
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--glass-crystal-high, rgba(255, 255, 255, 0.6));
   backdrop-filter: blur($blur-sm);
   -webkit-backdrop-filter: blur($blur-sm);
   border-radius: $radius-md;
-  border: 1rpx solid rgba(0, 0, 0, 0.04);
+  border: 1rpx solid var(--color-border, rgba(0, 0, 0, 0.04));
   transition: all $duration-fast $ease-spring;
   
   &:active {
-    background: rgba(255, 255, 255, 0.8);
+    background: var(--glass-solid, rgba(255, 255, 255, 0.8));
     transform: scale(0.98);
   }
   
@@ -183,11 +183,11 @@ defineExpose({
   left: 0;
   right: 0;
   z-index: $z-dropdown + 1;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--glass-solid, rgba(255, 255, 255, 0.95));
   backdrop-filter: blur($blur-lg);
   -webkit-backdrop-filter: blur($blur-lg);
   border-radius: $radius-lg;
-  border: 1rpx solid rgba(255, 255, 255, 0.8);
+  border: 1rpx solid var(--glass-border-highlight, rgba(255, 255, 255, 0.8));
   box-shadow: 
     0 8rpx 32rpx rgba(0, 0, 0, 0.08),
     inset 0 0 0 1rpx rgba(255, 255, 255, 0.6);

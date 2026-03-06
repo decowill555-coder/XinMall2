@@ -12,7 +12,7 @@
               <ui-tag v-if="userInfo.isSeller" type="primary" size="sm">卖家</ui-tag>
             </view>
           </view>
-          <ui-icon name="arrow-right" ::size="40" color="rgba(255,255,255,0.8)" />
+          <ui-icon name="arrow-right" :size="40" color="var(--glass-shine, rgba(255,255,255,0.8))" />
         </view>
         
         <ui-card :glass="true" :shadow="false" radius="lg" padding="md" class="stats-card">
@@ -44,7 +44,7 @@
               <ui-text size="lg" weight="bold" color="main">我的订单</ui-text>
                 <view class="section-more" @click="goOrders">
                   <ui-text size="sm" color="sub">全部订单</ui-text>
-                  <ui-icon name="arrow-right" ::size="32" color="#6E6E73" />
+                  <ui-icon name="arrow-right" :size="32" color="#6E6E73" />
                 </view>
             </view>
           </template>
@@ -53,45 +53,45 @@
             <view class="order-item" @click="goOrders('pending')">
               <view class="order-icon">
                 <ui-badge v-if="orderCounts.pending > 0" :value="orderCounts.pending">
-                  <ui-icon name="wallet" ::size="40" />
+                  <ui-icon name="wallet" :size="40" />
                 </ui-badge>
-                <ui-icon v-else name="wallet" ::size="40" />
+                <ui-icon v-else name="wallet" :size="40" />
               </view>
               <ui-text size="xs" color="sub">待付款</ui-text>
             </view>
             <view class="order-item" @click="goOrders('shipped')">
               <view class="order-icon">
                 <ui-badge v-if="orderCounts.shipped > 0" :value="orderCounts.shipped">
-                  <ui-icon name="truck" ::size="40" />
+                  <ui-icon name="truck" :size="40" />
                 </ui-badge>
-                <ui-icon v-else name="truck" ::size="40" />
+                <ui-icon v-else name="truck" :size="40" />
               </view>
               <ui-text size="xs" color="sub">待发货</ui-text>
             </view>
             <view class="order-item" @click="goOrders('received')">
               <view class="order-icon">
                 <ui-badge v-if="orderCounts.received > 0" :value="orderCounts.received">
-                  <ui-icon name="package" ::size="40" />
+                  <ui-icon name="package" :size="40" />
                 </ui-badge>
-                <ui-icon v-else name="package" ::size="40" />
+                <ui-icon v-else name="package" :size="40" />
               </view>
               <ui-text size="xs" color="sub">待收货</ui-text>
             </view>
             <view class="order-item" @click="goOrders('reviewed')">
               <view class="order-icon">
                 <ui-badge v-if="orderCounts.reviewed > 0" :value="orderCounts.reviewed">
-                  <ui-icon name="star" ::size="40" />
+                  <ui-icon name="star" :size="40" />
                 </ui-badge>
-                <ui-icon v-else name="star" ::size="40" />
+                <ui-icon v-else name="star" :size="40" />
               </view>
               <ui-text size="xs" color="sub">待评价</ui-text>
             </view>
             <view class="order-item" @click="goOrders('refund')">
               <view class="order-icon">
                 <ui-badge v-if="orderCounts.refund > 0" :value="orderCounts.refund">
-                  <ui-icon name="refresh" ::size="40" />
+                  <ui-icon name="refresh" :size="40" />
                 </ui-badge>
-                <ui-icon v-else name="refresh" ::size="40" />
+                <ui-icon v-else name="refresh" :size="40" />
               </view>
               <ui-text size="xs" color="sub">退款/售后</ui-text>
             </view>
@@ -245,6 +245,7 @@ const goSettings = () => {
   left: 0;
   right: 0;
   z-index: 100;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-dark 100%);
 }
 
 .user-header {

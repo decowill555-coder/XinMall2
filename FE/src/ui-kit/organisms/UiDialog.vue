@@ -1,4 +1,4 @@
-﻿<!-- src/ui-kit/organisms/UiDialog.vue -->
+<!-- src/ui-kit/organisms/UiDialog.vue -->
 <template>
   <view 
     class="ui-dialog-wrapper" 
@@ -140,14 +140,10 @@ const onConfirm = async () => {
   .dialog-content {
     position: relative;
     width: 600rpx;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.95) 0%,
-      rgba(255, 255, 255, 0.85) 100%
-    );
+    background: var(--glass-solid, rgba(255, 255, 255, 0.95));
     backdrop-filter: blur($blur-xxl);
     -webkit-backdrop-filter: blur($blur-xxl);
-    border: 1rpx solid $glass-border-light;
+    border: 1rpx solid var(--glass-border-light, rgba(255, 255, 255, 0.6));
     border-radius: $radius-xl;
     overflow: hidden;
     transform: scale(0.9);
@@ -166,10 +162,6 @@ const onConfirm = async () => {
       font-size: $font-size-lg;
       font-weight: $font-weight-bold;
       color: $color-text-main;
-      background: linear-gradient(135deg, $color-text-main 0%, $color-text-sub 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
     }
   }
 
@@ -185,12 +177,12 @@ const onConfirm = async () => {
 
   .dialog-footer {
     display: flex;
-    border-top: 1rpx solid $glass-border-subtle;
+    border-top: 1rpx solid var(--glass-border-subtle, rgba(0, 0, 0, 0.04));
 
     &.vertical {
       flex-direction: column;
       
-      .btn { width: 100%; border-right: none; border-bottom: 1rpx solid $glass-border-subtle; }
+      .btn { width: 100%; border-right: none; border-bottom: 1rpx solid var(--glass-border-subtle, rgba(0, 0, 0, 0.04)); }
       .btn:last-child { border-bottom: none; }
     }
 

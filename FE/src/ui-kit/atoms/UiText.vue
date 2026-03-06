@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <text 
     class="ui-text"
     :class="[
@@ -53,14 +53,14 @@ const emit = defineEmits(['click']);
   &--xl  { font-size: $font-size-xl; }
   &--xxl { font-size: $font-size-xxl; }
 
-  // --- Colors ---
-  &--main        { color: $color-text-main; }
-  &--sub         { color: $color-text-sub; }
-  &--placeholder { color: $color-text-placeholder; }
-  &--primary     { color: $color-primary; }
-  &--error       { color: $color-error; }
-  &--warning     { color: $color-warning; }
-  &--white       { color: $color-white; }
+  // --- Colors (使用 CSS 变量响应主题) ---
+  &--main        { color: var(--color-text-main, #2C2624); }
+  &--sub         { color: var(--color-text-sub, #867A76); }
+  &--placeholder { color: var(--color-text-placeholder, #A9A5A2); }
+  &--primary     { color: var(--color-primary, #1ABC9C); }
+  &--error       { color: var(--color-error, #FF6B6B); }
+  &--warning     { color: var(--color-warning, #FFB347); }
+  &--white       { color: var(--color-text-white, #FFFFFF); }
 
   // --- Weights ---
   &--weight-regular { font-weight: $font-weight-regular; }
@@ -69,14 +69,14 @@ const emit = defineEmits(['click']);
 
   // --- Special ---
   &--price {
-    font-family: DINAlternate-Bold, Roboto, sans-serif; // 数字字体优化
+    font-family: DINAlternate-Bold, Roboto, sans-serif;
     font-weight: bold;
-    color: $color-error; // 价格默认红色
+    color: var(--color-error, #FF6B6B);
   }
   
   &--line-through {
     text-decoration: line-through;
-    color: $color-text-placeholder;
+    color: var(--color-text-placeholder, #A9A5A2);
   }
 }
 </style>

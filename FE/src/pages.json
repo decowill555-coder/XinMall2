@@ -1,39 +1,4 @@
 {
-  "easycom": {
-    "autoscan": true,
-    "custom": {
-      "^UiButton": "@/ui-kit/atoms/UiButton.vue",
-      "^UiIcon": "@/ui-kit/atoms/UiIcon.vue",
-      "^UiText": "@/ui-kit/atoms/UiText.vue",
-      "^UiTag": "@/ui-kit/atoms/UiTag.vue",
-      "^UiAvatar": "@/ui-kit/atoms/UiAvatar.vue",
-      "^UiBadge": "@/ui-kit/atoms/UiBadge.vue",
-      "^UiDivider": "@/ui-kit/atoms/UiDivider.vue",
-      "^UiImage": "@/ui-kit/atoms/UiImage.vue",
-      "^UiPrice": "@/ui-kit/atoms/UiPrice.vue",
-      "^UiSkeleton": "@/ui-kit/atoms/UiSkeleton.vue",
-      "^UiInput": "@/ui-kit/molecules/UiInput.vue",
-      "^UiSearch": "@/ui-kit/molecules/UiSearch.vue",
-      "^UiNavbar": "@/ui-kit/molecules/UiNavbar.vue",
-      "^UiCell": "@/ui-kit/molecules/UiCell.vue",
-      "^UiCheckbox": "@/ui-kit/molecules/UiCheckbox.vue",
-      "^UiRate": "@/ui-kit/molecules/UiRate.vue",
-      "^UiStepper": "@/ui-kit/molecules/UiStepper.vue",
-      "^UiSwitch": "@/ui-kit/molecules/UiSwitch.vue",
-      "^UiTabs": "@/ui-kit/molecules/UiTabs.vue",
-      "^UiUpload": "@/ui-kit/molecules/UiUpload.vue",
-      "^UiSubNavbar": "@/ui-kit/molecules/UiSubNavbar.vue",
-      "^UiCard": "@/ui-kit/organisms/UiCard.vue",
-      "^UiModal": "@/ui-kit/organisms/UiModal.vue",
-      "^UiActionSheet": "@/ui-kit/organisms/UiActionSheet.vue",
-      "^UiDialog": "@/ui-kit/organisms/UiDialog.vue",
-      "^UiGoodsCard": "@/ui-kit/organisms/UiGoodsCard.vue",
-      "^UiPopup": "@/ui-kit/organisms/UiPopup.vue",
-      "^UiToast": "@/ui-kit/organisms/UiToast.vue",
-      "^UiWaterfalls": "@/ui-kit/organisms/UiWaterfalls.vue",
-      "^The(.*)$": "@/components/layout/The$1.vue"
-    }
-  },
   "pages": [
     {
       "path": "pages/index/index",
@@ -116,6 +81,7 @@
         { "path": "collection/index", "style": { "navigationBarTitleText": "我的收藏", "navigationStyle": "custom" } },
         { "path": "history/index", "style": { "navigationBarTitleText": "浏览足迹", "navigationStyle": "custom" } },
         { "path": "settings/index", "style": { "navigationBarTitleText": "设置", "navigationStyle": "custom" } },
+        { "path": "theme/index", "style": { "navigationBarTitleText": "主题设置", "navigationStyle": "custom" } },
         { "path": "wallet/index", "style": { "navigationBarTitleText": "我的钱包", "navigationStyle": "custom" } }
       ]
     },

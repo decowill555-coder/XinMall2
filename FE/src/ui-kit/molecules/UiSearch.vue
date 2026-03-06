@@ -256,7 +256,7 @@ onUnmounted(() => {
   align-items: center;
   width: 100%;
   height: 80rpx;
-  background-color: #F5F5F7;
+  background-color: var(--color-bg-gray, #F5F5F7);
   border-radius: 40rpx;
   padding: 0 $space-lg;
   box-sizing: border-box;
@@ -264,7 +264,7 @@ onUnmounted(() => {
   font-family: $font-family-system;
   
   &.is-focus {
-    background-color: $color-white;
+    background-color: var(--color-bg-card, rgba(255, 255, 255, 0.65));
     box-shadow: 0 0 0 2rpx $color-brand-primary;
   }
   

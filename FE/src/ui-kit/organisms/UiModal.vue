@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view class="ui-modal-wrapper" v-if="show" @touchmove.stop.prevent>
     <!-- 遮罩层 -->
     <view 
@@ -136,7 +136,7 @@ const handleConfirm = () => {
 
 .ui-modal {
   width: 600rpx;
-  background: $color-white;
+  background: var(--modal-bg, rgba(255, 255, 255, 0.95));
   border-radius: $radius-lg;
   position: relative;
   z-index: 1001;
@@ -145,7 +145,9 @@ const handleConfirm = () => {
   transform: scale(0.9);
   transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
   
-  @include glass-effect(20rpx, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1rpx solid var(--modal-border, rgba(0, 0, 0, 0.1));
   
   &.is-show {
     opacity: 1;

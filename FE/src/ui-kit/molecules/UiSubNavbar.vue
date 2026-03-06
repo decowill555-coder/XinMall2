@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view 
     class="sub-navbar" 
     :style="{ height: totalNavHeight + 'px', background: background }"
@@ -50,7 +50,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   title: '',
-  color: '#000',
+  color: '',
   background: 'transparent',
   fixed: true,
   placeholder: true,

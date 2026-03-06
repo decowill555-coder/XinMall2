@@ -14,7 +14,6 @@ interface RequestOptions {
 
 export const http = <T>(options: RequestOptions): Promise<T> => {
   return new Promise((resolve, reject) => {
-    // 1. 请求拦截：注入 Token
     const token = uni.getStorageSync('token');
     const header = {
       'Content-Type': 'application/json',
@@ -24,21 +23,33 @@ export const http = <T>(options: RequestOptions): Promise<T> => {
       header['Authorization'] = `Bearer ${token}`;
     }
 
-    // 2. 显示 Loading
     if (options.loading) {
       uni.showLoading({ title: '加载中...', mask: true });
     }
 
+    let url = options.url.startsWith('http') ? options.url : BASE_URL + options.url;
+    
+    if (options.method === 'GET' && options.data) {
+      const params = new URLSearchParams();
+      Object.entries(options.data).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          params.append(key, String(value));
+        }
+      });
+      const queryString = params.toString();
+      if (queryString) {
+        url += (url.includes('?') ? '&' : '?') + queryString;
+      }
+    }
+
     uni.request({
-      url: options.url.startsWith('http') ? options.url : BASE_URL + options.url,
+      url,
       method: options.method || 'GET',
-      data: options.data,
+      data: options.method !== 'GET' ? options.data : undefined,
       header: header,
       timeout: TIMEOUT,
       success: (res: any) => {
-        // 3. 响应拦截
         if (res.statusCode >= 200 && res.statusCode < 300) {
-          // 假设后端格式: { code: 0, data: {}, msg: 'ok' }
           if (res.data.code === 0) {
             resolve(res.data.data as T);
           } else {
@@ -46,7 +57,6 @@ export const http = <T>(options: RequestOptions): Promise<T> => {
             reject(res.data);
           }
         } else if (res.statusCode === 401) {
-          // 4. Token 过期处理
           uni.removeStorageSync('token');
           uni.navigateTo({ url: '/pages-sub/user/login/index' });
           reject(res);

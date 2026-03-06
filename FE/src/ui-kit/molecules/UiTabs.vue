@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view class="ui-tabs-container">
     <scroll-view 
       scroll-x 
@@ -79,15 +79,8 @@ const onClick = (index: number) => {
   align-items: center;
   padding: 0 $space-md;
   height: 88rpx;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.5) 0%,
-    rgba(255, 255, 255, 0.2) 100%
-  );
-  backdrop-filter: blur($blur-sm);
-  -webkit-backdrop-filter: blur($blur-sm);
-  border-bottom: 1rpx solid $glass-border-subtle;
-
+  background: transparent;
+  
   .tab-item {
     position: relative;
     padding: 0 $space-md;
@@ -106,14 +99,7 @@ const onClick = (index: number) => {
       color: $color-text-main;
       font-weight: $font-weight-bold;
       font-size: $font-size-lg;
-      background: linear-gradient(
-        135deg,
-        rgba($color-primary, 0.1) 0%,
-        rgba($color-primary, 0.05) 100%
-      );
-      backdrop-filter: blur($blur-sm);
-      -webkit-backdrop-filter: blur($blur-sm);
-      box-shadow: inset 0 0 0 1rpx rgba($color-primary, 0.2);
+      background: var(--color-primary-glass, rgba(255, 106, 0, 0.1));
     }
   }
 
@@ -142,12 +128,10 @@ const onClick = (index: number) => {
       border: 1rpx solid transparent;
 
       &.is-active {
-        background: linear-gradient(135deg, $color-primary 0%, $color-primary-dark 100%);
-        color: $color-white;
-        box-shadow: 
-          0 4rpx 16rpx rgba($color-primary, 0.25),
-          inset 0 0 0 1rpx rgba(255, 255, 255, 0.2);
-        border-color: rgba(255, 255, 255, 0.3);
+        background: linear-gradient(135deg, var(--color-primary, #FF6A00) 0%, var(--color-primary-dark, #E55D00) 100%);
+        color: var(--color-text-white, #FFFFFF);
+        box-shadow: var(--shadow-glow-primary, 0 4rpx 16rpx rgba(255, 106, 0, 0.25));
+        border-color: var(--glass-border-subtle, rgba(255, 255, 255, 0.3));
       }
     }
   }

@@ -1,4 +1,4 @@
-﻿<!-- src/ui-kit/organisms/UiActionSheet.vue -->
+<!-- src/ui-kit/organisms/UiActionSheet.vue -->
 <template>
   <view 
     class="ui-action-sheet" 
@@ -131,9 +131,9 @@ const onSelect = (item: ActionItem, index: number) => {
     // 底部安全�?    @include safe-area-bottom($space-md);
   }
 
-  // 通用毛玻璃卡片样�?mixin
+  // 通用毛玻璃卡片样式 mixin
   @mixin panel-style {
-    background-color: rgba(255, 255, 255, 0.85); // 不透明度高一点，保证文字清晰
+    background-color: var(--glass-solid, rgba(255, 255, 255, 0.85));
     backdrop-filter: blur($blur-lg);
     border-radius: $radius-lg;
     overflow: hidden;
@@ -178,7 +178,7 @@ const onSelect = (item: ActionItem, index: number) => {
     font-size: $font-size-lg;
     transition: background-color 0.2s;
 
-    &:active { background-color: rgba(0,0,0,0.05); }
+    &:active { background-color: var(--color-border, rgba(0, 0, 0, 0.05)); }
 
     &.disabled {
       opacity: 0.5;
@@ -192,7 +192,7 @@ const onSelect = (item: ActionItem, index: number) => {
       left: 0;
       right: 0;
       height: 1px;
-      background-color: $color-divider;
+      background-color: var(--color-divider, rgba(0, 0, 0, 0.06));
       transform: scaleY(0.5);
     }
 
@@ -211,7 +211,7 @@ const onSelect = (item: ActionItem, index: number) => {
     font-weight: $font-weight-bold;
     color: $color-text-main;
     
-    &:active { background-color: rgba(255,255,255,0.6); }
+    &:active { background-color: var(--glass-crystal-high, rgba(255, 255, 255, 0.6)); }
   }
 }
 </style>

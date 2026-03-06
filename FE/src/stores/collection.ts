@@ -348,7 +348,7 @@ export const useCollectionStore = defineStore('collection', () => {
     return collections.value.filter(c => 
       c.title.toLowerCase().includes(lowerKeyword) ||
       c.tags.some(t => t.toLowerCase().includes(lowerKeyword)) ||
-      c.note.toLowerCase().includes(lowerKeyword)
+      (c.note && c.note.toLowerCase().includes(lowerKeyword))
     );
   };
 

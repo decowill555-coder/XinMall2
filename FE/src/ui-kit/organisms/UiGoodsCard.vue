@@ -1,4 +1,4 @@
-﻿<!-- src/ui-kit/organisms/UiGoodsCard.vue -->
+﻿﻿<!-- src/ui-kit/organisms/UiGoodsCard.vue -->
 <template>
   <view 
     class="ui-goods-card" 
@@ -131,26 +131,18 @@ const toUser = () => {
 
 .ui-goods-card {
   position: relative;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.9) 0%,
-    rgba(255, 255, 255, 0.75) 100%
-  );
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
   backdrop-filter: blur($blur-lg);
   -webkit-backdrop-filter: blur($blur-lg);
-  border: 1rpx solid $glass-border-light;
+  border: 1rpx solid var(--glass-border-light, rgba(255, 255, 255, 0.6));
   border-radius: $radius-md;
   overflow: hidden;
-  box-shadow: 
-    0 8rpx 32rpx rgba(0, 0, 0, 0.03),
-    inset 0 0 0 1rpx rgba(255, 255, 255, 0.6);
+  box-shadow: var(--shadow-card, 0 8rpx 32rpx rgba(0, 0, 0, 0.03));
   transition: all $duration-fast $ease-spring;
 
   &:active {
     transform: scale(0.98);
-    box-shadow: 
-      0 4rpx 16rpx rgba(0, 0, 0, 0.02),
-      inset 0 0 0 1rpx rgba(255, 255, 255, 0.4);
+    box-shadow: var(--shadow-card, 0 4rpx 16rpx rgba(0, 0, 0, 0.02));
   }
 
   // === 瀑布流样式 ===
@@ -170,14 +162,12 @@ const toUser = () => {
         position: absolute;
         top: 10rpx;
         right: 10rpx;
-        background: linear-gradient(135deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(135deg, var(--overlay-bg, rgba(0, 0, 0, 0.5)) 0%, rgba(0, 0, 0, 0.3) 100%);
         border-radius: 50%;
         padding: 8rpx;
         backdrop-filter: blur($blur-sm);
         -webkit-backdrop-filter: blur($blur-sm);
-        box-shadow: 
-          0 4rpx 12rpx rgba(0, 0, 0, 0.2),
-          inset 0 0 0 1rpx rgba(255, 255, 255, 0.2);
+        box-shadow: var(--shadow-card, 0 4rpx 12rpx rgba(0, 0, 0, 0.2));
       }
     }
 
@@ -226,7 +216,7 @@ const toUser = () => {
   // === 列表样式 ===
   &.mode-list {
     margin-bottom: $space-md;
-    border: 1rpx solid $glass-border-light;
+    border: 1rpx solid var(--glass-border-light, rgba(255, 255, 255, 0.6));
     box-shadow: $glass-shadow-md;
 
     .list-layout {
@@ -240,22 +230,20 @@ const toUser = () => {
       flex-shrink: 0;
       overflow: hidden;
       border-radius: $radius-md;
-      border: 1rpx solid $glass-border-subtle;
+      border: 1rpx solid var(--glass-border-subtle, rgba(0, 0, 0, 0.04));
 
       .condition-tag {
         position: absolute;
         top: 8rpx;
         left: 8rpx;
-        background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 100%);
-        color: $color-white;
+        background: linear-gradient(135deg, var(--overlay-bg, rgba(0, 0, 0, 0.7)) 0%, rgba(0, 0, 0, 0.5) 100%);
+        color: var(--color-text-white, #FFFFFF);
         font-size: $font-size-xs;
         padding: 4rpx 8rpx;
         border-radius: $radius-xs;
         backdrop-filter: blur($blur-sm);
         -webkit-backdrop-filter: blur($blur-sm);
-        box-shadow: 
-          0 2rpx 8rpx rgba(0, 0, 0, 0.2),
-          inset 0 0 0 1rpx rgba(255, 255, 255, 0.2);
+        box-shadow: var(--shadow-card, 0 2rpx 8rpx rgba(0, 0, 0, 0.2));
       }
     }
 
@@ -281,16 +269,12 @@ const toUser = () => {
         .spec-text {
           font-size: $font-size-sm;
           color: $color-text-sub;
-          background: linear-gradient(
-            135deg,
-            rgba(0,0,0,0.05) 0%,
-            rgba(0,0,0,0.03) 100%
-          );
+          background: var(--color-bg-gray, rgba(0, 0, 0, 0.05));
           backdrop-filter: blur($blur-sm);
           -webkit-backdrop-filter: blur($blur-sm);
           padding: 4rpx 10rpx;
           border-radius: $radius-sm;
-          border: 1rpx solid $glass-border-subtle;
+          border: 1rpx solid var(--glass-border-subtle, rgba(0, 0, 0, 0.04));
         }
       }
 

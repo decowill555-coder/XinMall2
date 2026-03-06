@@ -105,10 +105,10 @@ const onItemClick = (item: SwiperItem, index: number) => {
   position: relative;
   width: 100%;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 100%);
+  background: var(--color-bg-gray, rgba(0, 0, 0, 0.03));
   backdrop-filter: blur($blur-sm);
   -webkit-backdrop-filter: blur($blur-sm);
-  border: 1rpx solid $glass-border-subtle;
+  border: 1rpx solid var(--glass-border-subtle, rgba(0, 0, 0, 0.04));
   box-shadow: $glass-shadow-md;
 }
 
@@ -179,7 +179,7 @@ const onItemClick = (item: SwiperItem, index: number) => {
 
   &.is-active {
     width: 32rpx;
-    background: $color-white !important;
+    background: var(--color-text-white, #FFFFFF) !important;
     box-shadow: 0 2rpx 8rpx rgba(255, 255, 255, 0.4);
   }
 }

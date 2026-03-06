@@ -1,8 +1,6 @@
 <template>
-  <view class="app-container">
-    <view class="test-content">
-      <text class="title">✓ XinMall 正常运行</text>
-    </view>
+  <view class="app-container" :style="themeStore.allThemeVars" :data-theme="themeStore.currentMode">
+    <router-view />
   </view>
 </template>
 
@@ -35,7 +33,8 @@ onHide(() => {
 <style>
 .app-container {
   min-height: 100vh;
-  background-color: #F2F4F8;
+  background-color: var(--color-bg-page, #FFF5F2);
+  transition: background-color 0.3s ease;
 }
 
 .test-content {
@@ -48,7 +47,7 @@ onHide(() => {
 
 .title {
   font-size: 32rpx;
-  color: #1ABC9C;
+  color: var(--color-primary, #1ABC9C);
   font-weight: 600;
 }
 </style>

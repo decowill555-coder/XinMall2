@@ -80,16 +80,16 @@ const handleDeviceChange = (value: string | number | null) => {
   display: flex;
   align-items: center;
   padding: $space-sm $space-md;
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
   backdrop-filter: blur($blur-md);
   -webkit-backdrop-filter: blur($blur-md);
-  border-bottom: 1rpx solid rgba(0, 0, 0, 0.04);
+  border-bottom: 1rpx solid var(--color-border, rgba(0, 0, 0, 0.04));
   gap: $space-sm;
 }
 
 .filter-tabs {
   display: flex;
-  background: rgba(0, 0, 0, 0.03);
+  background: var(--color-bg-gray, rgba(0, 0, 0, 0.03));
   border-radius: $radius-full;
   padding: 4rpx;
   flex-shrink: 0;
@@ -106,7 +106,7 @@ const handleDeviceChange = (value: string | number | null) => {
     }
     
     &.is-active {
-      background: $color-white;
+      background: var(--color-bg-card, rgba(255, 255, 255, 0.65));
       box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
       
       .tab-text {

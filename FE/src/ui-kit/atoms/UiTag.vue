@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view 
     class="ui-tag"
     :class="[
@@ -15,17 +15,13 @@
 
 <script setup lang="ts">
 interface Props {
-  // 类型: primary(主色), success(�?, warning(�?, danger(�?, info(�?
   type?: 'primary' | 'success' | 'warning' | 'danger' | 'info';
-  // 尺寸: sm(�?, md(�?
-  size?: 'sm' | 'md';
-  // 朴素样式 (空心/淡色背景)
+  size?: 'xs' | 'sm' | 'md';
   plain?: boolean;
-  // 圆角 (全圆�?
   round?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   type: 'primary',
   size: 'sm',
   plain: false,
@@ -48,135 +44,108 @@ const emit = defineEmits(['click']);
   transition: all $duration-fast $ease-spring;
   font-family: $font-family-system;
   
-  // --- Sizes ---
+  &--xs {
+    height: 32rpx;
+    padding: 0 8rpx;
+    font-size: 18rpx;
+    border-radius: $radius-xs;
+  }
+  
   &--sm {
     height: 36rpx;
     padding: 0 12rpx;
-    font-size: $font-size-xs; // 20rpx
+    font-size: $font-size-xs;
     border-radius: $radius-sm;
   }
+  
   &--md {
     height: 48rpx;
     padding: 0 16rpx;
-    font-size: $font-size-sm; // 24rpx
+    font-size: $font-size-sm;
     border-radius: $radius-md;
   }
 
-  // --- Round ---
   &--round {
     border-radius: 999px;
   }
 
-  // --- Variants (Solid with Glass Effect) ---
   &--primary { 
-    background: linear-gradient(135deg, rgba($color-primary, 0.9) 0%, rgba($color-primary, 0.7) 100%);
-    color: $color-white;
-    box-shadow: 0 4rpx 12rpx rgba($color-primary, 0.2);
-    border: 1rpx solid rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, var(--color-primary, #FF6A00) 0%, var(--color-primary-dark, #E55D00) 100%);
+    color: var(--color-text-white, #FFFFFF);
+    box-shadow: 0 4rpx 12rpx var(--color-primary-glass, rgba(255, 106, 0, 0.2));
+    border: 1rpx solid var(--glass-border-subtle, rgba(255, 255, 255, 0.3));
   }
+  
   &--success { 
-    background: linear-gradient(135deg, rgba($color-success, 0.9) 0%, rgba($color-success, 0.7) 100%);
-    color: $color-white;
-    box-shadow: 0 4rpx 12rpx rgba($color-success, 0.2);
-    border: 1rpx solid rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, var(--color-success, #34C759) 0%, var(--color-success-dark, #248A3D) 100%);
+    color: var(--color-text-white, #FFFFFF);
+    box-shadow: 0 4rpx 12rpx var(--color-success-glass, rgba(52, 199, 89, 0.2));
+    border: 1rpx solid var(--glass-border-subtle, rgba(255, 255, 255, 0.3));
   }
+  
   &--warning { 
-    background: linear-gradient(135deg, rgba($color-warning, 0.9) 0%, rgba($color-warning, 0.7) 100%);
-    color: $color-white;
-    box-shadow: 0 4rpx 12rpx rgba($color-warning, 0.2);
-    border: 1rpx solid rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, var(--color-warning, #FF9500) 0%, var(--color-warning-dark, #D4A300) 100%);
+    color: var(--color-text-white, #FFFFFF);
+    box-shadow: 0 4rpx 12rpx var(--color-warning-glass, rgba(255, 149, 0, 0.2));
+    border: 1rpx solid var(--glass-border-subtle, rgba(255, 255, 255, 0.3));
   }
-  &--danger  { 
-    background: linear-gradient(135deg, rgba($color-error, 0.9) 0%, rgba($color-error, 0.7) 100%);
-    color: $color-white;
-    box-shadow: 0 4rpx 12rpx rgba($color-error, 0.2);
-    border: 1rpx solid rgba(255, 255, 255, 0.3);
+  
+  &--danger { 
+    background: linear-gradient(135deg, var(--color-error, #FF3B30) 0%, var(--color-error-dark, #D70015) 100%);
+    color: var(--color-text-white, #FFFFFF);
+    box-shadow: 0 4rpx 12rpx var(--color-error-glass, rgba(255, 59, 48, 0.2));
+    border: 1rpx solid var(--glass-border-subtle, rgba(255, 255, 255, 0.3));
   }
+  
   &--info { 
-    background: linear-gradient(135deg, rgba($color-info, 0.8) 0%, rgba($color-info, 0.6) 100%);
-    color: $color-white;
-    box-shadow: 0 4rpx 12rpx rgba($color-info, 0.15);
-    border: 1rpx solid rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, var(--color-info, #007AFF) 0%, var(--color-info-dark, #3634A3) 100%);
+    color: var(--color-text-white, #FFFFFF);
+    box-shadow: 0 4rpx 12rpx var(--color-info-glass, rgba(0, 122, 255, 0.15));
+    border: 1rpx solid var(--glass-border-subtle, rgba(255, 255, 255, 0.3));
   }
 
-  // --- Plain Mode (Light bg + Dark text) ---
   &--plain {
     background: transparent;
+    
     &.ui-tag--primary { 
-      color: $color-primary; 
-      background: rgba($color-primary, 0.08); 
-      border-color: rgba($color-primary, 0.2);
+      color: var(--color-primary, #FF6A00); 
+      background: var(--color-primary-glass, rgba(255, 106, 0, 0.1)); 
+      border-color: var(--color-primary, rgba(255, 106, 0, 0.3));
       backdrop-filter: blur($blur-sm);
       -webkit-backdrop-filter: blur($blur-sm);
     }
+    
     &.ui-tag--success { 
-      color: $color-success; 
-      background: rgba($color-success, 0.08); 
-      border-color: rgba($color-success, 0.2);
+      color: var(--color-success, #34C759); 
+      background: var(--color-success-glass, rgba(52, 199, 89, 0.1)); 
+      border-color: var(--color-success, rgba(52, 199, 89, 0.3));
       backdrop-filter: blur($blur-sm);
       -webkit-backdrop-filter: blur($blur-sm);
     }
+    
     &.ui-tag--warning { 
-      color: $color-warning; 
-      background: rgba($color-warning, 0.08); 
-      border-color: rgba($color-warning, 0.2);
+      color: var(--color-warning, #FF9500); 
+      background: var(--color-warning-glass, rgba(255, 149, 0, 0.1)); 
+      border-color: var(--color-warning, rgba(255, 149, 0, 0.3));
       backdrop-filter: blur($blur-sm);
       -webkit-backdrop-filter: blur($blur-sm);
     }
-    &.ui-tag--danger  { 
-      color: $color-error; 
-      background: rgba($color-error, 0.08); 
-      border-color: rgba($color-error, 0.2);
+    
+    &.ui-tag--danger { 
+      color: var(--color-error, #FF3B30); 
+      background: var(--color-error-glass, rgba(255, 59, 48, 0.1)); 
+      border-color: var(--color-error, rgba(255, 59, 48, 0.3));
       backdrop-filter: blur($blur-sm);
       -webkit-backdrop-filter: blur($blur-sm);
     }
-    &.ui-tag--info  { 
-      color: $color-info; 
-      background: rgba($color-info, 0.08); 
-      border-color: rgba($color-info, 0.2);
+    
+    &.ui-tag--info { 
+      color: var(--color-info, #007AFF); 
+      background: var(--color-info-glass, rgba(0, 122, 255, 0.1)); 
+      border-color: var(--color-info, rgba(0, 122, 255, 0.3));
       backdrop-filter: blur($blur-sm);
       -webkit-backdrop-filter: blur($blur-sm);
     }
-  }
-}
-
-// =============================================================================
-// MODERN TAG - 2025 淘宝/闲鱼风格标签
-// =============================================================================
-
-.ui-tag--modern {
-  border-radius: $radius-card-s;
-  font-weight: $font-weight-medium;
-  border: none;
-  
-  &.ui-tag--primary {
-    background: $color-brand-primary-light;
-    color: $color-brand-primary;
-    box-shadow: none;
-  }
-  
-  &.ui-tag--danger {
-    background: $color-brand-price-light;
-    color: $color-brand-price;
-    box-shadow: none;
-  }
-  
-  &.ui-tag--success {
-    background: $color-success-light;
-    color: $color-success;
-    box-shadow: none;
-  }
-  
-  &.ui-tag--warning {
-    background: $color-warning-light;
-    color: $color-warning;
-    box-shadow: none;
-  }
-  
-  &.ui-tag--info {
-    background: $color-info-light;
-    color: $color-info;
-    box-shadow: none;
   }
 }
 </style>

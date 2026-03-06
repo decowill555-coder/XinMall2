@@ -313,7 +313,9 @@ onMounted(() => {
 }
 
 .message-tabs {
-  background: $color-white;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
   padding: 0 $space-md;
   margin: 0 $space-md;
   border-radius: $radius-lg;
@@ -336,14 +338,14 @@ onMounted(() => {
 .group-card {
   .group-title {
     padding: $space-md;
-    border-bottom: 1px solid $color-divider;
+    border-bottom: 1px solid var(--color-divider, rgba(0, 0, 0, 0.06));
   }
 }
 
 .message-item {
   display: flex;
   padding: $space-md;
-  border-bottom: 1px solid $color-divider;
+  border-bottom: 1px solid var(--color-divider, rgba(0, 0, 0, 0.06));
   
   &:last-child {
     border-bottom: none;
@@ -382,7 +384,7 @@ onMounted(() => {
     .system-icon {
       width: 88rpx;
       height: 88rpx;
-      background: $color-bg-gray;
+      background: var(--color-bg-gray, rgba(0, 0, 0, 0.03));
       border-radius: 50%;
       @include flex-center;
       margin-right: $space-md;

@@ -1,4 +1,4 @@
-﻿<!-- src/ui-kit/organisms/UiPopup.vue -->
+<!-- src/ui-kit/organisms/UiPopup.vue -->
 <template>
   <view 
     class="ui-popup" 
@@ -114,14 +114,10 @@ const close = () => {
 
   .popup-content {
     position: absolute;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.95) 0%,
-      rgba(255, 255, 255, 0.85) 100%
-    );
+    background: var(--glass-solid, rgba(255, 255, 255, 0.95));
     backdrop-filter: blur($blur-xxl);
     -webkit-backdrop-filter: blur($blur-xxl);
-    border: 1rpx solid $glass-border-light;
+    border: 1rpx solid var(--glass-border-light, rgba(255, 255, 255, 0.6));
     transition: transform $duration-normal cubic-bezier(0.36, 0.66, 0.04, 1);
     box-shadow: 
       0 16rpx 48rpx rgba(0, 0, 0, 0.08),
@@ -138,13 +134,13 @@ const close = () => {
       z-index: 1;
       padding: $space-sm;
       border-radius: 50%;
-      background: rgba(0, 0, 0, 0.03);
+      background: var(--color-bg-gray, rgba(0, 0, 0, 0.03));
       backdrop-filter: blur($blur-sm);
       -webkit-backdrop-filter: blur($blur-sm);
       transition: all $duration-fast $ease-spring;
       
       &:active {
-        background: rgba(0, 0, 0, 0.06);
+        background: var(--color-border, rgba(0, 0, 0, 0.06));
         transform: scale(0.9);
       }
     }

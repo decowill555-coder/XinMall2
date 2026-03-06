@@ -321,9 +321,11 @@ const loadMore = () => {
   left: 0;
   right: 0;
   z-index: 100;
-  background: $color-bg-white;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
   padding: $space-md $space-md $space-sm;
-  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-card, 0 2rpx 16rpx rgba(0, 0, 0, 0.04));
 }
 
 .search-bar {

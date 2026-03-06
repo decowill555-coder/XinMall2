@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view 
     class="ui-cell"
     :class="[
@@ -21,7 +21,7 @@
     <view class="cell-right">
       <text class="cell-value" :style="{ color: valueColor }">{{ value }}</text>
       <slot name="right-icon">
-        <ui-icon v-if="isLink" name="arrow-right" ::size="40" :color="'#A1A1A6'" class="arrow" />
+        <ui-icon v-if="isLink" name="arrow-right" ::size="40" class="arrow" />
       </slot>
     </view>
   </view>
@@ -46,7 +46,7 @@ const props = withDefaults(defineProps<{
   glass: false,
   separated: false,
   isLink: false,
-  iconColor: '#1D1D1F'
+  iconColor: ''
 });
 
 const emit = defineEmits(['click']);
@@ -64,30 +64,22 @@ const handleClick = () => {
   position: relative;
   @include flex-between;
   padding: $space-lg $space-md;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.9) 0%,
-    rgba(255, 255, 255, 0.7) 100%
-  );
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
   backdrop-filter: blur($blur-sm);
   -webkit-backdrop-filter: blur($blur-sm);
-  border: 1rpx solid $glass-border-subtle;
+  border: 1rpx solid var(--glass-border-subtle, rgba(0, 0, 0, 0.04));
   box-shadow: $glass-shadow-sm;
   transition: all $duration-fast $ease-spring;
 
   &:active {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.95) 0%,
-      rgba(255, 255, 255, 0.8) 100%
-    );
+    background: var(--glass-crystal-high, rgba(255, 255, 255, 0.95));
     transform: scale(0.99);
     box-shadow: $glass-shadow-xs;
   }
 
   &.is-glass {
     @include crystal-glass($blur-md, 0.5);
-    border: 1rpx solid $glass-border-light;
+    border: 1rpx solid var(--glass-border-light, rgba(255, 255, 255, 0.6));
     box-shadow: $glass-shadow-sm;
     
     &:active { 
@@ -112,10 +104,6 @@ const handleClick = () => {
       font-size: $font-size-md;
       color: $color-text-main;
       font-weight: $font-weight-medium;
-      background: linear-gradient(135deg, $color-text-main 0%, $color-text-sub 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
     }
     
     .cell-label {
@@ -153,7 +141,7 @@ const handleClick = () => {
     background: linear-gradient(
       90deg,
       transparent 0%,
-      $color-divider 50%,
+      var(--color-divider, rgba(0, 0, 0, 0.06)) 50%,
       transparent 100%
     );
     transform: scaleY(0.5);

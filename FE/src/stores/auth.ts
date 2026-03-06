@@ -131,11 +131,6 @@ export const useAuthStore = defineStore('auth', () => {
   const isVip = computed(() => state.value.role === 'vip');
   const isAdmin = computed(() => state.value.role === 'admin');
 
-  const canPublish = computed(() => hasPermission('product:publish'));
-  const canManageShop = computed(() => hasPermission('shop:manage'));
-  const canAccessVip = computed(() => hasPermission('vip:access'));
-  const canAccessAdmin = computed(() => hasPermission('admin:dashboard'));
-
   const hasPermission = (permission: Permission): boolean => {
     return allPermissions.value.includes(permission);
   };
@@ -147,6 +142,11 @@ export const useAuthStore = defineStore('auth', () => {
   const hasAllPermissions = (permissions: Permission[]): boolean => {
     return permissions.every(p => allPermissions.value.includes(p));
   };
+
+  const canPublish = computed(() => hasPermission('product:publish'));
+  const canManageShop = computed(() => hasPermission('shop:manage'));
+  const canAccessVip = computed(() => hasPermission('vip:access'));
+  const canAccessAdmin = computed(() => hasPermission('admin:dashboard'));
 
   const setAuth = (userId: string, role: UserRole = 'user') => {
     state.value = {

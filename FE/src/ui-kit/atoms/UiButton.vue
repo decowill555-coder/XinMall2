@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <button 
     class="ui-btn"
     :class="[
@@ -155,7 +155,7 @@ const handleClick = (e: Event) => {
   }
   
   &--danger {
-    background: linear-gradient(135deg, $color-error 0%, color.adjust($color-error, $lightness: -10%) 100%);
+    background: linear-gradient(135deg, $color-error 0%, $color-error-dark 100%);
     color: $color-white;
     box-shadow: 
       0 8rpx 24rpx rgba($color-error, 0.25),

@@ -1,4 +1,4 @@
-﻿<!-- src/ui-kit/atoms/UiImage.vue -->
+<!-- src/ui-kit/atoms/UiImage.vue -->
 <template>
   <view 
     class="ui-image" 
@@ -76,11 +76,11 @@ const onError = () => {
 .ui-image {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 100%);
+  background: var(--color-bg-gray, rgba(0, 0, 0, 0.03));
   backdrop-filter: blur($blur-sm);
   -webkit-backdrop-filter: blur($blur-sm);
   display: flex;
-  border: 1rpx solid $glass-border-subtle;
+  border: 1rpx solid var(--glass-border-subtle, rgba(0, 0, 0, 0.04));
   box-shadow: $glass-shadow-sm;
 
   .placeholder {
@@ -96,16 +96,16 @@ const onError = () => {
       @include skeleton-loading;
       background: linear-gradient(
         90deg,
-        rgba(245, 245, 247, 0.8) 25%,
-        rgba(250, 250, 250, 0.6) 50%,
-        rgba(245, 245, 247, 0.8) 75%
+        var(--skeleton-base, rgba(245, 245, 247, 0.8)) 25%,
+        var(--skeleton-highlight, rgba(250, 250, 250, 0.6)) 50%,
+        var(--skeleton-base, rgba(245, 245, 247, 0.8)) 75%
       );
       background-size: 200% 100%;
       animation: skeleton-animation 1.5s ease-in-out infinite;
     }
 
     &.error {
-      background: rgba(247, 248, 250, 0.8);
+      background: var(--color-bg-gray, rgba(247, 248, 250, 0.8));
       backdrop-filter: blur($blur-sm);
       -webkit-backdrop-filter: blur($blur-sm);
     }

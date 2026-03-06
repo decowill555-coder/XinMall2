@@ -1,4 +1,4 @@
-﻿<!-- src/ui-kit/atoms/UiBadge.vue -->
+<!-- src/ui-kit/atoms/UiBadge.vue -->
 <template>
   <view class="ui-badge-wrapper">
     <slot />
@@ -87,25 +87,25 @@ const customStyle = computed(() => {
 
   // 颜色变体 (带渐变效果)
   &.error { 
-    background: linear-gradient(135deg, $color-error 0%, color.adjust($color-error, $lightness: -8%) 100%);
+    background: linear-gradient(135deg, $color-error 0%, $color-error-dark 100%);
     box-shadow: 
       0 4rpx 12rpx rgba($color-error, 0.25),
       inset 0 0 0 1rpx rgba(255, 255, 255, 0.3);
   }
   &.success { 
-    background: linear-gradient(135deg, $color-success 0%, color.adjust($color-success, $lightness: -8%) 100%);
+    background: linear-gradient(135deg, $color-success 0%, $color-success-dark 100%);
     box-shadow: 
       0 4rpx 12rpx rgba($color-success, 0.25),
       inset 0 0 0 1rpx rgba(255, 255, 255, 0.3);
   }
   &.warning { 
-    background: linear-gradient(135deg, $color-warning 0%, color.adjust($color-warning, $lightness: -8%) 100%);
+    background: linear-gradient(135deg, $color-warning 0%, $color-warning-dark 100%);
     box-shadow: 
       0 4rpx 12rpx rgba($color-warning, 0.25),
       inset 0 0 0 1rpx rgba(255, 255, 255, 0.3);
   }
   &.info { 
-    background: linear-gradient(135deg, $color-info 0%, color.adjust($color-info, $lightness: -8%) 100%);
+    background: linear-gradient(135deg, $color-info 0%, $color-info-dark 100%);
     box-shadow: 
       0 4rpx 12rpx rgba($color-info, 0.25),
       inset 0 0 0 1rpx rgba(255, 255, 255, 0.3);

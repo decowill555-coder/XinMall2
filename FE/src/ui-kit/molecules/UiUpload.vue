@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view class="ui-upload">
     <view class="upload-grid">
       <!-- 1. 已上传图片预览 -->
@@ -130,7 +130,7 @@ const onPreview = (index: number) => {
 }
 
 .upload-btn {
-  background-color: $color-bg-gray;
+  background-color: var(--color-bg-gray, #FAF8F7);
   border: 2rpx dashed $color-border;
   box-sizing: border-box;
   display: flex;
@@ -138,7 +138,7 @@ const onPreview = (index: number) => {
   align-items: center;
   justify-content: center;
   
-  &:active { background-color: #EFEFEF; }
+  &:active { background-color: var(--color-border, rgba(44, 38, 36, 0.12)); }
 
   .upload-text {
     font-size: $font-size-xs;

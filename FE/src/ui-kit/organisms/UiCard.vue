@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view 
     class="ui-card" 
     :class="[
@@ -55,14 +55,10 @@ const handleClick = () => {
 <style lang="scss" scoped>
 .ui-card {
   position: relative;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(255, 255, 255, 0.8) 100%
-  );
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
   backdrop-filter: blur($blur-lg);
   -webkit-backdrop-filter: blur($blur-lg);
-  border: 1rpx solid $glass-border-light;
+  border: 1rpx solid var(--glass-border-light, rgba(255, 255, 255, 0.6));
   box-shadow: $glass-shadow-md;
   transition: all $duration-fast $ease-spring;
   overflow: hidden;
@@ -70,11 +66,7 @@ const handleClick = () => {
 
   &.is-glass {
     @include glass-card($radius-lg);
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.85) 0%,
-      rgba(255, 255, 255, 0.65) 100%
-    );
+    background: var(--glass-solid, rgba(255, 255, 255, 0.75));
   }
 
   &.has-shadow {
@@ -105,17 +97,13 @@ const handleClick = () => {
     align-items: center;
     margin-bottom: $space-sm;
     padding-bottom: $space-sm;
-    border-bottom: 1rpx solid $glass-border-subtle;
+    border-bottom: 1rpx solid var(--glass-border-subtle, rgba(0, 0, 0, 0.04));
   }
   
   &__title {
     font-size: $font-size-lg;
     font-weight: $font-weight-bold;
     color: $color-text-main;
-    background: linear-gradient(135deg, $color-text-main 0%, $color-text-sub 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
   }
   
   &__extra {
@@ -134,14 +122,10 @@ const handleClick = () => {
   @include card-shadow;
   @include card-shadow-hover;
   border: none;
-  background: $color-bg-white;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
   
   &.is-glass {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.98) 0%,
-      rgba(255, 255, 255, 0.95) 100%
-    );
+    background: var(--glass-solid, rgba(255, 255, 255, 0.95));
     backdrop-filter: blur($blur-md);
     -webkit-backdrop-filter: blur($blur-md);
   }

@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view 
     class="ui-switch" 
     :class="{ 'is-active': modelValue, 'is-disabled': disabled }"
@@ -51,7 +51,7 @@ const toggle = () => {
     width: 42rpx;
     height: 42rpx;
     border-radius: 50%;
-    background-color: $color-white;
+    background-color: var(--color-text-white, #FFFFFF);
     box-shadow: $shadow-sm;
     transition: transform 0.3s cubic-bezier(0.3, 1.05, 0.4, 1.05);
   }
