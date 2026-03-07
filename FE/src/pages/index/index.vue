@@ -10,6 +10,9 @@
           @click="goSearch"
           @hot-click="handleHotClick"
         />
+        <view class="search-bar__find" @tap="goProductCategory">
+          <UiIcon name="grid" color="#FF6A00" :size="40" />
+        </view>
       </view>
       
       <view class="category-tabs">
@@ -272,11 +275,15 @@ const goodsList = ref([
 ]);
 
 const goSearch = () => {
-  navigateTo('/pages-sub/trade/search/index');
+  navigateTo('/pages-sub/search/entry');
+};
+
+const goProductCategory = () => {
+  navigateTo('/pages-sub/search/category');
 };
 
 const handleHotClick = (item: any) => {
-  navigateTo(`/pages-sub/trade/search/index?keyword=${encodeURIComponent(item.keyword)}`);
+  navigateTo(`/pages-sub/search/result?keyword=${encodeURIComponent(item.keyword)}`);
 };
 
 const goDetail = (item: any) => {
@@ -329,7 +336,15 @@ const loadMore = () => {
 }
 
 .search-bar {
+  display: flex;
+  align-items: center;
   margin-bottom: $space-sm;
+  
+  &__find {
+    flex-shrink: 0;
+    padding: $space-sm;
+    margin-left: $space-sm;
+  }
 }
 
 .category-tabs {

@@ -1,5 +1,5 @@
-﻿<template>
-  <view class="search-page" :style="{ paddingTop: (safeAreaTop + headerExtraTop) + 'px' }">
+<template>
+  <view class="search-result-page" :style="{ paddingTop: (safeAreaTop + headerExtraTop) + 'px' }">
     <view class="search-header page-header">
       <view class="back-btn" @click="goBack">
         <ui-icon name="arrow-left" :size="40" />
@@ -7,11 +7,8 @@
       <view class="search-input-wrapper">
         <ui-search 
           v-model="keyword" 
-          placeholder="搜索数码产品型号..." 
-          :hot-keywords="hotKeywords"
-          :auto-focus="autoFocus"
+          :placeholder="currentModel?.name || '搜索数码产品型号...'" 
           @search="handleSearch"
-          @hot-click="handleHotClick"
         />
       </view>
       <view class="search-btn" @click="handleSearch">
@@ -35,15 +32,19 @@
       @scrolltolower="loadMore"
     >
       <view v-if="!hasSearched" class="search-default">
-        <ui-search-history 
-          :list="historyList"
-          @click="searchByKeyword"
-          @clear="clearHistory"
-        />
-        <ui-hot-keywords 
-          :list="hotList"
-          @click="searchByKeyword"
-        />
+        <view class="model-info" v-if="currentModel">
+          <view class="model-cover">
+            <ui-image :src="currentModel.cover" width="160rpx" height="160rpx" radius="16rpx" />
+          </view>
+          <view class="model-detail">
+            <text class="model-name">{{ currentModel.name }}</text>
+            <text class="model-brand">{{ currentModel.brand }}</text>
+            <text class="model-desc">查看所有在售商品</text>
+          </view>
+        </view>
+        <view class="start-search" @click="handleSearch">
+          <text>开始搜索</text>
+        </view>
       </view>
       
       <view v-else class="search-result">
@@ -135,87 +136,91 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, nextTick } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
-import { usePageLayout } from '@/composables/usePageLayout';
+import { useAppStore, useSearchHistoryStore, useSearchFilterStore } from '@/stores';
 import { useNavigation } from '@/composables/useNavigation';
-import { useSearchHistoryStore, useSearchFilterStore } from '@/stores';
 import UiSearchFilterBar from '@/ui-kit/organisms/UiSearchFilterBar.vue';
 import UiFilterSidebar from '@/ui-kit/organisms/UiFilterSidebar.vue';
 
-const { safeAreaTop, headerExtraTop, scrollHeight, rpxToPx } = usePageLayout({
-  hasSubNavbar: false,
-  headerEstimatedHeight: 100
-});
+interface ModelInfo {
+  id: string;
+  name: string;
+  brand: string;
+  cover: string;
+}
 
+const appStore = useAppStore();
+const searchHistoryStore = useSearchHistoryStore();
+const searchFilterStore = useSearchFilterStore();
 const { smartBack, navigateTo } = useNavigation();
+
+const safeAreaTop = computed(() => appStore.safeAreaInsets.top);
+const isH5 = computed(() => appStore.isH5);
+const headerExtraTop = computed(() => isH5.value ? 12 : 0);
 
 const FILTER_BAR_HEIGHT = 88;
 
-const hasSearched = ref(false);
-const computedScrollHeight = computed(() => {
-  if (hasSearched.value) {
-    return scrollHeight.value - rpxToPx(FILTER_BAR_HEIGHT);
-  }
-  return scrollHeight.value;
-});
-
-const searchHistoryStore = useSearchHistoryStore();
-const searchFilterStore = useSearchFilterStore();
-
 const keyword = ref('');
-const autoFocus = ref(false);
+const modelId = ref('');
+const currentModel = ref<ModelInfo | null>(null);
+const hasSearched = ref(false);
 const viewMode = ref<'list' | 'waterfall'>('waterfall');
 const loading = ref(false);
 const hasMore = ref(true);
 const totalCount = ref(0);
 const currentPage = ref(1);
 const showFilterSidebar = ref(false);
+const headerHeight = ref(0);
+const scrollHeight = ref(0);
 
-const hotKeywords = computed(() => {
-  const hot = searchHistoryStore.hotKeywords;
-  if (hot.length > 0) {
-    return hot.map(h => ({ keyword: h.keyword, id: h.id }));
+const computedScrollHeight = computed(() => {
+  if (hasSearched.value) {
+    const rpxToPx = (rpx: number) => {
+      const systemInfo = uni.getSystemInfoSync();
+      const screenWidth = systemInfo.screenWidth || 375;
+      return (rpx * screenWidth) / 750;
+    };
+    return scrollHeight.value - rpxToPx(FILTER_BAR_HEIGHT);
   }
-  return [
-    { keyword: 'iPhone 15 Pro Max', id: 1 },
-    { keyword: 'MacBook Pro M3', id: 2 },
-    { keyword: 'AirPods Pro 2', id: 3 },
-    { keyword: 'iPad Pro 2024', id: 4 },
-    { keyword: 'Nintendo Switch OLED', id: 5 },
-    { keyword: 'Sony 相机', id: 6 },
-    { keyword: '华为 Mate 60 Pro', id: 7 },
-    { keyword: '小米 14 Ultra', id: 8 }
-  ];
+  return scrollHeight.value;
 });
 
+onMounted(() => {
+  nextTick(() => {
+    calcLayout();
+  });
+});
+
+const calcLayout = () => {
+  const systemInfo = uni.getSystemInfoSync();
+  const screenWidth = systemInfo.screenWidth || 375;
+  const rpxToPx = (rpx: number) => (rpx * screenWidth) / 750;
+  
+  const estimatedHeader = rpxToPx(100) + safeAreaTop.value + headerExtraTop.value;
+  headerHeight.value = estimatedHeader;
+  scrollHeight.value = systemInfo.windowHeight - estimatedHeader;
+};
+
 onLoad((options: any) => {
+  if (options.modelId) {
+    modelId.value = options.modelId;
+    fetchModelInfo(options.modelId);
+  }
   if (options.keyword) {
     keyword.value = decodeURIComponent(options.keyword);
     handleSearch();
-  } else {
-    autoFocus.value = true;
   }
 });
 
-const historyList = computed(() => 
-  searchHistoryStore.recentHistory.map(h => h.keyword)
-);
-
-const hotList = computed(() => {
-  const hot = searchHistoryStore.hotKeywords;
-  if (hot.length > 0) return hot.map(h => ({ keyword: h.keyword, isHot: h.trend === 'up' }));
-  return [
-    { keyword: 'iPhone 15 Pro Max', isHot: true },
-    { keyword: 'MacBook Pro M3', isHot: true },
-    { keyword: 'AirPods Pro 2', isHot: false },
-    { keyword: 'iPad Pro', isHot: false },
-    { keyword: 'Nintendo Switch', isHot: false },
-    { keyword: 'Sony 相机', isHot: false },
-    { keyword: '华为 Mate 60', isHot: true },
-    { keyword: '小米 14', isHot: false }
-  ];
-});
+const fetchModelInfo = async (id: string) => {
+  currentModel.value = {
+    id: id,
+    name: keyword.value || '型号商品',
+    brand: 'Apple',
+    cover: 'https://picsum.photos/200/200?random=model'
+  };
+};
 
 const resultList = ref([
   { 
@@ -261,63 +266,19 @@ const resultList = ref([
     specs: 'M3 Pro / 18G+512G',
     tags: ['国行', '在保'], 
     timeStr: '1小时前'
-  },
-  { 
-    id: 5, 
-    cover: 'https://picsum.photos/400/400?random=805', 
-    title: '华为 Mate 60 Pro 12+512GB 雅丹黑', 
-    price: 6999, 
-    sales: 67, 
-    condition: '9新',
-    specs: '12+512GB / 雅丹黑',
-    tags: ['国行', '有发票'], 
-    timeStr: '2小时前'
-  },
-  { 
-    id: 6, 
-    cover: 'https://picsum.photos/400/400?random=806', 
-    title: '小米14 Ultra 16+512GB 黑色 徕卡影像', 
-    price: 5499, 
-    sales: 34, 
-    condition: '95新',
-    specs: '16+512GB / 黑色',
-    tags: ['国行', '在保'], 
-    timeStr: '3小时前'
   }
 ]);
 
 const handleSearch = () => {
-  if (!keyword.value.trim()) return;
+  if (!keyword.value.trim() && !modelId.value) return;
   
-  searchHistoryStore.addHistory(keyword.value.trim(), 'product');
+  searchHistoryStore.addHistory(keyword.value.trim() || currentModel.value?.name || '', 'product');
   hasSearched.value = true;
   currentPage.value = 1;
   hasMore.value = true;
   totalCount.value = resultList.value.length;
   
   fetchProducts();
-};
-
-const handleHotClick = (item: any) => {
-  keyword.value = item.keyword;
-  handleSearch();
-};
-
-const searchByKeyword = (word: string) => {
-  keyword.value = word;
-  handleSearch();
-};
-
-const clearHistory = () => {
-  searchHistoryStore.clearHistory();
-};
-
-const goBack = () => {
-  smartBack();
-};
-
-const goDetail = (item: any) => {
-  navigateTo(`/pages-sub/trade/product/detail?id=${item.id}`);
 };
 
 const handleSellerChange = (value: 'all' | 'merchant' | 'personal') => {
@@ -368,15 +329,28 @@ const loadMore = async () => {
   hasMore.value = false;
   loading.value = false;
 };
+
+const goBack = () => {
+  smartBack();
+};
+
+const goDetail = (item: any) => {
+  navigateTo(`/pages-sub/trade/product/detail?id=${item.id}`);
+};
 </script>
 
 <style lang="scss" scoped>
-.search-page {
+.search-result-page {
   min-height: 100vh;
   background: $color-bg-page;
 }
 
 .search-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: $z-fixed;
   display: flex;
   align-items: center;
   padding: $space-sm $space-md;
@@ -405,12 +379,70 @@ const loadMore = async () => {
   }
 }
 
+.filter-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: $z-sticky;
+}
+
 .search-scroll {
+  padding-top: 0;
   overflow: hidden;
 }
 
 .search-default {
-  padding: $space-md;
+  padding: $space-xl;
+  
+  .model-info {
+    display: flex;
+    align-items: center;
+    gap: $space-lg;
+    background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+    backdrop-filter: blur($blur-lg);
+    -webkit-backdrop-filter: blur($blur-lg);
+    border-radius: $radius-lg;
+    padding: $space-lg;
+    margin-bottom: $space-xl;
+    
+    .model-detail {
+      flex: 1;
+      
+      .model-name {
+        display: block;
+        font-size: $font-size-lg;
+        font-weight: $font-weight-bold;
+        color: $color-text-main;
+        margin-bottom: $space-xs;
+      }
+      
+      .model-brand {
+        display: block;
+        font-size: $font-size-sm;
+        color: $color-text-sub;
+        margin-bottom: $space-sm;
+      }
+      
+      .model-desc {
+        display: block;
+        font-size: $font-size-sm;
+        color: var(--color-primary, #FF6A00);
+      }
+    }
+  }
+  
+  .start-search {
+    background: var(--gradient-primary, linear-gradient(135deg, #FF6A00 0%, #FF8F00 100%));
+    border-radius: $radius-btn;
+    padding: $space-md;
+    text-align: center;
+    
+    text {
+      font-size: $font-size-md;
+      font-weight: $font-weight-medium;
+      color: #FFFFFF;
+    }
+  }
 }
 
 .search-result {

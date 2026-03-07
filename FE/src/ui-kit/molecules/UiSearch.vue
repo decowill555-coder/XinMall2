@@ -82,6 +82,14 @@
     >
       <UiIcon name="close-circle-fill" color="#A1A1A6" :size="40" />
     </view>
+    
+    <view 
+      v-if="showFindIcon"
+      class="ui-search__find"
+      @tap.stop="handleFindClick"
+    >
+      <UiIcon name="grid" color="#FF6A00" :size="40" />
+    </view>
   </view>
 </template>
 
@@ -100,6 +108,7 @@ interface Props {
   hotKeywords?: HotKeywordItem[];
   hotRollerInterval?: number;
   autoFocus?: boolean;
+  showFindIcon?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -108,7 +117,8 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   hotKeywords: () => [],
   hotRollerInterval: 3000,
-  autoFocus: false
+  autoFocus: false,
+  showFindIcon: false
 });
 
 const emit = defineEmits<{
@@ -117,6 +127,8 @@ const emit = defineEmits<{
   'click': [];
   'clear': [];
   'hot-click': [item: HotKeywordItem];
+  'find-click': [];
+  'input': [value: string];
 }>();
 
 const isFocus = ref(false);
@@ -189,6 +201,7 @@ const animateToNext = () => {
 
 const handleInput = (e: any) => {
   emit('update:modelValue', e.detail.value);
+  emit('input', e.detail.value);
 };
 
 const handleConfirm = () => {
@@ -226,6 +239,10 @@ const handleHotClick = (clickedIndex: number) => {
     const clickedItem = hotList[actualIndex];
     emit('hot-click', { ...clickedItem, keyword: clickedItem.keyword });
   }
+};
+
+const handleFindClick = () => {
+  emit('find-click');
 };
 
 watch(isShowHotRoller, (show) => {
@@ -316,6 +333,12 @@ onUnmounted(() => {
   &__clear {
     padding: $space-xs;
     flex-shrink: 0;
+  }
+  
+  &__find {
+    padding: $space-xs;
+    flex-shrink: 0;
+    margin-left: $space-xs;
   }
 }
 

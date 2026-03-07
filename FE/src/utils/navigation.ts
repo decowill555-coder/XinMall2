@@ -20,7 +20,10 @@ const PAGE_CONFIGS: Record<string, PageConfig> = {
   'pages/my/index': { level: 0, name: '我的' },
   'pages/publish/placeholder': { level: 0, name: '发布占位' },
 
-  'pages-sub/trade/search/index': { level: 1, group: 'search', name: '搜索' },
+  'pages-sub/search/index': { level: 1, group: 'search', name: '搜索' },
+  'pages-sub/search/entry': { level: 1, group: 'search', name: '搜索入口' },
+  'pages-sub/search/result': { level: 2, group: 'search-result', name: '搜索结果' },
+  'pages-sub/search/category': { level: 1, group: 'category', name: '找产品' },
   'pages-sub/trade/product/list': { level: 1, group: 'product-list', name: '商品列表' },
   'pages-sub/trade/cart/index': { level: 1, group: 'cart', name: '购物车' },
   'pages-sub/trade/order/list': { level: 1, group: 'order-list', name: '订单列表' },
@@ -44,6 +47,7 @@ const PAGE_CONFIGS: Record<string, PageConfig> = {
   'pages-sub/trade/evaluate/index': { level: 2, group: 'evaluate', name: '评价' },
   'pages-sub/seller/after-sale/detail': { level: 2, group: 'after-sale-detail', name: '售后详情' },
   'pages-sub/content/post/detail': { level: 2, group: 'post-detail', name: '帖子详情' },
+  'pages-sub/content/forum/detail': { level: 2, group: 'forum-detail', name: '论坛详情' },
   'pages-sub/content/user/index': { level: 2, group: 'user-profile', name: 'Ta的主页' },
   'pages-sub/seller/shop/manage': { level: 2, group: 'shop-manage', name: '店铺管理' },
 

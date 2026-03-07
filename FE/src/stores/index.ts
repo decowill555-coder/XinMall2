@@ -11,6 +11,8 @@ import { useCartStore } from './cart';
 import { useOrderStore } from './order';
 import { useProductDetailStore } from './product-detail';
 import { usePublishStore } from './publish';
+import { useForumStore } from './forum';
+import { useProductCategoryStore } from './product-category';
 
 export {
   useUserStore,
@@ -25,7 +27,9 @@ export {
   useCartStore,
   useOrderStore,
   useProductDetailStore,
-  usePublishStore
+  usePublishStore,
+  useForumStore,
+  useProductCategoryStore
 };
 
 export const stores = {
@@ -41,5 +45,7 @@ export const stores = {
   cart: useCartStore,
   order: useOrderStore,
   productDetail: useProductDetailStore,
-  publish: usePublishStore
+  publish: usePublishStore,
+  forum: useForumStore,
+  productCategory: useProductCategoryStore
 };

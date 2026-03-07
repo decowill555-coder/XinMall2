@@ -38,6 +38,15 @@
   ],
   "subPackages": [
     {
+      "root": "pages-sub/search",
+      "pages": [
+        { "path": "index", "style": { "navigationBarTitleText": "搜索", "navigationStyle": "custom" } },
+        { "path": "entry", "style": { "navigationBarTitleText": "搜索", "navigationStyle": "custom" } },
+        { "path": "result", "style": { "navigationBarTitleText": "搜索结果", "navigationStyle": "custom" } },
+        { "path": "category", "style": { "navigationBarTitleText": "找产品", "navigationStyle": "custom" } }
+      ]
+    },
+    {
       "root": "pages-sub/trade",
       "pages": [
         { "path": "product/detail", "style": { "navigationBarTitleText": "商品详情", "navigationStyle": "custom" } },
@@ -47,8 +56,7 @@
         { "path": "order/detail", "style": { "navigationBarTitleText": "订单详情", "navigationStyle": "custom" } },
         { "path": "order/confirm", "style": { "navigationBarTitleText": "确认订单", "navigationStyle": "custom" } },
         { "path": "pay/index", "style": { "navigationBarTitleText": "支付", "navigationStyle": "custom" } },
-        { "path": "evaluate/index", "style": { "navigationBarTitleText": "评价", "navigationStyle": "custom" } },
-        { "path": "search/index", "style": { "navigationBarTitleText": "搜索", "navigationStyle": "custom" } }
+        { "path": "evaluate/index", "style": { "navigationBarTitleText": "评价", "navigationStyle": "custom" } }
       ]
     },
     {
@@ -69,7 +77,8 @@
         { "path": "post/detail", "style": { "navigationBarTitleText": "帖子详情", "navigationStyle": "custom" } },
         { "path": "post/publish", "style": { "navigationBarTitleText": "发布帖子", "navigationStyle": "custom" } },
         { "path": "topic/index", "style": { "navigationBarTitleText": "话题", "navigationStyle": "custom" } },
-        { "path": "user/index", "style": { "navigationBarTitleText": "Ta的主页", "navigationStyle": "custom" } }
+        { "path": "user/index", "style": { "navigationBarTitleText": "Ta的主页", "navigationStyle": "custom" } },
+        { "path": "forum/detail", "style": { "navigationBarTitleText": "论坛", "navigationStyle": "custom" } }
       ]
     },
     {
