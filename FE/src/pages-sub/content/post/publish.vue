@@ -73,11 +73,14 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { useNavigation } from '@/composables/useNavigation';
 
 const { safeAreaBottom, scrollHeight } = usePageLayout({
   hasSubNavbar: true,
   headerEstimatedHeight: 120
 });
+
+const { smartBack, navigateTo } = useNavigation();
 
 const content = ref('');
 const images = ref<string[]>([]);
@@ -95,14 +98,7 @@ const hotTopics = ref([
 const canPublish = computed(() => content.value.trim().length >= 10);
 
 const selectGoods = () => {
-  uni.navigateTo({ 
-    url: '/pages-sub/seller/goods/list?select=1',
-    events: {
-      onGoodsSelected: (goods: any) => {
-        relatedGoods.value = goods;
-      }
-    }
-  });
+  navigateTo('/pages-sub/seller/goods/list?select=1');
 };
 
 const handlePublish = () => {
@@ -116,7 +112,7 @@ const handlePublish = () => {
     uni.hideLoading();
     uni.showToast({ title: '发布成功', icon: 'success' });
     setTimeout(() => {
-      uni.navigateBack();
+      smartBack();
     }, 1500);
   }, 1000);
 };

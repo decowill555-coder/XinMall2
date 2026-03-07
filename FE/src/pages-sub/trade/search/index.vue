@@ -138,6 +138,7 @@
 import { ref, computed } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { useNavigation } from '@/composables/useNavigation';
 import { useSearchHistoryStore, useSearchFilterStore } from '@/stores';
 import UiSearchFilterBar from '@/ui-kit/organisms/UiSearchFilterBar.vue';
 import UiFilterSidebar from '@/ui-kit/organisms/UiFilterSidebar.vue';
@@ -146,6 +147,8 @@ const { safeAreaTop, headerExtraTop, scrollHeight, rpxToPx } = usePageLayout({
   hasSubNavbar: false,
   headerEstimatedHeight: 100
 });
+
+const { smartBack, navigateTo } = useNavigation();
 
 const FILTER_BAR_HEIGHT = 88;
 
@@ -310,11 +313,11 @@ const clearHistory = () => {
 };
 
 const goBack = () => {
-  uni.navigateBack();
+  smartBack();
 };
 
 const goDetail = (item: any) => {
-  uni.navigateTo({ url: `/pages-sub/trade/product/detail?id=${item.id}` });
+  navigateTo(`/pages-sub/trade/product/detail?id=${item.id}`);
 };
 
 const handleSellerChange = (value: 'all' | 'merchant' | 'personal') => {

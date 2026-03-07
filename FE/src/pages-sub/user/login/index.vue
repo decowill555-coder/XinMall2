@@ -54,9 +54,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useUserStore, useAuthStore } from '@/stores';
+import { useNavigation } from '@/composables/useNavigation';
 
 const userStore = useUserStore();
 const authStore = useAuthStore();
+const { smartBack } = useNavigation();
 
 const phone = ref('');
 const password = ref('');
@@ -80,12 +82,7 @@ const handleLogin = async () => {
     uni.showToast({ title: '登录成功', icon: 'success' });
     
     setTimeout(() => {
-      const pages = getCurrentPages();
-      if (pages.length > 1) {
-        uni.navigateBack();
-      } else {
-        uni.switchTab({ url: '/pages/index/index' });
-      }
+      smartBack();
     }, 1500);
   } catch (error) {
     uni.hideLoading();

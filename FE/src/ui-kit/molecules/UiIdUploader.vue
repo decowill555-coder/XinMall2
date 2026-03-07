@@ -1,5 +1,5 @@
 <template>
-  <view class="ui-id-card-uploader">
+  <view class="ui-id-uploader">
     <view class="upload-item" @click="emit('upload', type)">
       <view v-if="!modelValue" class="upload-placeholder">
         <ui-icon name="camera" :size="48" />
@@ -27,18 +27,18 @@ const emit = defineEmits(['upload', 'update:modelValue']);
 </script>
 
 <style lang="scss" scoped>
-.ui-id-card-uploader {
+.ui-id-uploader {
   .upload-item {
     aspect-ratio: 1.6;
     background: var(--color-bg-gray, rgba(0, 0, 0, 0.03));
     border: 2rpx dashed var(--color-border, rgba(0, 0, 0, 0.1));
     border-radius: $radius-md;
     overflow: hidden;
-    
+
     .upload-placeholder {
       @include flex-column-center;
       height: 100%;
-      
+
       .placeholder-text {
         font-size: $font-size-sm;
         color: $color-text-sub;

@@ -40,11 +40,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { useNavigation } from '@/composables/useNavigation';
 
 const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
   headerEstimatedHeight: 120
 });
+
+const { smartBack, navigateTo } = useNavigation();
 
 const addressList = ref([
   {
@@ -70,11 +73,11 @@ const addressList = ref([
 ]);
 
 const goAdd = () => {
-  uni.navigateTo({ url: '/pages-sub/user/address/edit' });
+  navigateTo('/pages-sub/user/address/edit');
 };
 
 const goEdit = (item: any) => {
-  uni.navigateTo({ url: `/pages-sub/user/address/edit?id=${item.id}` });
+  navigateTo(`/pages-sub/user/address/edit?id=${item.id}`);
 };
 
 const selectAddress = (item: any) => {
@@ -82,7 +85,7 @@ const selectAddress = (item: any) => {
   const prevPage = pages[pages.length - 2];
   if (prevPage) {
     uni.$emit('addressSelected', item);
-    uni.navigateBack();
+    smartBack();
   }
 };
 

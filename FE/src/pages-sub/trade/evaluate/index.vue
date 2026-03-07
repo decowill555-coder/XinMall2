@@ -74,11 +74,14 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { useNavigation } from '@/composables/useNavigation';
 
 const { safeAreaBottom, scrollHeight } = usePageLayout({
   hasSubNavbar: true,
   headerEstimatedHeight: 120
 });
+
+const { smartBack } = useNavigation();
 
 const content = ref('');
 const images = ref<string[]>([]);
@@ -122,7 +125,7 @@ const handleSubmit = () => {
     uni.hideLoading();
     uni.showToast({ title: '评价成功', icon: 'success' });
     setTimeout(() => {
-      uni.navigateBack();
+      smartBack();
     }, 1500);
   }, 1000);
 };

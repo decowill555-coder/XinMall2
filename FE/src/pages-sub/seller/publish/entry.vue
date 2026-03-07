@@ -119,11 +119,14 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { useNavigation } from '@/composables/useNavigation';
 
 const { safeAreaBottom, scrollHeight } = usePageLayout({
   hasSubNavbar: true,
   headerEstimatedHeight: 120
 });
+
+const { smartBack } = useNavigation();
 
 const form = reactive({
   images: [] as string[],
@@ -192,7 +195,7 @@ const publish = () => {
   
   uni.showToast({ title: '发布成功', icon: 'success' });
   setTimeout(() => {
-    uni.navigateBack();
+    smartBack();
   }, 1500);
 };
 </script>

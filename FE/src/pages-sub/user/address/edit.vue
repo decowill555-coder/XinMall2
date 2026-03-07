@@ -47,11 +47,14 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { useNavigation } from '@/composables/useNavigation';
 
 const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
   headerEstimatedHeight: 120
 });
+
+const { smartBack } = useNavigation();
 
 const isEdit = ref(false);
 
@@ -101,7 +104,7 @@ const handleSave = () => {
     uni.hideLoading();
     uni.showToast({ title: '保存成功', icon: 'success' });
     setTimeout(() => {
-      uni.navigateBack();
+      smartBack();
     }, 1500);
   }, 1000);
 };

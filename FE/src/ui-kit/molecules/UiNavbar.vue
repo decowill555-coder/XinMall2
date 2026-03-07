@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view 
     class="ui-navbar" 
     :style="{ height: totalNavHeight + 'px', background: background }"
@@ -42,8 +42,10 @@
 
 <script setup lang="ts">
 import { useScreen } from '@/composables/useScreen';
+import { useNavigation } from '@/composables/useNavigation';
 
 const { statusBarHeight, navBarHeight, totalNavHeight } = useScreen();
+const { smartBack, canNavigateBack } = useNavigation();
 
 interface Props {
   title?: string;
@@ -67,12 +69,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const handleBack = () => {
   if (props.back) {
-    const pages = getCurrentPages();
-    if (pages.length > 1) {
-      uni.navigateBack();
-    } else {
-      uni.switchTab({ url: '/pages/index/index' });
-    }
+    smartBack();
   }
 };
 </script>

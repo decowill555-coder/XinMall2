@@ -58,11 +58,14 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { useNavigation } from '@/composables/useNavigation';
 
 const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
   headerEstimatedHeight: 120
 });
+
+const { smartBack } = useNavigation();
 
 const agreed = ref(false);
 
@@ -106,7 +109,7 @@ const handleSubmit = () => {
     uni.hideLoading();
     uni.showToast({ title: '提交成功，请等待审核', icon: 'success' });
     setTimeout(() => {
-      uni.navigateBack();
+      smartBack();
     }, 1500);
   }, 1500);
 };

@@ -54,8 +54,10 @@
 import { ref, computed, onMounted, nextTick } from 'vue';
 import { onReady, onShow } from '@dcloudio/uni-app';
 import { useAppStore } from '@/stores';
+import { useNavigation } from '@/composables/useNavigation';
 
 const appStore = useAppStore();
+const { navigateTo } = useNavigation();
 
 const keyword = ref('');
 const activeTab = ref(0);
@@ -270,26 +272,24 @@ const goodsList = ref([
 ]);
 
 const goSearch = () => {
-  uni.navigateTo({ url: '/pages-sub/trade/search/index' });
+  navigateTo('/pages-sub/trade/search/index');
 };
 
 const handleHotClick = (item: any) => {
-  uni.navigateTo({ 
-    url: `/pages-sub/trade/search/index?keyword=${encodeURIComponent(item.keyword)}`
-  });
+  navigateTo(`/pages-sub/trade/search/index?keyword=${encodeURIComponent(item.keyword)}`);
 };
 
 const goDetail = (item: any) => {
-  uni.navigateTo({ url: `/pages-sub/trade/product/detail?id=${item.id}` });
+  navigateTo(`/pages-sub/trade/product/detail?id=${item.id}`);
 };
 
 const goUser = (item: any) => {
-  uni.navigateTo({ url: `/pages-sub/content/user/index?id=${item.userId}` });
+  navigateTo(`/pages-sub/content/user/index?id=${item.userId}`);
 };
 
 const onBannerClick = ({ item, index }: { item: any; index: number }) => {
   if (item.link) {
-    uni.navigateTo({ url: item.link });
+    navigateTo(item.link);
   }
 };
 

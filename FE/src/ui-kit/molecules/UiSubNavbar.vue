@@ -36,8 +36,10 @@
 
 <script setup lang="ts">
 import { useScreen } from '@/composables/useScreen';
+import { useNavigation } from '@/composables/useNavigation';
 
 const { statusBarHeight, navBarHeight, totalNavHeight } = useScreen();
+const { smartBack } = useNavigation();
 
 interface Props {
   title?: string;
@@ -58,12 +60,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const handleBack = () => {
-  const pages = getCurrentPages();
-  if (pages.length > 1) {
-    uni.navigateBack();
-  } else {
-    uni.switchTab({ url: '/pages/index/index' });
-  }
+  smartBack();
 };
 </script>
 

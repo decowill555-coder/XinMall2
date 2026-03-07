@@ -92,11 +92,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { useNavigation } from '@/composables/useNavigation';
 
 const { safeAreaBottom, scrollHeight } = usePageLayout({
   hasSubNavbar: true,
   headerEstimatedHeight: 120
 });
+
+const { smartBack } = useNavigation();
 
 const conditions = ['全新', '99新', '95新', '9新', '85新', '8新及以下'];
 
@@ -136,7 +139,7 @@ const handleSubmit = () => {
     uni.hideLoading();
     uni.showToast({ title: '保存成功', icon: 'success' });
     setTimeout(() => {
-      uni.navigateBack();
+      smartBack();
     }, 1500);
   }, 1000);
 };
