@@ -1,6 +1,6 @@
 <template>
-  <view class="product-category-page" :style="{ paddingTop: (safeAreaTop + headerExtraTop) + 'px' }">
-    <view class="page-header">
+  <view class="product-category-page">
+    <view class="page-header" :style="{ paddingTop: safeAreaTop + 'px' }">
       <view class="header-bg" />
       <view class="header-content">
         <view class="back-btn" @click="goBack">
@@ -19,13 +19,13 @@
     <scroll-view 
       scroll-y 
       class="category-scroll"
-      :style="{ height: scrollHeight + 'px' }"
-      :scroll-into-view="scrollIntoView"
+      :style="{ top: headerHeight + 'px', height: scrollHeight + 'px' }"
+      :scroll-top="scrollTopValue"
       :scroll-with-animation="true"
       @scroll="handleScroll"
     >
       <view class="category-content">
-        <view class="section">
+        <view class="section device-section">
           <view class="section-header">
             <view class="section-title-wrapper">
               <view class="section-icon">
@@ -36,91 +36,112 @@
             <text class="section-badge">热门</text>
           </view>
           <ui-device-category-grid 
+            id="device-grid"
             :categories="deviceCategories" 
             :columns="4"
             @select="handleCategorySelect"
           />
         </view>
         
-        <view class="section">
+        <view 
+          v-for="group in allCategories.filter(g => g.categories.length > 0)" 
+          :key="group.letter"
+          class="section letter-section"
+        >
           <view class="section-header">
             <view class="section-title-wrapper">
-              <view class="section-icon">
-                <ui-icon name="list" :size="32" color="#FF6A00" />
+              <view class="letter-badge">
+                <text class="letter-text">{{ group.letter }}</text>
               </view>
-              <text class="section-title">所有产品类型</text>
+              <text class="letter-count">{{ group.categories.length }}个分类</text>
             </view>
-            <text class="section-desc">按字母索引</text>
           </view>
           
-          <ui-alphabet-index-list 
-            ref="alphabetListRef"
-            :categories="allCategories"
-            :current-letter="currentLetter"
-            @select="handleCategorySelect"
-            @update:current-letter="handleLetterChange"
-          />
+          <view class="category-list">
+            <view 
+              v-for="(item, index) in group.categories" 
+              :key="item.id" 
+              :id="`item-${group.letter}-${index}`"
+              class="category-item"
+              :class="{ 'is-pressed': pressedId === item.id }"
+              @click="handleCategorySelect(item)"
+              @touchstart="pressedId = item.id"
+              @touchend="pressedId = ''"
+            >
+              <view class="item-indicator" :style="{ background: getIndicatorColor(index) }" />
+              <text class="category-name">{{ item.name }}</text>
+              <view class="category-arrow">
+                <text class="arrow-text">›</text>
+              </view>
+            </view>
+          </view>
         </view>
         
         <view class="page-bottom-spacer" />
       </view>
     </scroll-view>
     
-    <view 
-      class="alphabet-nav-fixed"
+    <ui-alphabet-nav
+      :letters="availableLetters"
+      :current-letter="currentLetter"
       :style="{ top: alphabetNavTop + 'px' }"
-      @touchstart.prevent="handleNavTouchStart"
-      @touchmove.prevent="handleNavTouchMove"
-      @touchend="handleNavTouchEnd"
-    >
-      <view 
-        v-for="letter in availableLetters" 
-        :key="letter" 
-        class="nav-item"
-        :class="{ 'is-active': currentLetter === letter }"
-        @click="handleLetterClick(letter)"
-      >
-        <text>{{ letter }}</text>
-      </view>
-    </view>
-    
-    <view v-if="showLetterIndicator" class="letter-indicator">
-      <text>{{ currentLetter }}</text>
-    </view>
+      @update:current-letter="handleLetterChange"
+      @scroll-to="scrollToLetter"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick } from 'vue';
+import { ref, computed, onMounted, nextTick, getCurrentInstance } from 'vue';
 import { useAppStore, useProductCategoryStore } from '@/stores';
 import { useNavigation } from '@/composables/useNavigation';
-import type { DeviceCategory, CategoryItem, AlphabetCategory } from '@/api/category';
+import type { DeviceCategory, CategoryItem } from '@/api/category';
 
 const appStore = useAppStore();
 const productCategoryStore = useProductCategoryStore();
 const { smartBack, navigateTo } = useNavigation();
+const instance = getCurrentInstance();
 
 const safeAreaTop = computed(() => appStore.safeAreaInsets.top);
-const isH5 = computed(() => appStore.isH5);
-const headerExtraTop = computed(() => isH5.value ? 12 : 0);
 const scrollHeight = ref(0);
+const headerHeight = ref(0);
 const alphabetNavTop = ref(0);
 
 const deviceCategories = computed(() => productCategoryStore.deviceCategories);
 const allCategories = computed(() => productCategoryStore.allCategories);
 const currentLetter = computed(() => productCategoryStore.currentLetter);
 
-const scrollIntoView = ref('');
-const showLetterIndicator = ref(false);
-const isTouching = ref(false);
-let indicatorTimer: ReturnType<typeof setTimeout> | null = null;
-let throttleTimer: ReturnType<typeof setTimeout> | null = null;
+const scrollTopValue = ref(0);
+const pressedId = ref<string>('');
+const letterPositions = ref<Map<string, number>>(new Map());
+let lastScrollTop = 0;
+let isScrollingByClick = false;
+let isInitialized = false;
 
 const availableLetters = computed(() => {
   return allCategories.value
     .filter(g => g.categories.length > 0)
     .map(g => g.letter);
 });
+
+const formatCount = (count: number): string => {
+  if (count >= 10000) {
+    return (count / 10000).toFixed(1) + '万';
+  }
+  return count.toString();
+};
+
+const getIndicatorColor = (index: number): string => {
+  const colors = [
+    'linear-gradient(180deg, #FF6A00 0%, #FF8F00 100%)',
+    'linear-gradient(180deg, #5856D6 0%, #7B79E8 100%)',
+    'linear-gradient(180deg, #34C759 0%, #5AD97A 100%)',
+    'linear-gradient(180deg, #FF3B30 0%, #FF6B6B 100%)',
+    'linear-gradient(180deg, #00D2FF 0%, #4DE8FF 100%)',
+    'linear-gradient(180deg, #E879F9 0%, #F0A3FA 100%)'
+  ];
+  return colors[index % colors.length];
+};
 
 onMounted(async () => {
   nextTick(() => {
@@ -129,6 +150,12 @@ onMounted(async () => {
   
   await productCategoryStore.fetchDeviceCategories();
   await productCategoryStore.fetchAllCategories();
+  
+  nextTick(() => {
+    setTimeout(() => {
+      measureLetterPositions();
+    }, 300);
+  });
 });
 
 const calcLayout = () => {
@@ -136,10 +163,64 @@ const calcLayout = () => {
   const screenWidth = systemInfo.screenWidth || 375;
   const rpxToPx = (rpx: number) => (rpx * screenWidth) / 750;
   
-  const estimatedHeader = rpxToPx(140) + safeAreaTop.value + headerExtraTop.value;
+  const estimatedHeader = rpxToPx(140) + safeAreaTop.value;
+  headerHeight.value = estimatedHeader;
   scrollHeight.value = systemInfo.windowHeight - estimatedHeader;
   
   alphabetNavTop.value = estimatedHeader + rpxToPx(200);
+};
+
+const measureLetterPositions = () => {
+  const query = uni.createSelectorQuery().in(instance);
+  
+  query.select('.category-scroll').boundingClientRect();
+  query.select('#device-grid').boundingClientRect();
+  query.selectAll('.category-item').boundingClientRect();
+  
+  query.exec((res) => {
+    if (!res || !res[0]) return;
+    
+    const containerRect = res[0] as any;
+    const deviceGrid = res[1] as any;
+    const allItems = (res[2] || []) as any[];
+    
+    const positions = new Map<string, number>();
+    const letters = availableLetters.value;
+    
+    if (letters.length === 0) return;
+    
+    const firstLetter = letters[0];
+    if (deviceGrid) {
+      positions.set(firstLetter, deviceGrid.bottom - containerRect.top);
+    }
+    
+    for (let i = 1; i < letters.length; i++) {
+      const prevLetter = letters[i - 1];
+      const currentLetter = letters[i];
+      
+      const prevLetterItems: any[] = [];
+      for (const item of allItems) {
+        if (item.id && item.id.startsWith(`item-${prevLetter}-`)) {
+          prevLetterItems.push(item);
+        }
+      }
+      
+      if (prevLetterItems.length > 0) {
+        let lastItem = prevLetterItems[0];
+        for (const item of prevLetterItems) {
+          if (item.bottom > lastItem.bottom) {
+            lastItem = item;
+          }
+        }
+        positions.set(currentLetter, lastItem.bottom - containerRect.top);
+      } else if (positions.has(prevLetter)) {
+        positions.set(currentLetter, positions.get(prevLetter) || 0);
+      }
+    }
+    
+    letterPositions.value = positions;
+    isInitialized = true;
+  });
 };
 
 const handleCategorySelect = (item: DeviceCategory | CategoryItem) => {
@@ -155,95 +236,55 @@ const goBack = () => {
 };
 
 const handleScroll = (e: any) => {
-  if (isTouching.value) return;
+  lastScrollTop = e.detail.scrollTop;
   
-  if (throttleTimer) {
-    clearTimeout(throttleTimer);
-  }
+  if (isScrollingByClick) return;
   
-  throttleTimer = setTimeout(() => {
-    updateCurrentLetterByScroll(e.detail.scrollTop);
-  }, 50);
+  if (!isInitialized) return;
+  
+  updateCurrentLetterByScroll(e.detail.scrollTop);
 };
 
 const updateCurrentLetterByScroll = (scrollTop: number) => {
-  const systemInfo = uni.getSystemInfoSync();
-  const screenWidth = systemInfo.screenWidth || 375;
-  const rpxToPx = (rpx: number) => (rpx * screenWidth) / 750;
+  if (letterPositions.value.size === 0) return;
   
-  const headerOffset = rpxToPx(300);
-  const sectionOffset = scrollTop + headerOffset;
+  const letters = availableLetters.value;
+  if (letters.length === 0) return;
   
-  let currentSectionLetter = 'A';
+  let foundLetter = letters[0];
   
-  for (const group of allCategories.value) {
-    if (group.categories.length === 0) continue;
-    
-    const sectionTop = getSectionTop(group.letter);
-    if (sectionTop <= sectionOffset) {
-      currentSectionLetter = group.letter;
+  for (const letter of letters) {
+    const pos = letterPositions.value.get(letter);
+    if (pos !== undefined && pos <= scrollTop + 50) {
+      foundLetter = letter;
     }
   }
   
-  if (productCategoryStore.currentLetter !== currentSectionLetter) {
-    productCategoryStore.setCurrentLetter(currentSectionLetter);
+  if (productCategoryStore.currentLetter !== foundLetter) {
+    productCategoryStore.setCurrentLetter(foundLetter);
   }
-};
-
-const getSectionTop = (letter: string): number => {
-  let top = 0;
-  for (const group of allCategories.value) {
-    if (group.letter === letter) break;
-    if (group.categories.length > 0) {
-      top += 100 + group.categories.length * 50;
-    }
-  }
-  return top;
-};
-
-const handleLetterClick = (letter: string) => {
-  scrollIntoView.value = `letter-${letter}`;
-  productCategoryStore.setCurrentLetter(letter);
-  showLetterIndicator.value = true;
-  
-  if (indicatorTimer) {
-    clearTimeout(indicatorTimer);
-  }
-  indicatorTimer = setTimeout(() => {
-    showLetterIndicator.value = false;
-  }, 1000);
 };
 
 const handleLetterChange = (letter: string) => {
   productCategoryStore.setCurrentLetter(letter);
 };
 
-const handleNavTouchStart = () => {
-  isTouching.value = true;
-};
-
-const handleNavTouchMove = (e: TouchEvent) => {
-  const touch = e.touches[0];
-  const query = uni.createSelectorQuery();
+const scrollToLetter = (letter: string) => {
+  if (!isInitialized || letterPositions.value.size === 0) {
+    measureLetterPositions();
+    setTimeout(() => scrollToLetter(letter), 100);
+    return;
+  }
   
-  query.select('.alphabet-nav-fixed').boundingClientRect((rect: any) => {
-    if (!rect) return;
-    
-    const relativeY = touch.clientY - rect.top;
-    const itemHeight = rect.height / availableLetters.value.length;
-    const index = Math.floor(relativeY / itemHeight);
-    
-    if (index >= 0 && index < availableLetters.value.length) {
-      const letter = availableLetters.value[index];
-      handleLetterClick(letter);
-    }
-  }).exec();
-};
-
-const handleNavTouchEnd = () => {
+  const targetTop = letterPositions.value.get(letter);
+  if (targetTop === undefined) return;
+  
+  isScrollingByClick = true;
+  scrollTopValue.value = Math.max(0, targetTop);
+  
   setTimeout(() => {
-    isTouching.value = false;
-  }, 100);
+    isScrollingByClick = false;
+  }, 600);
 };
 </script>
 
@@ -334,7 +375,9 @@ const handleNavTouchEnd = () => {
 }
 
 .category-scroll {
-  overflow: hidden;
+  position: fixed;
+  left: 0;
+  right: 0;
 }
 
 .category-content {
@@ -385,89 +428,92 @@ const handleNavTouchEnd = () => {
   font-weight: $font-weight-medium;
 }
 
-.section-desc {
-  font-size: $font-size-sm;
-  color: $color-text-sub;
+.letter-section {
+  margin-bottom: $space-lg;
 }
 
-.page-bottom-spacer {
-  height: 40rpx;
-}
-
-.alphabet-nav-fixed {
-  position: fixed;
-  right: 8rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: $space-xs $space-2;
-  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
-  backdrop-filter: blur($blur-md);
-  -webkit-backdrop-filter: blur($blur-md);
-  border-radius: $radius-full;
-  z-index: $z-sticky;
-  box-shadow: $glass-shadow-sm;
-  border: 1rpx solid var(--glass-border, rgba(255, 255, 255, 0.6));
-}
-
-.nav-item {
-  width: 40rpx;
-  height: 40rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: $radius-full;
-  transition: all $duration-fast $ease-spring;
-  
-  text {
-    font-size: $font-size-xs;
-    color: $color-text-sub;
-  }
-  
-  &.is-active {
-    background: var(--gradient-primary, linear-gradient(135deg, #FF6A00 0%, #FF8F00 100%));
-    box-shadow: 0 2rpx 8rpx rgba(255, 106, 0, 0.3);
-    
-    text {
-      font-size: $font-size-sm;
-      font-weight: $font-weight-bold;
-      color: #FFFFFF;
-    }
-  }
-}
-
-.letter-indicator {
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 140rpx;
-  height: 140rpx;
+.letter-badge {
+  width: 56rpx;
+  height: 56rpx;
   background: var(--gradient-primary, linear-gradient(135deg, #FF6A00 0%, #FF8F00 100%));
-  border-radius: $radius-xl;
+  border-radius: $radius-md;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: $z-modal;
-  box-shadow: 0 8rpx 32rpx rgba(255, 106, 0, 0.4);
-  animation: indicator-pop 0.2s $ease-spring;
+  box-shadow: 0 4rpx 12rpx rgba(255, 106, 0, 0.25);
   
-  text {
-    font-size: 64rpx;
+  .letter-text {
+    font-size: $font-size-lg;
     font-weight: $font-weight-bold;
     color: #FFFFFF;
   }
 }
 
-@keyframes indicator-pop {
-  0% {
-    transform: translate(-50%, -50%) scale(0.8);
-    opacity: 0;
+.letter-count {
+  font-size: $font-size-sm;
+  color: $color-text-sub;
+}
+
+.category-list {
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
+  border-radius: $radius-xl;
+  overflow: hidden;
+  box-shadow: $glass-shadow-sm;
+  border: 1rpx solid var(--glass-border, rgba(255, 255, 255, 0.6));
+}
+
+.category-item {
+  display: flex;
+  align-items: center;
+  padding: $space-md $space-md $space-md $space-sm;
+  border-bottom: 1rpx solid var(--color-divider, rgba(0, 0, 0, 0.06));
+  transition: all $duration-fast $ease-spring;
+  position: relative;
+  
+  &:last-child {
+    border-bottom: none;
   }
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
+  
+  &:active,
+  &.is-pressed {
+    background: var(--color-bg-gray, rgba(0, 0, 0, 0.03));
+    transform: scale(0.99);
   }
+}
+
+.item-indicator {
+  width: 6rpx;
+  height: 48rpx;
+  border-radius: $radius-full;
+  margin-right: $space-md;
+  flex-shrink: 0;
+}
+
+.category-name {
+  flex: 1;
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-main;
+}
+
+.category-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40rpx;
+  height: 40rpx;
+  
+  .arrow-text {
+    font-size: 40rpx;
+    color: $color-text-sub;
+    font-weight: 300;
+  }
+}
+
+.page-bottom-spacer {
+  height: 40rpx;
 }
 
 [data-theme="dark"] {
@@ -517,11 +563,16 @@ const handleNavTouchEnd = () => {
     background: var(--color-primary-glass, rgba(232, 121, 249, 0.15));
   }
   
-  .section-desc {
+  .letter-badge {
+    background: var(--gradient-sunset, linear-gradient(135deg, #C026D3 0%, #F43F5E 60%, #FF7849 100%));
+    box-shadow: 0 4rpx 12rpx rgba(217, 70, 239, 0.3);
+  }
+  
+  .letter-count {
     color: var(--color-text-sub, #A1A1AA);
   }
   
-  .alphabet-nav-fixed {
+  .category-list {
     background: var(--glass-card-bg, rgba(255, 255, 255, 0.06));
     border-top: 1px solid var(--glass-border-highlight, rgba(255, 255, 255, 0.25));
     border-bottom: 1px solid transparent;
@@ -529,24 +580,23 @@ const handleNavTouchEnd = () => {
     border-right: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
   }
   
-  .nav-item {
-    text {
-      color: var(--color-text-sub, #A1A1AA);
-    }
+  .category-item {
+    border-bottom-color: var(--color-divider, rgba(255, 255, 255, 0.08));
     
-    &.is-active {
-      background: var(--gradient-sunset, linear-gradient(135deg, #C026D3 0%, #F43F5E 60%, #FF7849 100%));
-      box-shadow: 0 2rpx 8rpx rgba(217, 70, 239, 0.4);
-      
-      text {
-        color: #FFFFFF;
-      }
+    &:active,
+    &.is-pressed {
+      background: rgba(255, 255, 255, 0.05);
     }
   }
   
-  .letter-indicator {
-    background: var(--gradient-sunset, linear-gradient(135deg, #C026D3 0%, #F43F5E 60%, #FF7849 100%));
-    box-shadow: 0 8rpx 32rpx rgba(217, 70, 239, 0.4);
+  .category-name {
+    color: var(--color-text-main, #F2F2F7);
+  }
+  
+  .category-arrow {
+    .arrow-text {
+      color: var(--color-text-sub, #A1A1AA);
+    }
   }
 }
 </style>

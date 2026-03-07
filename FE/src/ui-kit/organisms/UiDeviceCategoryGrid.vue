@@ -14,7 +14,6 @@
           <ui-icon :name="item.icon" :size="52" :color="iconColor" />
         </view>
         <text class="item-name">{{ item.name }}</text>
-        <text class="item-count">{{ formatCount(item.productCount) }}件</text>
       </view>
     </view>
   </view>
@@ -41,16 +40,6 @@ const emit = defineEmits<{
 }>();
 
 const pressedId = ref<string>('');
-
-const formatCount = (count: number): string => {
-  if (count >= 10000) {
-    return (count / 10000).toFixed(1) + '万';
-  }
-  if (count >= 1000) {
-    return (count / 1000).toFixed(1) + 'k';
-  }
-  return count.toString();
-};
 
 const getIconBg = (icon: string): string => {
   const bgMap: Record<string, string> = {
@@ -88,7 +77,7 @@ const handleSelect = (item: DeviceCategory) => {
 
 .grid-container {
   display: grid;
-  gap: $space-md;
+  gap: $space-sm;
 }
 
 .grid-item {
@@ -136,15 +125,6 @@ const handleSelect = (item: DeviceCategory) => {
   font-size: $font-size-md;
   font-weight: $font-weight-medium;
   color: $color-text-main;
-  margin-bottom: 4rpx;
-}
-
-.item-count {
-  font-size: $font-size-xs;
-  color: $color-text-sub;
-  background: var(--color-bg-gray, rgba(0, 0, 0, 0.03));
-  padding: 2rpx 12rpx;
-  border-radius: $radius-full;
 }
 
 [data-theme="dark"] {
@@ -161,11 +141,6 @@ const handleSelect = (item: DeviceCategory) => {
     &.is-pressed {
       background: rgba(255, 255, 255, 0.05);
     }
-  }
-  
-  .item-count {
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--color-text-sub, #A1A1AA);
   }
 }
 </style>
