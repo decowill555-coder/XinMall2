@@ -135,18 +135,18 @@ const goGoods = (item: any) => {
 .user-header {
   @include flex-column-center;
   padding: $space-xl;
-  background: linear-gradient(135deg, $color-primary 0%, $color-primary-dark 100%);
+  background: var(--gradient-primary, linear-gradient(135deg, #FF6A00 0%, #E65100 100%));
   
   .user-name {
     font-size: $font-size-lg;
     font-weight: $font-weight-bold;
-    color: $color-white;
+    color: var(--color-text-white, #FFFFFF);
     margin-top: $space-sm;
   }
   
   .user-desc {
     font-size: $font-size-sm;
-    color: rgba($color-white, 0.8);
+    color: var(--glass-shine, rgba(255, 255, 255, 0.8));
     margin-top: $space-xs;
   }
   
@@ -161,12 +161,12 @@ const goGoods = (item: any) => {
       .stat-value {
         font-size: $font-size-lg;
         font-weight: $font-weight-bold;
-        color: $color-white;
+        color: var(--color-text-white, #FFFFFF);
       }
       
       .stat-label {
         font-size: $font-size-xs;
-        color: rgba($color-white, 0.8);
+        color: var(--glass-shine, rgba(255, 255, 255, 0.8));
       }
     }
   }
@@ -179,7 +179,7 @@ const goGoods = (item: any) => {
 }
 
 .tabs-bar {
-  background: $color-white;
+  background: var(--color-bg-white, #FFFFFF);
   padding: 0 $space-md;
 }
 
@@ -193,7 +193,7 @@ const goGoods = (item: any) => {
   gap: $space-sm;
   
   .post-item, .goods-item {
-    background: $color-white;
+    background: var(--glass-solid, rgba(255, 255, 255, 0.85));
     border-radius: $radius-md;
     overflow: hidden;
     

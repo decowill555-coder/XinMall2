@@ -224,7 +224,7 @@ const measureLetterPositions = () => {
 };
 
 const handleCategorySelect = (item: DeviceCategory | CategoryItem) => {
-  navigateTo(`/pages-sub/search/result?categoryId=${item.id}&keyword=${encodeURIComponent(item.name)}`);
+  navigateTo(`/pages-sub/search/device-type?id=${item.id}&name=${encodeURIComponent(item.name)}`);
 };
 
 const goSearch = () => {
@@ -514,89 +514,5 @@ const scrollToLetter = (letter: string) => {
 
 .page-bottom-spacer {
   height: 40rpx;
-}
-
-[data-theme="dark"] {
-  .header-bg {
-    background: linear-gradient(180deg, rgba(217, 70, 239, 0.08) 0%, rgba(217, 70, 239, 0) 100%);
-  }
-  
-  .header-content {
-    background: var(--glass-card-bg, rgba(255, 255, 255, 0.06));
-    border-bottom-color: var(--color-divider, rgba(255, 255, 255, 0.08));
-  }
-  
-  .back-btn {
-    background: rgba(255, 255, 255, 0.08);
-    
-    &:active {
-      background: rgba(255, 255, 255, 0.12);
-    }
-  }
-  
-  .page-title {
-    color: var(--color-text-main, #F2F2F7);
-  }
-  
-  .search-bar {
-    background: rgba(255, 255, 255, 0.08);
-    
-    &:active {
-      background: rgba(255, 255, 255, 0.12);
-    }
-    
-    .search-placeholder {
-      color: var(--color-text-placeholder, #6B7280);
-    }
-  }
-  
-  .section-icon {
-    background: var(--color-primary-glass, rgba(232, 121, 249, 0.15));
-  }
-  
-  .section-title {
-    color: var(--color-text-main, #F2F2F7);
-  }
-  
-  .section-badge {
-    color: var(--color-primary, #E879F9);
-    background: var(--color-primary-glass, rgba(232, 121, 249, 0.15));
-  }
-  
-  .letter-badge {
-    background: var(--gradient-sunset, linear-gradient(135deg, #C026D3 0%, #F43F5E 60%, #FF7849 100%));
-    box-shadow: 0 4rpx 12rpx rgba(217, 70, 239, 0.3);
-  }
-  
-  .letter-count {
-    color: var(--color-text-sub, #A1A1AA);
-  }
-  
-  .category-list {
-    background: var(--glass-card-bg, rgba(255, 255, 255, 0.06));
-    border-top: 1px solid var(--glass-border-highlight, rgba(255, 255, 255, 0.25));
-    border-bottom: 1px solid transparent;
-    border-left: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
-    border-right: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
-  }
-  
-  .category-item {
-    border-bottom-color: var(--color-divider, rgba(255, 255, 255, 0.08));
-    
-    &:active,
-    &.is-pressed {
-      background: rgba(255, 255, 255, 0.05);
-    }
-  }
-  
-  .category-name {
-    color: var(--color-text-main, #F2F2F7);
-  }
-  
-  .category-arrow {
-    .arrow-text {
-      color: var(--color-text-sub, #A1A1AA);
-    }
-  }
 }
 </style>

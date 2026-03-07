@@ -26,6 +26,33 @@
     
     <view class="tabbar-safe-line" />
   </view>
+  
+  <ui-popup v-model:show="showPublishPicker" position="bottom" round>
+    <view class="publish-picker">
+      <view class="picker-header">
+        <text class="picker-title">选择发布类型</text>
+        <view class="picker-close" @click="showPublishPicker = false">
+          <ui-icon name="x" :size="32" color="#A1A1A6" />
+        </view>
+      </view>
+      <view class="picker-content">
+        <view class="picker-item" @click="handlePublish('goods')">
+          <view class="item-icon goods">
+            <ui-icon name="shopping-bag" :size="48" color="#FFFFFF" />
+          </view>
+          <text class="item-title">发布商品</text>
+          <text class="item-desc">出售闲置数码产品</text>
+        </view>
+        <view class="picker-item" @click="handlePublish('post')">
+          <view class="item-icon post">
+            <ui-icon name="edit-3" :size="48" color="#FFFFFF" />
+          </view>
+          <text class="item-title">发布帖子</text>
+          <text class="item-desc">分享数码生活体验</text>
+        </view>
+      </view>
+    </view>
+  </ui-popup>
 </template>
 
 <script setup lang="ts">
@@ -58,6 +85,8 @@ const emit = defineEmits<{
 }>();
 
 const appStore = useAppStore();
+
+const showPublishPicker = ref(false);
 
 const currentIndex = computed(() => {
   return tabList.value.findIndex(item => item.name === props.current);
@@ -110,7 +139,7 @@ const tabList = ref<TabItem[]>([
 
 const handleClick = (index: number, item: TabItem) => {
   if (item.isCenter) {
-    emit('centerClick');
+    showPublishPicker.value = !showPublishPicker.value;
     return;
   }
   
@@ -122,6 +151,15 @@ const handleClick = (index: number, item: TabItem) => {
     uni.switchTab({
       url: '/' + item.pagePath
     });
+  }
+};
+
+const handlePublish = (type: 'goods' | 'post') => {
+  showPublishPicker.value = false;
+  if (type === 'goods') {
+    uni.navigateTo({ url: '/pages-sub/seller/publish/entry' });
+  } else {
+    uni.navigateTo({ url: '/pages-sub/content/post/publish' });
   }
 };
 
@@ -316,6 +354,89 @@ defineExpose({
   
   .tabbar-safe-line {
     display: none;
+  }
+}
+
+.publish-picker {
+  background: var(--glass-solid, rgba(255, 255, 255, 0.95));
+  backdrop-filter: blur($blur-xxl);
+  -webkit-backdrop-filter: blur($blur-xxl);
+  border-radius: $radius-xl $radius-xl 0 0;
+  padding-bottom: calc(100rpx + env(safe-area-inset-bottom));
+  
+  .picker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $space-lg $space-md;
+    border-bottom: 1rpx solid var(--glass-border-light, rgba(0, 0, 0, 0.06));
+    
+    .picker-title {
+      font-size: $font-size-lg;
+      font-weight: $font-weight-medium;
+      color: $color-text-main;
+    }
+    
+    .picker-close {
+      padding: $space-xs;
+      border-radius: 50%;
+      background: var(--color-bg-gray, rgba(0, 0, 0, 0.03));
+    }
+  }
+  
+  .picker-content {
+    display: flex;
+    padding: $space-lg $space-md;
+    gap: $space-md;
+    
+    .picker-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: $space-lg $space-md;
+      background: var(--glass-crystal-high, rgba(255, 255, 255, 0.6));
+      border: 1rpx solid var(--glass-border-subtle, rgba(0, 0, 0, 0.04));
+      border-radius: $radius-lg;
+      transition: all $duration-fast $ease-spring;
+      
+      &:active {
+        transform: scale(0.98);
+        background: var(--color-bg-gray, rgba(0, 0, 0, 0.06));
+      }
+      
+      .item-icon {
+        width: 100rpx;
+        height: 100rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        margin-bottom: $space-md;
+        
+        &.goods {
+          background: linear-gradient(135deg, #FF6A00 0%, #FF8C00 100%);
+          box-shadow: 0 8rpx 24rpx rgba(255, 106, 0, 0.3);
+        }
+        
+        &.post {
+          background: linear-gradient(135deg, #C026D3 0%, #F43F5E 100%);
+          box-shadow: 0 8rpx 24rpx rgba(192, 38, 211, 0.3);
+        }
+      }
+      
+      .item-title {
+        font-size: $font-size-md;
+        font-weight: $font-weight-medium;
+        color: $color-text-main;
+        margin-bottom: $space-xs;
+      }
+      
+      .item-desc {
+        font-size: $font-size-xs;
+        color: $color-text-sub;
+      }
+    }
   }
 }
 </style>

@@ -1,4 +1,4 @@
-﻿<template>
+﻿﻿﻿﻿﻿﻿<template>
   <view class="publish-post-page">
     <ui-sub-navbar title="发布帖子" />
     
@@ -129,7 +129,9 @@ const handlePublish = () => {
 }
 
 .content-section {
-  background: $color-white;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
   padding: $space-md;
   
   .content-input {
@@ -138,6 +140,7 @@ const handlePublish = () => {
     font-size: $font-size-md;
     color: $color-text-main;
     line-height: 1.8;
+    background: transparent;
   }
   
   .word-count {
@@ -149,13 +152,17 @@ const handlePublish = () => {
 }
 
 .image-section {
-  background: $color-white;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
   padding: $space-md;
   margin-top: $space-sm;
 }
 
 .option-section {
-  background: $color-white;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
   margin-top: $space-sm;
   
   .option-item {
@@ -163,7 +170,7 @@ const handlePublish = () => {
     justify-content: space-between;
     align-items: center;
     padding: $space-md;
-    border-bottom: 1rpx solid $color-divider;
+    border-bottom: 1rpx solid var(--glass-border-light, rgba(0, 0, 0, 0.06));
     
     &:last-child { border-bottom: none; }
     
@@ -184,7 +191,9 @@ const handlePublish = () => {
 }
 
 .hot-topics {
-  background: $color-white;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
   padding: $space-md;
   margin-top: $space-sm;
   
@@ -202,10 +211,10 @@ const handlePublish = () => {
     
     .topic-item {
       padding: $space-xs $space-md;
-      background: rgba($color-primary, 0.1);
+      background: var(--color-primary-glass, rgba(255, 106, 0, 0.1));
       border-radius: $radius-full;
       font-size: $font-size-sm;
-      color: $color-primary;
+      color: var(--color-primary, #FF6A00);
     }
   }
 }
@@ -217,7 +226,9 @@ const handlePublish = () => {
   bottom: 0;
   padding: $space-md;
   padding-bottom: calc(#{$space-md} + env(safe-area-inset-bottom));
-  background: $color-white;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.95));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
   box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
 }
 </style>

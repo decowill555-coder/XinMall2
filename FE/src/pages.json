@@ -43,7 +43,8 @@
         { "path": "index", "style": { "navigationBarTitleText": "搜索", "navigationStyle": "custom" } },
         { "path": "entry", "style": { "navigationBarTitleText": "搜索", "navigationStyle": "custom" } },
         { "path": "result", "style": { "navigationBarTitleText": "搜索结果", "navigationStyle": "custom" } },
-        { "path": "category", "style": { "navigationBarTitleText": "找产品", "navigationStyle": "custom" } }
+        { "path": "category", "style": { "navigationBarTitleText": "找产品", "navigationStyle": "custom" } },
+        { "path": "device-type", "style": { "navigationBarTitleText": "设备分类", "navigationStyle": "custom" } }
       ]
     },
     {

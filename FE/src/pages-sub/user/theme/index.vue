@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view class="theme-page">
     <ui-sub-navbar title="主题设置" />
     
@@ -411,39 +411,5 @@ const handleReset = () => {
 
 .theme-actions {
   margin-top: $space-xl;
-}
-
-[data-theme="dark"] {
-  .theme-section {
-    background: var(--color-bg-card, rgba(255, 255, 255, 0.06));
-    border-color: var(--color-border, rgba(255, 255, 255, 0.1));
-  }
-  
-  .mode-item {
-    background: var(--color-bg-gray, #0F0E16);
-    
-    &.is-active {
-      background: var(--color-primary-glass, rgba(232, 121, 249, 0.15));
-      border-color: var(--color-primary, #E879F9);
-    }
-    
-    .mode-icon {
-      background: var(--color-bg-card, rgba(255, 255, 255, 0.06));
-    }
-  }
-  
-  .font-size-item,
-  .radius-item {
-    background: var(--color-bg-gray, #0F0E16);
-    
-    &.is-active {
-      background: var(--color-primary-glass, rgba(232, 121, 249, 0.15));
-      border-color: var(--color-primary, #E879F9);
-    }
-  }
-  
-  .color-preview {
-    box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.4);
-  }
 }
 </style>

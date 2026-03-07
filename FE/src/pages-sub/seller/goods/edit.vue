@@ -148,7 +148,7 @@ const handleSubmit = () => {
 <style lang="scss" scoped>
 .goods-edit-page {
   min-height: 100vh;
-  background: $color-bg-page;
+  background: var(--color-bg-page, $color-bg-page);
 }
 
 .edit-scroll {
@@ -156,7 +156,7 @@ const handleSubmit = () => {
 }
 
 .form-section {
-  background: $color-white;
+  background: var(--color-bg-white, $color-white);
   border-radius: $radius-md;
   padding: $space-md;
   
@@ -167,7 +167,7 @@ const handleSubmit = () => {
     
     .form-label {
       font-size: $font-size-sm;
-      color: $color-text-sub;
+      color: var(--color-text-sub, $color-text-sub);
       margin-bottom: $space-sm;
     }
     
@@ -175,22 +175,30 @@ const handleSubmit = () => {
       width: 100%;
       height: 80rpx;
       padding: 0 $space-md;
-      background: $color-bg-gray;
+      background: var(--color-bg-gray, $color-bg-gray);
       border-radius: $radius-sm;
       font-size: $font-size-md;
-      color: $color-text-main;
+      color: var(--color-text-main, $color-text-main);
       box-sizing: border-box;
+      
+      &::placeholder {
+        color: var(--color-text-placeholder, $color-text-placeholder);
+      }
     }
     
     .form-textarea {
       width: 100%;
       height: 160rpx;
       padding: $space-md;
-      background: $color-bg-gray;
+      background: var(--color-bg-gray, $color-bg-gray);
       border-radius: $radius-sm;
       font-size: $font-size-md;
-      color: $color-text-main;
+      color: var(--color-text-main, $color-text-main);
       box-sizing: border-box;
+      
+      &::placeholder {
+        color: var(--color-text-placeholder, $color-text-placeholder);
+      }
     }
     
     .form-select {
@@ -199,8 +207,9 @@ const handleSubmit = () => {
       align-items: center;
       height: 80rpx;
       padding: 0 $space-md;
-      background: $color-bg-gray;
+      background: var(--color-bg-gray, $color-bg-gray);
       border-radius: $radius-sm;
+      color: var(--color-text-main, $color-text-main);
     }
     
     .condition-list {
@@ -210,14 +219,14 @@ const handleSubmit = () => {
       
       .condition-item {
         padding: $space-sm $space-md;
-        background: $color-bg-gray;
+        background: var(--color-bg-gray, $color-bg-gray);
         border-radius: $radius-sm;
         font-size: $font-size-sm;
-        color: $color-text-sub;
+        color: var(--color-text-sub, $color-text-sub);
         
         &.active {
-          color: $color-primary;
-          background: rgba($color-primary, 0.1);
+          color: var(--color-primary, $color-primary);
+          background: var(--color-primary-light, rgba($color-primary, 0.1));
         }
       }
     }
@@ -227,19 +236,23 @@ const handleSubmit = () => {
       align-items: center;
       height: 80rpx;
       padding: 0 $space-md;
-      background: $color-bg-gray;
+      background: var(--color-bg-gray, $color-bg-gray);
       border-radius: $radius-sm;
       
       .price-symbol {
         font-size: $font-size-lg;
-        color: $color-error;
+        color: var(--color-error, $color-error);
         margin-right: $space-xs;
       }
       
       input {
         flex: 1;
         font-size: $font-size-lg;
-        color: $color-text-main;
+        color: var(--color-text-main, $color-text-main);
+        
+        &::placeholder {
+          color: var(--color-text-placeholder, $color-text-placeholder);
+        }
       }
     }
   }
@@ -257,7 +270,7 @@ const handleSubmit = () => {
 .switch-section {
   margin-top: $space-md;
   padding-top: $space-md;
-  border-top: 1rpx solid $color-divider;
+  border-top: 1rpx solid var(--color-divider, $color-divider);
   
   .switch-item {
     display: flex;
@@ -267,7 +280,7 @@ const handleSubmit = () => {
     
     .switch-label {
       font-size: $font-size-md;
-      color: $color-text-main;
+      color: var(--color-text-main, $color-text-main);
     }
   }
 }
@@ -281,7 +294,7 @@ const handleSubmit = () => {
   gap: $space-sm;
   padding: $space-md;
   padding-bottom: calc(#{$space-md} + env(safe-area-inset-bottom));
-  background: $color-white;
+  background: var(--color-bg-white, $color-white);
   box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
 }
 </style>
