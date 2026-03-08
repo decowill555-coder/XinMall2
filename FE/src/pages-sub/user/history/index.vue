@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view class="history-page">
     <ui-sub-navbar title="浏览足迹" />
     

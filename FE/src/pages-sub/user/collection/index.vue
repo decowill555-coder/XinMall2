@@ -1,4 +1,4 @@
-﻿﻿﻿﻿<template>
+﻿﻿﻿﻿﻿<template>
   <view class="collection-page">
     <ui-sub-navbar title="我的收藏" />
     

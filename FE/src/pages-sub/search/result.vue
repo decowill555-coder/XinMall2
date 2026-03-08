@@ -190,7 +190,13 @@ const fetchProducts = async () => {
     { id: 1, cover: 'https://picsum.photos/400/400?random=801', title: 'iPhone 15 Pro Max 256GB 钛金属原色', price: 7999, sales: 128, condition: '99新', tags: ['国行', '在保'], timeStr: '3分钟前' },
     { id: 2, cover: 'https://picsum.photos/400/400?random=802', title: 'iPhone 15 Pro 128GB 蓝色钛金属', price: 6999, sales: 89, condition: '全新', tags: ['全新', '官方'], timeStr: '10分钟前' },
     { id: 3, cover: 'https://picsum.photos/400/400?random=803', title: 'iPhone 15 Plus 256GB 粉色', price: 5999, sales: 56, condition: '95新', tags: ['95新'], timeStr: '30分钟前' },
-    { id: 4, cover: 'https://picsum.photos/400/400?random=804', title: 'MacBook Pro 14寸 M3 Pro', price: 14999, sales: 23, condition: '99新', tags: ['国行'], timeStr: '1小时前' },
+    { id: 4, cover: 'https://picsum.photos/400/400?random=801', title: 'iPhone 15 Pro Max 256GB 钛金属原色', price: 7999, sales: 128, condition: '99新', tags: ['国行', '在保'], timeStr: '3分钟前' },
+    { id: 5, cover: 'https://picsum.photos/400/400?random=802', title: 'iPhone 15 Pro 128GB 蓝色钛金属', price: 6999, sales: 89, condition: '全新', tags: ['全新', '官方'], timeStr: '10分钟前' },
+    { id: 6, cover: 'https://picsum.photos/400/400?random=803', title: 'iPhone 15 Plus 256GB 粉色', price: 5999, sales: 56, condition: '95新', tags: ['95新'], timeStr: '30分钟前' },
+    { id: 7, cover: 'https://picsum.photos/400/400?random=801', title: 'iPhone 15 Pro Max 256GB 钛金属原色', price: 7999, sales: 128, condition: '99新', tags: ['国行', '在保'], timeStr: '3分钟前' },
+    { id: 8, cover: 'https://picsum.photos/400/400?random=802', title: 'iPhone 15 Pro 128GB 蓝色钛金属', price: 6999, sales: 89, condition: '全新', tags: ['全新', '官方'], timeStr: '10分钟前' },
+    { id: 9, cover: 'https://picsum.photos/400/400?random=803', title: 'iPhone 15 Plus 256GB 粉色', price: 5999, sales: 56, condition: '95新', tags: ['95新'], timeStr: '30分钟前' },
+    { id: 10, cover: 'https://picsum.photos/400/400?random=804', title: 'MacBook Pro 14寸 M3 Pro', price: 14999, sales: 23, condition: '99新', tags: ['国行'], timeStr: '1小时前' },
   ];
 
   productList.value = currentPage.value === 1 ? mockProducts : [...productList.value, ...mockProducts];

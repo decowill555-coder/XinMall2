@@ -13,6 +13,36 @@ export interface NavigationOptions {
   fallbackUrl?: string;
 }
 
+const AUTH_REQUIRED_PAGES = [
+  'pages/message/index',
+  'pages/my/index',
+  'pages-sub/trade/cart/index',
+  'pages-sub/trade/order/list',
+  'pages-sub/trade/order/detail',
+  'pages-sub/trade/order/confirm',
+  'pages-sub/trade/pay/index',
+  'pages-sub/trade/evaluate/index',
+  'pages-sub/seller/publish/entry',
+  'pages-sub/seller/shop/index',
+  'pages-sub/seller/shop/manage',
+  'pages-sub/seller/goods/list',
+  'pages-sub/seller/goods/edit',
+  'pages-sub/seller/after-sale/list',
+  'pages-sub/seller/after-sale/detail',
+  'pages-sub/content/post/publish',
+  'pages-sub/user/address/list',
+  'pages-sub/user/address/edit',
+  'pages-sub/user/collection/index',
+  'pages-sub/user/history/index',
+  'pages-sub/user/settings/index',
+  'pages-sub/user/wallet/index',
+  'pages-sub/auth/real-name/index',
+  'pages-sub/auth/shop-auth/index',
+];
+
+const LOGIN_PAGE = '/pages-sub/user/login/index';
+const REDIRECT_URL_KEY = 'redirectUrl';
+
 const PAGE_CONFIGS: Record<string, PageConfig> = {
   'pages/index/index': { level: 0, name: '首页' },
   'pages/follow/index': { level: 0, name: '关注' },
@@ -70,6 +100,20 @@ function normalizeRoute(route: string): string {
     return route.slice(1);
   }
   return route;
+}
+
+function isAuthRequired(url: string): boolean {
+  const normalizedRoute = normalizeRoute(url);
+  return AUTH_REQUIRED_PAGES.some(page => normalizedRoute.includes(page));
+}
+
+function isLoggedIn(): boolean {
+  return !!uni.getStorageSync('token');
+}
+
+function redirectToLogin(targetUrl: string): void {
+  uni.setStorageSync(REDIRECT_URL_KEY, targetUrl);
+  uni.navigateTo({ url: LOGIN_PAGE });
 }
 
 export function getPageConfig(route: string): PageConfig | undefined {
@@ -196,21 +240,46 @@ export function backToHome(): void {
 
 export function switchToTab(url: string): void {
   const normalizedUrl = url.startsWith('/') ? url : '/' + url;
+
+  if (isAuthRequired(normalizedUrl) && !isLoggedIn()) {
+    redirectToLogin(normalizedUrl);
+    return;
+  }
+
   uni.switchTab({ url: normalizedUrl });
 }
 
 export function navigateTo(url: string): void {
   const normalizedUrl = url.startsWith('/') ? url : '/' + url;
+
+  if (isAuthRequired(normalizedUrl) && !isLoggedIn()) {
+    redirectToLogin(normalizedUrl);
+    return;
+  }
+
   uni.navigateTo({ url: normalizedUrl });
 }
 
 export function redirectTo(url: string): void {
   const normalizedUrl = url.startsWith('/') ? url : '/' + url;
+
+  if (isAuthRequired(normalizedUrl) && !isLoggedIn()) {
+    redirectToLogin(normalizedUrl);
+    return;
+  }
+
   uni.redirectTo({ url: normalizedUrl });
 }
 
 export function reLaunch(url: string): void {
   const normalizedUrl = url.startsWith('/') ? url : '/' + url;
+
+  if (isAuthRequired(normalizedUrl) && !isLoggedIn()) {
+    uni.setStorageSync(REDIRECT_URL_KEY, normalizedUrl);
+    uni.reLaunch({ url: LOGIN_PAGE });
+    return;
+  }
+
   uni.reLaunch({ url: normalizedUrl });
 }
 
@@ -258,6 +327,22 @@ export function getPreviousPageRoute(): string {
   return prevPage?.route || '';
 }
 
+export function handleRedirectAfterLogin(): void {
+  const redirectUrl = uni.getStorageSync(REDIRECT_URL_KEY);
+  uni.removeStorageSync(REDIRECT_URL_KEY);
+
+  if (redirectUrl) {
+    const normalizedUrl = redirectUrl.startsWith('/') ? redirectUrl : '/' + redirectUrl;
+    if (isTabPage(normalizedUrl)) {
+      uni.switchTab({ url: normalizedUrl });
+    } else {
+      uni.redirectTo({ url: normalizedUrl });
+    }
+  } else {
+    uni.switchTab({ url: '/pages/index/index' });
+  }
+}
+
 export const navigation = {
   smartBack,
   backToLevel,
@@ -279,7 +364,8 @@ export const navigation = {
   getPageConfig,
   getPageLevel,
   getPageGroup,
-  isTabPage
+  isTabPage,
+  handleRedirectAfterLogin
 };
 
 export default navigation;

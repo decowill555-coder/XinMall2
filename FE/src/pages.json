@@ -86,6 +86,8 @@
       "root": "pages-sub/user",
       "pages": [
         { "path": "login/index", "style": { "navigationBarTitleText": "登录", "navigationStyle": "custom" } },
+        { "path": "register/index", "style": { "navigationBarTitleText": "注册", "navigationStyle": "custom" } },
+        { "path": "forgot/index", "style": { "navigationBarTitleText": "找回密码", "navigationStyle": "custom" } },
         { "path": "address/list", "style": { "navigationBarTitleText": "收货地址", "navigationStyle": "custom" } },
         { "path": "address/edit", "style": { "navigationBarTitleText": "编辑地址", "navigationStyle": "custom" } },
         { "path": "collection/index", "style": { "navigationBarTitleText": "我的收藏", "navigationStyle": "custom" } },

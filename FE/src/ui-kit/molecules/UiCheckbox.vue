@@ -1,10 +1,9 @@
-﻿<template>
+<template>
   <view 
     class="ui-checkbox" 
     :class="{ 'is-disabled': disabled }"
     @click.stop="toggle"
   >
-    <!-- 图标部分 -->
     <view 
       class="checkbox-icon"
       :class="{ 'is-checked': modelValue, 'is-round': shape === 'round' }"
@@ -13,7 +12,6 @@
       <ui-icon v-if="modelValue" name="check" :size="40" color="#FFFFFF" />
     </view>
     
-    <!-- 文字标签 -->
     <text v-if="label" class="checkbox-label">
       {{ label }}
     </text>
@@ -26,9 +24,9 @@ import { computed } from 'vue';
 const props = withDefaults(defineProps<{
   modelValue: boolean;
   label?: string;
-  shape?: 'circle' | 'square' | 'round'; // round = 圆形
+  shape?: 'circle' | 'square' | 'round';
   disabled?: boolean;
-  color?: string; // 选中颜色
+  color?: string;
 }>(), {
   modelValue: false,
   shape: 'round',
@@ -40,8 +38,8 @@ const emit = defineEmits(['update:modelValue', 'change']);
 const checkedStyle = computed(() => {
   if (!props.modelValue) return {};
   return {
-    backgroundColor: props.color || '#1ABC9C',
-    borderColor: props.color || '#1ABC9C'
+    backgroundColor: props.color || 'var(--color-primary, #FF6A00)',
+    borderColor: props.color || 'var(--color-primary, #FF6A00)'
   };
 });
 
@@ -54,8 +52,6 @@ const toggle = () => {
 </script>
 
 <style lang="scss" scoped>
-
-
 .ui-checkbox {
   display: inline-flex;
   align-items: center;
@@ -69,25 +65,47 @@ const toggle = () => {
   .checkbox-icon {
     width: 40rpx;
     height: 40rpx;
-    border: 2rpx solid $color-text-disabled; // 未选中时是灰色边框
+    border: 2rpx solid $color-border;
     box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
-    background-color: transparent;
-
-    &.is-round { border-radius: 50%; }
+    transition: all $duration-fast $ease-spring;
+    background-color: $color-bg-gray;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
     
-    // 选中状�?    &.is-checked {
+    [data-theme="dark"] & {
+      background-color: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    &.is-round { 
+      border-radius: 50%; 
+    }
+    
+    &.is-checked {
       border-color: transparent;
-      // 背景色由 style 动态控�?    }
+      box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        0 2px 8px rgba(255, 106, 0, 0.3);
+      
+      [data-theme="dark"] & {
+        box-shadow: 
+          inset 0 1px 0 rgba(255, 255, 255, 0.4),
+          0 2px 12px rgba(217, 70, 239, 0.4);
+      }
+    }
   }
 
   .checkbox-label {
     margin-left: $space-sm;
     font-size: $font-size-md;
     color: $color-text-main;
+    
+    [data-theme="dark"] & {
+      color: var(--color-text-main, #F2F2F7);
+    }
   }
 }
 </style>

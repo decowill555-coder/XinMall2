@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view class="shop-page">
     <ui-sub-navbar title="我的店铺" />
     

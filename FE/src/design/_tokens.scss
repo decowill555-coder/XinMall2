@@ -47,6 +47,7 @@
   --color-bg-white: #FFFFFF;
   --color-bg-gray: #FAF8F7;
   --color-bg-glass: rgba(255, 255, 255, 0.65);
+  --color-bg-gradient-start: #F5E6DC;
 
   // 6. 文本色 - 暖灰代替冷灰
   --color-text-main: #2C2624;
@@ -115,6 +116,7 @@
   --color-bg-gray: #0F0E16;
   --color-bg-card: rgba(255, 255, 255, 0.06);
   --color-bg-glass: rgba(255, 255, 255, 0.06);
+  --color-bg-gradient-start: #1A1520;
 
   // 2. 玻璃卡片：幽灵般的通透感
   --glass-card-bg: rgba(255, 255, 255, 0.06);
@@ -317,6 +319,13 @@ $color-bg-card:       var(--color-bg-card, rgba(255, 255, 255, 0.65));
 $color-bg-white:      var(--color-bg-white, #FFFFFF);
 $color-bg-gray:       var(--color-bg-gray, #FAF8F7);
 $color-bg-glass:      var(--color-bg-glass, rgba(255, 255, 255, 0.65));
+$color-bg-gradient-start: var(--color-bg-gradient-start, #F5E6DC);
+
+// 第三方登录品牌色
+$color-wechat:        #07C160;
+$color-wechat-dark:   #00a854;
+$color-alipay:        #1677FF;
+$color-alipay-dark:   #0958d9;
 
 // 文本色 (暖灰层级)
 $color-text-main:     var(--color-text-main, #2C2624);

@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view class="settings-page">
     <ui-sub-navbar title="设置" />
     
@@ -43,10 +43,14 @@
 
 <script setup lang="ts">
 import { usePageLayout } from '@/composables/usePageLayout';
+import { useUserStore, useAuthStore } from '@/stores';
 
 const { scrollHeight } = usePageLayout({
   hasSubNavbar: true
 });
+
+const userStore = useUserStore();
+const authStore = useAuthStore();
 
 const goAccount = () => uni.showToast({ title: '账号与安全', icon: 'none' });
 const goPrivacy = () => uni.showToast({ title: '隐私设置', icon: 'none' });
@@ -90,10 +94,9 @@ const handleLogout = () => {
     content: '确定退出登录吗？',
     success: (res) => {
       if (res.confirm) {
+        userStore.logout();
+        authStore.clearAuth();
         uni.showToast({ title: '已退出登录', icon: 'success' });
-        setTimeout(() => {
-          uni.redirectTo({ url: '/pages-sub/user/login/index' });
-        }, 1500);
       }
     }
   });
