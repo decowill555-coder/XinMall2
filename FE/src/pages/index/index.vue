@@ -1,5 +1,10 @@
 <template>
   <view class="index-page">
+    <view class="bg-decoration">
+      <view class="decoration-circle circle-1"></view>
+      <view class="decoration-circle circle-2"></view>
+    </view>
+    
     <view class="fixed-header" :style="{ paddingTop: (safeAreaTop + headerExtraTop) + 'px' }">
       <view class="search-bar">
         <ui-search 
@@ -319,7 +324,54 @@ const loadMore = () => {
 <style lang="scss" scoped>
 .index-page {
   min-height: 100vh;
-  background: $color-bg-page;
+  height: 100vh;
+  background: linear-gradient(170deg, $color-bg-gradient-start 0%, $color-bg-page 35%, $color-bg-page 100%);
+  position: relative;
+  overflow: hidden;
+  
+  [data-theme="dark"] & {
+    background: linear-gradient(170deg, var(--color-bg-gradient-start, #1A1520) 0%, $color-bg-page 35%, $color-bg-page 100%);
+  }
+}
+
+.bg-decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+  
+  .decoration-circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.5;
+  }
+  
+  .circle-1 {
+    width: 400rpx;
+    height: 400rpx;
+    top: 200rpx;
+    right: -100rpx;
+    background: radial-gradient(circle, rgba($color-primary, 0.15) 0%, transparent 70%);
+    
+    [data-theme="dark"] & {
+      background: radial-gradient(circle, rgba(217, 70, 239, 0.2) 0%, transparent 70%);
+    }
+  }
+  
+  .circle-2 {
+    width: 300rpx;
+    height: 300rpx;
+    bottom: 300rpx;
+    left: -80rpx;
+    background: radial-gradient(circle, rgba($color-accent, 0.1) 0%, transparent 70%);
+    
+    [data-theme="dark"] & {
+      background: radial-gradient(circle, rgba(0, 245, 212, 0.12) 0%, transparent 70%);
+    }
+  }
 }
 
 .fixed-header {
@@ -328,11 +380,16 @@ const loadMore = () => {
   left: 0;
   right: 0;
   z-index: 100;
-  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
-  backdrop-filter: blur($blur-lg);
-  -webkit-backdrop-filter: blur($blur-lg);
+  background: $color-bg-card;
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
   padding: $space-md $space-md $space-sm;
-  box-shadow: var(--shadow-card, 0 2rpx 16rpx rgba(0, 0, 0, 0.04));
+  border-bottom: 1px solid $color-border;
+  
+  [data-theme="dark"] & {
+    background: var(--glass-card-bg, rgba(255, 255, 255, 0.06));
+    border-bottom: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+  }
 }
 
 .search-bar {
@@ -357,6 +414,8 @@ const loadMore = () => {
   padding-right: 0;
   padding-bottom: 0;
   min-height: 100vh;
+  position: relative;
+  z-index: 1;
 }
 
 .goods-scroll {
@@ -367,15 +426,47 @@ const loadMore = () => {
 .swiper {
   padding: $space-xl $space-md 0 $space-md;
   box-sizing: border-box;
+  
+  :deep(.ui-swiper) {
+    border-radius: $radius-xl;
+    overflow: hidden;
+    box-shadow: $shadow-md;
+    
+    [data-theme="dark"] & {
+      box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.3);
+    }
+  }
 }
 
 .goods-list {
   padding: $space-md;
   box-sizing: border-box;
   overflow: hidden;
+  
+  :deep(.ui-goods-card) {
+    background: $color-bg-card;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid $color-border-light;
+    border-radius: $radius-lg;
+    overflow: hidden;
+    
+    [data-theme="dark"] & {
+      background: var(--glass-card-bg, rgba(255, 255, 255, 0.06));
+      border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+    }
+  }
 }
 
 .load-more {
   padding: $space-md 0;
+  
+  :deep(.ui-divider) {
+    color: $color-text-sub;
+    
+    [data-theme="dark"] & {
+      color: var(--color-text-sub, #A1A1AA);
+    }
+  }
 }
 </style>

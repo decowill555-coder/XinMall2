@@ -193,6 +193,12 @@ defineExpose({
   box-shadow: 
     0 -4rpx 20rpx rgba(0, 0, 0, 0.03),
     inset 0 0 0 1rpx rgba(255, 255, 255, 0.5);
+  
+  [data-theme="dark"] & {
+    background: var(--tabbar-bg, rgba(20, 20, 30, 0.75));
+    border-top: 1rpx solid var(--tabbar-border, rgba(255, 255, 255, 0.1));
+    box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.2);
+  }
 }
 
 .tabbar-item {
@@ -223,6 +229,11 @@ defineExpose({
         inset 0 2rpx 0 rgba(255, 255, 255, 0.2);
       transition: transform 0.2s ease;
       
+      [data-theme="dark"] & {
+        background: var(--gradient-sunset, linear-gradient(135deg, #C026D3 0%, #F43F5E 60%, #FF7849 100%));
+        box-shadow: var(--tabbar-icon-glow, 0 8rpx 20rpx rgba(217, 70, 239, 0.4));
+      }
+      
       &:active {
         transform: scale(0.95);
       }
@@ -235,6 +246,11 @@ defineExpose({
   width: 44rpx;
   height: 44rpx;
   @include flex-center;
+  color: $color-text-sub;
+  
+  [data-theme="dark"] & {
+    color: var(--tabbar-icon-inactive, #6B7280);
+  }
 }
 
 .tabbar-badge {
@@ -250,6 +266,10 @@ defineExpose({
   background: var(--color-error, #FF3B30);
   border-radius: 16rpx;
   @include flex-center;
+  
+  [data-theme="dark"] & {
+    background: var(--color-error, #FF4081);
+  }
 }
 
 .tabbar-text {
@@ -257,15 +277,29 @@ defineExpose({
   font-size: 22rpx;
   color: $color-text-sub;
   transition: color 0.2s ease;
+  
+  [data-theme="dark"] & {
+    color: var(--tabbar-icon-inactive, #6B7280);
+  }
 }
 
 .is-active {
   .tabbar-text {
     color: var(--color-primary, #FF6A00);
     font-weight: 500;
+    
+    [data-theme="dark"] & {
+      color: var(--tabbar-icon-active, #D946EF);
+    }
   }
   
   .tabbar-icon {
+    color: var(--color-primary, #FF6A00);
+    
+    [data-theme="dark"] & {
+      color: var(--tabbar-icon-active, #D946EF);
+    }
+    
     &::after {
       content: '';
       position: absolute;
@@ -276,6 +310,11 @@ defineExpose({
       height: 4rpx;
       background: var(--color-primary, #FF6A00);
       border-radius: 2rpx;
+      
+      [data-theme="dark"] & {
+        background: var(--tabbar-icon-active, #D946EF);
+        box-shadow: var(--tabbar-icon-glow, 0 0 8px rgba(217, 70, 239, 0.6));
+      }
     }
   }
 }
@@ -293,67 +332,15 @@ defineExpose({
     rgba(255, 106, 0, 0.1) 80%,
     transparent 100%
   );
-}
-
-.the-tabbar--modern {
-  height: $height-tabbar;
-  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
-  border-top: none;
-  box-shadow: 0 -4rpx 24rpx rgba(0, 0, 0, 0.06);
-  backdrop-filter: blur($blur-lg);
-  -webkit-backdrop-filter: blur($blur-lg);
-  font-family: $font-family-system;
   
-  .tabbar-item {
-    height: $height-tabbar;
-    
-    &.is-center {
-      .center-icon-wrapper {
-        width: 104rpx;
-        height: 104rpx;
-        background: linear-gradient(135deg, var(--color-primary, #FF6A00) 0%, #FF8533 100%);
-        box-shadow: 
-          0 8rpx 24rpx rgba(255, 106, 0, 0.4),
-          inset 0 2rpx 0 rgba(255, 255, 255, 0.3);
-        
-        &:active {
-          transform: scale(0.95);
-          box-shadow: 
-            0 4rpx 12rpx rgba(255, 106, 0, 0.3),
-            inset 0 1rpx 0 rgba(255, 255, 255, 0.2);
-        }
-      }
-    }
-  }
-  
-  .tabbar-icon {
-    width: $height-tabbar-icon;
-    height: $height-tabbar-icon;
-    transition: all $duration-fast $ease-spring;
-  }
-  
-  .tabbar-text {
-    font-size: 22rpx;
-    color: var(--color-text-sub, #867A76);
-  }
-  
-  .is-active {
-    .tabbar-text {
-      color: var(--color-primary, #FF6A00);
-      font-weight: $font-weight-medium;
-    }
-    
-    .tabbar-icon {
-      transform: scale(1.1);
-    }
-    
-    .tabbar-icon::after {
-      display: none;
-    }
-  }
-  
-  .tabbar-safe-line {
-    display: none;
+  [data-theme="dark"] & {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(217, 70, 239, 0.15) 20%,
+      rgba(217, 70, 239, 0.15) 80%,
+      transparent 100%
+    );
   }
 }
 
@@ -364,6 +351,10 @@ defineExpose({
   border-radius: $radius-xl $radius-xl 0 0;
   padding-bottom: calc(100rpx + env(safe-area-inset-bottom));
   
+  [data-theme="dark"] & {
+    background: var(--modal-bg, rgba(30, 25, 35, 0.85));
+  }
+  
   .picker-header {
     display: flex;
     justify-content: space-between;
@@ -371,16 +362,28 @@ defineExpose({
     padding: $space-lg $space-md;
     border-bottom: 1rpx solid var(--glass-border-light, rgba(0, 0, 0, 0.06));
     
+    [data-theme="dark"] & {
+      border-bottom-color: var(--modal-border, rgba(255, 255, 255, 0.2));
+    }
+    
     .picker-title {
       font-size: $font-size-lg;
       font-weight: $font-weight-medium;
       color: $color-text-main;
+      
+      [data-theme="dark"] & {
+        color: var(--color-text-main, #F2F2F7);
+      }
     }
     
     .picker-close {
       padding: $space-xs;
       border-radius: 50%;
       background: var(--color-bg-gray, rgba(0, 0, 0, 0.03));
+      
+      [data-theme="dark"] & {
+        background: rgba(255, 255, 255, 0.08);
+      }
     }
   }
   
@@ -400,9 +403,18 @@ defineExpose({
       border-radius: $radius-lg;
       transition: all $duration-fast $ease-spring;
       
+      [data-theme="dark"] & {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1rpx solid var(--glass-border, rgba(255, 255, 255, 0.12));
+      }
+      
       &:active {
         transform: scale(0.98);
         background: var(--color-bg-gray, rgba(0, 0, 0, 0.06));
+        
+        [data-theme="dark"] & {
+          background: rgba(255, 255, 255, 0.1);
+        }
       }
       
       .item-icon {
@@ -417,11 +429,19 @@ defineExpose({
         &.goods {
           background: linear-gradient(135deg, #FF6A00 0%, #FF8C00 100%);
           box-shadow: 0 8rpx 24rpx rgba(255, 106, 0, 0.3);
+          
+          [data-theme="dark"] & {
+            box-shadow: 0 8rpx 24rpx rgba(255, 106, 0, 0.4), 0 0 20px rgba(255, 106, 0, 0.2);
+          }
         }
         
         &.post {
           background: linear-gradient(135deg, #C026D3 0%, #F43F5E 100%);
           box-shadow: 0 8rpx 24rpx rgba(192, 38, 211, 0.3);
+          
+          [data-theme="dark"] & {
+            box-shadow: 0 8rpx 24rpx rgba(192, 38, 211, 0.4), 0 0 20px rgba(217, 70, 239, 0.2);
+          }
         }
       }
       
@@ -430,11 +450,19 @@ defineExpose({
         font-weight: $font-weight-medium;
         color: $color-text-main;
         margin-bottom: $space-xs;
+        
+        [data-theme="dark"] & {
+          color: var(--color-text-main, #F2F2F7);
+        }
       }
       
       .item-desc {
         font-size: $font-size-xs;
         color: $color-text-sub;
+        
+        [data-theme="dark"] & {
+          color: var(--color-text-sub, #A1A1AA);
+        }
       }
     }
   }

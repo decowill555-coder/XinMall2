@@ -94,7 +94,8 @@
         { "path": "history/index", "style": { "navigationBarTitleText": "浏览足迹", "navigationStyle": "custom" } },
         { "path": "settings/index", "style": { "navigationBarTitleText": "设置", "navigationStyle": "custom" } },
         { "path": "theme/index", "style": { "navigationBarTitleText": "主题设置", "navigationStyle": "custom" } },
-        { "path": "wallet/index", "style": { "navigationBarTitleText": "我的钱包", "navigationStyle": "custom" } }
+        { "path": "wallet/index", "style": { "navigationBarTitleText": "我的钱包", "navigationStyle": "custom" } },
+        { "path": "profile/index", "style": { "navigationBarTitleText": "个人资料", "navigationStyle": "custom" } }
       ]
     },
     {
@@ -102,6 +103,12 @@
       "pages": [
         { "path": "real-name/index", "style": { "navigationBarTitleText": "实名认证", "navigationStyle": "custom" } },
         { "path": "shop-auth/index", "style": { "navigationBarTitleText": "店铺认证", "navigationStyle": "custom" } }
+      ]
+    },
+    {
+      "root": "pages-sub/chat",
+      "pages": [
+        { "path": "index", "style": { "navigationBarTitleText": "聊天", "navigationStyle": "custom" } }
       ]
     }
   ],

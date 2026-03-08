@@ -94,12 +94,21 @@ const onClick = (index: number) => {
     flex-shrink: 0;
     border-radius: $radius-full;
     margin: 0 4rpx;
+    
+    [data-theme="dark"] & {
+      color: var(--color-text-sub, #A1A1AA);
+    }
 
     &.is-active {
       color: $color-text-main;
       font-weight: $font-weight-bold;
       font-size: $font-size-lg;
       background: var(--color-primary-glass, rgba(255, 106, 0, 0.1));
+      
+      [data-theme="dark"] & {
+        color: var(--color-text-main, #F2F2F7);
+        background: rgba(217, 70, 239, 0.15);
+      }
     }
   }
 
@@ -115,6 +124,11 @@ const onClick = (index: number) => {
       background: linear-gradient(90deg, $color-primary 0%, $color-primary-dark 100%);
       border-radius: $radius-full;
       box-shadow: 0 2rpx 8rpx rgba($color-primary, 0.3);
+      
+      [data-theme="dark"] & {
+        background: linear-gradient(90deg, #D946EF 0%, #E879F9 100%);
+        box-shadow: 0 2rpx 8rpx rgba(217, 70, 239, 0.4);
+      }
     }
   }
 
@@ -134,6 +148,13 @@ const onClick = (index: number) => {
           0 4rpx 16rpx rgba(255, 106, 0, 0.25),
           inset 0 0 0 1rpx rgba(255, 255, 255, 0.2);
         border-color: rgba(255, 255, 255, 0.3);
+        
+        [data-theme="dark"] & {
+          background: var(--gradient-sunset, linear-gradient(135deg, #C026D3 0%, #F43F5E 60%, #FF7849 100%));
+          box-shadow: 
+            0 4rpx 16rpx rgba(217, 70, 239, 0.3),
+            inset 0 0 0 1rpx rgba(255, 255, 255, 0.2);
+        }
       }
     }
   }

@@ -103,6 +103,22 @@
   --tag-new-bg: rgba(52, 199, 89, 0.1);
   --tag-new-text: #34C759;
   --tag-new-border: rgba(52, 199, 89, 0.2);
+  
+  // 16. 装饰光晕
+  --decoration-circle-1: radial-gradient(circle, rgba(255, 106, 0, 0.15) 0%, transparent 70%);
+  --decoration-circle-2: radial-gradient(circle, rgba(255, 143, 0, 0.1) 0%, transparent 70%);
+  
+  // 17. 页面渐变背景
+  --page-gradient: linear-gradient(170deg, var(--color-bg-gradient-start) 0%, var(--color-bg-page) 35%, var(--color-bg-page) 100%);
+  
+  // 18. 在线状态颜色
+  --color-online: #34C759;
+  --color-online-glow: rgba(52, 199, 89, 0.5);
+  
+  // 19. 交互状态
+  --color-active-bg: rgba(0, 0, 0, 0.05);
+  --color-focus-bg: rgba(255, 106, 0, 0.05);
+  --color-focus-border-glow: rgba(255, 106, 0, 0.1);
 }
 
 // =============================================================================
@@ -219,6 +235,22 @@
   // 15. 弹窗/对话框
   --modal-bg: rgba(30, 25, 35, 0.85);
   --modal-border: rgba(255, 255, 255, 0.2);
+  
+  // 16. 装饰光晕 - 深色模式荧光效果
+  --decoration-circle-1: radial-gradient(circle, rgba(217, 70, 239, 0.2) 0%, transparent 70%);
+  --decoration-circle-2: radial-gradient(circle, rgba(0, 245, 212, 0.12) 0%, transparent 70%);
+  
+  // 17. 页面渐变背景
+  --page-gradient: linear-gradient(170deg, var(--color-bg-gradient-start) 0%, var(--color-bg-page) 35%, var(--color-bg-page) 100%);
+  
+  // 18. 在线状态颜色 - 深色模式荧光
+  --color-online: #00F5D4;
+  --color-online-glow: rgba(0, 245, 212, 0.5);
+  
+  // 19. 交互状态 - 深色模式
+  --color-active-bg: rgba(255, 255, 255, 0.08);
+  --color-focus-bg: rgba(217, 70, 239, 0.1);
+  --color-focus-border-glow: rgba(217, 70, 239, 0.3);
 }
 
 // --- 系统深色模式支持 ---
@@ -351,6 +383,40 @@ $overlay-bg:          var(--overlay-bg, rgba(0, 0, 0, 0.5));
 // 骨架屏
 $skeleton-from:       var(--skeleton-from, #F5F5F5);
 $skeleton-to:         var(--skeleton-to, #FAFAFA);
+
+// 装饰光晕
+$decoration-circle-1: var(--decoration-circle-1, radial-gradient(circle, rgba(255, 106, 0, 0.15) 0%, transparent 70%));
+$decoration-circle-2: var(--decoration-circle-2, radial-gradient(circle, rgba(255, 143, 0, 0.1) 0%, transparent 70%));
+
+// 页面渐变背景
+$page-gradient: var(--page-gradient, linear-gradient(170deg, $color-bg-gradient-start 0%, $color-bg-page 35%, $color-bg-page 100%));
+
+// =============================================================================
+// CHAT PAGE TOKENS - 聊天页面专用变量
+// =============================================================================
+
+// 在线状态颜色
+$color-online: #34C759;
+$color-online-dark: #00F5D4;
+$color-online-glow: rgba(52, 199, 89, 0.5);
+$color-online-glow-dark: rgba(0, 245, 212, 0.5);
+
+// 消息气泡颜色
+$color-bubble-self-text: $color-text-white;
+$color-bubble-other-text: $color-text-main;
+$color-bubble-shadow-dark: rgba(0, 0, 0, 0.2);
+
+// 装饰光晕颜色（深色模式）
+$color-glow-primary-dark: rgba(217, 70, 239, 0.2);
+$color-glow-accent-dark: rgba(0, 245, 212, 0.12);
+
+// 交互状态颜色
+$color-active-bg-dark: rgba(255, 255, 255, 0.08);
+$color-active-primary-dark: rgba(217, 70, 239, 0.15);
+$color-focus-bg-dark: rgba(217, 70, 239, 0.1);
+$color-input-bg-dark: rgba(0, 0, 0, 0.3);
+$color-input-border-dark: rgba(255, 255, 255, 0.05);
+$color-panel-bg-dark: rgba(0, 0, 0, 0.2);
 
 // =============================================================================
 // 2025 ADVANCED GLASS SYSTEM - 高级材质系统

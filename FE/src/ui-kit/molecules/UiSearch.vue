@@ -280,14 +280,28 @@ onUnmounted(() => {
   transition: all 0.3s ease;
   font-family: $font-family-system;
   
+  [data-theme="dark"] & {
+    background-color: var(--input-bg, rgba(0, 0, 0, 0.3));
+  }
+  
   &.is-focus {
     background-color: var(--color-bg-card, rgba(255, 255, 255, 0.65));
     box-shadow: 0 0 0 2rpx $color-brand-primary;
+    
+    [data-theme="dark"] & {
+      background-color: rgba(217, 70, 239, 0.1);
+      box-shadow: var(--input-focus-glow, 0 0 15px rgba(217, 70, 239, 0.3));
+    }
   }
   
   &__icon {
     margin-right: $space-sm;
     flex-shrink: 0;
+    color: $color-text-placeholder;
+    
+    [data-theme="dark"] & {
+      color: var(--color-text-placeholder, rgba(255, 255, 255, 0.3));
+    }
   }
   
   &__content {
@@ -304,6 +318,10 @@ onUnmounted(() => {
     color: $color-text-primary;
     position: relative;
     z-index: 1;
+    
+    [data-theme="dark"] & {
+      color: var(--color-text-main, #F2F2F7);
+    }
   }
   
   &__input-placeholder {
@@ -313,6 +331,10 @@ onUnmounted(() => {
     color: $color-text-secondary;
     display: flex;
     align-items: center;
+    
+    [data-theme="dark"] & {
+      color: var(--color-text-placeholder, rgba(255, 255, 255, 0.3));
+    }
   }
   
   &__hot-roller {
@@ -333,6 +355,11 @@ onUnmounted(() => {
   &__clear {
     padding: $space-xs;
     flex-shrink: 0;
+    color: $color-text-placeholder;
+    
+    [data-theme="dark"] & {
+      color: var(--color-text-placeholder, rgba(255, 255, 255, 0.3));
+    }
   }
   
   &__find {
@@ -362,6 +389,10 @@ onUnmounted(() => {
     font-size: $font-size-md;
     color: $color-text-secondary;
     @include text-ellipsis(1);
+    
+    [data-theme="dark"] & {
+      color: var(--color-text-sub, #A1A1AA);
+    }
     
     &.is-clickable {
       cursor: pointer;

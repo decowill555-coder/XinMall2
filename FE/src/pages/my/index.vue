@@ -170,7 +170,7 @@ const goProfile = () => {
     uni.navigateTo({ url: '/pages-sub/user/login/index' });
     return;
   }
-  uni.showToast({ title: '个人资料功能开发中', icon: 'none' });
+  uni.navigateTo({ url: '/pages-sub/user/profile/index' });
 };
 
 const goFollowers = () => {

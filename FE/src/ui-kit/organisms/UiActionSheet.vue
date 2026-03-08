@@ -24,11 +24,10 @@
             :key="index"
             class="action-item"
             :class="{ 'disabled': item.disabled }"
-            :style="{ color: item.color || '#1D1D1F' }"
             @click="onSelect(item, index)"
           >
             <view class="item-content">
-              <text class="item-name">{{ item.name }}</text>
+              <text class="item-name" :style="{ color: item.color || '' }">{{ item.name }}</text>
               <text v-if="item.subname" class="item-subname">{{ item.subname }}</text>
             </view>
             <!-- 按钮加载中状�?-->
@@ -112,10 +111,11 @@ const onSelect = (item: ActionItem, index: number) => {
 
   .sheet-mask {
     @include cover-screen;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: $overlay-bg;
     opacity: 0;
     transition: opacity $duration-normal;
-    // 遮罩层也带一点模糊，增强沉浸�?    backdrop-filter: blur(4px); 
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
   }
 
   .sheet-panel {
@@ -135,8 +135,13 @@ const onSelect = (item: ActionItem, index: number) => {
   @mixin panel-style {
     background-color: var(--glass-solid, rgba(255, 255, 255, 0.85));
     backdrop-filter: blur($blur-lg);
+    -webkit-backdrop-filter: blur($blur-lg);
     border-radius: $radius-lg;
     overflow: hidden;
+    
+    [data-theme="dark"] & {
+      background-color: var(--glass-card-bg, rgba(255, 255, 255, 0.06));
+    }
   }
 
   .sheet-header, .sheet-body {
@@ -150,22 +155,30 @@ const onSelect = (item: ActionItem, index: number) => {
     border-bottom: 1px solid $color-divider;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    margin-bottom: 0; // �?body 连在一�?
+    margin-bottom: 0;
+    
     .title {
       display: block;
       font-size: $font-size-md;
       color: $color-text-sub;
-      margin-bottom: $space-xs;
+      
+      [data-theme="dark"] & {
+        color: var(--color-text-sub, #A1A1AA);
+      }
     }
     .desc {
       font-size: $font-size-sm;
       color: $color-text-disabled;
+      
+      [data-theme="dark"] & {
+        color: var(--color-text-disabled, #52525B);
+      }
     }
   }
 
   .sheet-body {
-    // 如果�?header，body 上圆角要去掉
-    &:has(.sheet-header) { // CSS4 选择器，uni-app 新版支持，如果不支持需用相邻兄弟选择�?      border-top-left-radius: 0;
+    &:has(.sheet-header) {
+      border-top-left-radius: 0;
       border-top-right-radius: 0;
     }
   }
@@ -178,7 +191,13 @@ const onSelect = (item: ActionItem, index: number) => {
     font-size: $font-size-lg;
     transition: background-color 0.2s;
 
-    &:active { background-color: var(--color-border, rgba(0, 0, 0, 0.05)); }
+    &:active { 
+      background-color: var(--color-border, rgba(0, 0, 0, 0.05));
+      
+      [data-theme="dark"] & {
+        background-color: rgba(255, 255, 255, 0.08);
+      }
+    }
 
     &.disabled {
       opacity: 0.5;
@@ -194,12 +213,28 @@ const onSelect = (item: ActionItem, index: number) => {
       height: 1px;
       background-color: var(--color-divider, rgba(0, 0, 0, 0.06));
       transform: scaleY(0.5);
+      
+      [data-theme="dark"] & {
+        background-color: var(--color-divider, rgba(255, 255, 255, 0.08));
+      }
+    }
+    
+    .item-name {
+      color: $color-text-main;
+      
+      [data-theme="dark"] & {
+        color: var(--color-text-main, #F2F2F7);
+      }
     }
 
     .item-subname {
       margin-left: $space-sm;
       font-size: $font-size-xs;
       color: $color-text-sub;
+      
+      [data-theme="dark"] & {
+        color: var(--color-text-sub, #A1A1AA);
+      }
     }
   }
 
@@ -211,7 +246,17 @@ const onSelect = (item: ActionItem, index: number) => {
     font-weight: $font-weight-bold;
     color: $color-text-main;
     
-    &:active { background-color: var(--glass-crystal-high, rgba(255, 255, 255, 0.6)); }
+    [data-theme="dark"] & {
+      color: var(--color-text-main, #F2F2F7);
+    }
+    
+    &:active { 
+      background-color: var(--glass-crystal-high, rgba(255, 255, 255, 0.6));
+      
+      [data-theme="dark"] & {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+    }
   }
 }
 </style>

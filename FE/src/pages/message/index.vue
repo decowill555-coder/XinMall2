@@ -232,7 +232,7 @@ const isEmpty = computed(() => {
 
 const goChat = (item: any) => {
   chatStore.setCurrentConversation(item.id);
-  uni.showToast({ title: '聊天功能开发中', icon: 'none' });
+  uni.navigateTo({ url: `/pages-sub/chat/index?id=${item.id}` });
 };
 
 const handleSystemMessage = (item: any) => {

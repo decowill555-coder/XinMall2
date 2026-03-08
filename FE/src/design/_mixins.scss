@@ -679,3 +679,342 @@
     @include dark-sunken-input;
   }
 }
+
+// =============================================================================
+// PAGE BACKGROUND MIXINS - 页面背景效果
+// =============================================================================
+
+// 页面渐变背景
+@mixin page-gradient-bg {
+  background: linear-gradient(170deg, $color-bg-gradient-start 0%, $color-bg-page 35%, $color-bg-page 100%);
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  
+  [data-theme="dark"] & {
+    background: linear-gradient(170deg, var(--color-bg-gradient-start, #1A1520) 0%, $color-bg-page 35%, $color-bg-page 100%);
+  }
+}
+
+// 装饰光晕容器
+@mixin decoration-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+// 装饰光晕圆形
+@mixin decoration-circle($size: 400rpx, $top: auto, $right: auto, $bottom: auto, $left: auto, $color: $color-primary) {
+  position: absolute;
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+  opacity: 0.5;
+  
+  @if $top != auto { top: $top; }
+  @if $right != auto { right: $right; }
+  @if $bottom != auto { bottom: $bottom; }
+  @if $left != auto { left: $left; }
+  
+  background: radial-gradient(circle, rgba($color, 0.15) 0%, transparent 70%);
+  
+  [data-theme="dark"] & {
+    background: radial-gradient(circle, rgba(217, 70, 239, 0.2) 0%, transparent 70%);
+  }
+}
+
+// 完整的装饰光晕效果（两个圆形）
+@mixin decoration-glow {
+  .bg-decoration {
+    @include decoration-container;
+    
+    .decoration-circle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.5;
+    }
+    
+    .circle-1 {
+      width: 400rpx;
+      height: 400rpx;
+      top: 200rpx;
+      right: -100rpx;
+      background: radial-gradient(circle, rgba($color-primary, 0.15) 0%, transparent 70%);
+      
+      [data-theme="dark"] & {
+        background: radial-gradient(circle, rgba(217, 70, 239, 0.2) 0%, transparent 70%);
+      }
+    }
+    
+    .circle-2 {
+      width: 300rpx;
+      height: 300rpx;
+      bottom: 300rpx;
+      left: -80rpx;
+      background: radial-gradient(circle, rgba($color-accent, 0.1) 0%, transparent 70%);
+      
+      [data-theme="dark"] & {
+        background: radial-gradient(circle, rgba(0, 245, 212, 0.12) 0%, transparent 70%);
+      }
+    }
+  }
+}
+
+// =============================================================================
+// HEADER MIXINS - 头部效果
+// =============================================================================
+
+// 毛玻璃头部
+@mixin glass-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: $color-bg-card;
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border-bottom: 1px solid $color-border;
+  
+  [data-theme="dark"] & {
+    background: var(--glass-card-bg, rgba(255, 255, 255, 0.06));
+    border-bottom: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+  }
+}
+
+// 毛玻璃底部栏（用于输入区域）
+@mixin glass-footer {
+  background: $color-bg-card;
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border-top: 1px solid $color-border;
+  
+  [data-theme="dark"] & {
+    background: var(--glass-card-bg, rgba(255, 255, 255, 0.06));
+    border-top: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+  }
+}
+
+// =============================================================================
+// CARD MIXINS - 卡片效果
+// =============================================================================
+
+// 玻璃卡片（带深色模式）
+@mixin glass-card-theme {
+  background: $color-bg-card;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid $color-border-light;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  
+  [data-theme="dark"] & {
+    background: var(--glass-card-bg, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+  }
+}
+
+// =============================================================================
+// TEXT COLOR MIXINS - 文字颜色
+// =============================================================================
+
+// 主文字颜色（带深色模式）
+@mixin text-main {
+  color: $color-text-main;
+  
+  [data-theme="dark"] & {
+    color: var(--color-text-main, #F2F2F7);
+  }
+}
+
+// 次要文字颜色（带深色模式）
+@mixin text-sub {
+  color: $color-text-sub;
+  
+  [data-theme="dark"] & {
+    color: var(--color-text-sub, #A1A1AA);
+  }
+}
+
+// 占位符文字颜色（带深色模式）
+@mixin text-placeholder {
+  color: $color-text-placeholder;
+  
+  [data-theme="dark"] & {
+    color: var(--color-text-placeholder, rgba(255, 255, 255, 0.3));
+  }
+}
+
+// 禁用文字颜色（带深色模式）
+@mixin text-disabled {
+  color: $color-text-disabled;
+  
+  [data-theme="dark"] & {
+    color: var(--color-text-disabled, #52525B);
+  }
+}
+
+// =============================================================================
+// CHAT PAGE MIXINS - 聊天页面专用混入
+// =============================================================================
+
+// 在线状态点
+@mixin online-dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: var(--color-online, $color-online);
+  box-shadow: 0 0 8rpx var(--color-online-glow, $color-online-glow);
+  
+  [data-theme="dark"] & {
+    background: var(--color-online, $color-online-dark);
+    box-shadow: 0 0 8rpx var(--color-online-glow, $color-online-glow-dark);
+  }
+}
+
+// 离线状态点
+@mixin offline-dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: $color-text-placeholder;
+  
+  [data-theme="dark"] & {
+    background: var(--color-text-placeholder, #6B7280);
+  }
+}
+
+// 自己发送的消息气泡
+@mixin bubble-self {
+  background: $gradient-sunset;
+  border: none;
+  border-radius: $radius-lg;
+  border-top-right-radius: 8rpx;
+  box-shadow: $shadow-glow-primary;
+  
+  [data-theme="dark"] & {
+    background: var(--gradient-sunset, linear-gradient(135deg, #C026D3 0%, #F43F5E 60%, #FF7849 100%));
+    box-shadow: var(--shadow-glow-primary, 0 0 20px rgba(217, 70, 239, 0.4));
+  }
+}
+
+// 他人发送的消息气泡
+@mixin bubble-other {
+  background: $color-bg-card;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: $radius-lg;
+  border-top-left-radius: 8rpx;
+  border: 1px solid $color-border-light;
+  box-shadow: $shadow-sm;
+  
+  [data-theme="dark"] & {
+    background: var(--glass-card-bg, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+    box-shadow: 0 4rpx 16rpx $color-bubble-shadow-dark;
+  }
+}
+
+// 消息时间标签
+@mixin message-time-tag {
+  background: $color-bg-gray;
+  padding: 10rpx 28rpx;
+  border-radius: $radius-full;
+  font-size: $font-size-xs;
+  color: $color-text-sub;
+  
+  [data-theme="dark"] & {
+    background: $color-active-bg-dark;
+    color: var(--color-text-sub, #A1A1AA);
+  }
+}
+
+// 聊天输入框
+@mixin chat-input-box {
+  flex: 1;
+  background: $color-bg-gray;
+  border-radius: $radius-full;
+  padding: 0 $space-lg;
+  border: 2rpx solid transparent;
+  transition: all $duration-normal $ease-spring;
+  
+  [data-theme="dark"] & {
+    background: var(--input-bg, $color-input-bg-dark);
+    border: 1px solid var(--input-border, $color-input-border-dark);
+  }
+}
+
+// 聊天输入框聚焦状态
+@mixin chat-input-focused {
+  background: var(--color-focus-bg, rgba($color-primary, 0.05));
+  border-color: $color-primary;
+  box-shadow: 0 0 0 4rpx var(--color-focus-border-glow, rgba($color-primary, 0.1));
+  
+  [data-theme="dark"] & {
+    background: var(--color-focus-bg, $color-focus-bg-dark);
+    border-color: $color-primary;
+    box-shadow: var(--input-focus-glow, 0 0 15px rgba(217, 70, 239, 0.3));
+  }
+}
+
+// 操作按钮
+@mixin action-button {
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: $color-bg-gray;
+  color: $color-text-sub;
+  transition: all $duration-fast $ease-spring;
+  
+  [data-theme="dark"] & {
+    background: $color-active-bg-dark;
+    color: $color-text-sub;
+  }
+  
+  &:active {
+    transform: scale(0.92);
+    background: $color-primary-glass;
+    color: $color-primary;
+    
+    [data-theme="dark"] & {
+      background: $color-active-primary-dark;
+      color: $color-primary;
+    }
+  }
+}
+
+// 功能面板图标
+@mixin panel-icon {
+  width: 110rpx;
+  height: 110rpx;
+  background: $color-primary-glass;
+  border-radius: $radius-lg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-primary;
+  
+  [data-theme="dark"] & {
+    background: $color-active-primary-dark;
+    color: $color-primary;
+  }
+}
+
+// 功能面板背景
+@mixin more-panel-bg {
+  padding: $space-lg;
+  border-top: 1px solid $color-divider;
+  background: $color-bg-gray;
+  
+  [data-theme="dark"] & {
+    background: $color-panel-bg-dark;
+    border-top-color: $color-divider;
+  }
+}

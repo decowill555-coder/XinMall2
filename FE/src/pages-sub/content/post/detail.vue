@@ -1,17 +1,24 @@
-﻿<template>
+﻿﻿<template>
   <view class="post-detail-page">
+    <view class="bg-decoration">
+      <view class="decoration-circle circle-1"></view>
+      <view class="decoration-circle circle-2"></view>
+    </view>
+    
     <ui-sub-navbar title="帖子详情" />
     
     <scroll-view scroll-y class="detail-scroll" :style="{ height: scrollHeight + 'px' }">
-      <ui-author-card 
-        :avatar="post.authorAvatar"
-        :name="post.authorName"
-        :time="post.createTime"
-        :is-followed="post.isFollowed"
-        show-follow
-        @click="goUser"
-        @follow="toggleFollow"
-      />
+      <view class="author-section">
+        <ui-author-card 
+          :avatar="post.authorAvatar"
+          :name="post.authorName"
+          :time="post.createTime"
+          :is-followed="post.isFollowed"
+          show-follow
+          @click="goUser"
+          @follow="toggleFollow"
+        />
+      </view>
       
       <view class="post-content">
         <text class="post-title">{{ post.title }}</text>
@@ -24,7 +31,7 @@
             :src="img" 
             width="100%" 
             height="400rpx" 
-            radius="8rpx"
+            radius="lg"
             mode="aspectFill"
             @click="previewImage(index)"
           />
@@ -37,7 +44,7 @@
         <view class="post-goods" v-if="post.relatedGoods">
           <text class="goods-label">相关商品</text>
           <view class="goods-card" @click="goGoods">
-            <ui-image :src="post.relatedGoods.cover" width="120rpx" height="120rpx" radius="8rpx" />
+            <ui-image :src="post.relatedGoods.cover" width="120rpx" height="120rpx" radius="md" />
             <view class="goods-info">
               <text class="goods-title">{{ post.relatedGoods.title }}</text>
               <ui-price :value="post.relatedGoods.price" :size="28" />
@@ -189,79 +196,156 @@ const submitComment = () => {
 
 <style lang="scss" scoped>
 .post-detail-page {
-  min-height: 100vh;
-  background: $color-bg-page;
+  @include page-gradient-bg;
+}
+
+.bg-decoration {
+  @include decoration-container;
+  
+  .decoration-circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.5;
+  }
+  
+  .circle-1 {
+    width: 400rpx;
+    height: 400rpx;
+    top: 200rpx;
+    right: -100rpx;
+    background: $decoration-circle-1;
+  }
+  
+  .circle-2 {
+    width: 300rpx;
+    height: 300rpx;
+    bottom: 300rpx;
+    left: -80rpx;
+    background: $decoration-circle-2;
+  }
 }
 
 .detail-scroll {
   overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.author-section {
+  margin: $space-md;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  background: $color-bg-card;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid $color-border-light;
+  
+  [data-theme="dark"] & {
+    background: var(--glass-card-bg, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+  }
 }
 
 .post-content {
-  padding: $space-md;
-  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
-  backdrop-filter: blur($blur-lg);
-  -webkit-backdrop-filter: blur($blur-lg);
+  margin: 0 $space-md $space-md;
+  padding: $space-lg;
+  background: $color-bg-card;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid $color-border-light;
+  border-radius: $radius-lg;
+  
+  [data-theme="dark"] & {
+    background: var(--glass-card-bg, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+  }
   
   .post-title {
-    font-size: $font-size-lg;
+    font-size: $font-size-xl;
     font-weight: $font-weight-bold;
-    color: $color-text-main;
+    @include text-main;
     line-height: 1.4;
   }
   
   .post-text {
     font-size: $font-size-md;
-    color: $color-text-main;
+    @include text-main;
     line-height: 1.8;
     margin-top: $space-md;
   }
   
   .post-images {
-    margin-top: $space-md;
+    margin-top: $space-lg;
     display: flex;
     flex-direction: column;
-    gap: $space-sm;
+    gap: $space-md;
   }
   
   .post-tags {
     display: flex;
     flex-wrap: wrap;
     gap: $space-sm;
-    margin-top: $space-md;
+    margin-top: $space-lg;
     
     .tag-item {
       font-size: $font-size-sm;
-      color: var(--color-primary, #FF6A00);
+      color: $color-primary;
+      padding: 4rpx 16rpx;
+      background: $color-primary-glass;
+      border-radius: $radius-full;
+      
+      [data-theme="dark"] & {
+        color: $color-primary;
+        background: rgba(217, 70, 239, 0.15);
+      }
     }
   }
   
   .post-goods {
     margin-top: $space-lg;
-    padding-top: $space-md;
-    border-top: 1rpx solid var(--color-divider, rgba(0, 0, 0, 0.06));
+    padding-top: $space-lg;
+    border-top: 1px solid $color-divider;
+    
+    [data-theme="dark"] & {
+      border-top-color: var(--color-divider, rgba(255, 255, 255, 0.08));
+    }
     
     .goods-label {
       font-size: $font-size-sm;
-      color: $color-text-sub;
+      @include text-sub;
     }
     
     .goods-card {
       display: flex;
       align-items: center;
       margin-top: $space-sm;
-      padding: $space-sm;
-      background: var(--color-bg-gray, rgba(0, 0, 0, 0.03));
+      padding: $space-md;
+      background: $color-bg-gray;
       border-radius: $radius-md;
+      transition: all $duration-fast $ease-spring;
+      
+      [data-theme="dark"] & {
+        background: rgba(255, 255, 255, 0.06);
+      }
+      
+      &:active {
+        transform: scale(0.98);
+        background: $color-primary-glass;
+        
+        [data-theme="dark"] & {
+          background: rgba(217, 70, 239, 0.15);
+        }
+      }
       
       .goods-info {
         flex: 1;
-        margin-left: $space-sm;
+        margin-left: $space-md;
         
         .goods-title {
           font-size: $font-size-sm;
-          color: $color-text-main;
+          @include text-main;
           @include text-ellipsis(1);
+          margin-bottom: $space-xs;
         }
       }
     }
@@ -269,16 +353,23 @@ const submitComment = () => {
 }
 
 .comment-section {
-  margin-top: $space-sm;
-  padding: $space-md;
-  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
-  backdrop-filter: blur($blur-lg);
-  -webkit-backdrop-filter: blur($blur-lg);
+  margin: 0 $space-md $space-md;
+  padding: $space-lg;
+  background: $color-bg-card;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid $color-border-light;
+  border-radius: $radius-lg;
+  
+  [data-theme="dark"] & {
+    background: var(--glass-card-bg, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+  }
   
   .section-title {
     font-size: $font-size-md;
     font-weight: $font-weight-medium;
-    color: $color-text-main;
+    @include text-main;
   }
   
   .comment-list {

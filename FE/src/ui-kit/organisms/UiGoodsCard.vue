@@ -1,4 +1,4 @@
-﻿﻿﻿<!-- src/ui-kit/organisms/UiGoodsCard.vue -->
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!-- src/ui-kit/organisms/UiGoodsCard.vue -->
 <template>
   <view 
     class="ui-goods-card" 
@@ -141,12 +141,22 @@ const toUser = () => {
     0 8rpx 32rpx rgba(0, 0, 0, 0.03),
     inset 0 0 0 1rpx rgba(255, 255, 255, 0.6);
   transition: all $duration-fast $ease-spring;
+  
+  [data-theme="dark"] & {
+    background: var(--glass-card-bg, rgba(255, 255, 255, 0.06));
+    border: 1rpx solid var(--glass-border, rgba(255, 255, 255, 0.12));
+    box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.2);
+  }
 
   &:active {
     transform: scale(0.98);
     box-shadow: 
       0 4rpx 16rpx rgba(0, 0, 0, 0.02),
       inset 0 0 0 1rpx rgba(255, 255, 255, 0.4);
+    
+    [data-theme="dark"] & {
+      box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.3);
+    }
   }
 
   // === 瀑布流样式 ===
@@ -185,8 +195,12 @@ const toUser = () => {
         color: $color-text-main;
         line-height: $line-height-normal;
         margin-bottom: $space-sm;
-        @include text-ellipsis(2); // 2 行截断
+        @include text-ellipsis(2);
         font-weight: $font-weight-medium;
+        
+        [data-theme="dark"] & {
+          color: var(--color-text-main, #F2F2F7);
+        }
       }
 
       .card-footer {
@@ -203,6 +217,10 @@ const toUser = () => {
             color: $color-text-sub;
             margin-left: 8rpx;
             @include text-ellipsis(1);
+            
+            [data-theme="dark"] & {
+              color: var(--color-text-sub, #A1A1AA);
+            }
           }
         }
         
@@ -213,6 +231,10 @@ const toUser = () => {
             font-size: $font-size-xs;
             color: $color-text-sub;
             margin-left: 4rpx;
+            
+            [data-theme="dark"] & {
+              color: var(--color-text-sub, #A1A1AA);
+            }
           }
         }
       }
@@ -262,7 +284,7 @@ const toUser = () => {
       justify-content: space-between;
 
       .goods-title {
-        font-size: $font-size-lg; // 列表模式标题大一些
+        font-size: $font-size-lg;
         color: $color-text-main;
         font-weight: $font-weight-bold;
         background: linear-gradient(135deg, $color-text-main 0%, $color-text-sub 100%);
@@ -270,6 +292,12 @@ const toUser = () => {
         -webkit-text-fill-color: transparent;
         background-clip: text;
         @include text-ellipsis(2);
+        
+        [data-theme="dark"] & {
+          background: linear-gradient(135deg, var(--color-text-main, #F2F2F7) 0%, var(--color-text-sub, #A1A1AA) 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+        }
       }
 
       .goods-specs {
@@ -283,6 +311,12 @@ const toUser = () => {
           padding: 4rpx 10rpx;
           border-radius: $radius-sm;
           border: 1rpx solid var(--glass-border-subtle, rgba(0, 0, 0, 0.04));
+          
+          [data-theme="dark"] & {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1rpx solid var(--glass-border, rgba(255, 255, 255, 0.12));
+            color: var(--color-text-sub, #A1A1AA);
+          }
         }
       }
 
@@ -290,17 +324,21 @@ const toUser = () => {
         display: flex;
         flex-wrap: wrap;
         margin-top: 8rpx;
-        gap: 8rpx; // flex gap
+        gap: 8rpx;
       }
 
       .list-footer {
         @include flex-between;
-        margin-top: auto; // 底部对齐
+        margin-top: auto;
 
         .post-time {
           font-size: $font-size-xs;
           color: $color-text-disabled;
           opacity: 0.8;
+          
+          [data-theme="dark"] & {
+            color: var(--color-text-disabled, #52525B);
+          }
         }
       }
     }

@@ -1,9 +1,15 @@
 <template>
   <view class="follow-page">
+    <view class="bg-decoration">
+      <view class="decoration-circle circle-1"></view>
+      <view class="decoration-circle circle-2"></view>
+    </view>
+    
     <view class="page-header" :style="{ paddingTop: (safeAreaTop + headerExtraTop) + 'px' }">
-      <ui-card :glass="true" :shadow="true" radius="lg" padding="lg" class="header-card">
-        <ui-text size="xl" weight="bold" color="main">关注</ui-text>
-      </ui-card>
+      <view class="header-content">
+        <text class="header-title">关注</text>
+        <text class="header-subtitle">你关注的人发布的动态</text>
+      </view>
     </view>
     
     <view class="page-content" :style="{ paddingTop: headerHeight + 'px' }">
@@ -136,8 +142,33 @@ const loadMore = () => {
 
 <style lang="scss" scoped>
 .follow-page {
-  min-height: 100vh;
-  background: $color-bg-page;
+  @include page-gradient-bg;
+}
+
+.bg-decoration {
+  @include decoration-container;
+  
+  .decoration-circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.5;
+  }
+  
+  .circle-1 {
+    width: 400rpx;
+    height: 400rpx;
+    top: 200rpx;
+    right: -100rpx;
+    background: $decoration-circle-1;
+  }
+  
+  .circle-2 {
+    width: 300rpx;
+    height: 300rpx;
+    bottom: 300rpx;
+    left: -80rpx;
+    background: $decoration-circle-2;
+  }
 }
 
 .page-header {
@@ -146,16 +177,41 @@ const loadMore = () => {
   left: 0;
   right: 0;
   z-index: 100;
+  background: $color-bg-card;
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border-bottom: 1px solid $color-border;
+  
+  [data-theme="dark"] & {
+    background: var(--glass-card-bg, rgba(255, 255, 255, 0.06));
+    border-bottom: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+  }
 }
 
-.header-card {
-  margin: $space-md;
-  
-  
+.header-content {
+  padding: $space-lg $space-md;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.header-title {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  @include text-main;
+  letter-spacing: 2rpx;
+}
+
+.header-subtitle {
+  font-size: $font-size-sm;
+  @include text-sub;
+  margin-top: $space-xs;
 }
 
 .page-content {
   padding-bottom: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .content-scroll {
@@ -170,5 +226,9 @@ const loadMore = () => {
 
 .load-more {
   padding: $space-md 0;
+  
+  :deep(.ui-divider) {
+    @include text-sub;
+  }
 }
 </style>
