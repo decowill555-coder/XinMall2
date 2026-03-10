@@ -45,7 +45,7 @@
         </view>
         <view class="picker-item" @click="handlePublish('post')">
           <view class="item-icon post">
-            <ui-icon name="edit-3" :size="48" color="#FFFFFF" />
+            <ui-icon name="send" :size="48" color="#FFFFFF" />
           </view>
           <text class="item-title">发布帖子</text>
           <text class="item-desc">分享数码生活体验</text>
@@ -159,7 +159,7 @@ const handlePublish = (type: 'goods' | 'post') => {
   if (type === 'goods') {
     uni.navigateTo({ url: '/pages-sub/seller/publish/entry' });
   } else {
-    uni.navigateTo({ url: '/pages-sub/content/post/publish' });
+    uni.navigateTo({ url: '/pages-sub/community/post/publish' });
   }
 };
 

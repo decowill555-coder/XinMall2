@@ -97,12 +97,15 @@
     </scroll-view>
 
     <view v-else class="search-default" :style="{ paddingTop: headerHeight + 'px' }">
-      <view class="model-info" v-if="currentModel">
+      <view class="model-info" v-if="currentModel" @click="goDeviceCommunity">
         <ui-image :src="currentModel.cover" width="160rpx" height="160rpx" radius="16rpx" />
         <view class="model-detail">
           <text class="model-name">{{ currentModel.name }}</text>
           <text class="model-brand">{{ currentModel.brand }}</text>
-          <text class="model-desc">查看所有在售商品</text>
+          <view class="model-community">
+            <text class="community-text">进入设备社区</text>
+            <ui-icon name="arrow-right" :size="28" color="#FF6A00" />
+          </view>
         </view>
       </view>
       <view class="start-search" @click="handleSearch"><text>开始搜索</text></view>
@@ -241,6 +244,11 @@ const loadMore = async () => {
 const goBack = () => smartBack();
 const goSearchPage = () => navigateTo(`/pages-sub/search/entry?keyword=${encodeURIComponent(keyword.value)}`);
 const goDetail = (item: Product) => navigateTo(`/pages-sub/trade/product/detail?id=${item.id}`);
+const goDeviceCommunity = () => {
+  if (currentModel.value) {
+    navigateTo(`/pages-sub/community/device/index?id=${currentModel.value?.name}&name=${encodeURIComponent(currentModel.value.name)}`);
+  }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -368,12 +376,23 @@ const goDetail = (item: Product) => navigateTo(`/pages-sub/trade/product/detail?
     border-radius: $radius-lg;
     padding: $space-lg;
     margin-bottom: $space-xl;
+    transition: all $duration-fast;
 
     .model-detail {
       flex: 1;
       .model-name { display: block; font-size: $font-size-lg; font-weight: $font-weight-bold; color: $color-text-main; margin-bottom: $space-xs; }
       .model-brand { display: block; font-size: $font-size-sm; color: $color-text-sub; margin-bottom: $space-sm; }
-      .model-desc { display: block; font-size: $font-size-sm; color: var(--color-primary, #FF6A00); }
+      .model-community {
+        display: flex;
+        align-items: center;
+        gap: 4rpx;
+        .community-text { font-size: $font-size-sm; color: var(--color-primary, #FF6A00); }
+      }
+    }
+    
+    &:active {
+      transform: scale(0.98);
+      background: var(--color-bg-gray, #F5F5F7);
     }
   }
 

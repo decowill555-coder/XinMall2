@@ -1,162 +1,314 @@
 <template>
   <view class="confirm-page">
+    <view class="bg-decoration">
+      <view class="decoration-circle circle-1"></view>
+      <view class="decoration-circle circle-2"></view>
+    </view>
+    
     <ui-sub-navbar title="确认订单" />
     
     <scroll-view scroll-y class="confirm-scroll" :style="{ height: scrollHeight + 'px' }">
-      <view class="address-card" @click="selectAddress">
-        <view v-if="address" class="address-content">
-          <view class="address-header">
-            <ui-icon name="map-pin" ::size="40" />
-            <text class="address-name">{{ address.name }}</text>
-            <text class="address-phone">{{ address.phone }}</text>
-          </view>
-          <text class="address-detail">{{ address.detail }}</text>
-        </view>
-        <view v-else class="address-empty">
-          <ui-icon name="plus" ::size="40" />
-          <text>添加收货地址</text>
-        </view>
-        <ui-icon name="arrow-right" ::size="40" />
-      </view>
-      
-      <view class="goods-card">
-        <view class="shop-header">
-          <ui-icon name="store" ::size="40" />
-          <text class="shop-name">{{ order.shopName }}</text>
+      <view class="confirm-content">
+        <view v-if="loading" class="loading-state">
+          <ui-skeleton :rows="6" />
         </view>
         
-        <view v-for="item in order.goods" :key="item.id" class="goods-item">
-          <ui-image :src="item.cover" width="160rpx" height="160rpx" radius="8rpx" />
-          <view class="goods-info">
-            <text class="goods-title">{{ item.title }}</text>
-            <text class="goods-spec">{{ item.spec }}</text>
-            <view class="goods-bottom">
-              <ui-price :value="item.price" ::size="40" />
-              <text class="goods-quantity">x{{ item.quantity }}</text>
+        <template v-else>
+          <view class="address-card" @click="selectAddress">
+            <view v-if="address" class="address-content">
+              <view class="address-header">
+                <ui-icon name="map-pin" :size="36" color="var(--color-primary, #FF6A00)" />
+                <text class="address-name">{{ address.receiverName }}</text>
+                <text class="address-phone">{{ address.receiverPhone }}</text>
+              </view>
+              <text class="address-detail">{{ fullAddress }}</text>
+            </view>
+            <view v-else class="address-empty">
+              <ui-icon name="plus" :size="36" color="var(--color-primary, #FF6A00)" />
+              <text>添加收货地址</text>
+            </view>
+            <ui-icon name="arrow-right" :size="32" color="#C7C7CC" />
+          </view>
+          
+          <view class="goods-card">
+            <view class="shop-header">
+              <ui-avatar :src="product.seller.avatar" :size="48" />
+              <text class="shop-name">{{ product.seller.name }}</text>
+            </view>
+            
+            <view class="goods-item">
+              <ui-image :src="product.cover" width="180rpx" height="180rpx" radius="md" />
+              <view class="goods-info">
+                <text class="goods-title">{{ product.title }}</text>
+                <view class="goods-tags" v-if="product.condition">
+                  <text class="goods-tag">{{ product.condition }}</text>
+                </view>
+                <view class="goods-bottom">
+                  <ui-price :value="product.price" :size="36" />
+                  <text class="goods-quantity">x{{ quantity }}</text>
+                </view>
+              </view>
             </view>
           </view>
-        </view>
-      </view>
-      
-      <view class="info-card">
-        <view class="info-item">
-          <text class="info-label">配送方式</text>
-          <text class="info-value">快递包邮</text>
-        </view>
-        <view class="info-item" @click="showRemark = true">
-          <text class="info-label">订单备注</text>
-          <view class="info-right">
-            <text class="info-value">{{ remark || '选填' }}</text>
-            <ui-icon name="arrow-right" ::size="32" />
+          
+          <view class="info-card">
+            <view class="info-item">
+              <text class="info-label">配送方式</text>
+              <text class="info-value">快递包邮</text>
+            </view>
+            <view class="info-item" @click="showRemark = true">
+              <text class="info-label">订单备注</text>
+              <view class="info-right">
+                <text class="info-value">{{ remark || '选填，建议与卖家协商一致' }}</text>
+                <ui-icon name="arrow-right" :size="28" color="#C7C7CC" />
+              </view>
+            </view>
           </view>
-        </view>
+          
+          <view class="price-card">
+            <view class="price-item">
+              <text class="price-label">商品金额</text>
+              <text class="price-value">¥{{ product.price }}</text>
+            </view>
+            <view class="price-item">
+              <text class="price-label">运费</text>
+              <text class="price-value">{{ freight > 0 ? '¥' + freight : '免运费' }}</text>
+            </view>
+            <view class="price-item total">
+              <text class="price-label">合计</text>
+              <view class="total-price">
+                <text class="price-symbol">¥</text>
+                <text class="price-value">{{ totalPrice }}</text>
+              </view>
+            </view>
+          </view>
+          
+          <view class="tips-section">
+            <view class="tip-item">
+              <ui-icon name="shield-check" :size="28" color="var(--color-primary, #FF6A00)" />
+              <text>平台担保交易，资金安全有保障</text>
+            </view>
+          </view>
+        </template>
       </view>
       
-      <view class="price-card">
-        <view class="price-item">
-          <text class="price-label">商品总额</text>
-          <text class="price-value">¥{{ order.goodsTotal }}</text>
-        </view>
-        <view class="price-item">
-          <text class="price-label">运费</text>
-          <text class="price-value">¥{{ order.freight }}</text>
-        </view>
-        <view class="price-item total">
-          <text class="price-label">合计</text>
-          <ui-price :value="order.totalPrice" ::size="40" />
-        </view>
-      </view>
     </scroll-view>
     
     <view class="confirm-footer" :style="{ paddingBottom: (safeAreaBottom + 12) + 'px' }">
       <view class="footer-left">
         <text class="total-label">实付款：</text>
-        <ui-price :value="order.totalPrice" type="main" :size="36" />
+        <view class="total-price">
+          <text class="price-symbol">¥</text>
+          <text class="price-value">{{ totalPrice }}</text>
+        </view>
       </view>
-      <ui-button type="primary" @click="handleSubmit">提交订单</ui-button>
+      <ui-button type="primary" :loading="submitting" @click="handleSubmit">提交订单</ui-button>
     </view>
     
-    <ui-popup v-model="showRemark" position="bottom" round>
+    <ui-popup v-model:show="showRemark" position="bottom" round>
       <view class="remark-popup">
         <view class="popup-header">
+          <text class="popup-cancel" @click="showRemark = false">取消</text>
           <text class="popup-title">订单备注</text>
           <text class="popup-confirm" @click="showRemark = false">确定</text>
         </view>
         <textarea 
           v-model="remark" 
           class="remark-input" 
-          placeholder="请输入备注信息（选填）"
+          placeholder="选填，建议与卖家协商一致"
           :maxlength="100"
         />
+        <view class="remark-count">
+          <text>{{ remark.length }}/100</text>
+        </view>
       </view>
     </ui-popup>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { useNavigation } from '@/composables/useNavigation';
+import { useAuthStore } from '@/stores';
+import { tradeApi, type Address } from '@/api/trade';
 
 const { safeAreaBottom, scrollHeight } = usePageLayout({
   hasSubNavbar: true,
-  headerEstimatedHeight: 180
+  headerEstimatedHeight: 100
 });
 
+const { smartBack } = useNavigation();
+const authStore = useAuthStore();
+
+const productId = ref('');
+const loading = ref(true);
+const submitting = ref(false);
 const showRemark = ref(false);
 const remark = ref('');
+const quantity = ref(1);
+const freight = ref(0);
 
-const address = ref({
-  id: 1,
-  name: '张三',
-  phone: '138****8888',
-  detail: '北京市朝阳区建国路88号SOHO现代城A座1201室'
+const address = ref<Address | null>(null);
+
+const product = ref({
+  id: '',
+  title: '',
+  price: 0,
+  cover: '',
+  condition: '',
+  seller: {
+    id: '',
+    name: '',
+    avatar: ''
+  }
 });
 
-const order = ref({
-  shopName: '数码达人小店',
-  goodsTotal: 9398,
-  freight: 0,
-  totalPrice: 9398,
-  goods: [
-    { id: 1, cover: 'https://picsum.photos/200/200?random=601', title: 'iPhone 15 Pro Max 256GB', spec: '钛金属原色', price: 7999, quantity: 1 },
-    { id: 2, cover: 'https://picsum.photos/200/200?random=602', title: 'AirPods Pro 第二代', spec: 'USB-C', price: 1399, quantity: 1 }
-  ]
+const fullAddress = computed(() => {
+  if (!address.value) return '';
+  const { province, city, district, detailAddress } = address.value;
+  return `${province}${city}${district}${detailAddress}`;
 });
+
+const totalPrice = computed(() => {
+  return product.value.price * quantity.value + freight.value;
+});
+
+onLoad((options: any) => {
+  if (options.productId) {
+    productId.value = options.productId;
+    fetchOrderData();
+  }
+});
+
+const fetchOrderData = async () => {
+  loading.value = true;
+  try {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    product.value = {
+      id: productId.value,
+      title: 'iPhone 14 Pro Max 256GB 远峰蓝 99新 国行在保',
+      price: 6999,
+      cover: 'https://picsum.photos/400/400?random=1',
+      condition: '99新',
+      seller: {
+        id: 'seller-1',
+        name: '数码达人',
+        avatar: 'https://picsum.photos/200/200?random=avatar1'
+      }
+    };
+    
+    address.value = {
+      id: 'addr-1',
+      receiverName: '张三',
+      receiverPhone: '138****8888',
+      province: '北京市',
+      city: '朝阳区',
+      district: '建国路',
+      detailAddress: 'SOHO现代城A座1201室',
+      isDefault: true
+    };
+    
+    freight.value = 0;
+  } catch (error) {
+    console.error('获取订单数据失败:', error);
+  } finally {
+    loading.value = false;
+  }
+};
 
 const selectAddress = () => {
   uni.navigateTo({ url: '/pages-sub/user/address/list?select=1' });
 };
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   if (!address.value) {
     uni.showToast({ title: '请选择收货地址', icon: 'none' });
     return;
   }
   
-  uni.showLoading({ title: '提交中...' });
-  setTimeout(() => {
-    uni.hideLoading();
-    uni.redirectTo({ url: '/pages-sub/trade/pay/index?id=1' });
-  }, 1000);
+  if (!authStore.isAuthenticated) {
+    uni.navigateTo({ url: '/pages-sub/user/login/index' });
+    return;
+  }
+  
+  submitting.value = true;
+  
+  try {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    uni.showToast({ title: '订单创建成功', icon: 'success' });
+    
+    setTimeout(() => {
+      uni.redirectTo({ url: '/pages-sub/trade/pay/index?orderNo=ORDER123456' });
+    }, 1000);
+  } catch (error) {
+    console.error('创建订单失败:', error);
+    uni.showToast({ title: '订单创建失败，请重试', icon: 'none' });
+  } finally {
+    submitting.value = false;
+  }
 };
 </script>
 
 <style lang="scss" scoped>
 .confirm-page {
+  @include page-gradient-bg;
   min-height: 100vh;
-  background: $color-bg-page;
+}
+
+.bg-decoration {
+  @include decoration-container;
+  
+  .decoration-circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.5;
+  }
+  
+  .circle-1 {
+    width: 400rpx;
+    height: 400rpx;
+    top: 200rpx;
+    right: -100rpx;
+    background: $decoration-circle-1;
+  }
+  
+  .circle-2 {
+    width: 300rpx;
+    height: 300rpx;
+    bottom: 300rpx;
+    left: -80rpx;
+    background: $decoration-circle-2;
+  }
 }
 
 .confirm-scroll {
-  padding: $space-sm $space-md;
+  
   overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.confirm-content {
+  padding: $space-sm $space-md;
+}
+
+
+
+.loading-state {
+  padding: $space-lg;
 }
 
 .address-card {
   display: flex;
   align-items: center;
-  background: $color-white;
-  border-radius: $radius-md;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
+  border-radius: $radius-lg;
   padding: $space-md;
   margin-bottom: $space-sm;
   
@@ -171,21 +323,22 @@ const handleSubmit = () => {
       .address-name {
         font-size: $font-size-md;
         font-weight: $font-weight-medium;
-        color: $color-text-main;
+        @include text-main;
         margin-left: $space-sm;
       }
       
       .address-phone {
         font-size: $font-size-sm;
-        color: $color-text-sub;
+        @include text-sub;
         margin-left: $space-md;
       }
     }
     
     .address-detail {
       font-size: $font-size-sm;
-      color: $color-text-sub;
+      @include text-sub;
       line-height: 1.5;
+      margin-left: calc(36rpx + #{$space-sm});
     }
   }
   
@@ -193,7 +346,7 @@ const handleSubmit = () => {
     flex: 1;
     display: flex;
     align-items: center;
-    color: $color-primary;
+    color: var(--color-primary, #FF6A00);
     font-size: $font-size-md;
     
     text { margin-left: $space-sm; }
@@ -201,8 +354,10 @@ const handleSubmit = () => {
 }
 
 .goods-card {
-  background: $color-white;
-  border-radius: $radius-md;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
+  border-radius: $radius-lg;
   padding: $space-md;
   margin-bottom: $space-sm;
   
@@ -211,46 +366,54 @@ const handleSubmit = () => {
     align-items: center;
     margin-bottom: $space-md;
     padding-bottom: $space-sm;
-    border-bottom: 1rpx solid $color-divider;
+    border-bottom: 1rpx solid var(--color-divider, rgba(0, 0, 0, 0.04));
     
     .shop-name {
       font-size: $font-size-md;
       font-weight: $font-weight-medium;
-      color: $color-text-main;
+      @include text-main;
       margin-left: $space-sm;
     }
   }
   
   .goods-item {
     display: flex;
-    margin-bottom: $space-sm;
-    
-    &:last-child { margin-bottom: 0; }
     
     .goods-info {
       flex: 1;
       margin-left: $space-md;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       
       .goods-title {
         font-size: $font-size-sm;
-        color: $color-text-main;
+        @include text-main;
         @include text-ellipsis(2);
+        line-height: 1.4;
       }
       
-      .goods-spec {
-        font-size: $font-size-xs;
-        color: $color-text-sub;
-        margin: $space-xs 0;
+      .goods-tags {
+        margin-top: $space-xs;
+        
+        .goods-tag {
+          font-size: $font-size-xs;
+          color: var(--color-primary, #FF6A00);
+          background: var(--color-primary-glass, rgba(255, 106, 0, 0.08));
+          padding: 2rpx 12rpx;
+          border-radius: $radius-xs;
+        }
       }
       
       .goods-bottom {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin-top: $space-sm;
         
         .goods-quantity {
           font-size: $font-size-sm;
-          color: $color-text-sub;
+          @include text-sub;
         }
       }
     }
@@ -258,8 +421,10 @@ const handleSubmit = () => {
 }
 
 .info-card, .price-card {
-  background: $color-white;
-  border-radius: $radius-md;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
+  border-radius: $radius-lg;
   padding: $space-md;
   margin-bottom: $space-sm;
 }
@@ -272,27 +437,62 @@ const handleSubmit = () => {
   
   .info-label, .price-label {
     font-size: $font-size-sm;
-    color: $color-text-sub;
+    @include text-sub;
   }
   
   .info-value, .price-value {
     font-size: $font-size-sm;
-    color: $color-text-main;
+    @include text-main;
   }
   
   .info-right {
     display: flex;
     align-items: center;
+    gap: $space-xs;
   }
   
   &.total {
     margin-top: $space-sm;
     padding-top: $space-sm;
-    border-top: 1rpx solid $color-divider;
+    border-top: 1rpx solid var(--color-divider, rgba(0, 0, 0, 0.04));
     
     .price-label {
-      color: $color-text-main;
+      @include text-main;
     }
+    
+    .total-price {
+      display: flex;
+      align-items: baseline;
+      
+      .price-symbol {
+        font-size: $font-size-sm;
+        font-weight: $font-weight-bold;
+        color: #FF3B30;
+      }
+      
+      .price-value {
+        font-size: 36rpx;
+        font-weight: $font-weight-bold;
+        color: #FF3B30;
+      }
+    }
+  }
+}
+
+.tips-section {
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
+  border-radius: $radius-lg;
+  padding: $space-md;
+  margin-bottom: $space-sm;
+  
+  .tip-item {
+    display: flex;
+    align-items: center;
+    gap: $space-xs;
+    font-size: $font-size-sm;
+    @include text-sub;
   }
 }
 
@@ -305,7 +505,10 @@ const handleSubmit = () => {
   justify-content: space-between;
   align-items: center;
   padding: $space-md;
-  background: $color-white;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.95));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
+  border-top: 1rpx solid var(--color-divider, rgba(0, 0, 0, 0.06));
   box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
   z-index: 100;
   
@@ -315,7 +518,24 @@ const handleSubmit = () => {
     
     .total-label {
       font-size: $font-size-sm;
-      color: $color-text-sub;
+      @include text-sub;
+    }
+    
+    .total-price {
+      display: flex;
+      align-items: baseline;
+      
+      .price-symbol {
+        font-size: $font-size-md;
+        font-weight: $font-weight-bold;
+        color: #FF3B30;
+      }
+      
+      .price-value {
+        font-size: 40rpx;
+        font-weight: $font-weight-bold;
+        color: #FF3B30;
+      }
     }
   }
 }
@@ -332,12 +552,17 @@ const handleSubmit = () => {
     .popup-title {
       font-size: $font-size-lg;
       font-weight: $font-weight-bold;
-      color: $color-text-main;
+      @include text-main;
+    }
+    
+    .popup-cancel {
+      font-size: $font-size-md;
+      @include text-sub;
     }
     
     .popup-confirm {
       font-size: $font-size-md;
-      color: $color-primary;
+      color: var(--color-primary, #FF6A00);
     }
   }
   
@@ -345,10 +570,17 @@ const handleSubmit = () => {
     width: 100%;
     height: 200rpx;
     padding: $space-md;
-    background: $color-bg-gray;
+    background: var(--color-bg-gray, rgba(0, 0, 0, 0.03));
     border-radius: $radius-md;
     font-size: $font-size-md;
     box-sizing: border-box;
+  }
+  
+  .remark-count {
+    text-align: right;
+    margin-top: $space-xs;
+    font-size: $font-size-xs;
+    @include text-sub;
   }
 }
 </style>

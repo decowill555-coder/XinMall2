@@ -296,7 +296,7 @@ const goDetail = (item: any) => {
 };
 
 const goUser = (item: any) => {
-  navigateTo(`/pages-sub/content/user/index?id=${item.userId}`);
+  navigateTo(`/pages-sub/community/user/index?id=${item.userId}`);
 };
 
 const onBannerClick = ({ item, index }: { item: any; index: number }) => {

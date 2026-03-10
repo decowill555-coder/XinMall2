@@ -113,7 +113,7 @@ const hexToRgb = (hex: string): string => {
 export const useThemeStore = defineStore('theme', () => {
   const config = ref<ThemeConfig>({
     mode: 'light',
-    color: 'blue',
+    color: 'pink',
     fontSize: 'medium',
     borderRadius: 'medium',
     animationEnabled: true,
@@ -433,7 +433,7 @@ export const useThemeStore = defineStore('theme', () => {
   const resetTheme = () => {
     config.value = {
       mode: 'light',
-      color: 'blue',
+      color: 'pink',
       fontSize: 'medium',
       borderRadius: 'medium',
       animationEnabled: true,

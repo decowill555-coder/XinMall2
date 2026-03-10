@@ -240,7 +240,7 @@ const handleSystemMessage = (item: any) => {
 };
 
 const handleInteract = (item: any) => {
-  uni.navigateTo({ url: `/pages-sub/content/user/index?id=${item.id}` });
+  uni.navigateTo({ url: `/pages-sub/community/user/index?id=${item.id}` });
 };
 
 onMounted(() => {

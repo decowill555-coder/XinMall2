@@ -40,6 +40,11 @@
     "usingComponents": true,
     "nvueStyleCompiler": "uni-app",
     "compilerVersion": 3,
+    "statusbar": {
+      "immersed": "supportedDevice",
+      "style": "dark",
+      "background": "#FFFFFF"
+    },
     "distribute": {
       "google": {
         "permissions": [
@@ -68,11 +73,6 @@
           }
         }
       }
-    },
-    "statusbar": {
-      "immersed": "supportedDevice",
-      "style": "dark",
-      "background": "#FFFFFF"
     },
     "uniStatistics": {
       "enable": false

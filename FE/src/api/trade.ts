@@ -1,189 +1,385 @@
 import { http } from '@/utils/http';
 
-export interface CartItem {
+export interface ProductDetail {
   id: string;
-  spuId: string;
-  skuId: string;
-  name: string;
-  cover: string;
+  title: string;
   price: number;
-  originalPrice: number;
-  quantity: number;
-  maxQuantity: number;
-  attributes: { name: string; value: string }[];
-  isSelected: boolean;
+  originalPrice?: number;
+  condition: string;
+  warranty: boolean;
+  invoice: boolean;
+  canBargain: boolean;
+  description: string;
+  images: string[];
+  location: string;
+  viewCount: number;
+  likeCount: number;
+  isCollected: boolean;
+  createdAt: string;
+  seller: ProductSeller;
+  model?: ProductModel;
+  stock: number;
+  status: 'on_sale' | 'sold' | 'off_sale';
 }
 
-export interface CreateOrderRequest {
-  skuId: string;
+export interface ProductSeller {
+  id: string;
+  name: string;
+  avatar: string;
+  type: 'personal' | 'merchant';
+  levelName?: string;
+  signature?: string;
+  sellingCount: number;
+  followerCount: number;
+  rating: number;
+  isFollowed: boolean;
+}
+
+export interface ProductModel {
+  id: string;
+  name: string;
+  brandId: string;
+  brandName: string;
+  specs: Record<string, string>;
+}
+
+export interface ProductListParams {
+  keyword?: string;
+  modelId?: string;
+  deviceTypeId?: string;
+  brandId?: string;
+  condition?: string;
+  priceMin?: number;
+  priceMax?: number;
+  sellerType?: 'personal' | 'merchant';
+  sort?: 'recommend' | 'new' | 'price' | 'sales';
+  priceOrder?: 'asc' | 'desc';
+  page?: number;
+  pageSize?: number;
+}
+
+export interface ProductListItem {
+  id: string;
+  cover: string;
+  title: string;
+  price: number;
+  originalPrice?: number;
+  condition: string;
+  sellerType: 'personal' | 'merchant';
+  sellerId: string;
+  sellerName: string;
+  sellerAvatar: string;
+  tags: string[];
+  viewCount: number;
+  likeCount: number;
+  createdAt: string;
+}
+
+export interface ProductListResult {
+  list: ProductListItem[];
+  total: number;
+  hasMore: boolean;
+}
+
+export interface CreateOrderParams {
+  productId: string;
   quantity: number;
   addressId: string;
-  couponId?: string;
-  giftCardId?: string;
-  note?: string;
+  remark?: string;
 }
 
-export interface OrderItem {
-  id: string;
+export interface CreateOrderResult {
+  orderId: string;
   orderNo: string;
-  spuId: string;
-  skuId: string;
-  name: string;
-  cover: string;
-  price: number;
-  originalPrice: number;
-  quantity: number;
-  attributes: { name: string; value: string }[];
-  totalAmount: number;
-  status: 'pending' | 'paid' | 'shipped' | 'delivered' | 'completed' | 'cancelled' | 'refunded';
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface OrderSummary {
   totalAmount: number;
   freightAmount: number;
-  couponAmount: number;
-  giftCardAmount: number;
-  discountAmount: number;
   finalAmount: number;
-  items: OrderItem[];
+}
+
+export interface OrderDetail {
+  id: string;
+  orderNo: string;
+  status: OrderStatus;
+  product: OrderProduct;
+  quantity: number;
+  totalAmount: number;
+  freightAmount: number;
+  finalAmount: number;
+  address: OrderAddress;
+  remark: string;
+  paymentMethod?: 'wechat' | 'alipay' | 'balance';
+  paymentTime?: string;
+  shipTime?: string;
+  receiveTime?: string;
+  finishTime?: string;
+  logistics?: LogisticsInfo;
+  evaluation?: EvaluationInfo;
+  createdAt: string;
+  seller: OrderSeller;
+}
+
+export type OrderStatus = 'pending' | 'paid' | 'shipped' | 'completed' | 'cancelled';
+
+export interface OrderProduct {
+  id: string;
+  cover: string;
+  title: string;
+  price: number;
+  condition: string;
+}
+
+export interface OrderAddress {
+  id: string;
+  name: string;
+  phone: string;
+  province: string;
+  city: string;
+  district: string;
+  detail: string;
+}
+
+export interface OrderSeller {
+  id: string;
+  name: string;
+  avatar: string;
+  type: 'personal' | 'merchant';
+}
+
+export interface LogisticsInfo {
+  company: string;
+  trackingNo: string;
+  traces: LogisticsTrace[];
+}
+
+export interface LogisticsTrace {
+  time: string;
+  content: string;
+}
+
+export interface EvaluationInfo {
+  id: string;
+  rating: number;
+  content: string;
+  images: string[];
+  createdAt: string;
+}
+
+export interface OrderListParams {
+  status?: OrderStatus;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface OrderListItem {
+  id: string;
+  orderNo: string;
+  status: OrderStatus;
+  product: OrderProduct;
+  quantity: number;
+  totalAmount: number;
+  seller: OrderSeller;
+  createdAt: string;
+}
+
+export interface OrderListResult {
+  list: OrderListItem[];
+  total: number;
+  hasMore: boolean;
+}
+
+export interface PayOrderParams {
+  orderId: string;
+  method: 'wechat' | 'alipay' | 'balance';
+}
+
+export interface PayOrderResult {
+  success: boolean;
+  paymentId: string;
+  payParams?: any;
 }
 
 export interface Address {
   id: string;
-  receiverName: string;
-  receiverPhone: string;
+  name: string;
+  phone: string;
   province: string;
   city: string;
   district: string;
-  detailAddress: string;
+  detail: string;
   isDefault: boolean;
-  zipCode?: string;
+}
+
+export interface CreateEvaluationParams {
+  orderId: string;
+  rating: number;
+  content: string;
+  images?: string[];
+  tags?: string[];
+}
+
+export interface EvaluationDetail {
+  id: string;
+  orderId: string;
+  productId: string;
+  productCover: string;
+  productTitle: string;
+  rating: number;
+  content: string;
+  images: string[];
+  tags: string[];
+  sellerReply?: string;
+  createdAt: string;
 }
 
 export const tradeApi = {
-  getCartList: (): Promise<CartItem[]> => {
-    return http({
-      url: '/trade/cart',
+  getProductDetail: (id: string) => {
+    return http<ProductDetail>({
+      url: `/trade/product/${id}`,
       method: 'GET'
     });
   },
 
-  addToCart: (spuId: string, skuId: string, quantity: number): Promise<CartItem[]> => {
-    return http({
-      url: '/trade/cart',
-      method: 'POST',
-      data: { spuId, skuId, quantity },
-      loading: true
-    });
-  },
-
-  updateCartQuantity: (itemId: string, quantity: number): Promise<CartItem[]> => {
-    return http({
-      url: `/trade/cart/${itemId}`,
-      method: 'PUT',
-      data: { quantity }
-    });
-  },
-
-  deleteCartItems: (ids: string[]): Promise<CartItem[]> => {
-    return http({
-      url: '/trade/cart',
-      method: 'DELETE',
-      data: { ids }
-    });
-  },
-
-  selectCartItems: (ids: string[], selected: boolean): Promise<CartItem[]> => {
-    return http({
-      url: '/trade/cart/select',
-      method: 'POST',
-      data: { ids, selected }
-    });
-  },
-
-  calculateOrder: (skuId: string, quantity: number, addressId?: string, couponId?: string): Promise<OrderSummary> => {
-    return http({
-      url: '/trade/calculate',
-      method: 'POST',
-      data: { skuId, quantity, addressId, couponId }
-    });
-  },
-
-  createOrder: (data: CreateOrderRequest): Promise<{ orderNo: string; finalAmount: number }> => {
-    return http({
-      url: '/trade/order',
-      method: 'POST',
-      data,
-      loading: true
-    });
-  },
-
-  getOrderList: (params: { status?: string; page: number; pageSize: number }): Promise<{ list: OrderItem[]; total: number }> => {
-    return http({
-      url: '/trade/order',
+  getProductList: (params: ProductListParams) => {
+    return http<ProductListResult>({
+      url: '/trade/products',
       method: 'GET',
       data: params
     });
   },
 
-  getOrderDetail: (orderNo: string): Promise<OrderSummary> => {
-    return http({
-      url: `/trade/order/${orderNo}`,
-      method: 'GET'
-    });
-  },
-
-  cancelOrder: (orderNo: string): Promise<{ success: boolean }> => {
-    return http({
-      url: `/trade/order/${orderNo}/cancel`,
+  collectProduct: (productId: string) => {
+    return http<{ success: boolean; likeCount: number }>({
+      url: `/trade/product/${productId}/collect`,
       method: 'POST'
     });
   },
 
-  payOrder: (orderNo: string, method: 'wechat' | 'alipay' | 'balance'): Promise<{ payParams: any }> => {
-    return http({
-      url: `/trade/order/${orderNo}/pay`,
-      method: 'POST',
-      data: { method }
+  uncollectProduct: (productId: string) => {
+    return http<{ success: boolean; likeCount: number }>({
+      url: `/trade/product/${productId}/uncollect`,
+      method: 'POST'
     });
   },
 
-  getAddressList: (): Promise<Address[]> => {
-    return http({
+  createOrder: (params: CreateOrderParams) => {
+    return http<CreateOrderResult>({
+      url: '/trade/order',
+      method: 'POST',
+      data: params,
+      loading: true
+    });
+  },
+
+  getOrderList: (params: OrderListParams) => {
+    return http<OrderListResult>({
+      url: '/trade/orders',
+      method: 'GET',
+      data: params
+    });
+  },
+
+  getOrderDetail: (orderId: string) => {
+    return http<OrderDetail>({
+      url: `/trade/order/${orderId}`,
+      method: 'GET'
+    });
+  },
+
+  cancelOrder: (orderId: string) => {
+    return http<{ success: boolean }>({
+      url: `/trade/order/${orderId}/cancel`,
+      method: 'POST'
+    });
+  },
+
+  payOrder: (params: PayOrderParams) => {
+    return http<PayOrderResult>({
+      url: `/trade/order/${params.orderId}/pay`,
+      method: 'POST',
+      data: { method: params.method },
+      loading: true
+    });
+  },
+
+  confirmReceive: (orderId: string) => {
+    return http<{ success: boolean }>({
+      url: `/trade/order/${orderId}/confirm`,
+      method: 'POST'
+    });
+  },
+
+  getLogistics: (orderId: string) => {
+    return http<LogisticsInfo>({
+      url: `/trade/order/${orderId}/logistics`,
+      method: 'GET'
+    });
+  },
+
+  getAddressList: () => {
+    return http<Address[]>({
       url: '/trade/address',
       method: 'GET'
     });
   },
 
-  createAddress: (data: Omit<Address, 'id' | 'isDefault'>): Promise<Address> => {
-    return http({
+  getAddressDetail: (id: string) => {
+    return http<Address>({
+      url: `/trade/address/${id}`,
+      method: 'GET'
+    });
+  },
+
+  createAddress: (data: Omit<Address, 'id' | 'isDefault'>) => {
+    return http<Address>({
       url: '/trade/address',
       method: 'POST',
       data
     });
   },
 
-  updateAddress: (id: string, data: Partial<Address>): Promise<Address> => {
-    return http({
+  updateAddress: (id: string, data: Partial<Address>) => {
+    return http<Address>({
       url: `/trade/address/${id}`,
       method: 'PUT',
       data
     });
   },
 
-  deleteAddress: (id: string): Promise<{ success: boolean }> => {
-    return http({
+  deleteAddress: (id: string) => {
+    return http<{ success: boolean }>({
       url: `/trade/address/${id}`,
       method: 'DELETE'
     });
   },
 
-  setDefaultAddress: (id: string): Promise<Address> => {
-    return http({
+  setDefaultAddress: (id: string) => {
+    return http<{ success: boolean }>({
       url: `/trade/address/${id}/default`,
       method: 'POST'
+    });
+  },
+
+  createEvaluation: (params: CreateEvaluationParams) => {
+    return http<{ id: string }>({
+      url: '/trade/evaluation',
+      method: 'POST',
+      data: params,
+      loading: true
+    });
+  },
+
+  getEvaluation: (orderId: string) => {
+    return http<EvaluationDetail>({
+      url: `/trade/evaluation/${orderId}`,
+      method: 'GET'
+    });
+  },
+
+  getProductEvaluations: (productId: string, page?: number, pageSize?: number) => {
+    return http<{ list: EvaluationDetail[]; total: number; hasMore: boolean }>({
+      url: `/trade/product/${productId}/evaluations`,
+      method: 'GET',
+      data: { page, pageSize }
     });
   }
 };

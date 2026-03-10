@@ -1,16 +1,69 @@
 import { http } from '@/utils/http';
 
-export interface SearchSuggestionItem {
-  id: string;
-  type: 'model' | 'forum';
-  name: string;
+export interface SearchSuggestion {
+  keyword: string;
+  type: 'keyword' | 'model' | 'product' | 'community';
   subtitle?: string;
   cover?: string;
-  forumType?: 'model' | 'user';
+  id?: string;
+}
+
+export interface HotSearchItem {
+  keyword: string;
+  type: 'keyword' | 'model' | 'product';
+  heat: number;
+  trend: 'up' | 'down' | 'stable';
+  cover?: string;
+  id?: string;
+}
+
+export interface SearchResultItem {
+  id: string;
+  type: 'product' | 'model' | 'community';
+  title: string;
+  subtitle?: string;
+  cover: string;
+  price?: number;
+  originalPrice?: number;
+  condition?: string;
   memberCount?: number;
-  brand?: string;
-  modelId?: string;
-  forumId?: string;
+  postCount?: number;
+  productCount?: number;
+  sellerType?: 'personal' | 'merchant';
+  sellerName?: string;
+  tags?: string[];
+  highlight?: string;
+}
+
+export interface SearchParams {
+  keyword: string;
+  type?: 'all' | 'product' | 'model' | 'community';
+  deviceTypeId?: string;
+  brandId?: string;
+  condition?: string;
+  priceMin?: number;
+  priceMax?: number;
+  sellerType?: 'personal' | 'merchant';
+  sort?: 'relevance' | 'new' | 'price' | 'sales';
+  priceOrder?: 'asc' | 'desc';
+  page?: number;
+  pageSize?: number;
+}
+
+export interface SearchResult {
+  list: SearchResultItem[];
+  total: number;
+  hasMore: boolean;
+  aggregations?: SearchAggregations;
+}
+
+export interface SearchAggregations {
+  productCount: number;
+  modelCount: number;
+  communityCount: number;
+  brands: { id: string; name: string; count: number }[];
+  conditions: { name: string; count: number }[];
+  priceRange: { min: number; max: number };
 }
 
 export interface HotModelItem {
@@ -18,51 +71,98 @@ export interface HotModelItem {
   name: string;
   brand: string;
   cover: string;
+  productCount: number;
   heat: number;
   trend: 'up' | 'down' | 'stable';
 }
 
-export interface HotForumItem {
+export interface HotCommunityItem {
   id: string;
   name: string;
   type: 'model' | 'user';
+  cover: string;
   memberCount: number;
   postCount: number;
-  cover?: string;
 }
 
 export const searchApi = {
-  getSearchSuggestions: (keyword: string) => {
-    return http<SearchSuggestionItem[]>({
-      url: `/search/suggestions?keyword=${encodeURIComponent(keyword)}`,
-      method: 'GET'
-    });
-  },
-
-  getHotModels: (limit: number = 10) => {
-    return http<HotModelItem[]>({
-      url: `/search/hot-models?limit=${limit}`,
-      method: 'GET'
-    });
-  },
-
-  getHotForums: (limit: number = 10) => {
-    return http<HotForumItem[]>({
-      url: `/search/hot-forums?limit=${limit}`,
-      method: 'GET'
-    });
-  },
-
-  searchModels: (keyword: string, page: number = 1, pageSize: number = 20) => {
-    return http<{
-      list: any[];
-      total: number;
-      page: number;
-      pageSize: number;
-    }>({
-      url: `/search/models`,
+  getSuggestions: (keyword: string, limit?: number) => {
+    return http<SearchSuggestion[]>({
+      url: '/search/suggestions',
       method: 'GET',
-      data: { keyword, page, pageSize }
+      data: { keyword, limit }
+    });
+  },
+
+  getHotSearches: (limit?: number) => {
+    return http<HotSearchItem[]>({
+      url: '/search/hot',
+      method: 'GET',
+      data: { limit }
+    });
+  },
+
+  search: (params: SearchParams) => {
+    return http<SearchResult>({
+      url: '/search',
+      method: 'GET',
+      data: params
+    });
+  },
+
+  searchProducts: (params: SearchParams) => {
+    return http<SearchResult>({
+      url: '/search/products',
+      method: 'GET',
+      data: { ...params, type: 'product' }
+    });
+  },
+
+  searchModels: (params: SearchParams) => {
+    return http<SearchResult>({
+      url: '/search/models',
+      method: 'GET',
+      data: { ...params, type: 'model' }
+    });
+  },
+
+  searchCommunities: (params: SearchParams) => {
+    return http<SearchResult>({
+      url: '/search/communities',
+      method: 'GET',
+      data: { ...params, type: 'community' }
+    });
+  },
+
+  getHotModels: (limit?: number) => {
+    return http<HotModelItem[]>({
+      url: '/search/hot-models',
+      method: 'GET',
+      data: { limit }
+    });
+  },
+
+  getHotCommunities: (limit?: number) => {
+    return http<HotCommunityItem[]>({
+      url: '/search/hot-communities',
+      method: 'GET',
+      data: { limit }
+    });
+  },
+
+  getRecommendKeywords: (limit?: number) => {
+    return http<{ keyword: string; category?: string }[]>({
+      url: '/search/recommend-keywords',
+      method: 'GET',
+      data: { limit }
+    });
+  },
+
+  getSearchFilters: (keyword: string) => {
+    return http<SearchAggregations>({
+      url: '/search/filters',
+      method: 'GET',
+      data: { keyword }
     });
   }
 };

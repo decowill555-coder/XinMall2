@@ -3,7 +3,7 @@ import { spuApi } from './spu';
 import { tradeApi } from './trade';
 import { uploadApi } from './upload';
 import { searchApi } from './search';
-import { forumApi } from './forum';
+import { forumApi } from './community';
 import { categoryApi } from './category';
 
 export { authApi, spuApi, tradeApi, uploadApi, searchApi, forumApi, categoryApi };

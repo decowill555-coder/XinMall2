@@ -10,8 +10,16 @@
         @touchstart="pressedId = item.id"
         @touchend="pressedId = ''"
       >
-        <view class="item-icon" :style="{ background: getIconBg(item.icon) }">
-          <ui-icon :name="item.icon" :size="52" :color="iconColor" />
+        <view class="item-icon">
+          <image 
+            v-if="item.icon" 
+            :src="item.icon" 
+            class="icon-image"
+            mode="aspectFit"
+          />
+          <view v-else class="icon-placeholder">
+            <text class="placeholder-text">{{ item.name?.charAt(0) }}</text>
+          </view>
         </view>
         <text class="item-name">{{ item.name }}</text>
       </view>
@@ -26,13 +34,11 @@ import type { DeviceCategory } from '@/api/category';
 interface Props {
   categories: DeviceCategory[];
   columns?: number;
-  iconColor?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   categories: () => [],
-  columns: 4,
-  iconColor: '#FF6A00'
+  columns: 4
 });
 
 const emit = defineEmits<{
@@ -40,24 +46,6 @@ const emit = defineEmits<{
 }>();
 
 const pressedId = ref<string>('');
-
-const getIconBg = (icon: string): string => {
-  const bgMap: Record<string, string> = {
-    'phone': 'linear-gradient(135deg, rgba(255, 106, 0, 0.12) 0%, rgba(255, 143, 0, 0.08) 100%)',
-    'laptop': 'linear-gradient(135deg, rgba(88, 86, 214, 0.12) 0%, rgba(88, 86, 214, 0.08) 100%)',
-    'tablet': 'linear-gradient(135deg, rgba(52, 199, 89, 0.12) 0%, rgba(52, 199, 89, 0.08) 100%)',
-    'desktop': 'linear-gradient(135deg, rgba(255, 59, 48, 0.12) 0%, rgba(255, 59, 48, 0.08) 100%)',
-    'camera': 'linear-gradient(135deg, rgba(255, 214, 10, 0.12) 0%, rgba(255, 214, 10, 0.08) 100%)',
-    'headphone': 'linear-gradient(135deg, rgba(0, 210, 255, 0.12) 0%, rgba(0, 210, 255, 0.08) 100%)',
-    'watch': 'linear-gradient(135deg, rgba(232, 121, 249, 0.12) 0%, rgba(232, 121, 249, 0.08) 100%)',
-    'game': 'linear-gradient(135deg, rgba(244, 114, 182, 0.12) 0%, rgba(244, 114, 182, 0.08) 100%)',
-    'speaker': 'linear-gradient(135deg, rgba(255, 143, 0, 0.12) 0%, rgba(255, 143, 0, 0.08) 100%)',
-    'keyboard': 'linear-gradient(135deg, rgba(52, 199, 89, 0.12) 0%, rgba(52, 199, 89, 0.08) 100%)',
-    'mouse': 'linear-gradient(135deg, rgba(88, 86, 214, 0.12) 0%, rgba(88, 86, 214, 0.08) 100%)',
-    'monitor': 'linear-gradient(135deg, rgba(255, 106, 0, 0.12) 0%, rgba(255, 106, 0, 0.08) 100%)'
-  };
-  return bgMap[icon] || 'linear-gradient(135deg, rgba(255, 106, 0, 0.12) 0%, rgba(255, 143, 0, 0.08) 100%)';
-};
 
 const handleSelect = (item: DeviceCategory) => {
   emit('select', item);
@@ -70,76 +58,98 @@ const handleSelect = (item: DeviceCategory) => {
   backdrop-filter: blur($blur-lg);
   -webkit-backdrop-filter: blur($blur-lg);
   border-radius: $radius-xl;
-  padding: $space-lg;
-  box-shadow: $glass-shadow-md;
+  padding: $space-md;
+  box-shadow: $glass-shadow-sm;
   border: 1rpx solid var(--glass-border, rgba(255, 255, 255, 0.6));
 }
 
 .grid-container {
   display: grid;
-  gap: $space-sm;
+  gap: $space-xs;
 }
 
 .grid-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: $space-md 0;
+  padding: $space-md $space-sm;
   border-radius: $radius-lg;
   transition: all $duration-fast $ease-spring;
-  position: relative;
   
   &:active,
   &.is-pressed {
-    transform: scale(0.95);
+    transform: scale(0.96);
     background: var(--color-bg-gray, rgba(0, 0, 0, 0.03));
   }
 }
 
 .item-icon {
-  width: 100rpx;
-  height: 100rpx;
-  border-radius: $radius-xl;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: $radius-lg;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: $space-sm;
-  box-shadow: $glass-shadow-xs;
-  transition: all $duration-fast $ease-spring;
-  position: relative;
+  background: $color-bg-gray;
   overflow: hidden;
+  transition: all $duration-fast $ease-spring;
   
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 50%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
-    border-radius: $radius-xl $radius-xl 0 0;
+  [data-theme="dark"] & {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.icon-image {
+  width: 56rpx;
+  height: 56rpx;
+}
+
+.icon-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(255, 106, 0, 0.1) 0%, rgba(255, 143, 0, 0.05) 100%);
+  
+  .placeholder-text {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: var(--color-primary, #FF6A00);
   }
 }
 
 .item-name {
-  font-size: $font-size-md;
+  font-size: $font-size-sm;
   font-weight: $font-weight-medium;
   color: $color-text-main;
+  text-align: center;
+  line-height: 1.3;
 }
 
 [data-theme="dark"] {
   .ui-device-category-grid {
     background: var(--glass-card-bg, rgba(255, 255, 255, 0.06));
-    border-top: 1px solid var(--glass-border-highlight, rgba(255, 255, 255, 0.25));
-    border-bottom: 1px solid transparent;
-    border-left: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
-    border-right: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+    border: 1rpx solid var(--glass-border, rgba(255, 255, 255, 0.12));
   }
   
   .grid-item {
     &:active,
     &.is-pressed {
       background: rgba(255, 255, 255, 0.05);
+    }
+  }
+  
+  .item-icon {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  .icon-placeholder {
+    background: linear-gradient(135deg, rgba(217, 70, 239, 0.15) 0%, rgba(217, 70, 239, 0.05) 100%);
+    
+    .placeholder-text {
+      color: var(--color-primary, #D946EF);
     }
   }
 }

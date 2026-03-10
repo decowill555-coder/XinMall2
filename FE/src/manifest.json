@@ -15,6 +15,9 @@
             "autoclose" : true,
             "delay" : 0
         },
+        "statusbar" : {
+            "immersed" : true
+        },
         "modules" : {},
         "distribute" : {
             "android" : {
@@ -46,7 +49,8 @@
         "setting" : {
             "urlCheck" : false
         },
-        "usingComponents" : true
+        "usingComponents" : true,
+        "navigationStyle": "custom"
     },
     "mp-alipay" : {
         "usingComponents" : true

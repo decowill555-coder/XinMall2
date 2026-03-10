@@ -64,22 +64,13 @@
       "root": "pages-sub/seller",
       "pages": [
         { "path": "publish/entry", "style": { "navigationBarTitleText": "发布闲置", "navigationStyle": "custom" } },
+        { "path": "publish/category", "style": { "navigationBarTitleText": "选择分类", "navigationStyle": "custom" } },
         { "path": "shop/index", "style": { "navigationBarTitleText": "我的店铺", "navigationStyle": "custom" } },
         { "path": "shop/manage", "style": { "navigationBarTitleText": "店铺管理", "navigationStyle": "custom" } },
         { "path": "goods/list", "style": { "navigationBarTitleText": "商品管理", "navigationStyle": "custom" } },
         { "path": "goods/edit", "style": { "navigationBarTitleText": "编辑商品", "navigationStyle": "custom" } },
         { "path": "after-sale/list", "style": { "navigationBarTitleText": "售后管理", "navigationStyle": "custom" } },
         { "path": "after-sale/detail", "style": { "navigationBarTitleText": "售后详情", "navigationStyle": "custom" } }
-      ]
-    },
-    {
-      "root": "pages-sub/content",
-      "pages": [
-        { "path": "post/detail", "style": { "navigationBarTitleText": "帖子详情", "navigationStyle": "custom" } },
-        { "path": "post/publish", "style": { "navigationBarTitleText": "发布帖子", "navigationStyle": "custom" } },
-        { "path": "topic/index", "style": { "navigationBarTitleText": "话题", "navigationStyle": "custom" } },
-        { "path": "user/index", "style": { "navigationBarTitleText": "Ta的主页", "navigationStyle": "custom" } },
-        { "path": "forum/detail", "style": { "navigationBarTitleText": "论坛", "navigationStyle": "custom" } }
       ]
     },
     {
@@ -109,6 +100,15 @@
       "root": "pages-sub/chat",
       "pages": [
         { "path": "index", "style": { "navigationBarTitleText": "聊天", "navigationStyle": "custom" } }
+      ]
+    },
+    {
+      "root": "pages-sub/community",
+      "pages": [
+        { "path": "device/index", "style": { "navigationBarTitleText": "设备社区", "navigationStyle": "custom" } },
+        { "path": "post/detail", "style": { "navigationBarTitleText": "帖子详情", "navigationStyle": "custom" } },
+        { "path": "post/publish", "style": { "navigationBarTitleText": "发布帖子", "navigationStyle": "custom" } },
+        { "path": "user/index", "style": { "navigationBarTitleText": "Ta的主页", "navigationStyle": "custom" } }
       ]
     }
   ],

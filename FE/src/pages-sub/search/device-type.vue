@@ -71,7 +71,7 @@
             <text class="result-count">共 {{ totalCount }} 件商品</text>
           </view>
 
-          <ui-waterfalls :list="productList" :columns="2" @click="goProductDetail">
+          <ui-waterfalls :list="productList" :columns="2" @click="goDeviceCommunity">
             <template #item="{ item }">
               <view class="waterfall-card">
                 <view class="card-image">
@@ -81,10 +81,10 @@
                     height="280rpx"
                     radius="12rpx 12rpx 0 0"
                   />
-                  <view v-if="item.condition" class="condition-badge">
-                    {{ item.condition }}
+                  <view class="community-badge">
+                    <ui-icon name="users" :size="20" color="#FFFFFF" />
+                    <text>{{ item.memberCount || '1.2万' }}</text>
                   </view>
-                  <view v-if="item.isNew" class="new-badge">新品</view>
                 </view>
                 <view class="card-content">
                   <text class="card-title">{{ item.title }}</text>
@@ -99,8 +99,14 @@
                     >{{ tag }}</text>
                   </view>
                   <view class="card-footer">
-                    <ui-price :value="item.price" :size="28" />
-                    <text class="card-sales">{{ item.sales }}人付款</text>
+                    <view class="price-info">
+                      <text class="price-label">参考价</text>
+                      <ui-price :value="item.price" :size="28" />
+                    </view>
+                    <view class="community-arrow">
+                      <text class="community-text">进入社区</text>
+                      <ui-icon name="arrow-right" :size="24" color="#FF6A00" />
+                    </view>
                   </view>
                 </view>
               </view>
@@ -146,10 +152,9 @@ interface Product {
   title: string;
   price: number;
   sales: number;
-  condition?: string;
   specs?: string;
   tags?: string[];
-  isNew?: boolean;
+  memberCount?: string;
 }
 
 const appStore = useAppStore();
@@ -259,10 +264,9 @@ const fetchProducts = async () => {
       title: '海尔 BCD-470WDPG 对开门冰箱 470L 变频节能',
       price: 3999,
       sales: 256,
-      condition: '全新',
       specs: '470L / 对开门 / 变频',
       tags: ['节能', '静音', '智能'],
-      isNew: true
+      memberCount: '1.2万'
     },
     {
       id: 2,
@@ -270,9 +274,9 @@ const fetchProducts = async () => {
       title: '美的 BCD-536WKZM(E) 风冷无霜冰箱',
       price: 3299,
       sales: 189,
-      condition: '99新',
       specs: '536L / 对开门 / 风冷',
-      tags: ['无霜', '大容量']
+      tags: ['无霜', '大容量'],
+      memberCount: '8562'
     },
     {
       id: 3,
@@ -280,9 +284,9 @@ const fetchProducts = async () => {
       title: '西门子 BCD-610W(KA92NV02TI) 德国品质',
       price: 5999,
       sales: 145,
-      condition: '95新',
       specs: '610L / 对开门 / 风冷',
-      tags: ['进口', '静音']
+      tags: ['进口', '静音'],
+      memberCount: '6234'
     },
     {
       id: 4,
@@ -290,9 +294,9 @@ const fetchProducts = async () => {
       title: '松下 NR-EW45TGA-W 四门冰箱 455L',
       price: 4599,
       sales: 98,
-      condition: '全新',
       specs: '455L / 四门 / 变频',
-      tags: ['节能', '智能']
+      tags: ['节能', '智能'],
+      memberCount: '4521'
     },
     {
       id: 5,
@@ -300,9 +304,9 @@ const fetchProducts = async () => {
       title: '容声 BCD-529WD11HP 风冷无霜冰箱',
       price: 2899,
       sales: 312,
-      condition: '99新',
       specs: '529L / 对开门 / 风冷',
-      tags: ['性价比', '大容量']
+      tags: ['性价比', '大容量'],
+      memberCount: '1.5万'
     },
     {
       id: 6,
@@ -310,9 +314,9 @@ const fetchProducts = async () => {
       title: '格力 BCD-325WPQG 三门冰箱 变频节能',
       price: 2499,
       sales: 178,
-      condition: '95新',
       specs: '325L / 三门 / 变频',
-      tags: ['节能', '小巧']
+      tags: ['节能', '小巧'],
+      memberCount: '3892'
     }
   ];
 
@@ -383,8 +387,8 @@ const goSearch = () => {
   navigateTo(`/pages-sub/search/entry?keyword=${encodeURIComponent(deviceTypeName.value)}`);
 };
 
-const goProductDetail = (item: Product) => {
-  navigateTo(`/pages-sub/trade/product/detail?id=${item.id}`);
+const goDeviceCommunity = (item: Product) => {
+  navigateTo(`/pages-sub/community/device/index?id=${item.id}&name=${encodeURIComponent(item.title)}`);
 };
 </script>
 
@@ -600,29 +604,23 @@ const goProductDetail = (item: Product) => {
   .card-image {
     position: relative;
 
-    .condition-badge {
+    .community-badge {
       position: absolute;
-      top: 8rpx;
+      bottom: 8rpx;
       left: 8rpx;
-      background: rgba(0, 0, 0, 0.6);
-      color: var(--color-text-white, #FFFFFF);
-      font-size: $font-size-xs;
-      padding: 4rpx 12rpx;
-      border-radius: $radius-sm;
+      display: flex;
+      align-items: center;
+      gap: 4rpx;
+      background: rgba(0, 0, 0, 0.5);
       backdrop-filter: blur($blur-sm);
       -webkit-backdrop-filter: blur($blur-sm);
-    }
-
-    .new-badge {
-      position: absolute;
-      top: 8rpx;
-      right: 8rpx;
-      background: var(--gradient-primary, linear-gradient(135deg, #FF6A00 0%, #FF8F00 100%));
-      color: #FFFFFF;
-      font-size: $font-size-xs;
       padding: 4rpx 12rpx;
-      border-radius: $radius-sm;
-      font-weight: $font-weight-medium;
+      border-radius: $radius-full;
+      
+      text {
+        font-size: $font-size-xs;
+        color: #FFFFFF;
+      }
     }
   }
 
@@ -669,10 +667,27 @@ const goProductDetail = (item: Product) => {
       justify-content: space-between;
       align-items: center;
       margin-top: $space-sm;
-
-      .card-sales {
-        font-size: $font-size-xs;
-        color: $color-text-disabled;
+      
+      .price-info {
+        display: flex;
+        flex-direction: column;
+        
+        .price-label {
+          font-size: $font-size-xs;
+          color: $color-text-disabled;
+          margin-bottom: 2rpx;
+        }
+      }
+      
+      .community-arrow {
+        display: flex;
+        align-items: center;
+        gap: 4rpx;
+        
+        .community-text {
+          font-size: $font-size-xs;
+          color: var(--color-primary, #FF6A00);
+        }
       }
     }
   }

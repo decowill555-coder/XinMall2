@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import { forumApi, type ForumDetail, type ForumPost, type ModelForum, type UserForum } from '@/api/forum';
+import { forumApi, type ForumDetail, type ForumPost, type ModelForum, type UserForum } from '@/api/community';
 
 export const useForumStore = defineStore('forum', () => {
   const currentForum = ref<ForumDetail | null>(null);

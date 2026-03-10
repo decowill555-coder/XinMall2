@@ -25,7 +25,7 @@ const AUTH_REQUIRED_PAGES = [
   'pages-sub/seller/goods/edit',
   'pages-sub/seller/after-sale/list',
   'pages-sub/seller/after-sale/detail',
-  'pages-sub/content/post/publish',
+  'pages-sub/community/post/publish',
   'pages-sub/user/address/list',
   'pages-sub/user/address/edit',
   'pages-sub/user/collection/index',

@@ -1,186 +1,588 @@
-﻿<template>
+<template>
   <view class="product-detail-page">
+    <view class="bg-decoration">
+      <view class="decoration-circle circle-1"></view>
+      <view class="decoration-circle circle-2"></view>
+    </view>
+    
     <ui-sub-navbar title="商品详情" />
     
-    <scroll-view scroll-y class="detail-scroll" :style="{ height: scrollHeight + 'px' }">
-      <swiper class="product-swiper" :indicator-dots="true" :autoplay="false">
-        <swiper-item v-for="(img, index) in product.images" :key="index">
-          <image class="swiper-image" :src="img" mode="aspectFill" />
-        </swiper-item>
-      </swiper>
+    <scroll-view 
+      scroll-y 
+      class="detail-scroll" 
+      :style="{ height: scrollHeight + 'px' }"
+      @scrolltolower="loadMore"
+    >
+      <view v-if="loading" class="loading-state">
+        <ui-skeleton :rows="8" />
+      </view>
       
-      <ui-product-info 
-        :price="product.price"
-        :original-price="product.originalPrice"
-        :title="product.title"
-        :tags="productTags"
-        :specs="product.specs"
-      />
+      <template v-else-if="product">
+        <swiper 
+          class="product-swiper" 
+          :indicator-dots="product.images.length > 1" 
+          :autoplay="false"
+          indicator-color="rgba(255, 255, 255, 0.5)"
+          indicator-active-color="#FFFFFF"
+        >
+          <swiper-item v-for="(img, index) in product.images" :key="index" @click="previewImage(index)">
+            <ui-image :src="img" width="100%" height="750rpx" mode="aspectFill" radius="0" />
+          </swiper-item>
+        </swiper>
+        
+        <view class="price-section">
+          <view class="price-row">
+            <view class="current-price">
+              <text class="price-symbol">¥</text>
+              <text class="price-value">{{ formatPrice(product.price) }}</text>
+            </view>
+            <view v-if="product.originalPrice" class="original-price">
+              <text>¥{{ formatPrice(product.originalPrice) }}</text>
+            </view>
+          </view>
+          <view class="price-discount" v-if="product.originalPrice && product.originalPrice > product.price">
+            <text>已降 ¥{{ formatPrice(product.originalPrice - product.price) }}</text>
+          </view>
+        </view>
+        
+        <view class="title-section">
+          <text class="product-title">{{ product.title }}</text>
+          <view class="title-tags" v-if="productTags.length">
+            <view 
+              v-for="(tag, index) in productTags" 
+              :key="index"
+              class="title-tag"
+              :class="tag.type"
+            >
+              {{ tag.text }}
+            </view>
+          </view>
+        </view>
+        
+        <ui-seller-card
+          :seller-id="product.seller.id"
+          :avatar="product.seller.avatar"
+          :name="product.seller.name"
+          :level-name="product.seller.levelName"
+          :desc="product.seller.signature"
+          :sales="product.seller.sellingCount"
+          :followers="product.seller.followerCount"
+          :rating="product.seller.rating"
+        />
+        
+        <view class="description-section">
+          <view class="section-header">
+            <text class="section-title">宝贝描述</text>
+          </view>
+          <view class="description-content">
+            <text>{{ product.description }}</text>
+          </view>
+          <view class="publish-info">
+            <text>发布于 {{ formatTimeAgo(product.createdAt) }}</text>
+            <text class="dot">·</text>
+            <text>{{ product.viewCount || 0 }} 次浏览</text>
+          </view>
+        </view>
+        
+        <view class="publish-location" v-if="product.location">
+          <ui-icon name="map-pin" :size="28" color="#A1A1A6" />
+          <text>{{ product.location }}</text>
+        </view>
+        
+        <view class="tips-section">
+          <view class="tip-item">
+            <ui-icon name="shield-check" :size="32" color="var(--color-primary, #FF6A00)" />
+            <text>平台担保交易</text>
+          </view>
+          <view class="tip-item">
+            <ui-icon name="refresh" :size="32" color="var(--color-primary, #FF6A00)" />
+            <text>支持七天无理由</text>
+          </view>
+        </view>
+        
+        <view class="bottom-space"></view>
+      </template>
       
-      <ui-seller-card
-        :avatar="seller.avatar"
-        :name="seller.name"
-        :desc="seller.desc"
-        :sales="seller.sales"
-        :followers="seller.followers"
-        :rating="seller.rating"
-      />
-      
-      <ui-description-card 
-        title="商品描述"
-        :content="product.description"
-      />
+      <view v-else class="error-state">
+        <ui-icon name="error-circle" :size="120" color="#C7C7CC" />
+        <text class="error-text">商品不存在或已下架</text>
+        <ui-button size="sm" @click="goBack">返回</ui-button>
+      </view>
     </scroll-view>
     
-    <ui-bottom-bar>
+    <view class="bottom-bar">
       <view class="action-icons">
-        <view class="icon-item" @click="handleCollect">
-          <ui-icon :name="isCollected ? 'heart' : 'heart-outline'" :size="40" />
-          <text>收藏</text>
-        </view>
-        <view class="icon-item" @click="handleMessage">
-          <ui-icon name="message" :size="40" />
-          <text>私信</text>
+        <view class="icon-item" :class="{ 'is-active': isCollected }" @click="handleCollect">
+          <ui-icon 
+            :name="isCollected ? 'heart-fill' : 'heart'" 
+            :size="40" 
+            :color="isCollected ? '#FF3B30' : '#A1A1A6'" 
+          />
+          <text>{{ isCollected ? '已收藏' : '收藏' }}</text>
         </view>
       </view>
       <view class="action-btns">
-        <ui-button class="btn-chat" @click="handleChat">联系卖家</ui-button>
+        <ui-button class="btn-chat" @click="handleChat">
+          <ui-icon name="message" :size="32" color="#FF6A00" />
+          <text>聊一聊</text>
+        </ui-button>
         <ui-button class="btn-buy" type="primary" @click="handleBuy">立即购买</ui-button>
       </view>
-    </ui-bottom-bar>
+    </view>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useAppStore } from '@/stores';
+import { ref, computed, onMounted } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
+import { usePageLayout } from '@/composables/usePageLayout';
+import { useNavigation } from '@/composables/useNavigation';
+import { useAuthStore } from '@/stores';
+import { formatTimeAgo } from '@/utils/date';
+import UiSellerCard from '@/ui-kit/molecules/UiSellerCard.vue';
 
-const appStore = useAppStore();
-
-const safeAreaTop = computed(() => appStore.safeAreaInsets.top);
-const safeAreaBottom = computed(() => appStore.safeAreaInsets.bottom);
-
-const scrollHeight = computed(() => {
-  const systemInfo = uni.getSystemInfoSync();
-  const navBarHeight = 44;
-  const bottomActionHeight = 60;
-  return systemInfo.windowHeight - safeAreaTop.value - navBarHeight - bottomActionHeight - safeAreaBottom.value;
+const { scrollHeight } = usePageLayout({
+  hasSubNavbar: true,
+  headerEstimatedHeight: 100
 });
 
-const product = ref({
-  id: 1,
-  title: 'iPhone 14 Pro Max 256GB 远峰蓝 99新',
-  price: 6999,
-  originalPrice: 8999,
-  condition: '99新',
-  warranty: true,
-  invoice: true,
-  specs: {
-    '型号': 'iPhone 14 Pro Max',
-    '内存': '256GB',
-    '颜色': '远峰蓝',
-    '版本': '国行'
-  },
-  description: '自用 iPhone 14 Pro Max，99新，无任何划痕、磕碰。配件齐全，盒子、充电器、数据线都在。电池健康度 95%。可小刀。',
-  images: [
-    'https://picsum.photos/750/750?random=1',
-    'https://picsum.photos/750/750?random=2',
-    'https://picsum.photos/750/750?random=3'
-  ]
-});
+const { smartBack, navigateTo } = useNavigation();
+const authStore = useAuthStore();
 
-const productTags = computed(() => {
-  const tags = [];
-  if (product.value.condition) {
-    tags.push({ text: product.value.condition, type: 'primary' as const });
+const productId = ref('');
+const loading = ref(true);
+const product = ref<any>(null);
+const isCollected = ref(false);
+
+interface TagItem {
+  text: string;
+  type: 'primary' | 'success' | 'warning' | 'info';
+}
+
+const productTags = computed<TagItem[]>(() => {
+  const tags: TagItem[] = [];
+  if (product.value?.condition) {
+    tags.push({ text: product.value.condition, type: 'primary' });
   }
-  if (product.value.warranty) {
-    tags.push({ text: '在保', type: 'success' as const });
+  if (product.value?.warranty) {
+    tags.push({ text: '在保', type: 'success' });
   }
-  if (product.value.invoice) {
-    tags.push({ text: '有发票', type: 'info' as const });
+  if (product.value?.invoice) {
+    tags.push({ text: '有发票', type: 'info' });
+  }
+  if (product.value?.canBargain) {
+    tags.push({ text: '可小刀', type: 'warning' });
   }
   return tags;
 });
 
-const seller = ref({
-  avatar: 'https://picsum.photos/200/200?random=10',
-  name: '数码达人',
-  desc: '诚信经营，品质保证',
-  sales: 128,
-  followers: 2568,
-  rating: 98
+const formatPrice = (price: number): string => {
+  if (!price) return '0';
+  if (price >= 10000) {
+    return (price / 10000).toFixed(2) + '万';
+  }
+  return price.toFixed(2);
+};
+
+onLoad((options: any) => {
+  if (options.id) {
+    productId.value = options.id;
+    fetchProductDetail();
+  }
 });
 
-const isCollected = ref(false);
+const fetchProductDetail = async () => {
+  loading.value = true;
+  try {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    product.value = {
+      id: productId.value,
+      title: 'iPhone 14 Pro Max 256GB 远峰蓝 99新 国行在保',
+      price: 6999,
+      originalPrice: 7999,
+      condition: '99新',
+      warranty: true,
+      invoice: true,
+      canBargain: true,
+      description: '自用 iPhone 14 Pro Max，99新，无任何划痕、磕碰。配件齐全，盒子、充电器、数据线都在。电池健康度 95%。国行版本，还在保修期内。\n\n平时主要用来拍照和日常使用，保护得很好，屏幕一直贴膜，边框无磕碰。远峰蓝配色非常好看，实物比照片更漂亮。\n\n可小刀，诚心要的来聊，屠龙刀勿扰。同城可面交验货。',
+      images: [
+        'https://picsum.photos/750/750?random=1',
+        'https://picsum.photos/750/750?random=2',
+        'https://picsum.photos/750/750?random=3',
+        'https://picsum.photos/750/750?random=4'
+      ],
+      location: '北京市朝阳区',
+      viewCount: 256,
+      createdAt: '2024-01-15T10:00:00Z',
+      seller: {
+        id: 'seller-1',
+        name: '数码达人',
+        avatar: 'https://picsum.photos/200/200?random=avatar1',
+        levelName: 'LV5 达人',
+        signature: '诚信经营，品质保证',
+        sellingCount: 28,
+        followerCount: 2568,
+        rating: 98
+      }
+    };
+    isCollected.value = false;
+  } catch (error) {
+    console.error('获取商品详情失败:', error);
+    product.value = null;
+  } finally {
+    loading.value = false;
+  }
+};
 
-const handleCollect = () => {
+const previewImage = (index: number) => {
+  if (!product.value?.images) return;
+  uni.previewImage({
+    current: index,
+    urls: product.value.images
+  });
+};
+
+const handleCollect = async () => {
+  if (!authStore.isAuthenticated) {
+    uni.navigateTo({ url: '/pages-sub/user/login/index' });
+    return;
+  }
+  
   isCollected.value = !isCollected.value;
   uni.showToast({
-    title: isCollected.value ? '收藏成功' : '取消收藏',
+    title: isCollected.value ? '收藏成功' : '已取消收藏',
     icon: 'none'
   });
 };
 
-const handleMessage = () => {
-  uni.showToast({ title: '跳转私信页面', icon: 'none' });
-};
-
 const handleChat = () => {
-  uni.showToast({ title: '联系卖家', icon: 'none' });
+  if (!authStore.isAuthenticated) {
+    uni.navigateTo({ url: '/pages-sub/user/login/index' });
+    return;
+  }
+  
+  if (!product.value) return;
+  
+  uni.navigateTo({ 
+    url: `/pages-sub/chat/index?sellerId=${product.value.seller.id}&productId=${product.value.id}` 
+  });
 };
 
 const handleBuy = () => {
-  uni.showToast({ title: '立即购买', icon: 'none' });
+  if (!authStore.isAuthenticated) {
+    uni.navigateTo({ url: '/pages-sub/user/login/index' });
+    return;
+  }
+  
+  if (!product.value) return;
+  
+  uni.navigateTo({ 
+    url: `/pages-sub/trade/order/confirm?productId=${product.value.id}` 
+  });
 };
+
+const goBack = () => {
+  smartBack();
+};
+
+const loadMore = () => {};
 </script>
 
 <style lang="scss" scoped>
 .product-detail-page {
-  min-height: 100vh;
-  background: $color-bg-page;
-  padding-bottom: 120rpx;
+  @include page-gradient-bg;
+}
+
+.bg-decoration {
+  @include decoration-container;
+  
+  .decoration-circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.5;
+  }
+  
+  .circle-1 {
+    width: 400rpx;
+    height: 400rpx;
+    top: 200rpx;
+    right: -100rpx;
+    background: $decoration-circle-1;
+  }
+  
+  .circle-2 {
+    width: 300rpx;
+    height: 300rpx;
+    bottom: 300rpx;
+    left: -80rpx;
+    background: $decoration-circle-2;
+  }
 }
 
 .detail-scroll {
   overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.loading-state {
+  padding: $space-lg;
 }
 
 .product-swiper {
   width: 100%;
   height: 750rpx;
-  
-  .swiper-image {
-    width: 100%;
-    height: 100%;
-  }
 }
 
-.action-icons {
-  display: flex;
-  gap: $space-lg;
+.price-section {
+  padding: $space-md;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
   
-  .icon-item {
+  .price-row {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: $font-size-xs;
-    color: $color-text-sub;
+    align-items: baseline;
+    gap: $space-sm;
+  }
+  
+  .current-price {
+    display: flex;
+    align-items: baseline;
+    
+    .price-symbol {
+      font-size: $font-size-lg;
+      font-weight: $font-weight-bold;
+      color: #FF3B30;
+    }
+    
+    .price-value {
+      font-size: 48rpx;
+      font-weight: $font-weight-bold;
+      color: #FF3B30;
+      line-height: 1;
+    }
+  }
+  
+  .original-price {
+    text {
+      font-size: $font-size-md;
+      color: $color-text-disabled;
+      text-decoration: line-through;
+    }
+  }
+  
+  .price-discount {
+    margin-top: $space-xs;
+    
+    text {
+      font-size: $font-size-xs;
+      color: #FF3B30;
+      background: rgba(255, 59, 48, 0.1);
+      padding: 4rpx 12rpx;
+      border-radius: $radius-xs;
+    }
   }
 }
 
-.action-btns {
-  flex: 1;
-  display: flex;
-  margin-left: $space-md;
-  gap: $space-sm;
+.title-section {
+  padding: $space-md;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
+  border-top: 1rpx solid var(--color-divider, rgba(0, 0, 0, 0.04));
   
-  .btn-chat {
-    flex: 1;
+  .product-title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    @include text-main;
+    line-height: 1.5;
   }
   
-  .btn-buy {
-    flex: 1.5;
+  .title-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-xs;
+    margin-top: $space-sm;
+    
+    .title-tag {
+      font-size: $font-size-xs;
+      padding: 4rpx 16rpx;
+      border-radius: $radius-full;
+      
+      &.primary {
+        color: var(--color-primary, #FF6A00);
+        background: var(--color-primary-glass, rgba(255, 106, 0, 0.08));
+      }
+      
+      &.success {
+        color: var(--color-success, #34C759);
+        background: var(--color-success-glass, rgba(52, 199, 89, 0.12));
+      }
+      
+      &.warning {
+        color: var(--color-warning, #FF9500);
+        background: rgba(255, 149, 0, 0.12);
+      }
+      
+      &.info {
+        color: var(--color-info, #007AFF);
+        background: rgba(0, 122, 255, 0.12);
+      }
+    }
+  }
+}
+
+.description-section {
+  margin: $space-sm $space-md;
+  padding: $space-md;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
+  border-radius: $radius-lg;
+  
+  .section-header {
+    margin-bottom: $space-sm;
+    
+    .section-title {
+      font-size: $font-size-md;
+      font-weight: $font-weight-medium;
+      @include text-main;
+    }
+  }
+  
+  .description-content {
+    font-size: $font-size-md;
+    @include text-main;
+    line-height: 1.8;
+    white-space: pre-wrap;
+  }
+  
+  .publish-info {
+    display: flex;
+    align-items: center;
+    margin-top: $space-md;
+    padding-top: $space-sm;
+    border-top: 1rpx solid var(--color-divider, rgba(0, 0, 0, 0.04));
+    font-size: $font-size-xs;
+    @include text-sub;
+    
+    .dot {
+      margin: 0 $space-xs;
+    }
+  }
+}
+
+.publish-location {
+  display: flex;
+  align-items: center;
+  gap: $space-xs;
+  margin: 0 $space-md $space-sm;
+  padding: $space-sm $space-md;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
+  border-radius: $radius-lg;
+  font-size: $font-size-sm;
+  @include text-sub;
+}
+
+.tips-section {
+  display: flex;
+  justify-content: space-around;
+  margin: 0 $space-md $space-sm;
+  padding: $space-md;
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
+  border-radius: $radius-lg;
+  
+  .tip-item {
+    display: flex;
+    align-items: center;
+    gap: $space-xs;
+    font-size: $font-size-sm;
+    @include text-sub;
+  }
+}
+
+.error-state {
+  @include flex-column-center;
+  padding: 160rpx $space-lg;
+  
+  .error-text {
+    font-size: $font-size-md;
+    @include text-sub;
+    margin: $space-md 0;
+  }
+}
+
+.bottom-space {
+  height: 180rpx;
+}
+
+.bottom-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: $space-sm $space-md;
+  padding-bottom: calc(#{$space-sm} + env(safe-area-inset-bottom));
+  background: var(--glass-solid, rgba(255, 255, 255, 0.95));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
+  border-top: 1rpx solid var(--color-divider, rgba(0, 0, 0, 0.06));
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
+  
+  .action-icons {
+    display: flex;
+    gap: $space-lg;
+    
+    .icon-item {
+      @include flex-column-center;
+      gap: 4rpx;
+      padding: $space-xs;
+      
+      text {
+        font-size: $font-size-xs;
+        @include text-sub;
+      }
+      
+      &.is-active text {
+        color: #FF3B30;
+      }
+    }
+  }
+  
+  .action-btns {
+    flex: 1;
+    display: flex;
+    margin-left: $space-md;
+    gap: $space-sm;
+    
+    .btn-chat {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8rpx;
+      background: rgba(255, 106, 0, 0.1);
+      border: 1rpx solid var(--color-primary, #FF6A00);
+      color: var(--color-primary, #FF6A00);
+      
+      text {
+        font-size: $font-size-sm;
+        color: var(--color-primary, #FF6A00);
+      }
+    }
+    
+    .btn-buy {
+      flex: 1.5;
+    }
   }
 }
 </style>

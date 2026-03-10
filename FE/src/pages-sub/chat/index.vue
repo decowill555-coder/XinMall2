@@ -787,7 +787,7 @@ const goBack = () => {
 
 const showUserInfo = () => {
   uni.navigateTo({
-    url: `/pages-sub/content/user/index?id=${targetUser.value.id}`
+    url: `/pages-sub/community/user/index?id=${targetUser.value.id}`
   });
 };
 

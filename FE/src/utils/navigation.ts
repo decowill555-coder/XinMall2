@@ -11,7 +11,10 @@ export interface NavigationOptions {
   skipSameLevel?: boolean;
   targetLevel?: PageLevel;
   fallbackUrl?: string;
+  forceSmart?: boolean;
 }
+
+const SMART_BACK_THRESHOLD = 15;
 
 const AUTH_REQUIRED_PAGES = [
   'pages/message/index',
@@ -29,7 +32,7 @@ const AUTH_REQUIRED_PAGES = [
   'pages-sub/seller/goods/edit',
   'pages-sub/seller/after-sale/list',
   'pages-sub/seller/after-sale/detail',
-  'pages-sub/content/post/publish',
+  'pages-sub/community/post/publish',
   'pages-sub/user/address/list',
   'pages-sub/user/address/edit',
   'pages-sub/user/collection/index',
@@ -76,15 +79,17 @@ const PAGE_CONFIGS: Record<string, PageConfig> = {
   'pages-sub/trade/order/confirm': { level: 2, group: 'order-confirm', name: '确认订单' },
   'pages-sub/trade/evaluate/index': { level: 2, group: 'evaluate', name: '评价' },
   'pages-sub/seller/after-sale/detail': { level: 2, group: 'after-sale-detail', name: '售后详情' },
-  'pages-sub/content/post/detail': { level: 2, group: 'post-detail', name: '帖子详情' },
+  'pages-sub/community/post/detail': { level: 2, group: 'post-detail', name: '帖子详情' },
   'pages-sub/content/forum/detail': { level: 2, group: 'forum-detail', name: '论坛详情' },
-  'pages-sub/content/user/index': { level: 2, group: 'user-profile', name: 'Ta的主页' },
+  'pages-sub/community/user/index': { level: 2, group: 'user-profile', name: 'Ta的主页' },
   'pages-sub/seller/shop/manage': { level: 2, group: 'shop-manage', name: '店铺管理' },
+  'pages-sub/community/device/index': { level: 2, group: 'device-community', name: '设备社区' },
+  'pages-sub/search/device-type': { level: 2, group: 'device-type', name: '设备分类' },
 
   'pages-sub/trade/pay/index': { level: 3, group: 'pay', name: '支付' },
   'pages-sub/seller/publish/entry': { level: 3, group: 'publish', name: '发布闲置' },
   'pages-sub/seller/goods/edit': { level: 3, group: 'goods-edit', name: '编辑商品' },
-  'pages-sub/content/post/publish': { level: 3, group: 'post-publish', name: '发布帖子' },
+  'pages-sub/community/post/publish': { level: 3, group: 'post-publish', name: '发布帖子' },
   'pages-sub/user/address/edit': { level: 3, group: 'address-edit', name: '编辑地址' },
 };
 
@@ -154,12 +159,28 @@ export function getStackDepth(): number {
   return getCurrentPages().length;
 }
 
+export function isStackOverThreshold(): boolean {
+  return getCurrentPages().length > SMART_BACK_THRESHOLD;
+}
+
+export function getStackInfo(): { depth: number; isOverThreshold: boolean; currentLevel: PageLevel; currentRoute: string } {
+  const pages = getCurrentPages();
+  const currentRoute = getCurrentPageRoute();
+  return {
+    depth: pages.length,
+    isOverThreshold: pages.length > SMART_BACK_THRESHOLD,
+    currentLevel: getPageLevel(currentRoute),
+    currentRoute
+  };
+}
+
 export function smartBack(options: NavigationOptions = {}): void {
   const {
     skipSameGroup = true,
     skipSameLevel = false,
     targetLevel,
-    fallbackUrl = '/pages/index/index'
+    fallbackUrl = '/pages/index/index',
+    forceSmart = false
   } = options;
 
   const pages = getCurrentPages();
@@ -168,11 +189,6 @@ export function smartBack(options: NavigationOptions = {}): void {
     switchToTab(fallbackUrl);
     return;
   }
-
-  const currentPage = pages[pages.length - 1];
-  const currentRoute = currentPage.route || '';
-  const currentLevel = getPageLevel(currentRoute);
-  const currentGroup = getPageGroup(currentRoute);
 
   if (typeof targetLevel === 'number') {
     for (let i = pages.length - 2; i >= 0; i--) {
@@ -188,6 +204,16 @@ export function smartBack(options: NavigationOptions = {}): void {
     switchToTab(fallbackUrl);
     return;
   }
+
+  if (!forceSmart && pages.length <= SMART_BACK_THRESHOLD) {
+    uni.navigateBack({ delta: 1 });
+    return;
+  }
+
+  const currentPage = pages[pages.length - 1];
+  const currentRoute = currentPage.route || '';
+  const currentLevel = getPageLevel(currentRoute);
+  const currentGroup = getPageGroup(currentRoute);
 
   for (let i = pages.length - 2; i >= 0; i--) {
     const targetRoute = pages[i].route || '';
@@ -359,6 +385,8 @@ export const navigation = {
   getCurrentPageRoute,
   getPageStack,
   getStackDepth,
+  isStackOverThreshold,
+  getStackInfo,
   getPreviousPage,
   getPreviousPageRoute,
   getPageConfig,

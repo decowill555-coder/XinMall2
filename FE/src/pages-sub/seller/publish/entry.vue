@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view class="publish-page">
     <ui-sub-navbar title="发布商品" />
     
@@ -6,11 +6,38 @@
       <view class="publish-form">
         
         <ui-form-item label="商品图片" required>
-          <ui-upload 
-            v-model="form.images" 
-            :max="9" 
-            multiple 
-          />
+          <view class="image-upload">
+            <view class="image-grid">
+              <view 
+                v-for="(img, index) in imageList" 
+                :key="index" 
+                class="image-item"
+                @click="showImageActions(index)"
+              >
+                <image 
+                  class="preview-image" 
+                  :src="img.url" 
+                  mode="aspectFill"
+                />
+                <view class="delete-btn" @click.stop="removeImage(index)">
+                  <ui-icon name="close" :size="24" color="#FFFFFF" />
+                </view>
+                <view v-if="index === 0" class="cover-tag">
+                  <text>封面</text>
+                </view>
+              </view>
+              
+              <view 
+                v-if="imageList.length < 9" 
+                class="add-image-btn"
+                @click="chooseImage"
+              >
+                <ui-icon name="camera" :size="48" color="#C7C7CC" />
+                <text class="add-text">添加图片</text>
+                <text class="add-hint">{{ imageList.length }}/9</text>
+              </view>
+            </view>
+          </view>
         </ui-form-item>
         
         <ui-form-item label="商品名称" required>
@@ -31,7 +58,7 @@
         </ui-form-item>
         
         <ui-form-item label="分类" required>
-          <view class="category-picker" @click="showCategoryPicker = true">
+          <view class="category-picker" @click="goCategorySelect">
             <text class="category-text" :class="{ placeholder: !form.categoryName }">
               {{ form.categoryName || '请选择分类' }}
             </text>
@@ -84,6 +111,8 @@
         </ui-form-item>
         
       </view>
+      
+      <view class="bottom-space"></view>
     </scroll-view>
     
     <view class="publish-footer" :style="{ paddingBottom: (safeAreaBottom + 12) + 'px' }">
@@ -91,42 +120,52 @@
       <ui-button type="primary" @click="publish">发布</ui-button>
     </view>
     
-    <ui-popup v-model="showCategoryPicker" position="bottom" radius="top">
-      <view class="category-picker-popup">
-        <view class="popup-header">
-          <text class="popup-title">选择分类</text>
-          <view class="popup-close" @click="showCategoryPicker = false">
-            <ui-icon name="x" :size="32" />
+    <ui-popup v-model:show="showActionPopup" position="bottom" round>
+      <view class="action-popup">
+        <view class="action-list">
+          <view class="action-item" @click="handleAction('preview')">
+            <ui-icon name="eye" :size="40" />
+            <text>查看大图</text>
+          </view>
+          <view v-if="currentImageIndex !== 0" class="action-item primary" @click="handleAction('cover')">
+            <ui-icon name="star" :size="40" />
+            <text>设为封面</text>
+          </view>
+          <view class="action-item danger" @click="handleAction('delete')">
+            <ui-icon name="trash" :size="40" />
+            <text>删除</text>
           </view>
         </view>
-        <scroll-view scroll-y class="popup-content">
-          <view 
-            v-for="cat in categories" 
-            :key="cat.id" 
-            class="category-item"
-            :class="{ active: form.categoryId === cat.id }"
-            @click="selectCategory(cat)"
-          >
-            <text>{{ cat.name }}</text>
-            <ui-icon v-if="form.categoryId === cat.id" name="check" :size="32" color="#FF6A00" />
-          </view>
-        </scroll-view>
+        <view class="action-cancel" @click="showActionPopup = false">
+          <text>取消</text>
+        </view>
       </view>
     </ui-popup>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
+import { onLoad, onShow } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { useNavigation } from '@/composables/useNavigation';
 
-const { safeAreaBottom, scrollHeight } = usePageLayout({
+const { safeAreaBottom } = usePageLayout({
   hasSubNavbar: true,
   headerEstimatedHeight: 120
 });
 
+const scrollHeight = ref(0);
 const { smartBack } = useNavigation();
+
+interface ImageItem {
+  url: string;
+  status?: 'ready' | 'uploading' | 'done' | 'error';
+}
+
+const imageList = ref<ImageItem[]>([]);
+const showActionPopup = ref(false);
+const currentImageIndex = ref(0);
 
 const form = reactive({
   images: [] as string[],
@@ -142,29 +181,104 @@ const form = reactive({
   location: ''
 });
 
-const showCategoryPicker = ref(false);
-
 const deliveryOptions = [
   { label: '快递', value: 'express', icon: 'package' },
   { label: '自提', value: 'pickup', icon: 'map-pin' },
   { label: '同城配送', value: 'local', icon: 'truck' }
 ];
 
-const categories = ref([
-  { id: 1, name: '手机' },
-  { id: 2, name: '电脑' },
-  { id: 3, name: '平板' },
-  { id: 4, name: '耳机' },
-  { id: 5, name: '相机' },
-  { id: 6, name: '游戏机' },
-  { id: 7, name: '配件' },
-  { id: 8, name: '其他' }
-]);
+onMounted(() => {
+  const systemInfo = uni.getSystemInfoSync();
+  scrollHeight.value = systemInfo.windowHeight - 120;
+});
 
-const selectCategory = (cat: any) => {
-  form.categoryId = cat.id;
-  form.categoryName = cat.name;
-  showCategoryPicker.value = false;
+onLoad((options: any) => {
+  if (options?.categoryId) {
+    form.categoryId = parseInt(options.categoryId);
+    form.categoryName = options.categoryName ? decodeURIComponent(options.categoryName) : '';
+  }
+});
+
+onShow(() => {
+  const pages = getCurrentPages();
+  const currentPage = pages[pages.length - 1] as any;
+  if (currentPage?.options?.categoryId) {
+    const options = currentPage.options;
+    if (parseInt(options.categoryId) !== form.categoryId) {
+      form.categoryId = parseInt(options.categoryId);
+      form.categoryName = options.categoryName ? decodeURIComponent(options.categoryName) : '';
+    }
+  }
+});
+
+const chooseImage = () => {
+  const remaining = 9 - imageList.value.length;
+  uni.chooseImage({
+    count: remaining,
+    sizeType: ['compressed'],
+    sourceType: ['album', 'camera'],
+    success: (res) => {
+      const newImages = res.tempFilePaths.map(url => ({
+        url,
+        status: 'done' as const
+      }));
+      imageList.value = [...imageList.value, ...newImages];
+      form.images = imageList.value.map(img => img.url);
+    }
+  });
+};
+
+const removeImage = (index: number) => {
+  imageList.value.splice(index, 1);
+  form.images = imageList.value.map(img => img.url);
+};
+
+const setCover = (index: number) => {
+  if (index === 0) {
+    uni.showToast({ title: '已是封面', icon: 'none' });
+    return;
+  }
+  
+  const targetImage = imageList.value[index];
+  imageList.value.splice(index, 1);
+  imageList.value.unshift(targetImage);
+  form.images = imageList.value.map(img => img.url);
+  uni.showToast({ title: '已设置为封面', icon: 'success' });
+};
+
+const showImageActions = (index: number) => {
+  currentImageIndex.value = index;
+  showActionPopup.value = true;
+};
+
+const handleAction = (action: string) => {
+  showActionPopup.value = false;
+  
+  switch (action) {
+    case 'preview':
+      previewImage(currentImageIndex.value);
+      break;
+    case 'cover':
+      setCover(currentImageIndex.value);
+      break;
+    case 'delete':
+      removeImage(currentImageIndex.value);
+      break;
+  }
+};
+
+const previewImage = (index: number) => {
+  const urls = imageList.value.map(img => img.url);
+  uni.previewImage({
+    current: urls[index],
+    urls: urls
+  });
+};
+
+const goCategorySelect = () => {
+  uni.navigateTo({ 
+    url: `/pages-sub/seller/publish/category?selectedId=${form.categoryId}` 
+  });
 };
 
 const chooseLocation = () => {
@@ -180,6 +294,10 @@ const saveDraft = () => {
 };
 
 const publish = () => {
+  if (imageList.value.length === 0) {
+    uni.showToast({ title: '请添加商品图片', icon: 'none' });
+    return;
+  }
   if (!form.title) {
     uni.showToast({ title: '请输入商品名称', icon: 'none' });
     return;
@@ -215,6 +333,83 @@ const publish = () => {
   background: var(--glass-solid, rgba(255, 255, 255, 0.85));
   backdrop-filter: blur($blur-lg);
   -webkit-backdrop-filter: blur($blur-lg);
+  
+  [data-theme="dark"] & {
+    background: var(--glass-solid, rgba(30, 30, 30, 0.85));
+  }
+}
+
+.image-upload {
+  width: 100%;
+}
+
+.image-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-sm;
+}
+
+.image-item {
+  position: relative;
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: $radius-md;
+  overflow: hidden;
+  
+  .preview-image {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .delete-btn {
+    position: absolute;
+    top: 8rpx;
+    right: 8rpx;
+    width: 48rpx;
+    height: 48rpx;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    @include flex-center;
+    z-index: 2;
+  }
+  
+  .cover-tag {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #FF6A00 0%, #FF9500 100%);
+    padding: 4rpx 0;
+    text-align: center;
+    
+    text {
+      font-size: $font-size-xs;
+      color: #FFFFFF;
+    }
+  }
+}
+
+.add-image-btn {
+  width: 200rpx;
+  height: 200rpx;
+  border: 2rpx dashed $color-divider;
+  border-radius: $radius-md;
+  @include flex-column-center;
+  gap: 4rpx;
+  
+  .add-text {
+    font-size: $font-size-sm;
+    @include text-sub;
+  }
+  
+  .add-hint {
+    font-size: $font-size-xs;
+    @include text-disabled;
+  }
+  
+  [data-theme="dark"] & {
+    border-color: var(--color-divider, rgba(255, 255, 255, 0.12));
+  }
 }
 
 .category-picker,
@@ -229,6 +424,11 @@ const publish = () => {
   -webkit-backdrop-filter: blur($blur-sm);
   border: 1rpx solid var(--glass-border-subtle, rgba(0, 0, 0, 0.04));
   border-radius: $radius-md;
+  
+  [data-theme="dark"] & {
+    background: var(--glass-crystal-high, rgba(50, 50, 50, 0.6));
+    border-color: var(--glass-border-subtle, rgba(255, 255, 255, 0.08));
+  }
   
   .category-text,
   .location-text {
@@ -251,10 +451,14 @@ const publish = () => {
     padding: $space-md 0;
     background: var(--glass-crystal-high, rgba(255, 255, 255, 0.6));
     backdrop-filter: blur($blur-sm);
-  -webkit-backdrop-filter: blur($blur-sm);
+    -webkit-backdrop-filter: blur($blur-sm);
     border-radius: $radius-md;
     border: 1px solid transparent;
     transition: all $duration-fast $ease-spring;
+    
+    [data-theme="dark"] & {
+      background: var(--glass-crystal-high, rgba(50, 50, 50, 0.6));
+    }
     
     text {
       font-size: $font-size-sm;
@@ -283,48 +487,81 @@ const publish = () => {
   backdrop-filter: blur($blur-lg);
   -webkit-backdrop-filter: blur($blur-lg);
   box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
+  
+  [data-theme="dark"] & {
+    background: var(--glass-solid, rgba(30, 30, 30, 0.95));
+    box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.2);
+  }
 }
 
-.category-picker-popup {
-  height: 70vh;
+.bottom-space {
+  height: 160rpx;
+}
+
+.action-popup {
+  background: var(--glass-solid, rgba(255, 255, 255, 0.95));
+  backdrop-filter: blur($blur-lg);
+  -webkit-backdrop-filter: blur($blur-lg);
+  border-radius: $radius-xl $radius-xl 0 0;
   
-  .popup-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: $space-md;
-    border-bottom: 1rpx solid var(--color-divider, rgba(0, 0, 0, 0.06));
+  [data-theme="dark"] & {
+    background: var(--glass-solid, rgba(30, 30, 30, 0.95));
+  }
+}
+
+.action-list {
+  padding: $space-sm;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: $space-md;
+  padding: $space-md $space-lg;
+  border-radius: $radius-md;
+  transition: all $duration-fast;
+  
+  text {
+    font-size: $font-size-md;
+    @include text-main;
+  }
+  
+  &:active {
+    background: $color-bg-gray;
     
-    .popup-title {
-      font-size: $font-size-lg;
-      font-weight: $font-weight-medium;
-      color: $color-text-main;
-    }
-    
-    .popup-close {
-      padding: $space-xs;
+    [data-theme="dark"] &{
+      background: rgba(255, 255, 255, 0.05);
     }
   }
   
-  .popup-content {
-    height: calc(70vh - 100rpx);
-  }
-  
-  .category-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: $space-md;
-    border-bottom: 1rpx solid var(--color-divider, rgba(0, 0, 0, 0.06));
-    
+  &.primary {
     text {
-      font-size: $font-size-md;
-      color: $color-text-main;
-    }
-    
-    &.active text {
       color: var(--color-primary, #FF6A00);
     }
+  }
+  
+  &.danger {
+    text {
+      color: $color-error;
+    }
+  }
+}
+
+.action-cancel {
+  padding: $space-md;
+  margin: $space-sm;
+  text-align: center;
+  background: $color-bg-gray;
+  border-radius: $radius-md;
+  
+  [data-theme="dark"] & {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  
+  text {
+    font-size: $font-size-md;
+    font-weight: $font-weight-medium;
+    @include text-main;
   }
 }
 </style>

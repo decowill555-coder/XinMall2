@@ -12,7 +12,7 @@ export interface LoginResult {
   user: UserInfo;
 }
 
-export interface UserInfo {
+export interface UserInfo{
   id: string;
   phone: string;
   nickname: string;

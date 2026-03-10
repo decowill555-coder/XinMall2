@@ -117,11 +117,11 @@ const postList = ref([
 ]);
 
 const goPostDetail = (item: any) => {
-  uni.navigateTo({ url: `/pages-sub/content/post/detail?id=${item.id}` });
+  uni.navigateTo({ url: `/pages-sub/community/post/detail?id=${item.id}` });
 };
 
 const goUser = (item: any) => {
-  uni.navigateTo({ url: `/pages-sub/content/user/index?id=${item.userId}` });
+  uni.navigateTo({ url: `/pages-sub/community/user/index?id=${item.userId}` });
 };
 
 const loadMore = () => {
