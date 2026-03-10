@@ -127,6 +127,7 @@
         }
       ],
       "custom": true,
+      "unihidcustom": true,
       "backgroundColor": "#FFFFFF",
       "selectedIndex": 0,
       "shown": true,

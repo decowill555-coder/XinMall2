@@ -122,6 +122,7 @@
   "uniIdRouter": {},
   "tabBar": {
     "custom": true,
+    "unihidcustom": true,
     "color": "#999999",
     "height": "0px",
     "selectedColor": "#1ABC9C",

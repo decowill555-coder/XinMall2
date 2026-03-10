@@ -3156,12 +3156,22 @@ This will fail in production.`);
       saveToStorage();
     };
     const updateSystemTheme = () => {
-      uni.getSystemInfoSync();
-      systemTheme.value = "light";
+      try {
+        const sys = uni.getSystemInfoSync();
+        const osTheme = sys.osTheme || "light";
+        systemTheme.value = osTheme === "dark" ? "dark" : "light";
+        if (config.value.mode === "system") {
+          applyTheme();
+        }
+      } catch (e) {
+        systemTheme.value = "light";
+      }
     };
     const applyTheme = () => {
       isTransitioning.value = true;
       themeVarsObject.value;
+      uni.setStorageSync("theme_mode", currentMode.value);
+      uni.setStorageSync("theme_color", config.value.color);
       uni.setNavigationBarColor({
         frontColor: isDark.value ? "#ffffff" : "#000000",
         backgroundColor: isDark.value ? "#0B0A12" : "#FFFFFF",
@@ -3205,7 +3215,7 @@ This will fail in production.`);
           return true;
         }
       } catch (e) {
-        formatAppLog("error", "at stores/theme.ts:463", "Failed to import theme:", e);
+        formatAppLog("error", "at stores/theme.ts:477", "Failed to import theme:", e);
       }
       return false;
     };
@@ -3227,7 +3237,7 @@ This will fail in production.`);
             ...JSON.parse(stored)
           };
         } catch (e) {
-          formatAppLog("error", "at stores/theme.ts:487", "Failed to load theme config:", e);
+          formatAppLog("error", "at stores/theme.ts:501", "Failed to load theme config:", e);
         }
       }
     };
@@ -4127,7 +4137,6 @@ This will fail in production.`);
     "pages-sub/user/settings/index": { level: 1, group: "settings", name: "设置" },
     "pages-sub/user/theme/index": { level: 1, group: "theme", name: "主题设置" },
     "pages-sub/user/wallet/index": { level: 1, group: "wallet", name: "我的钱包" },
-    "pages-sub/content/topic/index": { level: 1, group: "topic", name: "话题" },
     "pages-sub/auth/real-name/index": { level: 1, group: "auth", name: "实名认证" },
     "pages-sub/auth/shop-auth/index": { level: 1, group: "auth", name: "店铺认证" },
     "pages-sub/user/login/index": { level: 1, group: "login", name: "登录" },
@@ -4137,7 +4146,6 @@ This will fail in production.`);
     "pages-sub/trade/evaluate/index": { level: 2, group: "evaluate", name: "评价" },
     "pages-sub/seller/after-sale/detail": { level: 2, group: "after-sale-detail", name: "售后详情" },
     "pages-sub/community/post/detail": { level: 2, group: "post-detail", name: "帖子详情" },
-    "pages-sub/content/forum/detail": { level: 2, group: "forum-detail", name: "论坛详情" },
     "pages-sub/community/user/index": { level: 2, group: "user-profile", name: "Ta的主页" },
     "pages-sub/seller/shop/manage": { level: 2, group: "shop-manage", name: "店铺管理" },
     "pages-sub/community/device/index": { level: 2, group: "device-community", name: "设备社区" },
@@ -6024,370 +6032,364 @@ This will fail in production.`);
         /* STYLE */
       ),
       vue.createElementVNode(
-        "view",
+        "scroll-view",
         {
-          class: "page-content",
-          style: vue.normalizeStyle({ paddingTop: $setup.headerHeight + "px" })
+          "scroll-y": "",
+          class: "content-scroll",
+          style: vue.normalizeStyle({ paddingTop: $setup.headerHeight + "px", height: $setup.scrollHeight + "px" }),
+          enhanced: true,
+          "show-scrollbar": false
         },
         [
-          vue.createElementVNode(
-            "scroll-view",
-            {
-              "scroll-y": "",
-              class: "content-scroll",
-              style: vue.normalizeStyle({ height: $setup.scrollHeight + "px" })
-            },
-            [
-              vue.createVNode(_component_ui_card, {
-                glass: true,
-                shadow: true,
-                radius: "lg",
-                padding: "md",
-                class: "order-section"
-              }, {
-                header: vue.withCtx(() => [
-                  vue.createElementVNode("view", { class: "section-header" }, [
+          vue.createElementVNode("view", { class: "scroll-content" }, [
+            vue.createVNode(_component_ui_card, {
+              glass: true,
+              shadow: true,
+              radius: "lg",
+              padding: "md",
+              class: "order-section"
+            }, {
+              header: vue.withCtx(() => [
+                vue.createElementVNode("view", { class: "section-header" }, [
+                  vue.createVNode(_component_ui_text, {
+                    size: "lg",
+                    weight: "bold",
+                    color: "main"
+                  }, {
+                    default: vue.withCtx(() => [
+                      vue.createTextVNode("我的订单")
+                    ]),
+                    _: 1
+                    /* STABLE */
+                  }),
+                  vue.createElementVNode("view", {
+                    class: "section-more",
+                    onClick: $setup.goOrders
+                  }, [
                     vue.createVNode(_component_ui_text, {
-                      size: "lg",
-                      weight: "bold",
-                      color: "main"
+                      size: "sm",
+                      color: "sub"
                     }, {
                       default: vue.withCtx(() => [
-                        vue.createTextVNode("我的订单")
+                        vue.createTextVNode("全部订单")
                       ]),
                       _: 1
                       /* STABLE */
                     }),
-                    vue.createElementVNode("view", {
-                      class: "section-more",
-                      onClick: $setup.goOrders
-                    }, [
-                      vue.createVNode(_component_ui_text, {
-                        size: "sm",
-                        color: "sub"
+                    vue.createVNode(_component_ui_icon, {
+                      name: "arrow-right",
+                      size: 32,
+                      color: "#6E6E73"
+                    })
+                  ])
+                ])
+              ]),
+              default: vue.withCtx(() => [
+                vue.createElementVNode("view", { class: "order-tabs" }, [
+                  vue.createElementVNode("view", {
+                    class: "order-item",
+                    onClick: _cache[0] || (_cache[0] = ($event) => $setup.goOrders("pending"))
+                  }, [
+                    vue.createElementVNode("view", { class: "order-icon" }, [
+                      $setup.orderCounts.pending > 0 ? (vue.openBlock(), vue.createBlock(_component_ui_badge, {
+                        key: 0,
+                        value: $setup.orderCounts.pending
                       }, {
                         default: vue.withCtx(() => [
-                          vue.createTextVNode("全部订单")
+                          vue.createVNode(_component_ui_icon, {
+                            name: "wallet",
+                            size: 40
+                          })
                         ]),
                         _: 1
                         /* STABLE */
-                      }),
-                      vue.createVNode(_component_ui_icon, {
-                        name: "arrow-right",
-                        size: 32,
-                        color: "#6E6E73"
-                      })
-                    ])
+                      }, 8, ["value"])) : (vue.openBlock(), vue.createBlock(_component_ui_icon, {
+                        key: 1,
+                        name: "wallet",
+                        size: 40
+                      }))
+                    ]),
+                    vue.createVNode(_component_ui_text, {
+                      size: "xs",
+                      color: "sub"
+                    }, {
+                      default: vue.withCtx(() => [
+                        vue.createTextVNode("待付款")
+                      ]),
+                      _: 1
+                      /* STABLE */
+                    })
+                  ]),
+                  vue.createElementVNode("view", {
+                    class: "order-item",
+                    onClick: _cache[1] || (_cache[1] = ($event) => $setup.goOrders("shipped"))
+                  }, [
+                    vue.createElementVNode("view", { class: "order-icon" }, [
+                      $setup.orderCounts.shipped > 0 ? (vue.openBlock(), vue.createBlock(_component_ui_badge, {
+                        key: 0,
+                        value: $setup.orderCounts.shipped
+                      }, {
+                        default: vue.withCtx(() => [
+                          vue.createVNode(_component_ui_icon, {
+                            name: "truck",
+                            size: 40
+                          })
+                        ]),
+                        _: 1
+                        /* STABLE */
+                      }, 8, ["value"])) : (vue.openBlock(), vue.createBlock(_component_ui_icon, {
+                        key: 1,
+                        name: "truck",
+                        size: 40
+                      }))
+                    ]),
+                    vue.createVNode(_component_ui_text, {
+                      size: "xs",
+                      color: "sub"
+                    }, {
+                      default: vue.withCtx(() => [
+                        vue.createTextVNode("待发货")
+                      ]),
+                      _: 1
+                      /* STABLE */
+                    })
+                  ]),
+                  vue.createElementVNode("view", {
+                    class: "order-item",
+                    onClick: _cache[2] || (_cache[2] = ($event) => $setup.goOrders("received"))
+                  }, [
+                    vue.createElementVNode("view", { class: "order-icon" }, [
+                      $setup.orderCounts.received > 0 ? (vue.openBlock(), vue.createBlock(_component_ui_badge, {
+                        key: 0,
+                        value: $setup.orderCounts.received
+                      }, {
+                        default: vue.withCtx(() => [
+                          vue.createVNode(_component_ui_icon, {
+                            name: "package",
+                            size: 40
+                          })
+                        ]),
+                        _: 1
+                        /* STABLE */
+                      }, 8, ["value"])) : (vue.openBlock(), vue.createBlock(_component_ui_icon, {
+                        key: 1,
+                        name: "package",
+                        size: 40
+                      }))
+                    ]),
+                    vue.createVNode(_component_ui_text, {
+                      size: "xs",
+                      color: "sub"
+                    }, {
+                      default: vue.withCtx(() => [
+                        vue.createTextVNode("待收货")
+                      ]),
+                      _: 1
+                      /* STABLE */
+                    })
+                  ]),
+                  vue.createElementVNode("view", {
+                    class: "order-item",
+                    onClick: _cache[3] || (_cache[3] = ($event) => $setup.goOrders("reviewed"))
+                  }, [
+                    vue.createElementVNode("view", { class: "order-icon" }, [
+                      $setup.orderCounts.reviewed > 0 ? (vue.openBlock(), vue.createBlock(_component_ui_badge, {
+                        key: 0,
+                        value: $setup.orderCounts.reviewed
+                      }, {
+                        default: vue.withCtx(() => [
+                          vue.createVNode(_component_ui_icon, {
+                            name: "star",
+                            size: 40
+                          })
+                        ]),
+                        _: 1
+                        /* STABLE */
+                      }, 8, ["value"])) : (vue.openBlock(), vue.createBlock(_component_ui_icon, {
+                        key: 1,
+                        name: "star",
+                        size: 40
+                      }))
+                    ]),
+                    vue.createVNode(_component_ui_text, {
+                      size: "xs",
+                      color: "sub"
+                    }, {
+                      default: vue.withCtx(() => [
+                        vue.createTextVNode("待评价")
+                      ]),
+                      _: 1
+                      /* STABLE */
+                    })
+                  ]),
+                  vue.createElementVNode("view", {
+                    class: "order-item",
+                    onClick: _cache[4] || (_cache[4] = ($event) => $setup.goOrders("refund"))
+                  }, [
+                    vue.createElementVNode("view", { class: "order-icon" }, [
+                      $setup.orderCounts.refund > 0 ? (vue.openBlock(), vue.createBlock(_component_ui_badge, {
+                        key: 0,
+                        value: $setup.orderCounts.refund
+                      }, {
+                        default: vue.withCtx(() => [
+                          vue.createVNode(_component_ui_icon, {
+                            name: "refresh",
+                            size: 40
+                          })
+                        ]),
+                        _: 1
+                        /* STABLE */
+                      }, 8, ["value"])) : (vue.openBlock(), vue.createBlock(_component_ui_icon, {
+                        key: 1,
+                        name: "refresh",
+                        size: 40
+                      }))
+                    ]),
+                    vue.createVNode(_component_ui_text, {
+                      size: "xs",
+                      color: "sub"
+                    }, {
+                      default: vue.withCtx(() => [
+                        vue.createTextVNode("退款/售后")
+                      ]),
+                      _: 1
+                      /* STABLE */
+                    })
                   ])
-                ]),
+                ])
+              ]),
+              _: 1
+              /* STABLE */
+            }),
+            vue.createElementVNode("view", { class: "menu-section" }, [
+              vue.createVNode(_component_ui_card, {
+                glass: true,
+                shadow: false,
+                radius: "lg",
+                padding: "sm",
+                class: "menu-group"
+              }, {
                 default: vue.withCtx(() => [
-                  vue.createElementVNode("view", { class: "order-tabs" }, [
-                    vue.createElementVNode("view", {
-                      class: "order-item",
-                      onClick: _cache[0] || (_cache[0] = ($event) => $setup.goOrders("pending"))
-                    }, [
-                      vue.createElementVNode("view", { class: "order-icon" }, [
-                        $setup.orderCounts.pending > 0 ? (vue.openBlock(), vue.createBlock(_component_ui_badge, {
-                          key: 0,
-                          value: $setup.orderCounts.pending
-                        }, {
-                          default: vue.withCtx(() => [
-                            vue.createVNode(_component_ui_icon, {
-                              name: "wallet",
-                              size: 40
-                            })
-                          ]),
-                          _: 1
-                          /* STABLE */
-                        }, 8, ["value"])) : (vue.openBlock(), vue.createBlock(_component_ui_icon, {
-                          key: 1,
-                          name: "wallet",
-                          size: 40
-                        }))
-                      ]),
-                      vue.createVNode(_component_ui_text, {
-                        size: "xs",
-                        color: "sub"
-                      }, {
-                        default: vue.withCtx(() => [
-                          vue.createTextVNode("待付款")
-                        ]),
-                        _: 1
-                        /* STABLE */
-                      })
-                    ]),
-                    vue.createElementVNode("view", {
-                      class: "order-item",
-                      onClick: _cache[1] || (_cache[1] = ($event) => $setup.goOrders("shipped"))
-                    }, [
-                      vue.createElementVNode("view", { class: "order-icon" }, [
-                        $setup.orderCounts.shipped > 0 ? (vue.openBlock(), vue.createBlock(_component_ui_badge, {
-                          key: 0,
-                          value: $setup.orderCounts.shipped
-                        }, {
-                          default: vue.withCtx(() => [
-                            vue.createVNode(_component_ui_icon, {
-                              name: "truck",
-                              size: 40
-                            })
-                          ]),
-                          _: 1
-                          /* STABLE */
-                        }, 8, ["value"])) : (vue.openBlock(), vue.createBlock(_component_ui_icon, {
-                          key: 1,
-                          name: "truck",
-                          size: 40
-                        }))
-                      ]),
-                      vue.createVNode(_component_ui_text, {
-                        size: "xs",
-                        color: "sub"
-                      }, {
-                        default: vue.withCtx(() => [
-                          vue.createTextVNode("待发货")
-                        ]),
-                        _: 1
-                        /* STABLE */
-                      })
-                    ]),
-                    vue.createElementVNode("view", {
-                      class: "order-item",
-                      onClick: _cache[2] || (_cache[2] = ($event) => $setup.goOrders("received"))
-                    }, [
-                      vue.createElementVNode("view", { class: "order-icon" }, [
-                        $setup.orderCounts.received > 0 ? (vue.openBlock(), vue.createBlock(_component_ui_badge, {
-                          key: 0,
-                          value: $setup.orderCounts.received
-                        }, {
-                          default: vue.withCtx(() => [
-                            vue.createVNode(_component_ui_icon, {
-                              name: "package",
-                              size: 40
-                            })
-                          ]),
-                          _: 1
-                          /* STABLE */
-                        }, 8, ["value"])) : (vue.openBlock(), vue.createBlock(_component_ui_icon, {
-                          key: 1,
-                          name: "package",
-                          size: 40
-                        }))
-                      ]),
-                      vue.createVNode(_component_ui_text, {
-                        size: "xs",
-                        color: "sub"
-                      }, {
-                        default: vue.withCtx(() => [
-                          vue.createTextVNode("待收货")
-                        ]),
-                        _: 1
-                        /* STABLE */
-                      })
-                    ]),
-                    vue.createElementVNode("view", {
-                      class: "order-item",
-                      onClick: _cache[3] || (_cache[3] = ($event) => $setup.goOrders("reviewed"))
-                    }, [
-                      vue.createElementVNode("view", { class: "order-icon" }, [
-                        $setup.orderCounts.reviewed > 0 ? (vue.openBlock(), vue.createBlock(_component_ui_badge, {
-                          key: 0,
-                          value: $setup.orderCounts.reviewed
-                        }, {
-                          default: vue.withCtx(() => [
-                            vue.createVNode(_component_ui_icon, {
-                              name: "star",
-                              size: 40
-                            })
-                          ]),
-                          _: 1
-                          /* STABLE */
-                        }, 8, ["value"])) : (vue.openBlock(), vue.createBlock(_component_ui_icon, {
-                          key: 1,
-                          name: "star",
-                          size: 40
-                        }))
-                      ]),
-                      vue.createVNode(_component_ui_text, {
-                        size: "xs",
-                        color: "sub"
-                      }, {
-                        default: vue.withCtx(() => [
-                          vue.createTextVNode("待评价")
-                        ]),
-                        _: 1
-                        /* STABLE */
-                      })
-                    ]),
-                    vue.createElementVNode("view", {
-                      class: "order-item",
-                      onClick: _cache[4] || (_cache[4] = ($event) => $setup.goOrders("refund"))
-                    }, [
-                      vue.createElementVNode("view", { class: "order-icon" }, [
-                        $setup.orderCounts.refund > 0 ? (vue.openBlock(), vue.createBlock(_component_ui_badge, {
-                          key: 0,
-                          value: $setup.orderCounts.refund
-                        }, {
-                          default: vue.withCtx(() => [
-                            vue.createVNode(_component_ui_icon, {
-                              name: "refresh",
-                              size: 40
-                            })
-                          ]),
-                          _: 1
-                          /* STABLE */
-                        }, 8, ["value"])) : (vue.openBlock(), vue.createBlock(_component_ui_icon, {
-                          key: 1,
-                          name: "refresh",
-                          size: 40
-                        }))
-                      ]),
-                      vue.createVNode(_component_ui_text, {
-                        size: "xs",
-                        color: "sub"
-                      }, {
-                        default: vue.withCtx(() => [
-                          vue.createTextVNode("退款/售后")
-                        ]),
-                        _: 1
-                        /* STABLE */
-                      })
-                    ])
-                  ])
+                  vue.createVNode(_component_ui_cell, {
+                    title: "我的店铺",
+                    icon: "store",
+                    "is-link": "",
+                    separated: "",
+                    onClick: $setup.goShop
+                  }),
+                  vue.createVNode(_component_ui_cell, {
+                    title: "我的发布",
+                    icon: "edit",
+                    "is-link": "",
+                    separated: "",
+                    onClick: $setup.goMyPublish
+                  }),
+                  vue.createVNode(_component_ui_cell, {
+                    title: "我的收藏",
+                    icon: "heart",
+                    "is-link": "",
+                    separated: "",
+                    onClick: $setup.goCollection
+                  }),
+                  vue.createVNode(_component_ui_cell, {
+                    title: "浏览足迹",
+                    icon: "eye",
+                    "is-link": "",
+                    separated: "",
+                    onClick: $setup.goHistory
+                  })
                 ]),
                 _: 1
                 /* STABLE */
               }),
-              vue.createElementVNode("view", { class: "menu-section" }, [
-                vue.createVNode(_component_ui_card, {
-                  glass: true,
-                  shadow: false,
-                  radius: "lg",
-                  padding: "sm",
-                  class: "menu-group"
-                }, {
-                  default: vue.withCtx(() => [
-                    vue.createVNode(_component_ui_cell, {
-                      title: "我的店铺",
-                      icon: "store",
-                      "is-link": "",
-                      separated: "",
-                      onClick: $setup.goShop
-                    }),
-                    vue.createVNode(_component_ui_cell, {
-                      title: "我的发布",
-                      icon: "edit",
-                      "is-link": "",
-                      separated: "",
-                      onClick: $setup.goMyPublish
-                    }),
-                    vue.createVNode(_component_ui_cell, {
-                      title: "我的收藏",
-                      icon: "heart",
-                      "is-link": "",
-                      separated: "",
-                      onClick: $setup.goCollection
-                    }),
-                    vue.createVNode(_component_ui_cell, {
-                      title: "浏览足迹",
-                      icon: "eye",
-                      "is-link": "",
-                      separated: "",
-                      onClick: $setup.goHistory
-                    })
-                  ]),
-                  _: 1
-                  /* STABLE */
-                }),
-                vue.createVNode(_component_ui_card, {
-                  glass: true,
-                  shadow: false,
-                  radius: "lg",
-                  padding: "sm",
-                  class: "menu-group"
-                }, {
-                  default: vue.withCtx(() => [
-                    vue.createVNode(_component_ui_cell, {
-                      title: "地址管理",
-                      icon: "map-pin",
-                      "is-link": "",
-                      separated: "",
-                      onClick: $setup.goAddress
-                    }),
-                    vue.createVNode(_component_ui_cell, {
-                      title: "我的钱包",
-                      icon: "credit-card",
-                      "is-link": "",
-                      separated: "",
-                      onClick: $setup.goWallet
-                    }),
-                    vue.createVNode(_component_ui_cell, {
-                      title: "实名认证",
-                      icon: "shield",
-                      "is-link": "",
-                      separated: "",
-                      onClick: $setup.goAuth
-                    }, {
-                      "right-icon": vue.withCtx(() => [
-                        vue.createVNode(_component_ui_text, {
-                          size: "sm",
-                          color: $setup.userInfo.isVerified ? "success" : "sub"
-                        }, {
-                          default: vue.withCtx(() => [
-                            vue.createTextVNode(
-                              vue.toDisplayString($setup.userInfo.isVerified ? "已认证" : "未认证"),
-                              1
-                              /* TEXT */
-                            )
-                          ]),
-                          _: 1
-                          /* STABLE */
-                        }, 8, ["color"])
-                      ]),
-                      _: 1
-                      /* STABLE */
-                    })
-                  ]),
-                  _: 1
-                  /* STABLE */
-                }),
-                vue.createVNode(_component_ui_card, {
-                  glass: true,
-                  shadow: false,
-                  radius: "lg",
-                  padding: "sm",
-                  class: "menu-group"
-                }, {
-                  default: vue.withCtx(() => [
-                    vue.createVNode(_component_ui_cell, {
-                      title: "帮助中心",
-                      icon: "help-circle",
-                      "is-link": "",
-                      separated: "",
-                      onClick: $setup.goHelp
-                    }),
-                    vue.createVNode(_component_ui_cell, {
-                      title: "意见反馈",
-                      icon: "message",
-                      "is-link": "",
-                      separated: "",
-                      onClick: $setup.goFeedback
-                    }),
-                    vue.createVNode(_component_ui_cell, {
-                      title: "设置",
-                      icon: "settings",
-                      "is-link": "",
-                      separated: "",
-                      onClick: $setup.goSettings
-                    })
-                  ]),
-                  _: 1
-                  /* STABLE */
-                })
-              ])
-            ],
-            4
-            /* STYLE */
-          )
+              vue.createVNode(_component_ui_card, {
+                glass: true,
+                shadow: false,
+                radius: "lg",
+                padding: "sm",
+                class: "menu-group"
+              }, {
+                default: vue.withCtx(() => [
+                  vue.createVNode(_component_ui_cell, {
+                    title: "地址管理",
+                    icon: "map-pin",
+                    "is-link": "",
+                    separated: "",
+                    onClick: $setup.goAddress
+                  }),
+                  vue.createVNode(_component_ui_cell, {
+                    title: "我的钱包",
+                    icon: "credit-card",
+                    "is-link": "",
+                    separated: "",
+                    onClick: $setup.goWallet
+                  }),
+                  vue.createVNode(_component_ui_cell, {
+                    title: "实名认证",
+                    icon: "shield",
+                    "is-link": "",
+                    separated: "",
+                    onClick: $setup.goAuth
+                  }, {
+                    "right-icon": vue.withCtx(() => [
+                      vue.createVNode(_component_ui_text, {
+                        size: "sm",
+                        color: $setup.userInfo.isVerified ? "success" : "sub"
+                      }, {
+                        default: vue.withCtx(() => [
+                          vue.createTextVNode(
+                            vue.toDisplayString($setup.userInfo.isVerified ? "已认证" : "未认证"),
+                            1
+                            /* TEXT */
+                          )
+                        ]),
+                        _: 1
+                        /* STABLE */
+                      }, 8, ["color"])
+                    ]),
+                    _: 1
+                    /* STABLE */
+                  })
+                ]),
+                _: 1
+                /* STABLE */
+              }),
+              vue.createVNode(_component_ui_card, {
+                glass: true,
+                shadow: false,
+                radius: "lg",
+                padding: "sm",
+                class: "menu-group"
+              }, {
+                default: vue.withCtx(() => [
+                  vue.createVNode(_component_ui_cell, {
+                    title: "帮助中心",
+                    icon: "help-circle",
+                    "is-link": "",
+                    separated: "",
+                    onClick: $setup.goHelp
+                  }),
+                  vue.createVNode(_component_ui_cell, {
+                    title: "意见反馈",
+                    icon: "message",
+                    "is-link": "",
+                    separated: "",
+                    onClick: $setup.goFeedback
+                  }),
+                  vue.createVNode(_component_ui_cell, {
+                    title: "设置",
+                    icon: "settings",
+                    "is-link": "",
+                    separated: "",
+                    onClick: $setup.goSettings
+                  })
+                ]),
+                _: 1
+                /* STABLE */
+              }),
+              vue.createElementVNode("view", { class: "bottom-space" })
+            ])
+          ])
         ],
         4
         /* STYLE */
@@ -22305,17 +22307,18 @@ This will fail in production.`);
       const userStore = useUserStore();
       const authStore = useAuthStore();
       onLaunch(() => {
-        formatAppLog("log", "at App.vue:105", "App Launch");
+        formatAppLog("log", "at App.vue:107", "App Launch");
         setupAuthInterceptor();
         appStore.init();
         themeStore.initTheme();
         authStore.initialize();
+        uni.hideTabBar({ animation: false });
       });
       onShow(() => {
-        formatAppLog("log", "at App.vue:114", "App Show");
+        formatAppLog("log", "at App.vue:118", "App Show");
       });
       onHide(() => {
-        formatAppLog("log", "at App.vue:118", "App Hide");
+        formatAppLog("log", "at App.vue:122", "App Hide");
       });
       const __returned__ = { AUTH_REQUIRED_PAGES: AUTH_REQUIRED_PAGES2, LOGIN_PAGE, REDIRECT_URL_KEY, isAuthRequired: isAuthRequired2, isLoggedIn: isLoggedIn2, saveRedirectAndGoLogin, setupAuthInterceptor, appStore, themeStore, userStore, authStore };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
@@ -22326,11 +22329,12 @@ This will fail in production.`);
     const _component_router_view = vue.resolveComponent("router-view");
     return vue.openBlock(), vue.createElementBlock("view", {
       class: "app-container",
-      style: vue.normalizeStyle($setup.themeStore.allThemeVars),
-      "data-theme": $setup.themeStore.currentMode
+      style: vue.normalizeStyle($setup.themeStore.themeVarsObject),
+      "data-theme": $setup.themeStore.currentMode,
+      "data-color": $setup.themeStore.config.color
     }, [
       vue.createVNode(_component_router_view)
-    ], 12, ["data-theme"]);
+    ], 12, ["data-theme", "data-color"]);
   }
   const App = /* @__PURE__ */ _export_sfc(_sfc_main$$, [["render", _sfc_render$$], ["__file", "C:/Users/willdc/Documents/WorkPlace/XinMall/XinMall2/FE/src/App.vue"]]);
   const _sfc_main$_ = /* @__PURE__ */ vue.defineComponent({

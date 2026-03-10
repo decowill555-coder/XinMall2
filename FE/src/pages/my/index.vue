@@ -36,16 +36,22 @@
       </view>
     </view>
     
-    <view class="page-content" :style="{ paddingTop: headerHeight + 'px' }">
-      <scroll-view scroll-y class="content-scroll" :style="{ height: scrollHeight + 'px' }">
+    <scroll-view 
+      scroll-y 
+      class="content-scroll" 
+      :style="{ paddingTop: headerHeight + 'px', height: scrollHeight + 'px' }"
+      :enhanced="true"
+      :show-scrollbar="false"
+    >
+      <view class="scroll-content">
         <ui-card :glass="true" :shadow="true" radius="lg" padding="md" class="order-section">
           <template #header>
             <view class="section-header">
               <ui-text size="lg" weight="bold" color="main">我的订单</ui-text>
-                <view class="section-more" @click="goOrders">
-                  <ui-text size="sm" color="sub">全部订单</ui-text>
-                  <ui-icon name="arrow-right" :size="32" color="#6E6E73" />
-                </view>
+              <view class="section-more" @click="goOrders">
+                <ui-text size="sm" color="sub">全部订单</ui-text>
+                <ui-icon name="arrow-right" :size="32" color="#6E6E73" />
+              </view>
             </view>
           </template>
           
@@ -123,9 +129,11 @@
             <ui-cell title="意见反馈" icon="message" is-link separated @click="goFeedback" />
             <ui-cell title="设置" icon="settings" is-link separated @click="goSettings" />
           </ui-card>
+          
+          <view class="bottom-space"></view>
         </view>
-      </scroll-view>
-    </view>
+      </view>
+    </scroll-view>
     
     <TheTabbar current="my" />
   </view>
@@ -297,12 +305,20 @@ const goSettings = () => {
   }
 }
 
-.page-content {
-  padding-bottom: 0;
+.content-scroll {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
-.content-scroll {
-  overflow: hidden;
+.scroll-content {
+  padding-bottom: 120rpx;
+}
+
+.bottom-space {
+  height: 32rpx;
 }
 
 .order-section {

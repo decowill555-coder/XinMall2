@@ -1,5 +1,5 @@
 <template>
-  <view class="app-container" :style="themeStore.allThemeVars" :data-theme="themeStore.currentMode">
+  <view class="app-container" :style="themeStore.themeVarsObject" :data-theme="themeStore.currentMode" :data-color="themeStore.config.color">
     <router-view />
   </view>
 </template>
@@ -101,14 +101,18 @@ const themeStore = useThemeStore();
 const userStore = useUserStore();
 const authStore = useAuthStore();
 
+
+
 onLaunch(() => {
   console.log('App Launch');
-  
   setupAuthInterceptor();
   appStore.init();
   themeStore.initTheme();
   authStore.initialize();
+  uni.hideTabBar({animation: false});
 });
+
+
 
 onShow(() => {
   console.log('App Show');

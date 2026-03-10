@@ -382,8 +382,17 @@ export const useThemeStore = defineStore('theme', () => {
     // #endif
     
     // #ifndef H5
-    const sys = uni.getSystemInfoSync();
-    systemTheme.value = 'light';
+    try {
+      const sys = uni.getSystemInfoSync();
+      const osTheme = sys.osTheme || 'light';
+      systemTheme.value = osTheme === 'dark' ? 'dark' : 'light';
+      
+      if (config.value.mode === 'system') {
+        applyTheme();
+      }
+    } catch (e) {
+      systemTheme.value = 'light';
+    }
     // #endif
   };
 
@@ -403,6 +412,11 @@ export const useThemeStore = defineStore('theme', () => {
       root.setAttribute('data-theme', currentMode.value);
       root.setAttribute('data-color', config.value.color);
     }
+    // #endif
+    
+    // #ifndef H5
+    uni.setStorageSync('theme_mode', currentMode.value);
+    uni.setStorageSync('theme_color', config.value.color);
     // #endif
     
     uni.setNavigationBarColor({
