@@ -1,8 +1,9 @@
-package com.example.xinmall.entity;
+package com.example.xinmall.entity.user;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.example.xinmall.entity.user.enums.AuthStatus;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -24,13 +25,13 @@ public class UserProfile {
 
     private String idCardBack;
 
-    private Integer realNameStatus;
+    private AuthStatus realNameStatus;
 
     private LocalDateTime realNameTime;
 
     private String realNameReason;
 
-    private Integer shopAuthStatus;
+    private AuthStatus shopAuthStatus;
 
     private LocalDateTime shopAuthTime;
 
