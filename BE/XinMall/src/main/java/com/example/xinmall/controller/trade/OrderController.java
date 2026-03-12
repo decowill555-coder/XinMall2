@@ -1,6 +1,6 @@
 package com.example.xinmall.controller.trade;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.xinmall.common.result.Result;
 import com.example.xinmall.dto.trade.request.OrderCreateRequest;
 import com.example.xinmall.dto.trade.request.ShipRequest;
@@ -31,11 +31,11 @@ public class OrderController {
 
     @Operation(summary = "订单列表")
     @GetMapping
-    public Result<Page<OrderVO>> getList(
+    public Result<IPage<OrderVO>> getList(
             @RequestParam(required = false) OrderStatus status,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
-        Page<OrderVO> result = orderService.getList(status, page, size);
+        IPage<OrderVO> result = orderService.getMyOrders(status, page, size);
         return Result.success(result);
     }
 
@@ -56,7 +56,7 @@ public class OrderController {
     @Operation(summary = "发货")
     @PutMapping("/{id}/ship")
     public Result<Void> ship(@PathVariable Long id, @Valid @RequestBody ShipRequest request) {
-        orderService.ship(id, request);
+        orderService.ship(id, request.getExpressCompany(), request.getExpressNo());
         return Result.success();
     }
 
@@ -69,11 +69,11 @@ public class OrderController {
 
     @Operation(summary = "卖家订单列表")
     @GetMapping("/seller")
-    public Result<Page<OrderVO>> getSellerOrders(
+    public Result<IPage<OrderVO>> getSellerOrders(
             @RequestParam(required = false) OrderStatus status,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
-        Page<OrderVO> result = orderService.getSellerOrders(status, page, size);
+        IPage<OrderVO> result = orderService.getMySales(status, page, size);
         return Result.success(result);
     }
 }

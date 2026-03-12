@@ -1,6 +1,6 @@
 package com.example.xinmall.controller.system;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.xinmall.common.result.Result;
 import com.example.xinmall.dto.system.request.CollectionRequest;
 import com.example.xinmall.service.system.CollectionService;
@@ -43,11 +43,11 @@ public class CollectionController {
 
     @Operation(summary = "我的收藏列表")
     @GetMapping("/my")
-    public Result<Page<?>> getMyCollections(
+    public Result<IPage<?>> getMyCollections(
             @RequestParam(required = false) Integer targetType,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
-        Page<?> result = collectionService.getMyCollections(targetType, page, size);
+        IPage<?> result = collectionService.getMyCollections(targetType, page, size);
         return Result.success(result);
     }
 

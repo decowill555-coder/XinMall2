@@ -1,6 +1,8 @@
 package com.example.xinmall.service.system.impl;
 
+import org.springframework.beans.BeanUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.xinmall.common.exception.BusinessException;
 import com.example.xinmall.dto.system.request.CollectionRequest;
@@ -73,7 +75,7 @@ public class CollectionServiceImpl implements CollectionService {
     }
 
     @Override
-    public Page<?> getMyCollections(Integer targetType, Integer page, Integer size) {
+    public IPage<?> getMyCollections(Integer targetType, Integer page, Integer size) {
         Long userId = getCurrentUserId();
         Page<Collection> pageParam = new Page<>(page, size);
 

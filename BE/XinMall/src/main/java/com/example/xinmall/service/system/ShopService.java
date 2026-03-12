@@ -1,6 +1,6 @@
 package com.example.xinmall.service.system;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.xinmall.dto.system.request.ShopCreateRequest;
 import com.example.xinmall.dto.system.response.ShopVO;
 
@@ -18,5 +18,5 @@ public interface ShopService {
 
     void reopenShop(Long id);
 
-    Page<ShopVO> getShopList(Integer page, Integer size);
+    IPage<ShopVO> getShopList(Integer page, Integer size);
 }

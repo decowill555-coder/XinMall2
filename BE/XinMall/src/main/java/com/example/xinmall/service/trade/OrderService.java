@@ -1,6 +1,6 @@
 package com.example.xinmall.service.trade;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.xinmall.dto.trade.request.OrderCreateRequest;
 import com.example.xinmall.dto.trade.response.OrderDetailVO;
 import com.example.xinmall.dto.trade.response.OrderVO;
@@ -11,9 +11,9 @@ public interface OrderService {
 
     Long create(OrderCreateRequest request);
 
-    Page<OrderVO> getMyOrders(OrderStatus status, Integer page, Integer size);
+    IPage<OrderVO> getMyOrders(OrderStatus status, Integer page, Integer size);
 
-    Page<OrderVO> getMySales(OrderStatus status, Integer page, Integer size);
+    IPage<OrderVO> getMySales(OrderStatus status, Integer page, Integer size);
 
     OrderDetailVO getDetailById(Long id);
 

@@ -1,6 +1,6 @@
 package com.example.xinmall.service.system;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.xinmall.dto.system.request.CollectionRequest;
 
 public interface CollectionService {
@@ -11,7 +11,7 @@ public interface CollectionService {
 
     boolean isCollected(Long targetId, Integer targetType);
 
-    Page<?> getMyCollections(Integer targetType, Integer page, Integer size);
+    IPage<?> getMyCollections(Integer targetType, Integer page, Integer size);
 
     Long getCollectionCount(Long targetId, Integer targetType);
 }

@@ -1,6 +1,6 @@
 package com.example.xinmall.service.trade;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.xinmall.dto.trade.request.GoodsPublishRequest;
 import com.example.xinmall.dto.trade.request.GoodsQueryRequest;
 import com.example.xinmall.dto.trade.response.GoodsDetailVO;
@@ -11,7 +11,7 @@ public interface GoodsService {
 
     Long publish(GoodsPublishRequest request);
 
-    Page<GoodsVO> search(GoodsQueryRequest request);
+    IPage<GoodsVO> search(GoodsQueryRequest request);
 
     GoodsDetailVO getDetailById(Long id);
 
@@ -21,7 +21,7 @@ public interface GoodsService {
 
     void onShelf(Long id);
 
-    Page<GoodsVO> getMyGoods(Integer page, Integer size);
+    IPage<GoodsVO> getMyGoods(Integer page, Integer size);
 
     void incrementViewCount(Long id);
 

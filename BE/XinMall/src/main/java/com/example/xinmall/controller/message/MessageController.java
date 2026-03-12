@@ -1,6 +1,6 @@
 package com.example.xinmall.controller.message;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.xinmall.common.result.Result;
 import com.example.xinmall.dto.message.request.SendMessageRequest;
 import com.example.xinmall.dto.message.response.MessageVO;
@@ -21,11 +21,11 @@ public class MessageController {
 
     @Operation(summary = "获取消息列表")
     @GetMapping
-    public Result<Page<MessageVO>> getMessages(
+    public Result<IPage<MessageVO>> getMessages(
             @RequestParam Long conversationId,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "20") Integer size) {
-        Page<MessageVO> result = messageService.getMessages(conversationId, page, size);
+        IPage<MessageVO> result = messageService.getMessages(conversationId, page, size);
         return Result.success(result);
     }
 

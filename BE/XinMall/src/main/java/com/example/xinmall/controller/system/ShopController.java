@@ -1,6 +1,6 @@
 package com.example.xinmall.controller.system;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.xinmall.common.result.Result;
 import com.example.xinmall.dto.system.request.ShopCreateRequest;
 import com.example.xinmall.dto.system.response.ShopVO;
@@ -63,10 +63,10 @@ public class ShopController {
 
     @Operation(summary = "店铺列表")
     @GetMapping("/list")
-    public Result<Page<ShopVO>> getShopList(
+    public Result<IPage<ShopVO>> getShopList(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
-        Page<ShopVO> result = shopService.getShopList(page, size);
+        IPage<ShopVO> result = shopService.getShopList(page, size);
         return Result.success(result);
     }
 }

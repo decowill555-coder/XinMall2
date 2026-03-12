@@ -1,6 +1,7 @@
 package com.example.xinmall.service.trade.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.xinmall.common.exception.BusinessException;
 import com.example.xinmall.dto.trade.request.OrderCreateRequest;
@@ -17,7 +18,8 @@ import com.example.xinmall.mapper.trade.OrderMapper;
 import com.example.xinmall.mapper.user.UserAddressMapper;
 import com.example.xinmall.service.trade.OrderService;
 import com.example.xinmall.service.user.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.Authentication;
@@ -48,7 +50,7 @@ public class OrderServiceImpl implements OrderService {
         if (goods == null) {
             throw new BusinessException("商品不存在");
         }
-        if (goods.getStatus() != GoodsStatus.ON_SALE) {
+        if (goods.getStatus() != GoodsStatus.SOLD) {
             throw new BusinessException("商品已下架或已售出");
         }
         if (goods.getSellerId().equals(userId)) {
@@ -98,7 +100,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<OrderVO> getMyOrders(OrderStatus status, Integer page, Integer size) {
+    public IPage<OrderVO> getMyOrders(OrderStatus status, Integer page, Integer size) {
         Long userId = getCurrentUserId();
         Page<Order> pageParam = new Page<>(page, size);
 
@@ -114,7 +116,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<OrderVO> getMySales(OrderStatus status, Integer page, Integer size) {
+    public IPage<OrderVO> getMySales(OrderStatus status, Integer page, Integer size) {
         Long userId = getCurrentUserId();
         Page<Order> pageParam = new Page<>(page, size);
 
@@ -181,7 +183,7 @@ public class OrderServiceImpl implements OrderService {
         if (goods != null) {
             goods.setStock(goods.getStock() + order.getQuantity());
             if (goods.getStatus() == GoodsStatus.SOLD) {
-                goods.setStatus(GoodsStatus.ON_SALE);
+                goods.setStatus(GoodsStatus.ON_SHELF);
             }
             goodsMapper.updateById(goods);
         }
@@ -285,7 +287,7 @@ public class OrderServiceImpl implements OrderService {
         if (goods != null) {
             vo.setGoodsTitle(goods.getTitle());
             try {
-                com.fasterxml.jackson.databind.JsonNode images = objectMapper.readTree(goods.getImages());
+                JsonNode images = objectMapper.readTree(goods.getImages());
                 if (images.isArray() && images.size() > 0) {
                     vo.setGoodsCover(images.get(0).asText());
                 }

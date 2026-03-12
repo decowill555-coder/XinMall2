@@ -1,6 +1,7 @@
 package com.example.xinmall.service.trade.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.xinmall.common.exception.BusinessException;
 import com.example.xinmall.dto.trade.request.EvaluationRequest;
@@ -12,9 +13,9 @@ import com.example.xinmall.mapper.trade.EvaluationMapper;
 import com.example.xinmall.mapper.trade.OrderMapper;
 import com.example.xinmall.service.trade.EvaluationService;
 import com.example.xinmall.service.user.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.Authentication;
@@ -68,7 +69,7 @@ public class EvaluationServiceImpl implements EvaluationService {
         evaluation.setContent(request.getContent());
         try {
             evaluation.setImages(request.getImages() != null ? objectMapper.writeValueAsString(request.getImages()) : null);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             evaluation.setImages(null);
         }
         evaluation.setIsAnonymous(request.getIsAnonymous() != null ? request.getIsAnonymous() : false);
@@ -81,7 +82,7 @@ public class EvaluationServiceImpl implements EvaluationService {
     }
 
     @Override
-    public Page<EvaluationVO> getByGoodsId(Long goodsId, Integer page, Integer size) {
+    public IPage<EvaluationVO> getByGoodsId(Long goodsId, Integer page, Integer size) {
         Page<Evaluation> pageParam = new Page<>(page, size);
         Page<Evaluation> result = evaluationMapper.selectPage(pageParam,
                 new LambdaQueryWrapper<Evaluation>()
@@ -93,7 +94,7 @@ public class EvaluationServiceImpl implements EvaluationService {
     }
 
     @Override
-    public Page<EvaluationVO> getBySellerId(Long sellerId, Integer page, Integer size) {
+    public IPage<EvaluationVO> getBySellerId(Long sellerId, Integer page, Integer size) {
         Page<Evaluation> pageParam = new Page<>(page, size);
         Page<Evaluation> result = evaluationMapper.selectPage(pageParam,
                 new LambdaQueryWrapper<Evaluation>()
@@ -152,7 +153,7 @@ public class EvaluationServiceImpl implements EvaluationService {
             try {
                 List<String> images = objectMapper.readValue(evaluation.getImages(), new TypeReference<List<String>>() {});
                 vo.setImages(images);
-            } catch (JsonProcessingException e) {
+            } catch (JacksonException e) {
                 vo.setImages(List.of());
             }
         }

@@ -2,6 +2,7 @@ package com.example.xinmall.service.message.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.xinmall.common.exception.BusinessException;
 import com.example.xinmall.dto.message.request.SendMessageRequest;
@@ -35,7 +36,7 @@ public class MessageServiceImpl implements MessageService {
     private final UserService userService;
 
     @Override
-    public Page<MessageVO> getMessages(Long conversationId, Integer page, Integer size) {
+    public IPage<MessageVO> getMessages(Long conversationId, Integer page, Integer size) {
         Long userId = getCurrentUserId();
         Conversation conversation = conversationMapper.selectOne(
                 new LambdaQueryWrapper<Conversation>()

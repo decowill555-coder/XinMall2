@@ -2,6 +2,7 @@ package com.example.xinmall.service.product.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.xinmall.common.exception.BusinessException;
 import com.example.xinmall.dto.product.request.ProductModelQueryRequest;
@@ -17,9 +18,9 @@ import com.example.xinmall.mapper.product.*;
 import com.example.xinmall.service.product.BrandService;
 import com.example.xinmall.service.product.CategoryService;
 import com.example.xinmall.service.product.ProductModelService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,7 @@ public class ProductModelServiceImpl implements ProductModelService {
     private final ObjectMapper objectMapper;
 
     @Override
-    public Page<ProductModelVO> search(ProductModelQueryRequest request) {
+    public IPage<ProductModelVO> search(ProductModelQueryRequest request) {
         Page<ProductModel> page = new Page<>(request.getPage(), request.getSize());
 
         LambdaQueryWrapper<ProductModel> wrapper = new LambdaQueryWrapper<>();
@@ -85,7 +86,7 @@ public class ProductModelServiceImpl implements ProductModelService {
             try {
                 List<String> images = objectMapper.readValue(model.getImages(), new TypeReference<List<String>>() {});
                 vo.setImages(images);
-            } catch (JsonProcessingException e) {
+            } catch (JacksonException e) {
                 vo.setImages(List.of());
             }
         }

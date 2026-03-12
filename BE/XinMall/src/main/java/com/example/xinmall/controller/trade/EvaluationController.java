@@ -1,6 +1,6 @@
 package com.example.xinmall.controller.trade;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.xinmall.common.result.Result;
 import com.example.xinmall.dto.trade.request.EvaluationRequest;
 import com.example.xinmall.dto.trade.response.EvaluationVO;
@@ -28,21 +28,21 @@ public class EvaluationController {
 
     @Operation(summary = "商品评价列表")
     @GetMapping("/goods/{goodsId}")
-    public Result<Page<EvaluationVO>> getByGoodsId(
+    public Result<IPage<EvaluationVO>> getByGoodsId(
             @PathVariable Long goodsId,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
-        Page<EvaluationVO> result = evaluationService.getByGoodsId(goodsId, page, size);
+        IPage<EvaluationVO> result = evaluationService.getByGoodsId(goodsId, page, size);
         return Result.success(result);
     }
 
     @Operation(summary = "卖家收到的评价")
     @GetMapping("/seller/{sellerId}")
-    public Result<Page<EvaluationVO>> getBySellerId(
+    public Result<IPage<EvaluationVO>> getBySellerId(
             @PathVariable Long sellerId,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
-        Page<EvaluationVO> result = evaluationService.getBySellerId(sellerId, page, size);
+        IPage<EvaluationVO> result = evaluationService.getBySellerId(sellerId, page, size);
         return Result.success(result);
     }
 

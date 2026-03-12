@@ -1,6 +1,7 @@
 package com.example.xinmall.service.system.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.xinmall.common.exception.BusinessException;
 import com.example.xinmall.dto.system.request.ShopCreateRequest;
@@ -131,7 +132,7 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
-    public Page<ShopVO> getShopList(Integer page, Integer size) {
+    public IPage<ShopVO> getShopList(Integer page, Integer size) {
         Page<Shop> pageParam = new Page<>(page, size);
         Page<Shop> result = shopMapper.selectPage(pageParam,
                 new LambdaQueryWrapper<Shop>()

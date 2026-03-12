@@ -1,12 +1,12 @@
 package com.example.xinmall.service.message;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.xinmall.dto.message.request.SendMessageRequest;
 import com.example.xinmall.dto.message.response.MessageVO;
 
 public interface MessageService {
 
-    Page<MessageVO> getMessages(Long conversationId, Integer page, Integer size);
+    IPage<MessageVO> getMessages(Long conversationId, Integer page, Integer size);
 
     MessageVO sendMessage(SendMessageRequest request);
 

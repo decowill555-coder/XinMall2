@@ -1,6 +1,6 @@
 package com.example.xinmall.controller.trade;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.xinmall.common.result.Result;
 import com.example.xinmall.dto.trade.request.GoodsPublishRequest;
 import com.example.xinmall.dto.trade.request.GoodsQueryRequest;
@@ -30,8 +30,8 @@ public class GoodsController {
 
     @Operation(summary = "商品列表")
     @GetMapping
-    public Result<Page<GoodsVO>> search(GoodsQueryRequest request) {
-        Page<GoodsVO> result = goodsService.search(request);
+    public Result<IPage<GoodsVO>> search(GoodsQueryRequest request) {
+        IPage<GoodsVO> result = goodsService.search(request);
         return Result.success(result);
     }
 
@@ -66,10 +66,10 @@ public class GoodsController {
 
     @Operation(summary = "我的发布")
     @GetMapping("/my")
-    public Result<Page<GoodsVO>> getMyGoods(
+    public Result<IPage<GoodsVO>> getMyGoods(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
-        Page<GoodsVO> result = goodsService.getMyGoods(page, size);
+        IPage<GoodsVO> result = goodsService.getMyGoods(page, size);
         return Result.success(result);
     }
 }

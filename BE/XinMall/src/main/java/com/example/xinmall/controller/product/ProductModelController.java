@@ -1,6 +1,6 @@
 package com.example.xinmall.controller.product;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.xinmall.common.result.Result;
 import com.example.xinmall.dto.product.request.ProductModelQueryRequest;
 import com.example.xinmall.dto.product.response.ProductModelDetailVO;
@@ -21,8 +21,8 @@ public class ProductModelController {
 
     @Operation(summary = "搜索产品型号")
     @GetMapping("/search")
-    public Result<Page<ProductModelVO>> search(ProductModelQueryRequest request) {
-        Page<ProductModelVO> result = productModelService.search(request);
+    public Result<IPage<ProductModelVO>> search(ProductModelQueryRequest request) {
+        IPage<ProductModelVO> result = productModelService.search(request);
         return Result.success(result);
     }
 

@@ -2,6 +2,7 @@ package com.example.xinmall.service.trade.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.xinmall.common.exception.BusinessException;
 import com.example.xinmall.dto.trade.request.GoodsPublishRequest;
@@ -14,9 +15,9 @@ import com.example.xinmall.entity.user.User;
 import com.example.xinmall.mapper.trade.GoodsMapper;
 import com.example.xinmall.service.trade.GoodsService;
 import com.example.xinmall.service.user.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.Authentication;
@@ -50,7 +51,7 @@ public class GoodsServiceImpl implements GoodsService {
         goods.setDescription(request.getDescription());
         try {
             goods.setImages(objectMapper.writeValueAsString(request.getImages()));
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new BusinessException("图片数据格式错误");
         }
         goods.setPrice(request.getPrice());
@@ -64,7 +65,7 @@ public class GoodsServiceImpl implements GoodsService {
         goods.setStock(request.getStock() != null ? request.getStock() : 1);
         goods.setViewCount(0);
         goods.setLikeCount(0);
-        goods.setStatus(GoodsStatus.PENDING);
+        goods.setStatus(GoodsStatus.AUDITING);
         goods.setCreatedAt(LocalDateTime.now());
         goods.setUpdatedAt(LocalDateTime.now());
 
@@ -73,11 +74,11 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public Page<GoodsVO> search(GoodsQueryRequest request) {
+    public IPage<GoodsVO> search(GoodsQueryRequest request) {
         Page<Goods> page = new Page<>(request.getPage(), request.getSize());
 
         LambdaQueryWrapper<Goods> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Goods::getStatus, GoodsStatus.ON_SALE);
+        wrapper.eq(Goods::getStatus, GoodsStatus.OFF_SHELF);
 
         if (StringUtils.hasText(request.getKeyword())) {
             wrapper.like(Goods::getTitle, request.getKeyword());
@@ -133,7 +134,7 @@ public class GoodsServiceImpl implements GoodsService {
             try {
                 List<String> images = objectMapper.readValue(goods.getImages(), new TypeReference<List<String>>() {});
                 vo.setImages(images);
-            } catch (JsonProcessingException e) {
+            } catch (JacksonException e) {
                 vo.setImages(List.of());
             }
         }
@@ -165,7 +166,7 @@ public class GoodsServiceImpl implements GoodsService {
         goods.setDescription(request.getDescription());
         try {
             goods.setImages(objectMapper.writeValueAsString(request.getImages()));
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new BusinessException("图片数据格式错误");
         }
         goods.setPrice(request.getPrice());
@@ -211,13 +212,13 @@ public class GoodsServiceImpl implements GoodsService {
             throw new BusinessException("无权操作此商品");
         }
 
-        goods.setStatus(GoodsStatus.PENDING);
+        goods.setStatus(GoodsStatus.AUDITING);
         goods.setUpdatedAt(LocalDateTime.now());
         goodsMapper.updateById(goods);
     }
 
     @Override
-    public Page<GoodsVO> getMyGoods(Integer page, Integer size) {
+    public IPage<GoodsVO> getMyGoods(Integer page, Integer size) {
         Long userId = getCurrentUserId();
         Page<Goods> pageParam = new Page<>(page, size);
 
@@ -280,7 +281,7 @@ public class GoodsServiceImpl implements GoodsService {
                 if (!images.isEmpty()) {
                     vo.setCover(images.get(0));
                 }
-            } catch (JsonProcessingException e) {
+            } catch (JacksonException e) {
                 // ignore
             }
         }
