@@ -100,11 +100,13 @@ config/
 
 ```
 security/
-├── JwtUtils.java                       # JWT工具类
-├── JwtFilter.java                      # JWT认证过滤器
-├── UserDetailsServiceImpl.java         # 用户详情服务实现
-├── AuthenticationEntryPointImpl.java   # 认证失败处理
-└── AccessDeniedHandlerImpl.java        # 权限不足处理
+├── handler/
+│   ├── AccessDeniedHandlerImpl.java      # 权限不足处理
+│   └── AuthenticationEntryPointImpl.java # 认证失败处理
+├── service/
+│   └── UserDetailsServiceImpl.java       # 用户详情服务实现
+├── JwtAuthenticationTokenFilter.java     # JWT认证过滤器
+└── JwtUtils.java                         # JWT工具类
 ```
 
 **职责说明**：
@@ -112,7 +114,7 @@ security/
 | 文件 | 职责 |
 |------|------|
 | `JwtUtils.java` | 生成Token、解析Token、验证Token有效性 |
-| `JwtFilter.java` | 拦截请求，验证Token，设置用户上下文 |
+| `JwtAuthenticationTokenFilter.java` | 拦截请求，验证Token，设置用户上下文 |
 | `UserDetailsServiceImpl.java` | 实现Spring Security的用户加载接口 |
 | `AuthenticationEntryPointImpl.java` | 处理未登录访问受保护资源 |
 | `AccessDeniedHandlerImpl.java` | 处理权限不足的情况 |
