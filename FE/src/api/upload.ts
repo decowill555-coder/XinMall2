@@ -40,7 +40,7 @@ export interface BatchUploadResult {
 export const uploadApi = {
   uploadFile: (file: string, scene: UploadScene, options?: Omit<UploadOptions, 'scene'>) => {
     return http<UploadResponse>({
-      url: '/upload/file',
+      url: '/upload',
       method: 'POST',
       data: {
         file,
@@ -156,9 +156,9 @@ export const uploadApi = {
     });
   },
 
-  deleteFile: (key: string) => {
+  deleteFile: (id: string) => {
     return http<{ success: boolean }>({
-      url: `/upload/file/${key}`,
+      url: `/upload/${id}`,
       method: 'DELETE'
     });
   },

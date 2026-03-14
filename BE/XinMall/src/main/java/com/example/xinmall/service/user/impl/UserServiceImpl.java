@@ -369,6 +369,43 @@ public class UserServiceImpl implements UserService {
         );
     }
 
+    @Override
+    @Transactional
+    public void resetPassword(ResetPasswordRequest request) {
+        User user = userMapper.selectOne(
+                new LambdaQueryWrapper<User>().eq(User::getPhone, request.getPhone())
+        );
+        if (user == null) {
+            throw new BusinessException("用户不存在");
+        }
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setUpdatedAt(LocalDateTime.now());
+        userMapper.updateById(user);
+    }
+
+    @Override
+    public TokenVO refreshToken(String refreshToken) {
+        Long userId = jwtUtils.getUserId(refreshToken);
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new BusinessException("用户不存在");
+        }
+        String newToken = jwtUtils.generateToken(user.getId(), user.getPhone());
+        TokenVO tokenVO = new TokenVO();
+        tokenVO.setToken(newToken);
+        tokenVO.setRefreshToken(newToken);
+        tokenVO.setExpiresIn(86400000L);
+        return tokenVO;
+    }
+
+    @Override
+    public boolean checkPhoneExists(String phone) {
+        User user = userMapper.selectOne(
+                new LambdaQueryWrapper<User>().eq(User::getPhone, phone)
+        );
+        return user != null;
+    }
+
     private Long getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {

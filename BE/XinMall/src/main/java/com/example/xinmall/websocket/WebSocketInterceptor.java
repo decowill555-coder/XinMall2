@@ -36,8 +36,8 @@ public class WebSocketInterceptor implements HandshakeInterceptor {
                     return false;
                 }
 
-                Long userId = jwtUtils.getUserIdFromToken(token);
-                String username = jwtUtils.getUsernameFromToken(token);
+                Long userId = jwtUtils.getUserId(token);
+                String username = jwtUtils.getUsername(token);
                 
                 attributes.put("userId", userId);
                 attributes.put("username", username);

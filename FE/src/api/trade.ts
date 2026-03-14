@@ -234,14 +234,14 @@ export interface EvaluationDetail {
 export const tradeApi = {
   getProductDetail: (id: string) => {
     return http<ProductDetail>({
-      url: `/trade/product/${id}`,
+      url: `/goods/${id}`,
       method: 'GET'
     });
   },
 
   getProductList: (params: ProductListParams) => {
     return http<ProductListResult>({
-      url: '/trade/products',
+      url: '/goods',
       method: 'GET',
       data: params
     });
@@ -249,21 +249,21 @@ export const tradeApi = {
 
   collectProduct: (productId: string) => {
     return http<{ success: boolean; likeCount: number }>({
-      url: `/trade/product/${productId}/collect`,
+      url: `/goods/${productId}/collect`,
       method: 'POST'
     });
   },
 
   uncollectProduct: (productId: string) => {
     return http<{ success: boolean; likeCount: number }>({
-      url: `/trade/product/${productId}/uncollect`,
+      url: `/goods/${productId}/uncollect`,
       method: 'POST'
     });
   },
 
   createOrder: (params: CreateOrderParams) => {
     return http<CreateOrderResult>({
-      url: '/trade/order',
+      url: '/order',
       method: 'POST',
       data: params,
       loading: true
@@ -272,7 +272,7 @@ export const tradeApi = {
 
   getOrderList: (params: OrderListParams) => {
     return http<OrderListResult>({
-      url: '/trade/orders',
+      url: '/order',
       method: 'GET',
       data: params
     });
@@ -280,21 +280,21 @@ export const tradeApi = {
 
   getOrderDetail: (orderId: string) => {
     return http<OrderDetail>({
-      url: `/trade/order/${orderId}`,
+      url: `/order/${orderId}`,
       method: 'GET'
     });
   },
 
   cancelOrder: (orderId: string) => {
     return http<{ success: boolean }>({
-      url: `/trade/order/${orderId}/cancel`,
-      method: 'POST'
+      url: `/order/${orderId}/cancel`,
+      method: 'PUT'
     });
   },
 
   payOrder: (params: PayOrderParams) => {
     return http<PayOrderResult>({
-      url: `/trade/order/${params.orderId}/pay`,
+      url: `/order/${params.orderId}/pay`,
       method: 'POST',
       data: { method: params.method },
       loading: true
@@ -303,35 +303,35 @@ export const tradeApi = {
 
   confirmReceive: (orderId: string) => {
     return http<{ success: boolean }>({
-      url: `/trade/order/${orderId}/confirm`,
-      method: 'POST'
+      url: `/order/${orderId}/receive`,
+      method: 'PUT'
     });
   },
 
   getLogistics: (orderId: string) => {
     return http<LogisticsInfo>({
-      url: `/trade/order/${orderId}/logistics`,
+      url: `/order/${orderId}/logistics`,
       method: 'GET'
     });
   },
 
   getAddressList: () => {
     return http<Address[]>({
-      url: '/trade/address',
+      url: '/user/address',
       method: 'GET'
     });
   },
 
   getAddressDetail: (id: string) => {
     return http<Address>({
-      url: `/trade/address/${id}`,
+      url: `/user/address/${id}`,
       method: 'GET'
     });
   },
 
   createAddress: (data: Omit<Address, 'id' | 'isDefault'>) => {
     return http<Address>({
-      url: '/trade/address',
+      url: '/user/address',
       method: 'POST',
       data
     });
@@ -339,7 +339,7 @@ export const tradeApi = {
 
   updateAddress: (id: string, data: Partial<Address>) => {
     return http<Address>({
-      url: `/trade/address/${id}`,
+      url: `/user/address/${id}`,
       method: 'PUT',
       data
     });
@@ -347,21 +347,21 @@ export const tradeApi = {
 
   deleteAddress: (id: string) => {
     return http<{ success: boolean }>({
-      url: `/trade/address/${id}`,
+      url: `/user/address/${id}`,
       method: 'DELETE'
     });
   },
 
   setDefaultAddress: (id: string) => {
     return http<{ success: boolean }>({
-      url: `/trade/address/${id}/default`,
-      method: 'POST'
+      url: `/user/address/${id}/default`,
+      method: 'PUT'
     });
   },
 
   createEvaluation: (params: CreateEvaluationParams) => {
     return http<{ id: string }>({
-      url: '/trade/evaluation',
+      url: '/evaluation',
       method: 'POST',
       data: params,
       loading: true
@@ -370,14 +370,14 @@ export const tradeApi = {
 
   getEvaluation: (orderId: string) => {
     return http<EvaluationDetail>({
-      url: `/trade/evaluation/${orderId}`,
+      url: `/evaluation/order/${orderId}`,
       method: 'GET'
     });
   },
 
   getProductEvaluations: (productId: string, page?: number, pageSize?: number) => {
     return http<{ list: EvaluationDetail[]; total: number; hasMore: boolean }>({
-      url: `/trade/product/${productId}/evaluations`,
+      url: `/evaluation/goods/${productId}`,
       method: 'GET',
       data: { page, pageSize }
     });

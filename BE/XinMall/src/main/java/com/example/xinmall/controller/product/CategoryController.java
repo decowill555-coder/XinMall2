@@ -8,7 +8,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "分类接口", description = "设备分类相关接口")
 @RestController
@@ -30,5 +33,19 @@ public class CategoryController {
     public Result<List<CategoryVO>> getChildren(@RequestParam(required = false, defaultValue = "0") Long parentId) {
         List<CategoryVO> children = categoryService.getChildrenByParentId(parentId);
         return Result.success(children);
+    }
+
+    @Operation(summary = "获取分类详情")
+    @GetMapping("/{id}")
+    public Result<Map<String, Object>> getDetail(@PathVariable Long id) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", id);
+        result.put("name", "分类名称");
+        result.put("icon", "");
+        result.put("description", "");
+        result.put("subCategories", new ArrayList<>());
+        result.put("brands", new ArrayList<>());
+        result.put("productCount", 0);
+        return Result.success(result);
     }
 }

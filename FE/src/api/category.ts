@@ -136,21 +136,21 @@ export interface HotModel {
 export const categoryApi = {
   getDeviceCategories: () => {
     return http<AlphabetCategory[]>({
-      url: '/category/device-categories',
+      url: '/category/tree',
       method: 'GET'
     });
   },
 
   getDeviceTypeDetail: (id: string) => {
     return http<DeviceTypeDetail>({
-      url: `/category/device-type/${id}`,
+      url: `/category/${id}`,
       method: 'GET'
     });
   },
 
   getModels: (params: ModelListParams) => {
     return http<ModelListResult>({
-      url: '/category/models',
+      url: '/spu/search',
       method: 'GET',
       data: params
     });
@@ -158,14 +158,14 @@ export const categoryApi = {
 
   getModelDetail: (id: string) => {
     return http<ModelDetail>({
-      url: `/category/model/${id}`,
+      url: `/spu/${id}`,
       method: 'GET'
     });
   },
 
   getModelProducts: (params: ModelProductParams) => {
     return http<ModelProductResult>({
-      url: `/category/model/${params.modelId}/products`,
+      url: `/spu/${params.modelId}/products`,
       method: 'GET',
       data: params
     });
@@ -173,7 +173,7 @@ export const categoryApi = {
 
   getHotModels: (deviceTypeId?: string, limit?: number) => {
     return http<HotModel[]>({
-      url: '/category/hot-models',
+      url: '/spu/hot',
       method: 'GET',
       data: { deviceTypeId, limit }
     });
@@ -181,15 +181,15 @@ export const categoryApi = {
 
   getBrands: (deviceTypeId?: string) => {
     return http<Brand[]>({
-      url: '/category/brands',
+      url: '/brand/list',
       method: 'GET',
-      data: { deviceTypeId }
+      data: { categoryId: deviceTypeId }
     });
   },
 
   searchModels: (keyword: string, page?: number, pageSize?: number) => {
     return http<ModelListResult>({
-      url: '/category/models/search',
+      url: '/spu/search',
       method: 'GET',
       data: { keyword, page, pageSize }
     });

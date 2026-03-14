@@ -1,0 +1,9 @@
+package com.example.xinmall.mapper.spu;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.example.xinmall.entity.spu.SpuPriceTrend;
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
+public interface SpuPriceTrendMapper extends BaseMapper<SpuPriceTrend> {
+}

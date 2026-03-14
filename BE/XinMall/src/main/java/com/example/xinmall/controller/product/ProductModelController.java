@@ -11,6 +11,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Tag(name = "产品型号接口", description = "产品型号相关接口")
 @RestController
 @RequestMapping("/api/product")
@@ -32,5 +37,26 @@ public class ProductModelController {
         ProductModelDetailVO detail = productModelService.getDetailById(id);
         productModelService.incrementViewCount(id);
         return Result.success(detail);
+    }
+
+    @Operation(summary = "获取型号下的商品")
+    @GetMapping("/{id}/goods")
+    public Result<Map<String, Object>> getGoods(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("list", new ArrayList<>());
+        result.put("total", 0);
+        return Result.success(result);
+    }
+
+    @Operation(summary = "热门型号")
+    @GetMapping("/hot")
+    public Result<List<Map<String, Object>>> getHotModels(
+            @RequestParam(required = false) Long deviceTypeId,
+            @RequestParam(defaultValue = "10") Integer limit) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        return Result.success(result);
     }
 }

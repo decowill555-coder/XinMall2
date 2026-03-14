@@ -138,7 +138,7 @@ export const authApi = {
 
   updateUserInfo: (data: Partial<UserInfo>) => {
     return http<UserInfo>({
-      url: '/user/profile',
+      url: '/user/info',
       method: 'PUT',
       data
     });

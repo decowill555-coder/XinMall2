@@ -217,7 +217,7 @@ export const forumApi = {
 
   getPosts: (params: PostListParams) => {
     return http<PostListResult>({
-      url: '/community/posts',
+      url: '/post/list',
       method: 'GET',
       data: params
     });
@@ -225,14 +225,14 @@ export const forumApi = {
 
   getPostDetail: (postId: string) => {
     return http<PostDetail>({
-      url: `/community/post/${postId}`,
+      url: `/post/${postId}`,
       method: 'GET'
     });
   },
 
   createPost: (params: CreatePostParams) => {
     return http<{ id: string }>({
-      url: '/community/post/create',
+      url: '/post',
       method: 'POST',
       data: params
     });
@@ -240,72 +240,72 @@ export const forumApi = {
 
   deletePost: (postId: string) => {
     return http<{ success: boolean }>({
-      url: `/community/post/${postId}`,
+      url: `/post/${postId}`,
       method: 'DELETE'
     });
   },
 
   likePost: (postId: string) => {
     return http<{ success: boolean; likeCount: number }>({
-      url: `/community/post/${postId}/like`,
+      url: `/post/${postId}/like`,
       method: 'POST'
     });
   },
 
   unlikePost: (postId: string) => {
     return http<{ success: boolean; likeCount: number }>({
-      url: `/community/post/${postId}/unlike`,
-      method: 'POST'
+      url: `/post/${postId}/like`,
+      method: 'DELETE'
     });
   },
 
   collectPost: (postId: string) => {
     return http<{ success: boolean }>({
-      url: `/community/post/${postId}/collect`,
+      url: `/post/${postId}/collect`,
       method: 'POST'
     });
   },
 
   uncollectPost: (postId: string) => {
     return http<{ success: boolean }>({
-      url: `/community/post/${postId}/uncollect`,
-      method: 'POST'
+      url: `/post/${postId}/collect`,
+      method: 'DELETE'
     });
   },
 
-  pinPost: (postId: string, forumId: string) => {
+  pinPost: (postId: string, forumId?: string) => {
     return http<{ success: boolean }>({
-      url: `/community/post/${postId}/pin`,
-      method: 'POST',
+      url: `/post/${postId}/pin`,
+      method: 'PUT',
       data: { forumId }
     });
   },
 
   unpinPost: (postId: string) => {
     return http<{ success: boolean }>({
-      url: `/community/post/${postId}/unpin`,
-      method: 'POST'
+      url: `/post/${postId}/unpin`,
+      method: 'PUT'
     });
   },
 
-  setEssence: (postId: string, forumId: string) => {
+  setEssence: (postId: string, forumId?: string) => {
     return http<{ success: boolean }>({
-      url: `/community/post/${postId}/essence`,
-      method: 'POST',
+      url: `/post/${postId}/essence`,
+      method: 'PUT',
       data: { forumId }
     });
   },
 
   unsetEssence: (postId: string) => {
     return http<{ success: boolean }>({
-      url: `/community/post/${postId}/unessence`,
-      method: 'POST'
+      url: `/post/${postId}/essence`,
+      method: 'DELETE'
     });
   },
 
   getComments: (params: CommentListParams) => {
     return http<CommentListResult>({
-      url: `/community/post/${params.postId}/comments`,
+      url: `/comment/list/${params.postId}`,
       method: 'GET',
       data: { sort: params.sort, page: params.page, pageSize: params.pageSize }
     });
@@ -313,7 +313,7 @@ export const forumApi = {
 
   getReplies: (commentId: string, page?: number, pageSize?: number) => {
     return http<CommentListResult>({
-      url: `/community/comment/${commentId}/replies`,
+      url: `/comment/replies/${commentId}`,
       method: 'GET',
       data: { page, pageSize }
     });
@@ -321,7 +321,7 @@ export const forumApi = {
 
   createComment: (params: CreateCommentParams) => {
     return http<{ id: string }>({
-      url: '/community/comment/create',
+      url: '/comment',
       method: 'POST',
       data: params
     });
@@ -329,22 +329,22 @@ export const forumApi = {
 
   deleteComment: (commentId: string) => {
     return http<{ success: boolean }>({
-      url: `/community/comment/${commentId}`,
+      url: `/comment/${commentId}`,
       method: 'DELETE'
     });
   },
 
   likeComment: (commentId: string) => {
     return http<{ success: boolean; likeCount: number }>({
-      url: `/community/comment/${commentId}/like`,
+      url: `/comment/${commentId}/like`,
       method: 'POST'
     });
   },
 
   unlikeComment: (commentId: string) => {
     return http<{ success: boolean; likeCount: number }>({
-      url: `/community/comment/${commentId}/unlike`,
-      method: 'POST'
+      url: `/comment/${commentId}/like`,
+      method: 'DELETE'
     });
   },
 
@@ -358,9 +358,25 @@ export const forumApi = {
 
   searchPosts: (keyword: string, page?: number, pageSize?: number) => {
     return http<PostListResult>({
-      url: '/community/posts/search',
+      url: '/search/communities',
       method: 'GET',
       data: { keyword, page, pageSize }
+    });
+  },
+
+  getMyPosts: (page?: number, pageSize?: number) => {
+    return http<PostListResult>({
+      url: '/post/my',
+      method: 'GET',
+      data: { page, pageSize }
+    });
+  },
+
+  getUserPosts: (userId: string, page?: number, pageSize?: number) => {
+    return http<PostListResult>({
+      url: `/post/user/${userId}`,
+      method: 'GET',
+      data: { page, pageSize }
     });
   }
 };

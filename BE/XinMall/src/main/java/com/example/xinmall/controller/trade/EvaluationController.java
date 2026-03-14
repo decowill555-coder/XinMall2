@@ -11,6 +11,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Tag(name = "评价接口", description = "订单评价相关接口")
 @RestController
 @RequestMapping("/api/evaluation")
@@ -33,6 +36,15 @@ public class EvaluationController {
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
         IPage<EvaluationVO> result = evaluationService.getByGoodsId(goodsId, page, size);
+        return Result.success(result);
+    }
+
+    @Operation(summary = "订单评价")
+    @GetMapping("/order/{orderId}")
+    public Result<Map<String, Object>> getByOrderId(@PathVariable Long orderId) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", 0);
+        result.put("orderId", orderId);
         return Result.success(result);
     }
 

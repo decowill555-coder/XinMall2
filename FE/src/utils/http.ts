@@ -1,7 +1,9 @@
 // src/utils/http.ts
 
-// 基础配置
-const BASE_URL = 'https://api.xinmall.com/v1'; // 替换为你的真实域名
+// 基础配置 - 根据环境自动切换
+const BASE_URL = process.env.NODE_ENV === 'production'
+  ? 'https://api.xinmall.com/api'
+  : 'http://localhost:8080/api';
 const TIMEOUT = 10000;
 
 interface RequestOptions {
@@ -50,10 +52,10 @@ export const http = <T>(options: RequestOptions): Promise<T> => {
       timeout: TIMEOUT,
       success: (res: any) => {
         if (res.statusCode >= 200 && res.statusCode < 300) {
-          if (res.data.code === 0) {
+          if (res.data.code === 200 || res.data.code === 201) {
             resolve(res.data.data as T);
           } else {
-            uni.showToast({ title: res.data.msg || '请求失败', icon: 'none' });
+            uni.showToast({ title: res.data.message || '请求失败', icon: 'none' });
             reject(res.data);
           }
         } else if (res.statusCode === 401) {

@@ -14,6 +14,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Tag(name = "订单接口", description = "订单管理相关接口")
 @RestController
 @RequestMapping("/api/order")
@@ -53,6 +56,16 @@ public class OrderController {
         return Result.success();
     }
 
+    @Operation(summary = "订单支付")
+    @PostMapping("/{id}/pay")
+    public Result<Map<String, Object>> pay(@PathVariable Long id, @RequestBody(required = false) Map<String, String> params) {
+        orderService.pay(id);
+        Map<String, Object> result = new HashMap<>();
+        result.put("success", true);
+        result.put("paymentId", "PAY" + System.currentTimeMillis());
+        return Result.success(result);
+    }
+
     @Operation(summary = "发货")
     @PutMapping("/{id}/ship")
     public Result<Void> ship(@PathVariable Long id, @Valid @RequestBody ShipRequest request) {
@@ -72,6 +85,15 @@ public class OrderController {
     public Result<Void> refund(@PathVariable Long id, @RequestParam(required = false) String reason) {
         orderService.refund(id, reason);
         return Result.success();
+    }
+
+    @Operation(summary = "物流查询")
+    @GetMapping("/{id}/logistics")
+    public Result<Map<String, Object>> getLogistics(@PathVariable Long id) {
+        Map<String, Object> logistics = new HashMap<>();
+        logistics.put("company", "顺丰速运");
+        logistics.put("trackingNo", "SF1234567890");
+        return Result.success(logistics);
     }
 
     @Operation(summary = "卖家订单列表")

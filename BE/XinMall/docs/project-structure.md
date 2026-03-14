@@ -149,11 +149,28 @@ entity/
 │   ├── enums/                          # 消息模块枚举
 │   ├── Conversation.java               # 会话实体
 │   └── Message.java                    # 消息实体
-└── system/                             # 系统模块
-    ├── enums/                          # 系统模块枚举
-    ├── Shop.java                       # 店铺实体
-    ├── Collection.java                 # 收藏实体
-    └── UploadFile.java                 # 上传文件实体
+├── system/                             # 系统模块
+│   ├── enums/                          # 系统模块枚举
+│   ├── Shop.java                       # 店铺实体
+│   ├── Collection.java                 # 收藏实体
+│   └── UploadFile.java                 # 上传文件实体
+├── spu/                                # SPU模块
+│   ├── enums/                          # SPU模块枚举
+│   │   └── SpuStatus.java              # SPU状态枚举
+│   ├── Spu.java                        # SPU实体
+│   ├── SpuFollow.java                  # SPU关注
+│   └── SpuPriceTrend.java              # 价格趋势
+└── community/                          # Community模块
+    ├── enums/                          # Community模块枚举
+    │   ├── CommunityMemberRole.java    # 成员角色
+    │   ├── PostStatus.java             # 帖子状态
+    │   └── PostType.java               # 帖子类型
+    ├── Community.java                  # 社区实体
+    ├── CommunityMember.java            # 社区成员
+    ├── Post.java                       # 帖子实体
+    ├── Comment.java                    # 评论实体
+    ├── PostLike.java                   # 帖子点赞
+    └── CommentLike.java                # 评论点赞
 ```
 
 **职责说明**：
@@ -246,10 +263,21 @@ mapper/
 ├── message/                            # 消息模块Mapper
 │   ├── ConversationMapper.java         # 会话Mapper
 │   └── MessageMapper.java              # 消息Mapper
-└── system/                             # 系统模块Mapper
-    ├── ShopMapper.java                 # 店铺Mapper
-    ├── CollectionMapper.java           # 收藏Mapper
-    └── UploadFileMapper.java           # 上传文件Mapper
+├── system/                             # 系统模块Mapper
+│   ├── ShopMapper.java                 # 店铺Mapper
+│   ├── CollectionMapper.java           # 收藏Mapper
+│   └── UploadFileMapper.java           # 上传文件Mapper
+├── spu/                                # SPU模块Mapper
+│   ├── SpuMapper.java                  # SPU Mapper
+│   ├── SpuFollowMapper.java            # SPU关注Mapper
+│   └── SpuPriceTrendMapper.java        # 价格趋势Mapper
+└── community/                          # Community模块Mapper
+    ├── CommunityMapper.java            # 社区Mapper
+    ├── CommunityMemberMapper.java      # 社区成员Mapper
+    ├── PostMapper.java                 # 帖子Mapper
+    ├── CommentMapper.java              # 评论Mapper
+    ├── PostLikeMapper.java             # 帖子点赞Mapper
+    └── CommentLikeMapper.java          # 评论点赞Mapper
 ```
 
 **职责说明**：
@@ -300,10 +328,26 @@ service/
 │   ├── ConversationService.java
 │   └── impl/
 │       └── ConversationServiceImpl.java
-└── system/                             # 系统模块Service
-    ├── ShopService.java
+├── system/                             # 系统模块Service
+│   ├── ShopService.java
+│   └── impl/
+│       └── ShopServiceImpl.java
+├── spu/                                # SPU模块Service
+│   ├── SpuService.java                 # SPU服务接口
+│   └── impl/
+│       └── SpuServiceImpl.java         # SPU服务实现
+├── community/                          # Community模块Service
+│   ├── CommunityService.java           # 社区服务接口
+│   ├── PostService.java                # 帖子服务接口
+│   ├── CommentService.java             # 评论服务接口
+│   └── impl/
+│       ├── CommunityServiceImpl.java   # 社区服务实现
+│       ├── PostServiceImpl.java        # 帖子服务实现
+│       └── CommentServiceImpl.java     # 评论服务实现
+└── search/                             # Search模块Service
+    ├── SearchService.java              # 搜索服务接口
     └── impl/
-        └── ShopServiceImpl.java
+        └── SearchServiceImpl.java      # 搜索服务实现
 ```
 
 **职责说明**：
@@ -363,10 +407,18 @@ controller/
 ├── message/                            # 消息模块Controller
 │   ├── ConversationController.java     # 会话接口
 │   └── MessageController.java          # 消息接口
-└── system/                             # 系统模块Controller
-    ├── ShopController.java             # 店铺接口
-    ├── CollectionController.java       # 收藏接口
-    └── UploadController.java           # 上传接口
+├── system/                             # 系统模块Controller
+│   ├── ShopController.java             # 店铺接口
+│   ├── CollectionController.java       # 收藏接口
+│   └── UploadController.java           # 上传接口
+├── spu/                                # SPU模块Controller
+│   └── SpuController.java              # SPU接口
+├── community/                          # Community模块Controller
+│   ├── CommunityController.java        # 社区接口
+│   ├── PostController.java             # 帖子接口
+│   └── CommentController.java          # 评论接口
+└── search/                             # Search模块Controller
+    └── SearchController.java           # 搜索接口
 ```
 
 **职责说明**：
@@ -552,14 +604,16 @@ import com.example.xinmall.*;     // 项目内部
 
 | 模块 | Entity | Enum | Mapper | Service | Controller |
 |------|--------|------|--------|---------|------------|
-| 用户模块 | ✅ | ✅ | ⏳ | ⏳ | ⏳ |
-| 产品库模块 | ✅ | ✅ | ⏳ | ⏳ | ⏳ |
-| 商品交易模块 | ✅ | ✅ | ⏳ | ⏳ | ⏳ |
-| 消息模块 | ✅ | ✅ | ⏳ | ⏳ | ⏳ |
-| 系统模块 | ✅ | ✅ | ⏳ | ⏳ | ⏳ |
-| 公共模块 | - | - | - | - | - |
+| 用户模块 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 产品库模块 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 商品交易模块 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 消息模块 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 系统模块 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| SPU模块 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Community模块 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Search模块 | - | ✅ | - | ✅ | ✅ |
 
 ---
 
-*文档版本：v1.0*
-*最后更新：2026-03-10*
+*文档版本：v2.0*
+*最后更新：2026-03-14*

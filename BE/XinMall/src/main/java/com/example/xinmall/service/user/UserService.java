@@ -40,4 +40,10 @@ public interface UserService {
     User getById(Long id);
 
     User getByPhone(String phone);
+
+    void resetPassword(ResetPasswordRequest request);
+
+    TokenVO refreshToken(String refreshToken);
+
+    boolean checkPhoneExists(String phone);
 }
