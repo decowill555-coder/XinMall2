@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.xinmall.common.cache.CacheService;
+import com.example.xinmall.common.constant.RedisKey;
 import com.example.xinmall.common.exception.BusinessException;
 import com.example.xinmall.dto.product.request.ProductModelQueryRequest;
 import com.example.xinmall.dto.product.response.BrandVO;
@@ -41,6 +43,9 @@ public class ProductModelServiceImpl implements ProductModelService {
     private final BrandService brandService;
     private final CategoryService categoryService;
     private final ObjectMapper objectMapper;
+    private final CacheService cacheService;
+
+    private static final long PRODUCT_MODEL_CACHE_EXPIRE = 1800;
 
     @Override
     public IPage<ProductModelVO> search(ProductModelQueryRequest request) {
@@ -74,6 +79,12 @@ public class ProductModelServiceImpl implements ProductModelService {
 
     @Override
     public ProductModelDetailVO getDetailById(Long id) {
+        String cacheKey = RedisKey.CATEGORY_DETAIL + "product_model:" + id;
+        ProductModelDetailVO cachedVO = cacheService.get(cacheKey, ProductModelDetailVO.class);
+        if (cachedVO != null) {
+            return cachedVO;
+        }
+
         ProductModel model = productModelMapper.selectById(id);
         if (model == null || model.getStatus() != ProductModelStatus.ON_SALE) {
             throw new BusinessException("产品型号不存在");
@@ -138,6 +149,8 @@ public class ProductModelServiceImpl implements ProductModelService {
 
             vo.setAttributes(attributeVOs);
         }
+
+        cacheService.set(cacheKey, vo, PRODUCT_MODEL_CACHE_EXPIRE);
 
         return vo;
     }

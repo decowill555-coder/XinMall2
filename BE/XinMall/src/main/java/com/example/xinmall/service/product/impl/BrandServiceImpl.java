@@ -1,6 +1,8 @@
 package com.example.xinmall.service.product.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.xinmall.common.cache.CacheService;
+import com.example.xinmall.common.constant.RedisKey;
 import com.example.xinmall.dto.product.response.BrandVO;
 import com.example.xinmall.entity.product.Brand;
 import com.example.xinmall.entity.product.BrandCategory;
@@ -21,9 +23,19 @@ public class BrandServiceImpl implements BrandService {
 
     private final BrandMapper brandMapper;
     private final BrandCategoryMapper brandCategoryMapper;
+    private final CacheService cacheService;
+
+    private static final long BRAND_CACHE_EXPIRE = 3600;
 
     @Override
     public List<BrandVO> getBrandsByCategoryId(Long categoryId) {
+        String cacheKey = RedisKey.BRAND_LIST + ":" + categoryId;
+        List<BrandVO> cachedBrands = cacheService.get(cacheKey, 
+                new com.fasterxml.jackson.core.type.TypeReference<List<BrandVO>>() {}.getType());
+        if (cachedBrands != null) {
+            return cachedBrands;
+        }
+
         List<BrandCategory> brandCategories = brandCategoryMapper.selectList(
                 new LambdaQueryWrapper<BrandCategory>()
                         .eq(BrandCategory::getCategoryId, categoryId)
@@ -44,7 +56,9 @@ public class BrandServiceImpl implements BrandService {
                         .orderByAsc(Brand::getSort)
         );
 
-        return brands.stream().map(this::convertToVO).collect(Collectors.toList());
+        List<BrandVO> result = brands.stream().map(this::convertToVO).collect(Collectors.toList());
+        cacheService.set(cacheKey, result, BRAND_CACHE_EXPIRE);
+        return result;
     }
 
     @Override

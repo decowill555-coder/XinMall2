@@ -1,6 +1,8 @@
 package com.example.xinmall.service.product.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.xinmall.common.cache.CacheService;
+import com.example.xinmall.common.constant.RedisKey;
 import com.example.xinmall.dto.product.response.CategoryVO;
 import com.example.xinmall.entity.product.Category;
 import com.example.xinmall.entity.product.enums.CommonStatus;
@@ -18,9 +20,18 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryMapper categoryMapper;
+    private final CacheService cacheService;
+
+    private static final long CATEGORY_CACHE_EXPIRE = 3600;
 
     @Override
     public List<CategoryVO> getCategoryTree() {
+        List<CategoryVO> cachedTree = cacheService.get(RedisKey.CATEGORY_LIST, 
+                new com.fasterxml.jackson.core.type.TypeReference<List<CategoryVO>>() {}.getType());
+        if (cachedTree != null) {
+            return cachedTree;
+        }
+
         List<Category> allCategories = categoryMapper.selectList(
                 new LambdaQueryWrapper<Category>()
                         .eq(Category::getStatus, CommonStatus.ENABLED)
@@ -33,6 +44,8 @@ public class CategoryServiceImpl implements CategoryService {
                 .collect(Collectors.toList());
 
         rootCategories.forEach(root -> buildChildren(root, allCategories));
+
+        cacheService.set(RedisKey.CATEGORY_LIST, rootCategories, CATEGORY_CACHE_EXPIRE);
 
         return rootCategories;
     }

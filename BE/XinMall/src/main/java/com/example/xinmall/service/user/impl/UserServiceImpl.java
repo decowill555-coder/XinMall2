@@ -2,6 +2,8 @@ package com.example.xinmall.service.user.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.example.xinmall.common.cache.CacheService;
+import com.example.xinmall.common.constant.RedisKey;
 import com.example.xinmall.common.exception.BusinessException;
 import com.example.xinmall.common.security.JwtUtils;
 import com.example.xinmall.dto.user.request.*;
@@ -38,6 +40,9 @@ public class UserServiceImpl implements UserService {
     private final UserAddressMapper userAddressMapper;
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
+    private final CacheService cacheService;
+
+    private static final long USER_CACHE_EXPIRE = 1800;
 
     @Override
     @Transactional
@@ -105,6 +110,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserVO getCurrentUser() {
         Long userId = getCurrentUserId();
+        String cacheKey = RedisKey.getUserInfoKey(userId);
+        UserVO cachedUser = cacheService.get(cacheKey, UserVO.class);
+        if (cachedUser != null) {
+            return cachedUser;
+        }
+
         User user = userMapper.selectById(userId);
         if (user == null) {
             throw new BusinessException("用户不存在");
@@ -112,6 +123,7 @@ public class UserServiceImpl implements UserService {
 
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(user, userVO);
+        cacheService.set(cacheKey, userVO, USER_CACHE_EXPIRE);
         return userVO;
     }
 
@@ -141,6 +153,8 @@ public class UserServiceImpl implements UserService {
         }
         user.setUpdatedAt(LocalDateTime.now());
         userMapper.updateById(user);
+
+        cacheService.delete(RedisKey.getUserInfoKey(userId));
 
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(user, userVO);

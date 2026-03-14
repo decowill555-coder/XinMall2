@@ -25,5 +25,7 @@ public interface OrderService {
 
     void receive(Long id);
 
+    void refund(Long id, String reason);
+
     Order getById(Long id);
 }

@@ -16,6 +16,8 @@ import com.example.xinmall.mapper.message.ConversationMapper;
 import com.example.xinmall.mapper.message.MessageMapper;
 import com.example.xinmall.service.message.MessageService;
 import com.example.xinmall.service.user.UserService;
+import com.example.xinmall.websocket.ChatWebSocketHandler;
+import com.example.xinmall.websocket.dto.ChatMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.Authentication;
@@ -34,6 +36,7 @@ public class MessageServiceImpl implements MessageService {
     private final MessageMapper messageMapper;
     private final ConversationMapper conversationMapper;
     private final UserService userService;
+    private final ChatWebSocketHandler webSocketHandler;
 
     @Override
     public IPage<MessageVO> getMessages(Long conversationId, Integer page, Integer size) {
@@ -91,7 +94,26 @@ public class MessageServiceImpl implements MessageService {
             incrementUnreadCount(receiverConversation.getId());
         }
 
+        pushMessageToUser(request.getReceiverId(), message);
+
         return convertToVO(message);
+    }
+
+    private void pushMessageToUser(Long receiverId, Message message) {
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setType("chat");
+        chatMessage.setSenderId(message.getSenderId());
+        chatMessage.setReceiverId(receiverId);
+        chatMessage.setConversationId(message.getConversationId());
+        chatMessage.setContent(message.getContent());
+        chatMessage.setTimestamp(System.currentTimeMillis());
+
+        User sender = userService.getById(message.getSenderId());
+        if (sender != null) {
+            chatMessage.setSenderName(sender.getNickname());
+        }
+
+        webSocketHandler.sendToUser(receiverId, chatMessage);
     }
 
     @Override

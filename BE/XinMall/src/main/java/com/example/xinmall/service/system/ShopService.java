@@ -19,4 +19,14 @@ public interface ShopService {
     void reopenShop(Long id);
 
     IPage<ShopVO> getShopList(Integer page, Integer size);
+
+    void incrementGoodsCount(Long shopId);
+
+    void decrementGoodsCount(Long shopId);
+
+    void incrementSoldCount(Long shopId, Integer count);
+
+    void incrementFollowerCount(Long shopId);
+
+    void decrementFollowerCount(Long shopId);
 }

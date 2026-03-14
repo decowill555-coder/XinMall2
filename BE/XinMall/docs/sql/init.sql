@@ -433,16 +433,52 @@ CREATE TABLE `upload_file`  (
   INDEX `idx_scene`(`scene` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '上传文件表' ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Table structure for search_history
+-- ----------------------------
+DROP TABLE IF EXISTS `search_history`;
+CREATE TABLE `search_history`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '搜索记录ID',
+  `user_id` bigint NULL DEFAULT NULL COMMENT '用户ID（游客为空）',
+  `keyword` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '搜索关键词',
+  `search_type` tinyint NULL DEFAULT 1 COMMENT '搜索类型 1-商品 2-产品型号 3-店铺 4-帖子',
+  `result_count` int NULL DEFAULT 0 COMMENT '搜索结果数量',
+  `ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '搜索IP',
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
+  INDEX `idx_keyword`(`keyword` ASC) USING BTREE,
+  INDEX `idx_created_at`(`created_at` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '搜索历史表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for hot_search
+-- ----------------------------
+DROP TABLE IF EXISTS `hot_search`;
+CREATE TABLE `hot_search`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '热搜ID',
+  `keyword` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '搜索关键词',
+  `search_count` int NULL DEFAULT 0 COMMENT '搜索次数',
+  `search_type` tinyint NULL DEFAULT 1 COMMENT '搜索类型 1-商品 2-产品型号',
+  `status` tinyint NULL DEFAULT 1 COMMENT '状态 1-显示 0-隐藏',
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_keyword_type`(`keyword` ASC, `search_type` ASC) USING BTREE,
+  INDEX `idx_search_count`(`search_count` DESC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '热搜榜表' ROW_FORMAT = Dynamic;
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- ============================================================
 -- 完成提示
 -- ============================================================
--- 共创建 20 张表：
+-- 共创建 22 张表：
 -- 产品库模块: attribute, attribute_option, brand, brand_category, 
 --            category, category_attribute, product_model, product_model_attribute
 -- 用户模块: user, user_address, user_profile
 -- 商品交易模块: goods, order, evaluation
 -- 消息模块: conversation, message
 -- 系统模块: shop, collection, upload_file
+-- 搜索模块: search_history, hot_search
 -- ============================================================

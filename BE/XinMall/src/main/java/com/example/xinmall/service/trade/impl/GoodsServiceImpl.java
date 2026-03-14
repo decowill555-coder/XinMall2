@@ -78,7 +78,7 @@ public class GoodsServiceImpl implements GoodsService {
         Page<Goods> page = new Page<>(request.getPage(), request.getSize());
 
         LambdaQueryWrapper<Goods> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Goods::getStatus, GoodsStatus.OFF_SHELF);
+        wrapper.eq(Goods::getStatus, GoodsStatus.ON_SHELF);
 
         if (StringUtils.hasText(request.getKeyword())) {
             wrapper.like(Goods::getTitle, request.getKeyword());

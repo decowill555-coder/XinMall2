@@ -1,6 +1,7 @@
 package com.example.xinmall.service.system.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.xinmall.common.exception.BusinessException;
@@ -140,6 +141,56 @@ public class ShopServiceImpl implements ShopService {
                         .orderByDesc(Shop::getSoldCount)
         );
         return result.convert(this::convertToVO);
+    }
+
+    @Override
+    @Transactional
+    public void incrementGoodsCount(Long shopId) {
+        shopMapper.update(null,
+                new LambdaUpdateWrapper<Shop>()
+                        .eq(Shop::getId, shopId)
+                        .setSql("goods_count = goods_count + 1")
+        );
+    }
+
+    @Override
+    @Transactional
+    public void decrementGoodsCount(Long shopId) {
+        shopMapper.update(null,
+                new LambdaUpdateWrapper<Shop>()
+                        .eq(Shop::getId, shopId)
+                        .setSql("goods_count = GREATEST(0, goods_count - 1)")
+        );
+    }
+
+    @Override
+    @Transactional
+    public void incrementSoldCount(Long shopId, Integer count) {
+        shopMapper.update(null,
+                new LambdaUpdateWrapper<Shop>()
+                        .eq(Shop::getId, shopId)
+                        .setSql("sold_count = sold_count + " + count)
+        );
+    }
+
+    @Override
+    @Transactional
+    public void incrementFollowerCount(Long shopId) {
+        shopMapper.update(null,
+                new LambdaUpdateWrapper<Shop>()
+                        .eq(Shop::getId, shopId)
+                        .setSql("follower_count = follower_count + 1")
+        );
+    }
+
+    @Override
+    @Transactional
+    public void decrementFollowerCount(Long shopId) {
+        shopMapper.update(null,
+                new LambdaUpdateWrapper<Shop>()
+                        .eq(Shop::getId, shopId)
+                        .setSql("follower_count = GREATEST(0, follower_count - 1)")
+        );
     }
 
     private ShopVO convertToVO(Shop shop) {

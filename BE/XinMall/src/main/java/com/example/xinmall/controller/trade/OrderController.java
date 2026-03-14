@@ -67,6 +67,13 @@ public class OrderController {
         return Result.success();
     }
 
+    @Operation(summary = "申请退款")
+    @PutMapping("/{id}/refund")
+    public Result<Void> refund(@PathVariable Long id, @RequestParam(required = false) String reason) {
+        orderService.refund(id, reason);
+        return Result.success();
+    }
+
     @Operation(summary = "卖家订单列表")
     @GetMapping("/seller")
     public Result<IPage<OrderVO>> getSellerOrders(

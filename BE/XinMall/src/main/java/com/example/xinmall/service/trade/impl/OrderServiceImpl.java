@@ -50,7 +50,7 @@ public class OrderServiceImpl implements OrderService {
         if (goods == null) {
             throw new BusinessException("商品不存在");
         }
-        if (goods.getStatus() != GoodsStatus.SOLD) {
+        if (goods.getStatus() != GoodsStatus.ON_SHELF) {
             throw new BusinessException("商品已下架或已售出");
         }
         if (goods.getSellerId().equals(userId)) {
@@ -253,6 +253,37 @@ public class OrderServiceImpl implements OrderService {
         order.setFinishTime(LocalDateTime.now());
         order.setUpdatedAt(LocalDateTime.now());
         orderMapper.updateById(order);
+    }
+
+    @Override
+    @Transactional
+    public void refund(Long id, String reason) {
+        Long userId = getCurrentUserId();
+        Order order = orderMapper.selectById(id);
+        if (order == null) {
+            throw new BusinessException("订单不存在");
+        }
+        if (!order.getUserId().equals(userId) && !order.getSellerId().equals(userId)) {
+            throw new BusinessException("无权操作此订单");
+        }
+        if (order.getStatus() != OrderStatus.COMPLETED) {
+            throw new BusinessException("只有已完成的订单才能申请退款");
+        }
+
+        order.setStatus(OrderStatus.REFUNDED);
+        order.setCancelReason(reason);
+        order.setCancelTime(LocalDateTime.now());
+        order.setUpdatedAt(LocalDateTime.now());
+        orderMapper.updateById(order);
+
+        Goods goods = goodsMapper.selectById(order.getGoodsId());
+        if (goods != null) {
+            goods.setStock(goods.getStock() + order.getQuantity());
+            if (goods.getStatus() == GoodsStatus.SOLD) {
+                goods.setStatus(GoodsStatus.ON_SHELF);
+            }
+            goodsMapper.updateById(goods);
+        }
     }
 
     @Override
