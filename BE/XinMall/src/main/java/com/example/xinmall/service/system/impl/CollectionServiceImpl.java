@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.xinmall.common.exception.BusinessException;
 import com.example.xinmall.dto.system.request.CollectionRequest;
 import com.example.xinmall.dto.trade.response.GoodsVO;
-import com.example.xinmall.entity.system.Collection;
+import com.example.xinmall.entity.system.UserCollection;
 import com.example.xinmall.entity.system.enums.CollectionType;
 import com.example.xinmall.mapper.system.CollectionMapper;
 import com.example.xinmall.service.system.CollectionService;
@@ -32,17 +32,17 @@ public class CollectionServiceImpl implements CollectionService {
     public void add(CollectionRequest request) {
         Long userId = getCurrentUserId();
 
-        Collection exist = collectionMapper.selectOne(
-                new LambdaQueryWrapper<Collection>()
-                        .eq(Collection::getUserId, userId)
-                        .eq(Collection::getTargetId, request.getTargetId())
-                        .eq(Collection::getTargetType, CollectionType.values()[request.getTargetType() - 1])
+        UserCollection exist = collectionMapper.selectOne(
+                new LambdaQueryWrapper<UserCollection>()
+                        .eq(UserCollection::getUserId, userId)
+                        .eq(UserCollection::getTargetId, request.getTargetId())
+                        .eq(UserCollection::getTargetType, CollectionType.values()[request.getTargetType() - 1])
         );
         if (exist != null) {
             throw new BusinessException("已收藏");
         }
 
-        Collection collection = new Collection();
+        UserCollection collection = new UserCollection();
         collection.setUserId(userId);
         collection.setTargetId(request.getTargetId());
         collection.setTargetType(CollectionType.values()[request.getTargetType() - 1]);
@@ -55,10 +55,10 @@ public class CollectionServiceImpl implements CollectionService {
     public void remove(CollectionRequest request) {
         Long userId = getCurrentUserId();
         collectionMapper.delete(
-                new LambdaQueryWrapper<Collection>()
-                        .eq(Collection::getUserId, userId)
-                        .eq(Collection::getTargetId, request.getTargetId())
-                        .eq(Collection::getTargetType, CollectionType.values()[request.getTargetType() - 1])
+                new LambdaQueryWrapper<UserCollection>()
+                        .eq(UserCollection::getUserId, userId)
+                        .eq(UserCollection::getTargetId, request.getTargetId())
+                        .eq(UserCollection::getTargetType, CollectionType.values()[request.getTargetType() - 1])
         );
     }
 
@@ -66,10 +66,10 @@ public class CollectionServiceImpl implements CollectionService {
     public boolean isCollected(Long targetId, Integer targetType) {
         Long userId = getCurrentUserId();
         Long count = collectionMapper.selectCount(
-                new LambdaQueryWrapper<Collection>()
-                        .eq(Collection::getUserId, userId)
-                        .eq(Collection::getTargetId, targetId)
-                        .eq(Collection::getTargetType, CollectionType.values()[targetType - 1])
+                new LambdaQueryWrapper<UserCollection>()
+                        .eq(UserCollection::getUserId, userId)
+                        .eq(UserCollection::getTargetId, targetId)
+                        .eq(UserCollection::getTargetType, CollectionType.values()[targetType - 1])
         );
         return count > 0;
     }
@@ -77,17 +77,17 @@ public class CollectionServiceImpl implements CollectionService {
     @Override
     public IPage<?> getMyCollections(Integer targetType, Integer page, Integer size) {
         Long userId = getCurrentUserId();
-        Page<Collection> pageParam = new Page<>(page, size);
+        Page<UserCollection> pageParam = new Page<>(page, size);
 
-        LambdaQueryWrapper<Collection> wrapper = new LambdaQueryWrapper<Collection>()
-                .eq(Collection::getUserId, userId)
-                .orderByDesc(Collection::getCreatedAt);
+        LambdaQueryWrapper<UserCollection> wrapper = new LambdaQueryWrapper<UserCollection>()
+                .eq(UserCollection::getUserId, userId)
+                .orderByDesc(UserCollection::getCreatedAt);
 
         if (targetType != null) {
-            wrapper.eq(Collection::getTargetType, CollectionType.values()[targetType - 1]);
+            wrapper.eq(UserCollection::getTargetType, CollectionType.values()[targetType - 1]);
         }
 
-        Page<Collection> result = collectionMapper.selectPage(pageParam, wrapper);
+        Page<UserCollection> result = collectionMapper.selectPage(pageParam, wrapper);
 
         if (targetType != null && targetType == 1) {
             return result.convert(c -> {
@@ -107,9 +107,9 @@ public class CollectionServiceImpl implements CollectionService {
     @Override
     public Long getCollectionCount(Long targetId, Integer targetType) {
         return collectionMapper.selectCount(
-                new LambdaQueryWrapper<Collection>()
-                        .eq(Collection::getTargetId, targetId)
-                        .eq(Collection::getTargetType, CollectionType.values()[targetType - 1])
+                new LambdaQueryWrapper<UserCollection>()
+                        .eq(UserCollection::getTargetId, targetId)
+                        .eq(UserCollection::getTargetType, CollectionType.values()[targetType - 1])
         );
     }
 

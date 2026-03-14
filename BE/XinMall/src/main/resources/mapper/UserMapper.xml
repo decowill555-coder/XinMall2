@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.xinmall.mapper.UserMapper">
+<mapper namespace="com.example.xinmall.mapper.user.UserMapper">
 
-    <resultMap id="UserWithProfileMap" type="com.example.xinmall.entity.User">
+    <resultMap id="UserWithProfileMap" type="com.example.xinmall.entity.user.User">
         <id column="id" property="id"/>
         <result column="phone" property="phone"/>
         <result column="password" property="password"/>
@@ -17,7 +17,7 @@
         <result column="created_at" property="createdAt"/>
         <result column="updated_at" property="updatedAt"/>
         <result column="deleted" property="deleted"/>
-        <association property="profile" javaType="com.example.xinmall.entity.UserProfile">
+        <association property="profile" javaType="com.example.xinmall.entity.user.UserProfile">
             <id column="profile_id" property="id"/>
             <result column="user_id" property="userId"/>
             <result column="real_name" property="realName"/>
@@ -27,7 +27,7 @@
         </association>
     </resultMap>
 
-    <select id="selectByPhone" resultType="com.example.xinmall.entity.User">
+    <select id="selectByPhone" resultType="com.example.xinmall.entity.user.User">
         SELECT * FROM user 
         WHERE phone = #{phone} AND deleted = 0
     </select>

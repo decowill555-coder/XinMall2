@@ -28,6 +28,7 @@
     </scm>
     <properties>
         <java.version>21</java.version>
+        <mybatisplus.version>3.5.15</mybatisplus.version>
     </properties>
     <dependencies>
 
@@ -41,8 +42,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>4.0.1</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -65,29 +64,23 @@
             <optional>true</optional>
         </dependency>
 
-
-
-        <!-- MybatisPlus -->
+        <!-- MybatisPlus for Spring Boot 4 -->
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.5.16</version>
-            <scope>compile</scope>
+            <artifactId>mybatis-plus-spring-boot4-starter</artifactId>
+            <version>${mybatisplus.version}</version>
         </dependency>
-
-            <!-- 2. 额外引入分页插件依赖 -->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-jsqlparser</artifactId>
-            <version>3.5.16</version> <!-- 版本号必须与核心依赖保持一致 -->
+            <version>${mybatisplus.version}</version>
         </dependency>
 
-        <!-- api文档 -->
+        <!-- SpringDoc OpenAPI for Spring Boot 4 -->
         <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
-            <version>4.5.0</version>
-            <scope>compile</scope>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>3.0.2</version>
         </dependency>
 
         <!-- 3. Spring Security + JWT -->
