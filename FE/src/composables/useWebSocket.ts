@@ -48,7 +48,10 @@ export function useWebSocket() {
     if (!currentUserId) return;
     
     const senderId = String(message.senderId);
-    const conversationId = message.conversationId ? String(message.conversationId) : '';
+    
+    let conversation = chatStore.conversations.find(c => c.targetUserId === senderId);
+    
+    const conversationId = conversation ? conversation.id : (message.conversationId ? String(message.conversationId) : '');
     
     const chatMessage = {
       id: `ws-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,

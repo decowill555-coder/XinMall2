@@ -39,18 +39,46 @@ export interface OrderSummary {
   totalSpent: number;
 }
 
-const transformApiOrder = (apiOrder: OrderListItem): OrderItem => ({
-  id: apiOrder.id,
+const mapOrderStatus = (status: number | string): OrderStatus => {
+  const statusMap: Record<number, OrderStatus> = {
+    1: 'pending',
+    2: 'paid',
+    3: 'shipped',
+    4: 'completed',
+    5: 'cancelled',
+    6: 'refunded'
+  };
+  if (typeof status === 'number') {
+    return statusMap[status] || 'pending';
+  }
+  return status as OrderStatus;
+};
+
+const mapStatusToBackend = (status: OrderStatus): string => {
+  const statusMap: Record<OrderStatus, string> = {
+    'pending': 'PENDING_PAYMENT',
+    'paid': 'PENDING_SHIPMENT',
+    'shipped': 'PENDING_RECEIPT',
+    'completed': 'COMPLETED',
+    'cancelled': 'CANCELLED',
+    'refunded': 'REFUNDED',
+    'refunding': 'REFUNDED'
+  };
+  return statusMap[status] || 'PENDING_PAYMENT';
+};
+
+const transformApiOrder = (apiOrder: any): OrderItem => ({
+  id: String(apiOrder.id),
   orderNo: apiOrder.orderNo,
   spuId: '',
   skuId: '',
   skuSpecs: [],
-  name: apiOrder.product.title,
-  cover: apiOrder.product.cover,
-  price: apiOrder.product.price / 100,
-  quantity: apiOrder.quantity,
-  totalAmount: apiOrder.totalAmount / 100,
-  status: apiOrder.status,
+  name: apiOrder.goodsTitle || '未知商品',
+  cover: apiOrder.goodsCover || '',
+  price: Number(apiOrder.totalAmount) / 100,
+  quantity: apiOrder.quantity || 1,
+  totalAmount: Number(apiOrder.totalAmount) / 100,
+  status: mapOrderStatus(apiOrder.status),
   createdAt: apiOrder.createdAt,
   productType: 'standard'
 });
@@ -127,15 +155,15 @@ export const useOrderStore = defineStore('order', () => {
     try {
       const params: OrderListParams = {
         page: currentPage.value,
-        pageSize: 10
+        size: 10
       };
       
       if (currentStatus.value) {
-        params.status = currentStatus.value;
+        params.status = mapStatusToBackend(currentStatus.value);
       }
 
       const res = await tradeApi.getOrderList(params);
-      const newOrders = res.list.map(transformApiOrder);
+      const newOrders = (res.records || []).map(transformApiOrder);
 
       if (isRefresh) {
         orders.value = newOrders;
@@ -143,8 +171,8 @@ export const useOrderStore = defineStore('order', () => {
         orders.value = [...orders.value, ...newOrders];
       }
 
-      hasMore.value = res.hasMore;
-      if (res.hasMore) {
+      hasMore.value = res.current < res.pages;
+      if (hasMore.value) {
         currentPage.value++;
       }
 

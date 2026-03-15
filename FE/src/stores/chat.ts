@@ -363,16 +363,17 @@ export const useChatStore = defineStore('chat', () => {
   };
 
   const handleIncomingMessage = (message: ChatMessage) => {
-    const conversationId = message.conversationId;
     const senderId = message.senderId;
     
-    let conversation = conversations.value.find(c => 
-      c.id === conversationId || c.targetUserId === senderId
-    );
+    let conversation = conversations.value.find(c => c.targetUserId === senderId);
+    
+    if (!conversation && message.conversationId) {
+      conversation = conversations.value.find(c => c.id === message.conversationId);
+    }
     
     if (!conversation) {
       conversation = {
-        id: conversationId || `temp-${Date.now()}`,
+        id: message.conversationId || `temp-${Date.now()}`,
         targetUserId: senderId,
         targetUserName: message.senderName || '未知用户',
         targetUserAvatar: message.senderAvatar || '',
@@ -409,7 +410,7 @@ export const useChatStore = defineStore('chat', () => {
     
     if (currentConversationId.value !== actualConversationId) {
       if (!conversation.isMuted) {
-        conversation.unreadCount += 1;
+        conversation.unreadCount = (conversation.unreadCount || 0) + 1;
       }
     }
   };

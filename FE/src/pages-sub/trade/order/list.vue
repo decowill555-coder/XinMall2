@@ -39,6 +39,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { useOrderStore, type OrderStatus } from '@/stores/order';
 import { tradeApi } from '@/api';
@@ -67,6 +68,25 @@ const statusMap: Record<number, OrderStatus | undefined> = {
   3: 'shipped',
   4: 'completed'
 };
+
+const typeToTabMap: Record<string, number> = {
+  'pending': 1,
+  'paid': 2,
+  'shipped': 3,
+  'completed': 4,
+  'received': 3,
+  'reviewed': 4,
+  'refund': 0
+};
+
+onLoad((options) => {
+  if (options?.type) {
+    const tabIndex = typeToTabMap[options.type];
+    if (tabIndex !== undefined) {
+      activeTab.value = tabIndex;
+    }
+  }
+});
 
 const orderList = computed(() => orderStore.orders);
 

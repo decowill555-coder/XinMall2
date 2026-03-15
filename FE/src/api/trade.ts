@@ -167,7 +167,7 @@ export interface EvaluationInfo {
 }
 
 export interface OrderListParams {
-  status?: OrderStatus;
+  status?: string;
   page?: number;
   size?: number;
 }

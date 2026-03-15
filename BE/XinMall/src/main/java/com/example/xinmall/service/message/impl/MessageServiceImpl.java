@@ -53,15 +53,7 @@ public class MessageServiceImpl implements MessageService {
         Long targetId = conversation.getTargetId();
 
         Page<Message> pageParam = new Page<>(page, size);
-        Page<Message> result = messageMapper.selectPage(pageParam,
-                new LambdaQueryWrapper<Message>()
-                        .and(wrapper -> wrapper
-                                .eq(Message::getSenderId, userId).eq(Message::getReceiverId, targetId)
-                                .or()
-                                .eq(Message::getSenderId, targetId).eq(Message::getReceiverId, userId)
-                        )
-                        .orderByDesc(Message::getCreatedAt)
-        );
+        IPage<Message> result = messageMapper.selectMessagesBetweenUsers(pageParam, userId, targetId);
         return result.convert(this::convertToVO);
     }
 
@@ -106,11 +98,17 @@ public class MessageServiceImpl implements MessageService {
     }
 
     private void pushMessageToUser(Long receiverId, Message message) {
+        Conversation receiverConversation = conversationMapper.selectOne(
+                new LambdaQueryWrapper<Conversation>()
+                        .eq(Conversation::getUserId, receiverId)
+                        .eq(Conversation::getTargetId, message.getSenderId())
+        );
+        
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setType("chat");
         chatMessage.setSenderId(message.getSenderId());
         chatMessage.setReceiverId(receiverId);
-        chatMessage.setConversationId(message.getConversationId());
+        chatMessage.setConversationId(receiverConversation != null ? receiverConversation.getId() : message.getConversationId());
         chatMessage.setContent(message.getContent());
         chatMessage.setTimestamp(System.currentTimeMillis());
 

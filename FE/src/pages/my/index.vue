@@ -45,13 +45,11 @@
     >
       <view class="scroll-content">
         <ui-card :glass="true" :shadow="true" radius="lg" padding="md" class="order-section">
-          <template #header>
-            <view class="section-header">
-              <ui-text size="lg" weight="bold" color="main">我的订单</ui-text>
-              <view class="section-more" @click="goOrders">
-                <ui-text size="sm" color="sub">全部订单</ui-text>
-                <ui-icon name="arrow-right" :size="32" color="#6E6E73" />
-              </view>
+          <template #title>我的订单</template>
+          <template #extra>
+            <view class="section-more" @click="goOrders">
+              <ui-text size="sm" color="sub">全部订单</ui-text>
+              <ui-icon name="arrow-right" :size="32" color="#6E6E73" />
             </view>
           </template>
           
@@ -92,7 +90,7 @@
               </view>
               <ui-text size="xs" color="sub">待评价</ui-text>
             </view>
-            <view class="order-item" @click="goOrders('refund')">
+            <view class="order-item" @click="goAftersale">
               <view class="order-icon">
                 <ui-badge v-if="orderCounts.refund > 0" :value="orderCounts.refund">
                   <ui-icon name="refresh" :size="40" />
@@ -230,6 +228,10 @@ const goOrders = (type?: string) => {
   uni.navigateTo({ url });
 };
 
+const goAftersale = () => {
+  uni.navigateTo({ url: '/pages-sub/trade/aftersale/list' });
+};
+
 const goShop = () => {
   uni.navigateTo({ url: '/pages-sub/seller/shop/index' });
 };
@@ -354,16 +356,9 @@ const goSettings = () => {
 .order-section {
   margin: $space-md;
   
-  .section-header {
+  .section-more {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: $space-md;
-    
-    .section-more {
-      display: flex;
-      align-items: center;
-    }
   }
   
   .order-tabs {

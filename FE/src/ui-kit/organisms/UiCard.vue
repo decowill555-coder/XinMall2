@@ -11,7 +11,7 @@
     @tap="handleClick"
   >
     <!-- 头部 -->
-    <view v-if="title || $slots.header" class="ui-card__head">
+    <view v-if="title || $slots.title || $slots.extra || $slots.header" class="ui-card__head">
       <view class="ui-card__title">
         <slot name="title">{{ title }}</slot>
       </view>
