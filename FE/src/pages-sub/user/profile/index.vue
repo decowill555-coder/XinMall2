@@ -248,6 +248,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useUserStore, useAuthStore } from '@/stores';
+import { authApi } from '@/api/auth';
+import { uploadApi } from '@/api/upload';
+import { BASE_URL } from '@/utils/http';
 
 const userStore = useUserStore();
 const authStore = useAuthStore();
@@ -318,7 +321,7 @@ const changeAvatar = () => {
   showAvatarActions.value = true;
 };
 
-const onAvatarActionSelect = (item: any) => {
+const onAvatarActionSelect = async (item: any) => {
   showAvatarActions.value = false;
   
   const sourceType: ('album' | 'camera')[] = item.value === 'camera' ? ['camera'] : ['album'];
@@ -327,17 +330,24 @@ const onAvatarActionSelect = (item: any) => {
     count: 1,
     sizeType: ['compressed'],
     sourceType,
-    success: (res) => {
+    success: async (res) => {
       const tempFilePath = res.tempFilePaths[0];
       uni.showLoading({ title: '上传中...' });
       
-      setTimeout(() => {
+      try {
+        const uploadResult = await uploadApi.uploadAvatar(tempFilePath);
+        const avatarUrl = uploadResult.fileUrl.startsWith('http') 
+          ? uploadResult.fileUrl 
+          : BASE_URL.replace('/api', '') + uploadResult.fileUrl;
+        const updatedUser = await authApi.updateUserInfo({ avatar: avatarUrl });
+        userStore.setUserInfo(updatedUser);
         uni.hideLoading();
-        if (userStore.userInfo) {
-          userStore.userInfo.avatar = tempFilePath;
-        }
         uni.showToast({ title: '头像更新成功', icon: 'success' });
-      }, 1000);
+      } catch (error) {
+        console.error('上传头像失败:', error);
+        uni.hideLoading();
+        uni.showToast({ title: '上传失败', icon: 'none' });
+      }
     }
   });
 };
@@ -388,10 +398,8 @@ const onPickerChange = (e: any) => {
   pickerValue.value = e.detail.value;
 };
 
-const saveEdit = () => {
-  if (!userStore.userInfo) {
-    userStore.userInfo = {};
-  }
+const saveEdit = async () => {
+  const updateData: Record<string, any> = {};
   
   switch (editFieldKey.value) {
     case 'nickname':
@@ -399,27 +407,37 @@ const saveEdit = () => {
         uni.showToast({ title: '请输入昵称', icon: 'none' });
         return;
       }
-      userStore.userInfo.nickname = tempValue.value.trim();
+      updateData.nickname = tempValue.value.trim();
       break;
     case 'signature':
-      userStore.userInfo.signature = tempValue.value.trim();
+      updateData.signature = tempValue.value.trim();
       break;
     case 'gender':
-      userStore.userInfo.gender = tempGender.value;
+      updateData.gender = tempGender.value;
       break;
     case 'birthday':
       const year = years[pickerValue.value[0]];
       const month = pickerValue.value[1] + 1;
       const day = pickerValue.value[2] + 1;
-      userStore.userInfo.birthday = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      updateData.birthday = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
       break;
     case 'location':
-      userStore.userInfo.location = tempValue.value.trim();
+      updateData.location = tempValue.value.trim();
       break;
   }
   
-  showEditPopup.value = false;
-  uni.showToast({ title: '保存成功', icon: 'success' });
+  try {
+    uni.showLoading({ title: '保存中...' });
+    const result = await authApi.updateUserInfo(updateData);
+    userStore.setUserInfo(result);
+    showEditPopup.value = false;
+    uni.showToast({ title: '保存成功', icon: 'success' });
+  } catch (error) {
+    console.error('保存失败:', error);
+    uni.showToast({ title: '保存失败', icon: 'none' });
+  } finally {
+    uni.hideLoading();
+  }
 };
 
 const goAuth = () => {

@@ -53,7 +53,7 @@ export interface SpuListParams {
   keyword?: string;
   sort?: 'hot' | 'new' | 'product_count';
   page?: number;
-  pageSize?: number;
+  size?: number;
 }
 
 export interface SpuListResult {
@@ -72,7 +72,7 @@ export interface SpuProductParams {
   sort?: 'recommend' | 'price' | 'new';
   priceOrder?: 'asc' | 'desc';
   page?: number;
-  pageSize?: number;
+  size?: number;
 }
 
 export interface SpuProductItem {
@@ -124,7 +124,7 @@ export interface SpuPostParams {
   type?: 'all' | 'pinned' | 'essence';
   sort?: 'new' | 'hot';
   page?: number;
-  pageSize?: number;
+  size?: number;
 }
 
 export interface SpuPostResult {
@@ -152,7 +152,7 @@ export interface SpuEvaluation {
 export interface SpuEvaluationParams {
   spuId: string;
   page?: number;
-  pageSize?: number;
+  size?: number;
 }
 
 export interface SpuEvaluationResult {
@@ -217,7 +217,7 @@ export const spuApi = {
         sort: params.sort,
         priceOrder: params.priceOrder,
         page: params.page,
-        pageSize: params.pageSize
+        size: params.size
       }
     });
   },
@@ -230,7 +230,7 @@ export const spuApi = {
         type: params.type,
         sort: params.sort,
         page: params.page,
-        pageSize: params.pageSize
+        size: params.size
       }
     });
   },
@@ -239,7 +239,7 @@ export const spuApi = {
     return http<SpuEvaluationResult>({
       url: `/spu/${params.spuId}/evaluations`,
       method: 'GET',
-      data: { page: params.page, pageSize: params.pageSize }
+      data: { page: params.page, size: params.size }
     });
   },
 
@@ -288,11 +288,11 @@ export const spuApi = {
     });
   },
 
-  getFollowedSpus: (page?: number, pageSize?: number) => {
+  getFollowedSpus: (page?: number, size?: number) => {
     return http<SpuListResult>({
       url: '/spu/followed',
       method: 'GET',
-      data: { page, pageSize }
+      data: { page, size }
     });
   }
 };

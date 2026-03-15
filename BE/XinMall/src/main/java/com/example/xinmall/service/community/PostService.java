@@ -33,4 +33,6 @@ public interface PostService {
     IPage<PostVO> getUserPosts(Long userId, Integer page, Integer pageSize);
 
     IPage<PostVO> getMyPosts(Integer page, Integer pageSize);
+
+    IPage<PostVO> getFollowedPosts(Integer page, Integer pageSize);
 }

@@ -27,7 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryVO> getCategoryTree() {
         List<CategoryVO> cachedTree = cacheService.get(RedisKey.CATEGORY_LIST, 
-                new com.fasterxml.jackson.core.type.TypeReference<List<CategoryVO>>() {}.getType());
+                new tools.jackson.core.type.TypeReference<List<CategoryVO>>() {}.getType());
         if (cachedTree != null) {
             return cachedTree;
         }

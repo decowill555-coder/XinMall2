@@ -468,17 +468,33 @@ CREATE TABLE `hot_search`  (
   INDEX `idx_search_count`(`search_count` DESC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '热搜榜表' ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Table structure for banner
+-- ----------------------------
+DROP TABLE IF EXISTS `banner`;
+CREATE TABLE `banner` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'Banner ID',
+  `image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '图片URL',
+  `title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '标题',
+  `link` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '跳转链接',
+  `sort` int NULL DEFAULT 0 COMMENT '排序',
+  `status` tinyint NULL DEFAULT 1 COMMENT '状态 1-启用 0-禁用',
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '轮播图表' ROW_FORMAT = Dynamic;
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- ============================================================
 -- 完成提示
 -- ============================================================
--- 共创建 22 张表：
+-- 共创建 23 张表：
 -- 产品库模块: attribute, attribute_option, brand, brand_category, 
 --            category, category_attribute, product_model, product_model_attribute
 -- 用户模块: user, user_address, user_profile
 -- 商品交易模块: goods, order, evaluation
 -- 消息模块: conversation, message
--- 系统模块: shop, collection, upload_file
+-- 系统模块: shop, collection, upload_file, banner
 -- 搜索模块: search_history, hot_search
 -- ============================================================

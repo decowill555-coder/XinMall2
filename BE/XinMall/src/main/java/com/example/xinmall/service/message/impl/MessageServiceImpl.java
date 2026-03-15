@@ -50,10 +50,16 @@ public class MessageServiceImpl implements MessageService {
             throw new BusinessException("会话不存在");
         }
 
+        Long targetId = conversation.getTargetId();
+
         Page<Message> pageParam = new Page<>(page, size);
         Page<Message> result = messageMapper.selectPage(pageParam,
                 new LambdaQueryWrapper<Message>()
-                        .eq(Message::getConversationId, conversationId)
+                        .and(wrapper -> wrapper
+                                .eq(Message::getSenderId, userId).eq(Message::getReceiverId, targetId)
+                                .or()
+                                .eq(Message::getSenderId, targetId).eq(Message::getReceiverId, userId)
+                        )
                         .orderByDesc(Message::getCreatedAt)
         );
         return result.convert(this::convertToVO);
@@ -130,10 +136,22 @@ public class MessageServiceImpl implements MessageService {
     @Transactional
     public void markAllAsRead(Long conversationId) {
         Long userId = getCurrentUserId();
+        
+        Conversation conversation = conversationMapper.selectOne(
+                new LambdaQueryWrapper<Conversation>()
+                        .eq(Conversation::getId, conversationId)
+                        .eq(Conversation::getUserId, userId)
+        );
+        if (conversation == null) {
+            return;
+        }
+        
+        Long targetId = conversation.getTargetId();
+        
         messageMapper.update(null,
                 new LambdaUpdateWrapper<Message>()
-                        .eq(Message::getConversationId, conversationId)
-                        .ne(Message::getSenderId, userId)
+                        .eq(Message::getSenderId, targetId)
+                        .eq(Message::getReceiverId, userId)
                         .set(Message::getStatus, MessageStatus.READ)
         );
     }

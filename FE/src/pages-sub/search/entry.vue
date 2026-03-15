@@ -54,7 +54,7 @@ import { ref, computed, watch, onMounted, nextTick } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { useAppStore, useSearchHistoryStore } from '@/stores';
 import { useNavigation } from '@/composables/useNavigation';
-import { searchApi, type SearchSuggestionItem } from '@/api/search';
+import { searchApi, type SearchSuggestionItem, type HotSearchItem } from '@/api/search';
 
 const appStore = useAppStore();
 const searchHistoryStore = useSearchHistoryStore();
@@ -70,13 +70,15 @@ const suggestions = ref<SearchSuggestionItem[]>([]);
 const suggestionLoading = ref(false);
 const headerHeight = ref(0);
 const scrollHeight = ref(0);
+const hotKeywords = ref<HotSearchItem[]>([]);
 
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
-onMounted(() => {
+onMounted(async () => {
   nextTick(() => {
     calcLayout();
   });
+  await fetchHotKeywords();
 });
 
 const calcLayout = () => {
@@ -94,19 +96,23 @@ const historyList = computed(() =>
 );
 
 const hotList = computed(() => {
-  const hot = searchHistoryStore.hotKeywords;
-  if (hot.length > 0) return hot.map(h => ({ keyword: h.keyword, isHot: h.trend === 'up' }));
-  return [
-    { keyword: 'iPhone 15 Pro Max', isHot: true },
-    { keyword: 'MacBook Pro M3', isHot: true },
-    { keyword: 'AirPods Pro 2', isHot: false },
-    { keyword: 'iPad Pro', isHot: false },
-    { keyword: '华为 Mate 60', isHot: true },
-    { keyword: '小米 14', isHot: false },
-    { keyword: 'Sony 相机', isHot: false },
-    { keyword: 'Nintendo Switch', isHot: false }
-  ];
+  if (hotKeywords.value.length > 0) {
+    return hotKeywords.value.map(h => ({ 
+      keyword: h.keyword, 
+      isHot: h.trend === 'up' 
+    }));
+  }
+  return [];
 });
+
+const fetchHotKeywords = async () => {
+  try {
+    const res = await searchApi.getHotSearches(10);
+    hotKeywords.value = res;
+  } catch (error) {
+    console.error('获取热门搜索失败:', error);
+  }
+};
 
 const handleInput = () => {
   if (debounceTimer) {
@@ -133,26 +139,12 @@ const fetchSuggestions = async () => {
   try {
     const res = await searchApi.getSearchSuggestions(keyword.value.trim());
     suggestions.value = res;
-  } catch {
-    suggestions.value = generateMockSuggestions(keyword.value.trim());
+  } catch (error) {
+    console.error('获取搜索建议失败:', error);
+    suggestions.value = [];
   } finally {
     suggestionLoading.value = false;
   }
-};
-
-const generateMockSuggestions = (kw: string): SearchSuggestionItem[] => {
-  const mockModels: SearchSuggestionItem[] = [
-    { id: 'm1', type: 'model', name: `iPhone 15 Pro Max`, brand: 'Apple', modelId: 'iphone-15-pro-max', subtitle: '256GB / 钛金属原色' },
-    { id: 'm2', type: 'model', name: `iPhone 15 Pro`, brand: 'Apple', modelId: 'iphone-15-pro', subtitle: '128GB / 蓝色钛金属' },
-    { id: 'm3', type: 'model', name: `${kw} 相关型号`, brand: '其他', modelId: 'mock-model' }
-  ];
-  
-  const mockForums: SearchSuggestionItem[] = [
-    { id: 'f1', type: 'forum', name: `${kw} 爱好者论坛`, forumType: 'user', forumId: 'forum-1', memberCount: 1234 },
-    { id: 'f2', type: 'forum', name: `${kw} 交易专区`, forumType: 'model', forumId: 'forum-2', memberCount: 5678 }
-  ];
-  
-  return [...mockModels, ...mockForums];
 };
 
 const handleSearch = () => {

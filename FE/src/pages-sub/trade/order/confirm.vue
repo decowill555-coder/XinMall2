@@ -32,19 +32,19 @@
           
           <view class="goods-card">
             <view class="shop-header">
-              <ui-avatar :src="product.seller.avatar" :size="48" />
-              <text class="shop-name">{{ product.seller.name }}</text>
+              <ui-avatar :src="product?.seller?.avatar" :size="48" />
+              <text class="shop-name">{{ product?.seller?.name }}</text>
             </view>
             
             <view class="goods-item">
-              <ui-image :src="product.cover" width="180rpx" height="180rpx" radius="md" />
+              <ui-image :src="product?.images?.[0]" width="180rpx" height="180rpx" radius="md" />
               <view class="goods-info">
-                <text class="goods-title">{{ product.title }}</text>
-                <view class="goods-tags" v-if="product.condition">
-                  <text class="goods-tag">{{ product.condition }}</text>
+                <text class="goods-title">{{ product?.title }}</text>
+                <view class="goods-tags" v-if="product?.condition">
+                  <text class="goods-tag">{{ product?.condition }}</text>
                 </view>
                 <view class="goods-bottom">
-                  <ui-price :value="product.price" :size="36" />
+                  <ui-price :value="product?.price ? product.price / 100 : 0" :size="36" />
                   <text class="goods-quantity">x{{ quantity }}</text>
                 </view>
               </view>
@@ -68,17 +68,17 @@
           <view class="price-card">
             <view class="price-item">
               <text class="price-label">商品金额</text>
-              <text class="price-value">¥{{ product.price }}</text>
+              <text class="price-value">¥{{ product?.price ? (product.price / 100).toFixed(2) : '0.00' }}</text>
             </view>
             <view class="price-item">
               <text class="price-label">运费</text>
-              <text class="price-value">{{ freight > 0 ? '¥' + freight : '免运费' }}</text>
+              <text class="price-value">{{ freight > 0 ? '¥' + freight.toFixed(2) : '免运费' }}</text>
             </view>
             <view class="price-item total">
               <text class="price-label">合计</text>
               <view class="total-price">
                 <text class="price-symbol">¥</text>
-                <text class="price-value">{{ totalPrice }}</text>
+                <text class="price-value">{{ totalPrice.toFixed(2) }}</text>
               </view>
             </view>
           </view>
@@ -99,7 +99,7 @@
         <text class="total-label">实付款：</text>
         <view class="total-price">
           <text class="price-symbol">¥</text>
-          <text class="price-value">{{ totalPrice }}</text>
+          <text class="price-value">{{ totalPrice.toFixed(2) }}</text>
         </view>
       </view>
       <ui-button type="primary" :loading="submitting" @click="handleSubmit">提交订单</ui-button>
@@ -127,12 +127,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { useNavigation } from '@/composables/useNavigation';
 import { useAuthStore } from '@/stores';
-import { tradeApi, type Address } from '@/api/trade';
+import { tradeApi, type Address, type ProductDetail } from '@/api/trade';
 
 const { safeAreaBottom, scrollHeight } = usePageLayout({
   hasSubNavbar: true,
@@ -152,27 +152,17 @@ const freight = ref(0);
 
 const address = ref<Address | null>(null);
 
-const product = ref({
-  id: '',
-  title: '',
-  price: 0,
-  cover: '',
-  condition: '',
-  seller: {
-    id: '',
-    name: '',
-    avatar: ''
-  }
-});
+const product = ref<ProductDetail | null>(null);
 
 const fullAddress = computed(() => {
   if (!address.value) return '';
-  const { province, city, district, detailAddress } = address.value;
-  return `${province}${city}${district}${detailAddress}`;
+  const { province, city, district, detail } = address.value;
+  return `${province}${city}${district}${detail}`;
 });
 
 const totalPrice = computed(() => {
-  return product.value.price * quantity.value + freight.value;
+  if (!product.value) return 0;
+  return (product.value.price / 100) * quantity.value + freight.value;
 });
 
 onLoad((options: any) => {
@@ -182,38 +172,35 @@ onLoad((options: any) => {
   }
 });
 
+onMounted(() => {
+  uni.$on('addressSelected', handleAddressSelected);
+});
+
+onUnmounted(() => {
+  uni.$off('addressSelected', handleAddressSelected);
+});
+
+const handleAddressSelected = (selectedAddress: Address) => {
+  address.value = selectedAddress;
+};
+
 const fetchOrderData = async () => {
   loading.value = true;
   try {
-    await new Promise(resolve => setTimeout(resolve, 500));
+    const [productRes, addressRes] = await Promise.all([
+      tradeApi.getProductDetail(productId.value),
+      tradeApi.getAddressList()
+    ]);
     
-    product.value = {
-      id: productId.value,
-      title: 'iPhone 14 Pro Max 256GB 远峰蓝 99新 国行在保',
-      price: 6999,
-      cover: 'https://picsum.photos/400/400?random=1',
-      condition: '99新',
-      seller: {
-        id: 'seller-1',
-        name: '数码达人',
-        avatar: 'https://picsum.photos/200/200?random=avatar1'
-      }
-    };
+    product.value = productRes;
     
-    address.value = {
-      id: 'addr-1',
-      receiverName: '张三',
-      receiverPhone: '138****8888',
-      province: '北京市',
-      city: '朝阳区',
-      district: '建国路',
-      detailAddress: 'SOHO现代城A座1201室',
-      isDefault: true
-    };
+    const defaultAddress = addressRes.find(a => a.isDefault) || addressRes[0];
+    address.value = defaultAddress || null;
     
     freight.value = 0;
   } catch (error) {
     console.error('获取订单数据失败:', error);
+    uni.showToast({ title: '获取数据失败', icon: 'none' });
   } finally {
     loading.value = false;
   }
@@ -229,6 +216,11 @@ const handleSubmit = async () => {
     return;
   }
   
+  if (!product.value) {
+    uni.showToast({ title: '商品信息错误', icon: 'none' });
+    return;
+  }
+  
   if (!authStore.isAuthenticated) {
     uni.navigateTo({ url: '/pages-sub/user/login/index' });
     return;
@@ -237,12 +229,17 @@ const handleSubmit = async () => {
   submitting.value = true;
   
   try {
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    const orderRes = await tradeApi.createOrder({
+      productId: product.value.id,
+      addressId: address.value.id,
+      quantity: quantity.value,
+      remark: remark.value
+    });
     
     uni.showToast({ title: '订单创建成功', icon: 'success' });
     
     setTimeout(() => {
-      uni.redirectTo({ url: '/pages-sub/trade/pay/index?orderNo=ORDER123456' });
+      uni.redirectTo({ url: `/pages-sub/trade/pay/index?orderNo=${orderRes.orderNo}` });
     }, 1000);
   } catch (error) {
     console.error('创建订单失败:', error);

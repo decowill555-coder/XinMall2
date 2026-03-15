@@ -70,16 +70,16 @@
                 <text :class="msg.isSelf ? 'self-text' : 'other-text'">{{ msg.content }}</text>
               </view>
               
-              <view v-else-if="msg.type === 'image'" class="image-message" @click="previewImage(msg.content)">
+              <view v-else-if="msg.type === 'image'" class="image-message" @click="previewImage(msg.extra?.imageUrl || msg.content)">
                 <image 
-                  :src="msg.content" 
+                  :src="msg.extra?.imageUrl || msg.content" 
                   mode="widthFix" 
                   class="message-image"
                   @load="onImageLoad(index)"
                 />
               </view>
               
-              <view v-else-if="msg.type === 'product'" class="product-message" @click="goProductDetail(msg.extra)">
+              <view v-else-if="msg.type === 'goods_card'" class="product-message" @click="goProductDetail(msg.extra)">
                 <image :src="msg.extra?.productCover" class="product-cover" mode="aspectFill" />
                 <view class="product-info">
                   <text class="product-name">{{ msg.extra?.productName }}</text>
@@ -87,7 +87,7 @@
                 </view>
               </view>
               
-              <view v-else-if="msg.type === 'order'" class="order-message" @click="goOrderDetail(msg.extra)">
+              <view v-else-if="msg.type === 'order_card'" class="order-message" @click="goOrderDetail(msg.extra)">
                 <view class="order-header">
                   <ui-icon name="package" :size="32" class="order-icon" />
                   <text class="order-title">订单信息</text>
@@ -186,6 +186,9 @@
 import { ref, computed, nextTick, watch } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { useChatStore, useUserStore, type ChatMessage } from '@/stores';
+import { MessageTypeReverseMap, type MessageType } from '@/api/message';
+import { uploadApi } from '@/api';
+import { BASE_URL } from '@/utils/http';
 
 const chatStore = useChatStore();
 const userStore = useUserStore();
@@ -200,6 +203,7 @@ const showEmojiPanel = ref(false);
 const showActions = ref(false);
 const isLoading = ref(false);
 const isInputFocused = ref(false);
+const isSending = ref(false);
 
 const targetUser = ref({
   id: '',
@@ -208,18 +212,26 @@ const targetUser = ref({
   isOnline: false
 });
 
-const currentUser = computed(() => ({
-  id: userStore.userInfo?.id || 'current-user',
-  name: userStore.userInfo?.nickname || '我',
-  avatar: userStore.userInfo?.avatar || 'https://picsum.photos/100/100?random=me'
-}));
+const currentUser = computed(() => {
+  const userId = userStore.userInfo?.id;
+  return {
+    id: userId ? String(userId) : '',
+    name: userStore.userInfo?.nickname || '我',
+    avatar: userStore.userInfo?.avatar || 'https://picsum.photos/100/100?random=me'
+  };
+});
 
 const messages = computed(() => {
   const msgs = chatStore.currentMessages;
+  const currentUserId = currentUser.value.id;
   return msgs.map(msg => ({
     ...msg,
-    isSelf: msg.senderId === currentUser.value.id
+    isSelf: String(msg.senderId) === currentUserId
   }));
+});
+
+const hasMoreMessages = computed(() => {
+  return chatStore.hasMoreMessages(conversationId.value);
 });
 
 const safeAreaTop = computed(() => {
@@ -259,328 +271,33 @@ const loadConversationInfo = () => {
   }
 };
 
-const loadMessages = () => {
-  if (chatStore.currentMessages.length === 0) {
-    const mockMessages: ChatMessage[] = [
-      {
-        id: 'msg-1',
-        conversationId: conversationId.value,
-        senderId: targetUser.value.id,
-        senderName: targetUser.value.name,
-        senderAvatar: targetUser.value.avatar,
-        content: '您好，请问这个商品还在吗？',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 120 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-2',
-        conversationId: conversationId.value,
-        senderId: currentUser.value.id,
-        senderName: currentUser.value.name,
-        senderAvatar: currentUser.value.avatar,
-        content: '在的，您想要吗？',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 118 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-3',
-        conversationId: conversationId.value,
-        senderId: targetUser.value.id,
-        senderName: targetUser.value.name,
-        senderAvatar: targetUser.value.avatar,
-        content: '请问可以便宜点吗？原价有点贵',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 115 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-4',
-        conversationId: conversationId.value,
-        senderId: currentUser.value.id,
-        senderName: currentUser.value.name,
-        senderAvatar: currentUser.value.avatar,
-        content: '这款已经很优惠了，包邮可以吗？',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 110 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-5',
-        conversationId: conversationId.value,
-        senderId: targetUser.value.id,
-        senderName: targetUser.value.name,
-        senderAvatar: targetUser.value.avatar,
-        content: '好的，包邮的话我可以接受',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 105 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-6',
-        conversationId: conversationId.value,
-        senderId: currentUser.value.id,
-        senderName: currentUser.value.name,
-        senderAvatar: currentUser.value.avatar,
-        content: '太好了！那您什么时候方便付款呢？',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 100 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-7',
-        conversationId: conversationId.value,
-        senderId: targetUser.value.id,
-        senderName: targetUser.value.name,
-        senderAvatar: targetUser.value.avatar,
-        content: '我现在就可以付款，请问发货地址在哪里修改？',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 95 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-8',
-        conversationId: conversationId.value,
-        senderId: currentUser.value.id,
-        senderName: currentUser.value.name,
-        senderAvatar: currentUser.value.avatar,
-        content: '您下单后可以在订单详情里修改收货地址',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 90 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-9',
-        conversationId: conversationId.value,
-        senderId: targetUser.value.id,
-        senderName: targetUser.value.name,
-        senderAvatar: targetUser.value.avatar,
-        content: '',
-        type: 'product',
-        status: 'read',
-        createdAt: new Date(Date.now() - 85 * 60 * 1000).toISOString(),
-        extra: {
-          productId: 'prod-1',
-          productName: 'iPhone 15 Pro Max 256GB 原色钛金属 全新未拆封',
-          productCover: 'https://picsum.photos/200/200?random=iphone',
-          productPrice: 8999
-        }
-      },
-      {
-        id: 'msg-10',
-        conversationId: conversationId.value,
-        senderId: targetUser.value.id,
-        senderName: targetUser.value.name,
-        senderAvatar: targetUser.value.avatar,
-        content: '是这个商品对吧？',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 80 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-11',
-        conversationId: conversationId.value,
-        senderId: currentUser.value.id,
-        senderName: currentUser.value.name,
-        senderAvatar: currentUser.value.avatar,
-        content: '对的，就是这个！全新未拆封的',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 75 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-12',
-        conversationId: conversationId.value,
-        senderId: targetUser.value.id,
-        senderName: targetUser.value.name,
-        senderAvatar: targetUser.value.avatar,
-        content: '好的，我已经下单了，麻烦尽快发货哦',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 70 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-13',
-        conversationId: conversationId.value,
-        senderId: currentUser.value.id,
-        senderName: currentUser.value.name,
-        senderAvatar: currentUser.value.avatar,
-        content: '收到！我明天一早就给您发货',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 65 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-14',
-        conversationId: conversationId.value,
-        senderId: targetUser.value.id,
-        senderName: targetUser.value.name,
-        senderAvatar: targetUser.value.avatar,
-        content: '好的，谢谢！请问发什么快递呢？',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 60 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-15',
-        conversationId: conversationId.value,
-        senderId: currentUser.value.id,
-        senderName: currentUser.value.name,
-        senderAvatar: currentUser.value.avatar,
-        content: '顺丰快递，速度比较快，一般2-3天就能到',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 55 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-16',
-        conversationId: conversationId.value,
-        senderId: targetUser.value.id,
-        senderName: targetUser.value.name,
-        senderAvatar: targetUser.value.avatar,
-        content: '太好了！顺丰很靠谱',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 50 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-17',
-        conversationId: conversationId.value,
-        senderId: currentUser.value.id,
-        senderName: currentUser.value.name,
-        senderAvatar: currentUser.value.avatar,
-        content: '是的，有任何问题随时联系我',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 45 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-18',
-        conversationId: conversationId.value,
-        senderId: targetUser.value.id,
-        senderName: targetUser.value.name,
-        senderAvatar: targetUser.value.avatar,
-        content: '对了，请问有发票吗？',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 40 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-19',
-        conversationId: conversationId.value,
-        senderId: currentUser.value.id,
-        senderName: currentUser.value.name,
-        senderAvatar: currentUser.value.avatar,
-        content: '有的，电子发票会随订单一起发送到您的邮箱',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 35 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-20',
-        conversationId: conversationId.value,
-        senderId: targetUser.value.id,
-        senderName: targetUser.value.name,
-        senderAvatar: targetUser.value.avatar,
-        content: '完美！那我就放心了',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 30 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-21',
-        conversationId: conversationId.value,
-        senderId: currentUser.value.id,
-        senderName: currentUser.value.name,
-        senderAvatar: currentUser.value.avatar,
-        content: '好的，明天发货',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 20 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-22',
-        conversationId: conversationId.value,
-        senderId: targetUser.value.id,
-        senderName: targetUser.value.name,
-        senderAvatar: targetUser.value.avatar,
-        content: '好的，期待收到商品！',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 15 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-23',
-        conversationId: conversationId.value,
-        senderId: currentUser.value.id,
-        senderName: currentUser.value.name,
-        senderAvatar: currentUser.value.avatar,
-        content: '一定会让您满意的！',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 10 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-24',
-        conversationId: conversationId.value,
-        senderId: targetUser.value.id,
-        senderName: targetUser.value.name,
-        senderAvatar: targetUser.value.avatar,
-        content: '对了，请问这个手机有保修吗？',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 8 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-25',
-        conversationId: conversationId.value,
-        senderId: currentUser.value.id,
-        senderName: currentUser.value.name,
-        senderAvatar: currentUser.value.avatar,
-        content: '有的，官方保修一年，从激活日期开始计算',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 5 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-26',
-        conversationId: conversationId.value,
-        senderId: targetUser.value.id,
-        senderName: targetUser.value.name,
-        senderAvatar: targetUser.value.avatar,
-        content: '太好了，非常感谢您的耐心解答！',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 3 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'msg-27',
-        conversationId: conversationId.value,
-        senderId: currentUser.value.id,
-        senderName: currentUser.value.name,
-        senderAvatar: currentUser.value.avatar,
-        content: '不客气，祝您使用愉快！有问题随时联系',
-        type: 'text',
-        status: 'read',
-        createdAt: new Date(Date.now() - 1 * 60 * 1000).toISOString()
-      }
-    ];
-    chatStore.setMessages(conversationId.value, mockMessages);
-  }
+const loadMessages = async () => {
+  if (isLoading.value) return;
   
-  nextTick(() => {
-    scrollTop.value = 999999;
-  });
+  isLoading.value = true;
+  try {
+    await chatStore.fetchMessages(conversationId.value, 1, 20);
+    nextTick(() => {
+      scrollToBottom(false);
+    });
+  } catch (error) {
+    uni.showToast({ title: '加载消息失败', icon: 'none' });
+  } finally {
+    isLoading.value = false;
+  }
 };
 
-const loadMoreMessages = () => {
-  if (isLoading.value) return;
-  isLoading.value = true;
+const loadMoreMessages = async () => {
+  if (isLoading.value || !hasMoreMessages.value) return;
   
-  setTimeout(() => {
+  isLoading.value = true;
+  try {
+    await chatStore.loadMoreMessages(conversationId.value, 20);
+  } catch (error) {
+    uni.showToast({ title: '加载更多失败', icon: 'none' });
+  } finally {
     isLoading.value = false;
-  }, 1000);
+  }
 };
 
 const shouldShowTime = (index: number) => {
@@ -625,40 +342,65 @@ const scrollToBottom = (withAnimation: boolean = false) => {
   });
 };
 
-const sendMessage = () => {
+const sendMessage = async () => {
   const content = inputText.value.trim();
-  if (!content) return;
+  if (!content || isSending.value) return;
   
-  const message: ChatMessage = {
-    id: `msg-${Date.now()}`,
+  isSending.value = true;
+  const tempId = `temp-${Date.now()}`;
+  
+  const tempMessage: ChatMessage = {
+    id: tempId,
     conversationId: conversationId.value,
     senderId: currentUser.value.id,
     senderName: currentUser.value.name,
     senderAvatar: currentUser.value.avatar,
     content,
     type: 'text',
-    status: 'sending',
+    status: 'sent',
     createdAt: new Date().toISOString()
   };
   
-  chatStore.addMessage(message);
+  chatStore.addMessage(tempMessage);
   inputText.value = '';
-  
   scrollToBottom(true);
   
-  setTimeout(() => {
-    chatStore.updateMessageStatus(conversationId.value, message.id, 'sent');
-    setTimeout(() => {
-      chatStore.updateMessageStatus(conversationId.value, message.id, 'delivered');
-    }, 500);
-  }, 300);
+  try {
+    const result = await chatStore.sendMessageToAPI({
+      receiverId: Number(targetUser.value.id),
+      type: MessageTypeReverseMap['text'],
+      content
+    });
+    
+    if (result) {
+      const msgs = chatStore.messages[conversationId.value];
+      if (msgs) {
+        const index = msgs.findIndex(m => m.id === tempId);
+        if (index !== -1) {
+          msgs[index] = result;
+        }
+      }
+    }
+  } catch (error) {
+    chatStore.updateMessageStatus(conversationId.value, tempId, 'sent');
+    uni.showToast({ title: '发送失败', icon: 'none' });
+  } finally {
+    isSending.value = false;
+  }
 };
 
-const resendMessage = (msg: ChatMessage) => {
-  chatStore.updateMessageStatus(conversationId.value, msg.id, 'sending');
-  setTimeout(() => {
-    chatStore.updateMessageStatus(conversationId.value, msg.id, 'sent');
-  }, 500);
+const resendMessage = async (msg: ChatMessage) => {
+  chatStore.updateMessageStatus(conversationId.value, msg.id, 'sent');
+  
+  try {
+    await chatStore.sendMessageToAPI({
+      receiverId: Number(targetUser.value.id),
+      type: MessageTypeReverseMap[msg.type],
+      content: msg.content
+    });
+  } catch (error) {
+    uni.showToast({ title: '重发失败', icon: 'none' });
+  }
 };
 
 const chooseImage = () => {
@@ -666,21 +408,48 @@ const chooseImage = () => {
     count: 1,
     sizeType: ['compressed'],
     sourceType: ['album'],
-    success: (res) => {
-      const message: ChatMessage = {
-        id: `msg-${Date.now()}`,
+    success: async (res) => {
+      const tempFilePath = res.tempFilePaths[0];
+      
+      const tempMessage: ChatMessage = {
+        id: `temp-${Date.now()}`,
         conversationId: conversationId.value,
         senderId: currentUser.value.id,
         senderName: currentUser.value.name,
         senderAvatar: currentUser.value.avatar,
-        content: res.tempFilePaths[0],
+        content: tempFilePath,
         type: 'image',
-        status: 'sending',
-        createdAt: new Date().toISOString()
+        status: 'sent',
+        createdAt: new Date().toISOString(),
+        extra: {
+          imageUrl: tempFilePath
+        }
       };
-      chatStore.addMessage(message);
+      
+      chatStore.addMessage(tempMessage);
       showMorePanel.value = false;
       scrollToBottom(true);
+      
+      try {
+        uni.showLoading({ title: '上传中...' });
+        const uploadResult = await uploadApi.uploadImage(tempFilePath);
+        uni.hideLoading();
+        
+        if (uploadResult && uploadResult.fileUrl) {
+          const imageUrl = uploadResult.fileUrl.startsWith('http') 
+            ? uploadResult.fileUrl 
+            : BASE_URL.replace('/api', '') + uploadResult.fileUrl;
+          
+          await chatStore.sendMessageToAPI({
+            receiverId: Number(targetUser.value.id),
+            type: MessageTypeReverseMap['image'],
+            content: imageUrl
+          });
+        }
+      } catch (error) {
+        uni.hideLoading();
+        uni.showToast({ title: '发送图片失败', icon: 'none' });
+      }
     }
   });
 };
@@ -690,21 +459,48 @@ const chooseCamera = () => {
     count: 1,
     sizeType: ['compressed'],
     sourceType: ['camera'],
-    success: (res) => {
-      const message: ChatMessage = {
-        id: `msg-${Date.now()}`,
+    success: async (res) => {
+      const tempFilePath = res.tempFilePaths[0];
+      
+      const tempMessage: ChatMessage = {
+        id: `temp-${Date.now()}`,
         conversationId: conversationId.value,
         senderId: currentUser.value.id,
         senderName: currentUser.value.name,
         senderAvatar: currentUser.value.avatar,
-        content: res.tempFilePaths[0],
+        content: tempFilePath,
         type: 'image',
-        status: 'sending',
-        createdAt: new Date().toISOString()
+        status: 'sent',
+        createdAt: new Date().toISOString(),
+        extra: {
+          imageUrl: tempFilePath
+        }
       };
-      chatStore.addMessage(message);
+      
+      chatStore.addMessage(tempMessage);
       showMorePanel.value = false;
       scrollToBottom();
+      
+      try {
+        uni.showLoading({ title: '上传中...' });
+        const uploadResult = await uploadApi.uploadImage(tempFilePath);
+        uni.hideLoading();
+        
+        if (uploadResult && uploadResult.fileUrl) {
+          const imageUrl = uploadResult.fileUrl.startsWith('http') 
+            ? uploadResult.fileUrl 
+            : BASE_URL.replace('/api', '') + uploadResult.fileUrl;
+          
+          await chatStore.sendMessageToAPI({
+            receiverId: Number(targetUser.value.id),
+            type: MessageTypeReverseMap['image'],
+            content: imageUrl
+          });
+        }
+      } catch (error) {
+        uni.hideLoading();
+        uni.showToast({ title: '发送图片失败', icon: 'none' });
+      }
     }
   });
 };
@@ -713,15 +509,15 @@ const shareProduct = () => {
   uni.navigateTo({
     url: '/pages-sub/trade/product/list?selectMode=true',
     events: {
-      onSelectProduct: (product: any) => {
-        const message: ChatMessage = {
-          id: `msg-${Date.now()}`,
+      onSelectProduct: async (product: any) => {
+        const tempMessage: ChatMessage = {
+          id: `temp-${Date.now()}`,
           conversationId: conversationId.value,
           senderId: currentUser.value.id,
           senderName: currentUser.value.name,
           senderAvatar: currentUser.value.avatar,
           content: '',
-          type: 'product',
+          type: 'goods_card',
           status: 'sent',
           createdAt: new Date().toISOString(),
           extra: {
@@ -731,9 +527,25 @@ const shareProduct = () => {
             productPrice: product.price
           }
         };
-        chatStore.addMessage(message);
+        
+        chatStore.addMessage(tempMessage);
         showMorePanel.value = false;
         scrollToBottom();
+        
+        try {
+          await chatStore.sendMessageToAPI({
+            receiverId: Number(targetUser.value.id),
+            type: MessageTypeReverseMap['goods_card'],
+            content: JSON.stringify({
+              productId: product.id,
+              productName: product.name,
+              productCover: product.cover,
+              productPrice: product.price
+            })
+          });
+        } catch (error) {
+          uni.showToast({ title: '分享商品失败', icon: 'none' });
+        }
       }
     }
   });
@@ -824,6 +636,14 @@ watch(showMorePanel, () => {
   nextTick(() => {
     scrollToBottom();
   });
+});
+
+watch(() => messages.value.length, (newLen, oldLen) => {
+  if (newLen > oldLen) {
+    nextTick(() => {
+      scrollToBottom(true);
+    });
+  }
 });
 </script>
 

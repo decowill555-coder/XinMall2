@@ -139,6 +139,7 @@ import { usePageLayout } from '@/composables/usePageLayout';
 import { useNavigation } from '@/composables/useNavigation';
 import { useAuthStore } from '@/stores';
 import { formatTimeAgo } from '@/utils/date';
+import { tradeApi, type ProductDetail } from '@/api';
 import UiSellerCard from '@/ui-kit/molecules/UiSellerCard.vue';
 
 const { scrollHeight } = usePageLayout({
@@ -151,7 +152,7 @@ const authStore = useAuthStore();
 
 const productId = ref('');
 const loading = ref(true);
-const product = ref<any>(null);
+const product = ref<ProductDetail | null>(null);
 const isCollected = ref(false);
 
 interface TagItem {
@@ -178,10 +179,11 @@ const productTags = computed<TagItem[]>(() => {
 
 const formatPrice = (price: number): string => {
   if (!price) return '0';
-  if (price >= 10000) {
-    return (price / 10000).toFixed(2) + '万';
+  const yuanPrice = price / 100;
+  if (yuanPrice >= 10000) {
+    return (yuanPrice / 10000).toFixed(2) + '万';
   }
-  return price.toFixed(2);
+  return yuanPrice.toFixed(2);
 };
 
 onLoad((options: any) => {
@@ -194,39 +196,9 @@ onLoad((options: any) => {
 const fetchProductDetail = async () => {
   loading.value = true;
   try {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    product.value = {
-      id: productId.value,
-      title: 'iPhone 14 Pro Max 256GB 远峰蓝 99新 国行在保',
-      price: 6999,
-      originalPrice: 7999,
-      condition: '99新',
-      warranty: true,
-      invoice: true,
-      canBargain: true,
-      description: '自用 iPhone 14 Pro Max，99新，无任何划痕、磕碰。配件齐全，盒子、充电器、数据线都在。电池健康度 95%。国行版本，还在保修期内。\n\n平时主要用来拍照和日常使用，保护得很好，屏幕一直贴膜，边框无磕碰。远峰蓝配色非常好看，实物比照片更漂亮。\n\n可小刀，诚心要的来聊，屠龙刀勿扰。同城可面交验货。',
-      images: [
-        'https://picsum.photos/750/750?random=1',
-        'https://picsum.photos/750/750?random=2',
-        'https://picsum.photos/750/750?random=3',
-        'https://picsum.photos/750/750?random=4'
-      ],
-      location: '北京市朝阳区',
-      viewCount: 256,
-      createdAt: '2024-01-15T10:00:00Z',
-      seller: {
-        id: 'seller-1',
-        name: '数码达人',
-        avatar: 'https://picsum.photos/200/200?random=avatar1',
-        levelName: 'LV5 达人',
-        signature: '诚信经营，品质保证',
-        sellingCount: 28,
-        followerCount: 2568,
-        rating: 98
-      }
-    };
-    isCollected.value = false;
+    const res = await tradeApi.getProductDetail(productId.value);
+    product.value = res;
+    isCollected.value = res.isCollected;
   } catch (error) {
     console.error('获取商品详情失败:', error);
     product.value = null;
@@ -249,11 +221,25 @@ const handleCollect = async () => {
     return;
   }
   
-  isCollected.value = !isCollected.value;
-  uni.showToast({
-    title: isCollected.value ? '收藏成功' : '已取消收藏',
-    icon: 'none'
-  });
+  if (!product.value) return;
+  
+  try {
+    if (isCollected.value) {
+      await tradeApi.uncollectProduct(product.value.id);
+      isCollected.value = false;
+      uni.showToast({ title: '已取消收藏', icon: 'none' });
+    } else {
+      const res = await tradeApi.collectProduct(product.value.id);
+      isCollected.value = true;
+      uni.showToast({ title: '收藏成功', icon: 'none' });
+      if (product.value && res.likeCount) {
+        product.value.likeCount = res.likeCount;
+      }
+    }
+  } catch (error) {
+    console.error('收藏操作失败:', error);
+    uni.showToast({ title: '操作失败，请重试', icon: 'none' });
+  }
 };
 
 const handleChat = () => {

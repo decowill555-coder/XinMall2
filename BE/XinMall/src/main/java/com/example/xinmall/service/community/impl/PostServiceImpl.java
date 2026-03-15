@@ -318,6 +318,19 @@ public class PostServiceImpl implements PostService {
         return getUserPosts(userId, page, pageSize);
     }
 
+    @Override
+    public IPage<PostVO> getFollowedPosts(Integer page, Integer pageSize) {
+        Long userId = getCurrentUserId();
+        if (userId == null) {
+            throw new BusinessException("请先登录");
+        }
+
+        Page<Post> postPage = new Page<>(page, pageSize);
+        IPage<Post> result = postMapper.selectFollowedPosts(postPage, userId);
+        
+        return result.convert(post -> convertToVO(post, userId));
+    }
+
     private PostVO convertToVO(Post post, Long currentUserId) {
         PostVO vo = new PostVO();
         BeanUtils.copyProperties(post, vo);

@@ -1,5 +1,16 @@
 import { http } from '@/utils/http';
 
+export interface CategoryVO {
+  id: number;
+  name: string;
+  parentId?: number;
+  level?: number;
+  icon?: string;
+  image?: string;
+  sort?: number;
+  children?: CategoryVO[];
+}
+
 export interface DeviceCategory {
   id: string;
   name: string;
@@ -61,7 +72,7 @@ export interface ModelListParams {
   sort?: 'recommend' | 'sales' | 'new' | 'price';
   priceOrder?: 'asc' | 'desc';
   page?: number;
-  pageSize?: number;
+  size?: number;
 }
 
 export interface ModelListResult {
@@ -98,7 +109,7 @@ export interface ModelProductParams {
   sort?: 'recommend' | 'price' | 'sales' | 'new';
   priceOrder?: 'asc' | 'desc';
   page?: number;
-  pageSize?: number;
+  size?: number;
 }
 
 export interface ModelProductItem {
@@ -135,7 +146,7 @@ export interface HotModel {
 
 export const categoryApi = {
   getDeviceCategories: () => {
-    return http<AlphabetCategory[]>({
+    return http<CategoryVO[]>({
       url: '/category/tree',
       method: 'GET'
     });
@@ -187,11 +198,11 @@ export const categoryApi = {
     });
   },
 
-  searchModels: (keyword: string, page?: number, pageSize?: number) => {
+  searchModels: (keyword: string, page?: number, size?: number) => {
     return http<ModelListResult>({
       url: '/spu/search',
       method: 'GET',
-      data: { keyword, page, pageSize }
+      data: { keyword, page, size }
     });
   }
 };

@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view class="address-list-page">
     <ui-sub-navbar title="收货地址" />
     
@@ -38,9 +38,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { useNavigation } from '@/composables/useNavigation';
+import { tradeApi, type Address } from '@/api/trade';
 
 const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
@@ -49,38 +50,35 @@ const { scrollHeight } = usePageLayout({
 
 const { smartBack, navigateTo } = useNavigation();
 
-const addressList = ref([
-  {
-    id: 1,
-    name: '张三',
-    phone: '138****8888',
-    province: '北京市',
-    city: '朝阳区',
-    district: '建国路',
-    detail: '88号SOHO现代城A座1201室',
-    isDefault: true
-  },
-  {
-    id: 2,
-    name: '李四',
-    phone: '139****9999',
-    province: '上海市',
-    city: '浦东新区',
-    district: '陆家嘴',
-    detail: '金融中心B座2002室',
-    isDefault: false
+const addressList = ref<Address[]>([]);
+const loading = ref(false);
+
+const fetchAddressList = async () => {
+  loading.value = true;
+  try {
+    const res = await tradeApi.getAddressList();
+    addressList.value = res;
+  } catch (error) {
+    console.error('获取地址列表失败:', error);
+    addressList.value = [];
+  } finally {
+    loading.value = false;
   }
-]);
+};
+
+onMounted(() => {
+  fetchAddressList();
+});
 
 const goAdd = () => {
   navigateTo('/pages-sub/user/address/edit');
 };
 
-const goEdit = (item: any) => {
+const goEdit = (item: Address) => {
   navigateTo(`/pages-sub/user/address/edit?id=${item.id}`);
 };
 
-const selectAddress = (item: any) => {
+const selectAddress = (item: Address) => {
   const pages = getCurrentPages();
   const prevPage = pages[pages.length - 2];
   if (prevPage) {
@@ -89,22 +87,31 @@ const selectAddress = (item: any) => {
   }
 };
 
-const setDefault = (item: any) => {
-  addressList.value.forEach(addr => addr.isDefault = false);
-  item.isDefault = true;
-  uni.showToast({ title: '设置成功', icon: 'success' });
+const setDefault = async (item: Address) => {
+  try {
+    await tradeApi.setDefaultAddress(item.id);
+    addressList.value.forEach(addr => addr.isDefault = addr.id === item.id);
+    uni.showToast({ title: '设置成功', icon: 'success' });
+  } catch (error) {
+    uni.showToast({ title: '设置失败', icon: 'none' });
+  }
 };
 
-const handleDelete = (item: any) => {
+const handleDelete = (item: Address) => {
   uni.showModal({
     title: '提示',
     content: '确定删除该地址吗？',
-    success: (res) => {
+    success: async (res) => {
       if (res.confirm) {
-        const index = addressList.value.findIndex(a => a.id === item.id);
-        if (index > -1) {
-          addressList.value.splice(index, 1);
-          uni.showToast({ title: '删除成功', icon: 'success' });
+        try {
+          await tradeApi.deleteAddress(item.id);
+          const index = addressList.value.findIndex(a => a.id === item.id);
+          if (index > -1) {
+            addressList.value.splice(index, 1);
+            uni.showToast({ title: '删除成功', icon: 'success' });
+          }
+        } catch (error) {
+          uni.showToast({ title: '删除失败', icon: 'none' });
         }
       }
     }

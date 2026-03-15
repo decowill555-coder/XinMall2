@@ -419,14 +419,18 @@ export const useThemeStore = defineStore('theme', () => {
     uni.setStorageSync('theme_color', config.value.color);
     // #endif
     
-    uni.setNavigationBarColor({
-      frontColor: isDark.value ? '#ffffff' : '#000000',
-      backgroundColor: isDark.value ? '#0B0A12' : '#FFFFFF',
-      animation: {
-        duration: 300,
-        timingFunc: 'easeInOut'
-      }
-    });
+    try {
+      uni.setNavigationBarColor({
+        frontColor: isDark.value ? '#ffffff' : '#000000',
+        backgroundColor: isDark.value ? '#0B0A12' : '#FFFFFF',
+        animation: {
+          duration: 300,
+          timingFunc: 'easeInOut'
+        }
+      });
+    } catch (e) {
+      console.warn('setNavigationBarColor failed:', e);
+    }
     
     setTimeout(() => {
       isTransitioning.value = false;

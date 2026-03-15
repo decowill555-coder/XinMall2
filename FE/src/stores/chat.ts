@@ -1,9 +1,8 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
+import { messageApi, MessageTypeMap, MessageTypeReverseMap, MessageStatusMap, type ConversationVO, type MessageVO, type SendMessageRequest, type MessageType, type MessageStatus } from '@/api/message';
 
-export type MessageType = 'text' | 'image' | 'product' | 'order' | 'system';
-
-export type MessageStatus = 'sending' | 'sent' | 'delivered' | 'read' | 'failed';
+export type { MessageType, MessageStatus } from '@/api/message';
 
 export interface ChatMessage {
   id: string;
@@ -11,6 +10,7 @@ export interface ChatMessage {
   senderId: string;
   senderName: string;
   senderAvatar: string;
+  receiverId: string;
   content: string;
   type: MessageType;
   status: MessageStatus;
@@ -35,6 +35,7 @@ export interface Conversation {
   targetUserName: string;
   targetUserAvatar: string;
   lastMessage: string;
+  lastMessageType: string;
   lastMessageTime: string;
   unreadCount: number;
   isOnline: boolean;
@@ -44,12 +45,69 @@ export interface Conversation {
   updatedAt: string;
 }
 
+const transformConversation = (vo: ConversationVO): Conversation => ({
+  id: String(vo.id),
+  targetUserId: String(vo.targetId),
+  targetUserName: vo.targetName,
+  targetUserAvatar: vo.targetAvatar,
+  lastMessage: vo.lastMessage,
+  lastMessageType: vo.lastMessageType,
+  lastMessageTime: vo.lastMessageTime,
+  unreadCount: vo.unreadCount,
+  isOnline: false,
+  isMuted: vo.isMuted,
+  isPinned: vo.isPinned,
+  createdAt: vo.lastMessageTime,
+  updatedAt: vo.lastMessageTime
+});
+
+const transformMessage = (vo: MessageVO): ChatMessage => {
+  const baseMessage = {
+    id: String(vo.id),
+    conversationId: String(vo.conversationId),
+    senderId: String(vo.senderId),
+    senderName: vo.senderName,
+    senderAvatar: vo.senderAvatar,
+    receiverId: String(vo.receiverId),
+    content: vo.content,
+    type: MessageTypeMap[vo.type] || 'text',
+    status: MessageStatusMap[vo.status] || 'sent',
+    createdAt: vo.createdAt
+  };
+
+  if (vo.type === '图片') {
+    return {
+      ...baseMessage,
+      extra: {
+        imageUrl: vo.content
+      }
+    };
+  }
+
+  if (vo.type === '商品卡片' || vo.type === '订单卡片') {
+    try {
+      const extraData = JSON.parse(vo.content);
+      return {
+        ...baseMessage,
+        extra: extraData
+      };
+    } catch {
+      return baseMessage;
+    }
+  }
+
+  return baseMessage;
+};
+
 export const useChatStore = defineStore('chat', () => {
   const conversations = ref<Conversation[]>([]);
   const currentConversationId = ref<string>('');
   const messages = ref<Record<string, ChatMessage[]>>({});
   const isConnected = ref(false);
   const isConnecting = ref(false);
+  const isLoadingConversations = ref(false);
+  const isLoadingMessages = ref<Record<string, boolean>>({});
+  const messagePages = ref<Record<string, { current: number; pages: number; hasMore: boolean }>>({});
 
   const currentConversation = computed(() => 
     conversations.value.find(c => c.id === currentConversationId.value) || null
@@ -76,6 +134,70 @@ export const useChatStore = defineStore('chat', () => {
     conversations.value.filter(c => c.isPinned)
   );
 
+  const fetchConversations = async () => {
+    if (isLoadingConversations.value) return;
+    
+    isLoadingConversations.value = true;
+    try {
+      const result = await messageApi.getConversationList();
+      if (result) {
+        conversations.value = result.map(transformConversation);
+      }
+    } catch (error) {
+      console.error('获取会话列表失败:', error);
+      throw error;
+    } finally {
+      isLoadingConversations.value = false;
+    }
+  };
+
+  const fetchMessages = async (conversationId: string, page: number = 1, size: number = 20) => {
+    if (isLoadingMessages.value[conversationId]) return;
+    
+    isLoadingMessages.value[conversationId] = true;
+    try {
+      const result = await messageApi.getMessages(Number(conversationId), page, size);
+      if (result) {
+        const transformedMessages = result.records.map(transformMessage);
+        
+        if (page === 1) {
+          messages.value[conversationId] = transformedMessages.reverse();
+        } else {
+          messages.value[conversationId] = [...transformedMessages.reverse(), ...(messages.value[conversationId] || [])];
+        }
+        
+        messagePages.value[conversationId] = {
+          current: result.current,
+          pages: result.pages,
+          hasMore: result.current < result.pages
+        };
+      }
+    } catch (error) {
+      console.error('获取消息列表失败:', error);
+      throw error;
+    } finally {
+      isLoadingMessages.value[conversationId] = false;
+    }
+  };
+
+  const loadMoreMessages = async (conversationId: string, size: number = 20) => {
+    const pageInfo = messagePages.value[conversationId];
+    if (!pageInfo || !pageInfo.hasMore || isLoadingMessages.value[conversationId]) {
+      return false;
+    }
+    
+    await fetchMessages(conversationId, pageInfo.current + 1, size);
+    return true;
+  };
+
+  const sendMessageToAPI = async (request: SendMessageRequest) => {
+    const result = await messageApi.sendMessage(request);
+    if (result) {
+      return transformMessage(result);
+    }
+    return null;
+  };
+
   const setConversations = (list: Conversation[]) => {
     conversations.value = list;
   };
@@ -91,6 +213,7 @@ export const useChatStore = defineStore('chat', () => {
   const removeConversation = (conversationId: string) => {
     conversations.value = conversations.value.filter(c => c.id !== conversationId);
     delete messages.value[conversationId];
+    delete messagePages.value[conversationId];
     if (currentConversationId.value === conversationId) {
       currentConversationId.value = '';
     }
@@ -133,7 +256,7 @@ export const useChatStore = defineStore('chat', () => {
     }
   };
 
-  const markAsRead = (conversationId: string) => {
+  const markAsRead = async (conversationId: string) => {
     const conversation = conversations.value.find(c => c.id === conversationId);
     if (conversation) {
       conversation.unreadCount = 0;
@@ -148,6 +271,12 @@ export const useChatStore = defineStore('chat', () => {
         }
       });
     }
+
+    try {
+      await messageApi.clearUnreadCount(Number(conversationId));
+    } catch (error) {
+      console.error('清空未读数失败:', error);
+    }
   };
 
   const incrementUnread = (conversationId: string) => {
@@ -157,17 +286,47 @@ export const useChatStore = defineStore('chat', () => {
     }
   };
 
-  const togglePin = (conversationId: string) => {
+  const togglePin = async (conversationId: string) => {
     const conversation = conversations.value.find(c => c.id === conversationId);
     if (conversation) {
-      conversation.isPinned = !conversation.isPinned;
+      try {
+        if (conversation.isPinned) {
+          await messageApi.unpinConversation(Number(conversationId));
+        } else {
+          await messageApi.pinConversation(Number(conversationId));
+        }
+        conversation.isPinned = !conversation.isPinned;
+      } catch (error) {
+        console.error('置顶操作失败:', error);
+        throw error;
+      }
     }
   };
 
-  const toggleMute = (conversationId: string) => {
+  const toggleMute = async (conversationId: string) => {
     const conversation = conversations.value.find(c => c.id === conversationId);
     if (conversation) {
-      conversation.isMuted = !conversation.isMuted;
+      try {
+        if (conversation.isMuted) {
+          await messageApi.unmuteConversation(Number(conversationId));
+        } else {
+          await messageApi.muteConversation(Number(conversationId));
+        }
+        conversation.isMuted = !conversation.isMuted;
+      } catch (error) {
+        console.error('免打扰操作失败:', error);
+        throw error;
+      }
+    }
+  };
+
+  const deleteConversationAPI = async (conversationId: string) => {
+    try {
+      await messageApi.deleteConversation(Number(conversationId));
+      removeConversation(conversationId);
+    } catch (error) {
+      console.error('删除会话失败:', error);
+      throw error;
     }
   };
 
@@ -194,27 +353,100 @@ export const useChatStore = defineStore('chat', () => {
   const clearAllConversations = () => {
     conversations.value = [];
     messages.value = {};
+    messagePages.value = {};
     currentConversationId.value = '';
   };
 
-  const loadFromStorage = () => {
-    const stored = uni.getStorageSync('chat_conversations');
-    if (stored) {
-      conversations.value = stored;
+  const hasMoreMessages = (conversationId: string) => {
+    const pageInfo = messagePages.value[conversationId];
+    return pageInfo ? pageInfo.hasMore : false;
+  };
+
+  const handleIncomingMessage = (message: ChatMessage) => {
+    const conversationId = message.conversationId;
+    const senderId = message.senderId;
+    
+    let conversation = conversations.value.find(c => 
+      c.id === conversationId || c.targetUserId === senderId
+    );
+    
+    if (!conversation) {
+      conversation = {
+        id: conversationId || `temp-${Date.now()}`,
+        targetUserId: senderId,
+        targetUserName: message.senderName || '未知用户',
+        targetUserAvatar: message.senderAvatar || '',
+        lastMessage: message.content,
+        lastMessageType: '文本',
+        lastMessageTime: message.createdAt,
+        unreadCount: 0,
+        isOnline: false,
+        isMuted: false,
+        isPinned: false,
+        createdAt: message.createdAt,
+        updatedAt: message.createdAt
+      };
+      conversations.value.unshift(conversation);
     }
     
-    const storedMessages = uni.getStorageSync('chat_messages');
-    if (storedMessages) {
-      messages.value = storedMessages;
+    const actualConversationId = conversation.id;
+    
+    if (!messages.value[actualConversationId]) {
+      messages.value[actualConversationId] = [];
+    }
+    
+    const existingMsg = messages.value[actualConversationId].find(m => m.id === message.id);
+    if (!existingMsg) {
+      messages.value[actualConversationId].push({
+        ...message,
+        conversationId: actualConversationId
+      });
+    }
+    
+    conversation.lastMessage = message.content;
+    conversation.lastMessageTime = message.createdAt;
+    conversation.updatedAt = message.createdAt;
+    
+    if (currentConversationId.value !== actualConversationId) {
+      if (!conversation.isMuted) {
+        conversation.unreadCount += 1;
+      }
     }
   };
 
-  const saveToStorage = () => {
-    uni.setStorageSync('chat_conversations', conversations.value);
-    uni.setStorageSync('chat_messages', messages.value);
+  const upsertConversationFromMessage = (message: ChatMessage, targetUserInfo?: { name: string; avatar: string }) => {
+    const senderId = message.senderId;
+    let conversation = conversations.value.find(c => c.targetUserId === senderId);
+    
+    if (!conversation) {
+      conversation = {
+        id: message.conversationId || `temp-${Date.now()}`,
+        targetUserId: senderId,
+        targetUserName: targetUserInfo?.name || message.senderName || '未知用户',
+        targetUserAvatar: targetUserInfo?.avatar || message.senderAvatar || '',
+        lastMessage: message.content,
+        lastMessageType: '文本',
+        lastMessageTime: message.createdAt,
+        unreadCount: 1,
+        isOnline: false,
+        isMuted: false,
+        isPinned: false,
+        createdAt: message.createdAt,
+        updatedAt: message.createdAt
+      };
+      conversations.value.unshift(conversation);
+    } else {
+      conversation.lastMessage = message.content;
+      conversation.lastMessageTime = message.createdAt;
+      conversation.updatedAt = message.createdAt;
+      
+      if (currentConversationId.value !== conversation.id && !conversation.isMuted) {
+        conversation.unreadCount += 1;
+      }
+    }
+    
+    return conversation;
   };
-
-  loadFromStorage();
 
   return {
     conversations,
@@ -222,11 +454,18 @@ export const useChatStore = defineStore('chat', () => {
     messages,
     isConnected,
     isConnecting,
+    isLoadingConversations,
+    isLoadingMessages,
+    messagePages,
     currentConversation,
     currentMessages,
     totalUnreadCount,
     sortedConversations,
     pinnedConversations,
+    fetchConversations,
+    fetchMessages,
+    loadMoreMessages,
+    sendMessageToAPI,
     setConversations,
     addConversation,
     removeConversation,
@@ -239,12 +478,14 @@ export const useChatStore = defineStore('chat', () => {
     incrementUnread,
     togglePin,
     toggleMute,
+    deleteConversationAPI,
     setOnlineStatus,
     setConnected,
     setConnecting,
     clearAllMessages,
     clearAllConversations,
-    loadFromStorage,
-    saveToStorage
+    hasMoreMessages,
+    handleIncomingMessage,
+    upsertConversationFromMessage
   };
 });

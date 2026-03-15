@@ -45,9 +45,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { useNavigation } from '@/composables/useNavigation';
+import { tradeApi, type Address } from '@/api/trade';
 
 const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
@@ -57,6 +59,8 @@ const { scrollHeight } = usePageLayout({
 const { smartBack } = useNavigation();
 
 const isEdit = ref(false);
+const addressId = ref('');
+const loading = ref(false);
 
 const tagOptions = computed(() => [
   { label: '家', value: 0 },
@@ -67,21 +71,67 @@ const tagOptions = computed(() => [
 const form = ref({
   name: '',
   phone: '',
+  province: '',
+  city: '',
+  district: '',
   region: '',
   detail: '',
+  tag: '家',
   tagIndex: 0,
   isDefault: false
 });
 
+onLoad((options: any) => {
+  if (options.id) {
+    isEdit.value = true;
+    addressId.value = options.id;
+    fetchAddressDetail(options.id);
+  }
+});
+
+const fetchAddressDetail = async (id: string) => {
+  loading.value = true;
+  try {
+    const res = await tradeApi.getAddressDetail(id);
+    form.value = {
+      name: res.name,
+      phone: res.phone,
+      province: res.province,
+      city: res.city,
+      district: res.district,
+      region: `${res.province} ${res.city} ${res.district}`,
+      detail: res.detail,
+      tag: res.tag || '家',
+      tagIndex: tagOptions.value.findIndex(t => t.label === res.tag) || 0,
+      isDefault: res.isDefault
+    };
+  } catch (error) {
+    console.error('获取地址详情失败:', error);
+    uni.showToast({ title: '获取地址失败', icon: 'none' });
+  } finally {
+    loading.value = false;
+  }
+};
+
 const chooseLocation = () => {
   uni.chooseLocation({
     success: (res) => {
-      form.value.region = res.name || '';
+      const address = res.address || '';
+      const parts = address.split(/省|市|区|县/);
+      if (parts.length >= 3) {
+        form.value.province = parts[0] + '省';
+        form.value.city = parts[1] + '市';
+        form.value.district = parts[2] + '区';
+      }
+      form.value.region = res.name || address;
+      if (res.name && !form.value.detail) {
+        form.value.detail = res.name;
+      }
     }
   });
 };
 
-const handleSave = () => {
+const handleSave = async () => {
   if (!form.value.name) {
     uni.showToast({ title: '请输入收货人姓名', icon: 'none' });
     return;
@@ -100,13 +150,34 @@ const handleSave = () => {
   }
   
   uni.showLoading({ title: '保存中...' });
-  setTimeout(() => {
+  
+  try {
+    const addressData = {
+      name: form.value.name,
+      phone: form.value.phone,
+      province: form.value.province || form.value.region.split(' ')[0] || '',
+      city: form.value.city || form.value.region.split(' ')[1] || '',
+      district: form.value.district || form.value.region.split(' ')[2] || '',
+      detail: form.value.detail,
+      tag: tagOptions.value[form.value.tagIndex]?.label || '家',
+      isDefault: form.value.isDefault
+    };
+    
+    if (isEdit.value && addressId.value) {
+      await tradeApi.updateAddress(addressId.value, addressData);
+    } else {
+      await tradeApi.createAddress(addressData);
+    }
+    
     uni.hideLoading();
     uni.showToast({ title: '保存成功', icon: 'success' });
     setTimeout(() => {
       smartBack();
     }, 1500);
-  }, 1000);
+  } catch (error) {
+    uni.hideLoading();
+    uni.showToast({ title: '保存失败，请重试', icon: 'none' });
+  }
 };
 </script>
 

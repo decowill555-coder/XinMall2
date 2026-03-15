@@ -47,7 +47,7 @@ export interface SearchParams {
   sort?: 'relevance' | 'new' | 'price' | 'sales';
   priceOrder?: 'asc' | 'desc';
   page?: number;
-  pageSize?: number;
+  size?: number;
 }
 
 export interface SearchResult {

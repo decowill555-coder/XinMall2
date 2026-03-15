@@ -6,7 +6,9 @@
 
 <script setup lang="ts">
 import { onLaunch, onShow, onHide } from '@dcloudio/uni-app';
-import { useAppStore, useThemeStore, useUserStore, useAuthStore } from '@/stores';
+import { watch } from 'vue';
+import { useAppStore, useThemeStore, useUserStore, useAuthStore, useChatStore } from '@/stores';
+import { useWebSocketAutoConnect } from '@/composables/useWebSocket';
 
 const AUTH_REQUIRED_PAGES = [
   'pages/follow/index',
@@ -100,6 +102,8 @@ const appStore = useAppStore();
 const themeStore = useThemeStore();
 const userStore = useUserStore();
 const authStore = useAuthStore();
+const chatStore = useChatStore();
+const { status: wsStatus, autoConnect, autoDisconnect } = useWebSocketAutoConnect();
 
 
 
@@ -109,17 +113,32 @@ onLaunch(() => {
   appStore.init();
   themeStore.initTheme();
   authStore.initialize();
-  uni.hideTabBar({animation: false});
+  
+  const token = uni.getStorageSync('token');
+  if (token) {
+    autoConnect();
+  }
 });
-
-
 
 onShow(() => {
   console.log('App Show');
+  const token = uni.getStorageSync('token');
+  if (token && wsStatus.value === 'disconnected') {
+    autoConnect();
+  }
 });
 
 onHide(() => {
   console.log('App Hide');
+});
+
+watch(() => authStore.isAuthenticated, (isAuthenticated) => {
+  if (isAuthenticated) {
+    autoConnect();
+  } else {
+    autoDisconnect();
+    chatStore.clearAllConversations();
+  }
 });
 </script>
 

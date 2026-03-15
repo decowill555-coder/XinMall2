@@ -10,17 +10,29 @@ public class SearchAggregationVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer productCount;
+    private Long productCount;
 
-    private Integer modelCount;
+    private Long modelCount;
 
-    private Integer communityCount;
+    private Long communityCount;
 
     private List<BrandAggregation> brands;
 
     private List<ConditionAggregation> conditions;
 
     private PriceRange priceRange;
+
+    public void setProductCount(Long productCount) {
+        this.productCount = productCount;
+    }
+
+    public void setModelCount(Long modelCount) {
+        this.modelCount = modelCount;
+    }
+
+    public void setCommunityCount(Long communityCount) {
+        this.communityCount = communityCount;
+    }
 
     @Data
     public static class BrandAggregation implements Serializable {

@@ -104,6 +104,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { authApi } from '@/api';
 
 const phone = ref('');
 const code = ref('');
@@ -123,7 +124,7 @@ const canSubmit = computed(() =>
   password.value === confirmPassword.value
 );
 
-const sendCode = () => {
+const sendCode = async () => {
   if (!canSendCode.value || countdown.value > 0) return;
   
   uni.showToast({ title: '验证码已发送', icon: 'success' });
@@ -148,15 +149,21 @@ const handleSubmit = async () => {
   uni.showLoading({ title: '提交中...' });
   
   try {
+    await authApi.resetPassword({
+      phone: phone.value,
+      code: code.value,
+      password: password.value
+    });
+    
     uni.hideLoading();
     uni.showToast({ title: '密码重置成功', icon: 'success' });
     
     setTimeout(() => {
       uni.navigateBack();
     }, 1500);
-  } catch (error) {
+  } catch (error: any) {
     uni.hideLoading();
-    uni.showToast({ title: '重置失败', icon: 'none' });
+    uni.showToast({ title: error.message || '重置失败', icon: 'none' });
   }
 };
 

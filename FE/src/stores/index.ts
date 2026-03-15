@@ -1,5 +1,6 @@
 import { useUserStore } from './user';
 import { useChatStore } from './chat';
+import type { ChatMessage, Conversation, MessageType, MessageStatus } from './chat';
 import { useSearchHistoryStore } from './search-history';
 import { useSearchFilterStore } from './search-filter';
 import { useAppStore } from './app';
@@ -31,6 +32,8 @@ export {
   useForumStore,
   useProductCategoryStore
 };
+
+export type { ChatMessage, Conversation, MessageType, MessageStatus };
 
 export const stores = {
   user: useUserStore,

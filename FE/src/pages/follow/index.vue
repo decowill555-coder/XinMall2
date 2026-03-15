@@ -14,25 +14,27 @@
     
     <view class="page-content" :style="{ paddingTop: headerHeight + 'px' }">
       <scroll-view scroll-y class="content-scroll" :style="{ height: scrollHeight + 'px' }" @scrolltolower="loadMore">
-        <view class="post-list">
-          <ui-waterfalls :list="postList" :columns="2" :gap="12" @click="goPostDetail">
-            <template #item="{ item }">
-              <ui-goods-card 
-                :data="{
-                  ...item,
-                  price: null,
-                  likeCount: item.likeCount
-                }" 
-                mode="waterfall" 
-                @click="goPostDetail" 
-                @user-click="goUser" 
-              />
-            </template>
-          </ui-waterfalls>
-        </view>
-        
-        <view class="load-more" v-if="postList.length > 0">
-          <ui-divider :text="loading ? '加载中...' : '上拉加载更多'" />
+        <view class="content">
+          <view class="feed-list" v-if="feedList.length > 0">
+            <ui-waterfalls :list="feedList" :columns="2" :gap="12">
+              <template #item="{ item }">
+                <ui-goods-card 
+                  :data="item" 
+                  mode="waterfall" 
+                  @click="handleItemClick" 
+                  @user-click="goUser" 
+                />
+              </template>
+            </ui-waterfalls>
+          </view>
+          <view class="empty-state" v-else-if="!loading">
+            <text class="empty-text">暂无关注的动态</text>
+            <text class="empty-hint">去关注一些用户和商品吧</text>
+          </view>
+
+          <view class="load-more" v-if="feedList.length > 0">
+            <ui-divider :text="loading ? '加载中...' : (hasMore ? '上拉加载更多' : '没有更多了')" />
+          </view>
         </view>
       </scroll-view>
     </view>
@@ -42,8 +44,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { forumApi, type PostListItem } from '@/api/community';
+import { spuApi } from '@/api';
+
+interface FeedItem {
+  id: string | number;
+  cover: string;
+  title: string;
+  price?: number;
+  userName: string;
+  userAvatar: string;
+  userId: string;
+  likeCount?: number;
+  memberCount?: number;
+  isLiked?: boolean;
+  isVideo?: boolean;
+  itemType: 'post' | 'product';
+}
 
 const { safeAreaTop, headerExtraTop, headerHeight, scrollHeight } = usePageLayout({
   hasTabbar: true,
@@ -52,92 +71,90 @@ const { safeAreaTop, headerExtraTop, headerHeight, scrollHeight } = usePageLayou
 });
 
 const loading = ref(false);
+const feedList = ref<FeedItem[]>([]);
+const currentPage = ref(1);
+const hasMore = ref(true);
+const pageSize = 10;
 
-const postList = ref([
-  {
-    id: 1,
-    cover: 'https://picsum.photos/400/400?random=101',
-    title: 'iPhone 15 Pro 深度测评：性能与影像全面升级',
-    userName: '数码达人',
-    userAvatar: 'https://picsum.photos/100/100?random=1',
-    likeCount: 128,
-    isLiked: false,
-    isVideo: false
-  },
-  {
-    id: 2,
-    cover: 'https://picsum.photos/400/500?random=102',
-    title: 'MacBook Pro M3 开箱体验：性能怪兽来了',
-    userName: '科技博主',
-    userAvatar: 'https://picsum.photos/100/100?random=2',
-    likeCount: 256,
-    isLiked: true,
-    isVideo: false
-  },
-  {
-    id: 3,
-    cover: 'https://picsum.photos/400/400?random=103',
-    title: 'AirPods Pro 2 开箱测评：降噪天花板级别',
-    userName: '耳机控',
-    userAvatar: 'https://picsum.photos/100/100?random=3',
-    likeCount: 89,
-    isLiked: false,
-    isVideo: false
-  },
-  {
-    id: 4,
-    cover: 'https://picsum.photos/400/600?random=104',
-    title: '2024年最值得入手的数码好物推荐',
-    userName: '好物推荐官',
-    userAvatar: 'https://picsum.photos/100/100?random=4',
-    likeCount: 167,
-    isLiked: false,
-    isVideo: true
-  },
-  {
-    id: 5,
-    cover: 'https://picsum.photos/400/400?random=105',
-    title: 'iPad Pro 创作利器：设计师必备神器',
-    userName: '设计师小王',
-    userAvatar: 'https://picsum.photos/100/100?random=5',
-    likeCount: 234,
-    isLiked: true,
-    isVideo: false
-  },
-  {
-    id: 6,
-    cover: 'https://picsum.photos/400/500?random=106',
-    title: 'Sony 相机入门指南：如何拍出好照片',
-    userName: '摄影师老李',
-    userAvatar: 'https://picsum.photos/100/100?random=6',
-    likeCount: 78,
-    isLiked: false,
-    isVideo: false
-  }
-]);
-
-const goPostDetail = (item: any) => {
-  uni.navigateTo({ url: `/pages-sub/community/post/detail?id=${item.id}` });
-};
-
-const goUser = (item: any) => {
-  uni.navigateTo({ url: `/pages-sub/community/user/index?id=${item.userId}` });
-};
-
-const loadMore = () => {
+const fetchFeed = async (page: number = 1) => {
   if (loading.value) return;
   loading.value = true;
   
-  setTimeout(() => {
-    const newList = postList.value.map(item => ({
-      ...item,
-      id: item.id + postList.value.length,
-      likeCount: Math.floor(Math.random() * 200)
+  try {
+    const [postsResult, spusResult] = await Promise.all([
+      forumApi.getFollowedPosts(page, pageSize),
+      spuApi.getFollowedSpus(page, pageSize)
+    ]);
+    
+    const postItems: FeedItem[] = (postsResult?.records || []).map((item: PostListItem) => ({
+      id: item.id,
+      cover: item.images && item.images.length > 0 ? item.images[0] : '',
+      title: item.title || '',
+      userName: item.author?.name || '未知用户',
+      userAvatar: item.author?.avatar || '',
+      userId: String(item.author?.id || ''),
+      likeCount: item.likeCount || 0,
+      isLiked: item.isLiked || false,
+      isVideo: false,
+      itemType: 'post'
     }));
-    postList.value = [...postList.value, ...newList];
+    
+    const spuItems: FeedItem[] = (spusResult?.records || []).map((item: any) => ({
+      id: item.id,
+      cover: item.cover || '',
+      title: item.name || '',
+      price: item.priceMin || item.priceMax,
+      userName: '商品',
+      userAvatar: '',
+      userId: '',
+      memberCount: item.memberCount || 0,
+      itemType: 'product'
+    }));
+    
+    const allItems = [...postItems, ...spuItems];
+    
+    if (page === 1) {
+      feedList.value = allItems;
+    } else {
+      feedList.value = [...feedList.value, ...allItems];
+    }
+    
+    currentPage.value = page;
+    const postHasMore = postsResult ? postsResult.current < postsResult.pages : false;
+    const spuHasMore = spusResult ? spusResult.current < spusResult.pages : false;
+    hasMore.value = postHasMore || spuHasMore;
+  } catch (error) {
+    console.error('获取关注数据失败:', error);
+    if (page === 1) {
+      feedList.value = [];
+    }
+  } finally {
     loading.value = false;
-  }, 1000);
+  }
 };
+
+const handleItemClick = (item: FeedItem) => {
+  if (item.itemType === 'post') {
+    uni.navigateTo({ url: `/pages-sub/community/post/detail?id=${item.id}` });
+  } else {
+    uni.navigateTo({ url: `/pages-sub/trade/product/detail?id=${item.id}` });
+  }
+};
+
+const goUser = (item: FeedItem) => {
+  if (item.userId) {
+    uni.navigateTo({ url: `/pages-sub/community/user/index?id=${item.userId}` });
+  }
+};
+
+const loadMore = () => {
+  if (loading.value || !hasMore.value) return;
+  fetchFeed(currentPage.value + 1);
+};
+
+onMounted(() => {
+  fetchFeed(1);
+});
 </script>
 
 <style lang="scss" scoped>
@@ -218,10 +235,31 @@ const loadMore = () => {
   overflow: hidden;
 }
 
-.post-list {
-  padding: $space-md $space-md 0;
+.content {
+  padding: $space-md;
+}
+
+.feed-list {
   box-sizing: border-box;
-  overflow: hidden;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 200rpx $space-md;
+}
+
+.empty-text {
+  font-size: $font-size-lg;
+  @include text-main;
+  margin-bottom: $space-sm;
+}
+
+.empty-hint {
+  font-size: $font-size-sm;
+  @include text-sub;
 }
 
 .load-more {

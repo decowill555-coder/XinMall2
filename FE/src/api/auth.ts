@@ -22,6 +22,9 @@ export interface UserInfo{
   signature: string;
   isSeller: boolean;
   sellerId: string | null;
+  followers: number;
+  following: number;
+  likes: number;
   createTime: string;
 }
 
@@ -131,7 +134,7 @@ export const authApi = {
 
   getUserInfo: () => {
     return http<UserInfo>({
-      url: '/user/profile',
+      url: '/user/info',
       method: 'GET'
     });
   },

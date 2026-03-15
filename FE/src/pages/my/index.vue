@@ -140,9 +140,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { onShow } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { useUserStore, useAuthStore, useOrderStore } from '@/stores';
+import { authApi } from '@/api';
 
 const { safeAreaTop, headerExtraTop, headerHeight, scrollHeight } = usePageLayout({
   hasTabbar: true,
@@ -154,8 +156,36 @@ const userStore = useUserStore();
 const authStore = useAuthStore();
 const orderStore = useOrderStore();
 
+const fetchUserInfo = async () => {
+  if (!authStore.isAuthenticated) return;
+  
+  try {
+    const userInfo = await authApi.getUserInfo();
+    userStore.setUserInfo(userInfo);
+  } catch (error) {
+    console.error('获取用户信息失败:', error);
+  }
+};
+
+const fetchOrderSummary = async () => {
+  if (!authStore.isAuthenticated) return;
+  
+  try {
+    await orderStore.fetchOrders(true);
+  } catch (error) {
+    console.error('获取订单统计失败:', error);
+  }
+};
+
+onShow(() => {
+  if (authStore.isAuthenticated) {
+    fetchUserInfo();
+    fetchOrderSummary();
+  }
+});
+
 const userInfo = computed(() => ({
-  avatar: userStore.userInfo?.avatar || 'https://picsum.photos/200/200?random=100',
+  avatar: userStore.userInfo?.avatar || '/static/default-avatar.png',
   name: userStore.userInfo?.nickname || '未登录',
   signature: userStore.userInfo?.signature || '点击登录',
   isVerified: authStore.isAuthenticated,

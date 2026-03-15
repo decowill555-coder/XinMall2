@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.xinmall.mapper.community.PostMapper">
+
+    <resultMap id="PostResultMap" type="com.example.xinmall.entity.community.Post" autoMapping="true">
+        <id property="id" column="id"/>
+        <result property="images" column="images" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result property="tags" column="tags" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+    </resultMap>
+
+    <select id="selectFollowedPosts" resultMap="PostResultMap">
+        SELECT p.* FROM post p
+        INNER JOIN user_follow uf ON p.author_id = uf.followed_id
+        WHERE uf.user_id = #{userId} AND p.status = 1
+        ORDER BY p.created_at DESC
+    </select>
+
+</mapper>

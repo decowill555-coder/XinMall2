@@ -110,4 +110,12 @@ public class PostController {
             @RequestParam(defaultValue = "10") Integer pageSize) {
         return Result.success(postService.getMyPosts(page, pageSize));
     }
+
+    @Operation(summary = "关注帖子列表")
+    @GetMapping("/followed")
+    public Result<IPage<PostVO>> followedPosts(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer pageSize) {
+        return Result.success(postService.getFollowedPosts(page, pageSize));
+    }
 }

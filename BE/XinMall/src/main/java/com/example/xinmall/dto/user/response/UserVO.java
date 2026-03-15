@@ -30,4 +30,14 @@ public class UserVO implements Serializable {
     private UserStatus status;
 
     private LocalDateTime createdAt;
+
+    private Integer followers;
+
+    private Integer following;
+
+    private Integer likes;
+
+    private Boolean isSeller;
+
+    private Long sellerId;
 }

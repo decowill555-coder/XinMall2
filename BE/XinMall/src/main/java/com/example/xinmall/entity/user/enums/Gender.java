@@ -12,9 +12,9 @@ public enum Gender {
     FEMALE(2, "女");
 
     @EnumValue
+    @JsonValue
     private final Integer code;
 
-    @JsonValue
     private final String desc;
 
     Gender(Integer code, String desc) {

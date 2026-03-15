@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: xinmall
+  profiles:
+    active: dev
   main:
     allow-bean-definition-overriding: true
   datasource:
@@ -56,3 +58,8 @@ jwt:
   expiration: 86400000  # 24小时
   header: Authorization
   prefix: Bearer
+
+# 文件上传配置
+upload:
+  path: C:/Users/willdc/Documents/WorkPlace/XinMall/uploads
+  url-prefix: /uploads

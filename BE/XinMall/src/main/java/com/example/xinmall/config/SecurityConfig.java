@@ -4,6 +4,7 @@ import com.example.xinmall.common.security.JwtAuthenticationTokenFilter;
 import com.example.xinmall.common.security.handler.AccessDeniedHandlerImpl;
 import com.example.xinmall.common.security.handler.AuthenticationEntryPointImpl;
 import jakarta.servlet.Filter;
+import org.springframework.http.HttpMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -77,6 +78,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/auth/**",
+                                "/api/search/**",
+                                "/api/category/**",
+                                "/api/goods/**",
+                                "/api/brand/**",
+                                "/api/spu/**",
+                                "/api/banner/**",
+                                "/api/evaluation/**",
+                                "/uploads/**",
                                 "/ws/**",
                                 "/doc.html",
                                 "/swagger-ui.html",
@@ -85,6 +94,7 @@ public class SecurityConfig {
                                 "/swagger-resources/**",
                                 "/webjars/**"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception

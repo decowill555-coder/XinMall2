@@ -377,7 +377,10 @@ public class SpuServiceImpl implements SpuService {
     public IPage<SpuListVO> getFollowedSpus(Integer page, Integer pageSize) {
         Long userId = getCurrentUserId();
         if (userId == null) {
-            throw new BusinessException("请先登录");
+            Page<SpuListVO> emptyPage = new Page<>(page, pageSize);
+            emptyPage.setRecords(new ArrayList<>());
+            emptyPage.setTotal(0);
+            return emptyPage;
         }
 
         LambdaQueryWrapper<SpuFollow> followWrapper = new LambdaQueryWrapper<>();
@@ -394,6 +397,12 @@ public class SpuServiceImpl implements SpuService {
         List<Long> spuIds = follows.stream()
                 .map(SpuFollow::getSpuId)
                 .collect(Collectors.toList());
+        if (spuIds.isEmpty()) {
+            Page<SpuListVO> emptyPage = new Page<>(page, pageSize);
+            emptyPage.setRecords(new ArrayList<>());
+            emptyPage.setTotal(0);
+            return emptyPage;
+        }
 
         Page<Spu> spuPage = new Page<>(page, pageSize);
         LambdaQueryWrapper<Spu> wrapper = new LambdaQueryWrapper<>();
@@ -423,6 +432,11 @@ public class SpuServiceImpl implements SpuService {
         SpuListVO vo = new SpuListVO();
         BeanUtils.copyProperties(spu, vo);
         vo.setIsFollowed(checkIsFollowed(spu.getId()));
+        Spu spuDetail = spuMapper.selectById(spu.getId());
+        if (spuDetail != null) {
+            vo.setPriceMin(spuDetail.getPriceMin());
+            vo.setPriceMax(spuDetail.getPriceMax());
+        }
         return vo;
     }
 

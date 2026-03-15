@@ -38,9 +38,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
-import { useOrderStore } from '@/stores';
+import { useOrderStore, type OrderStatus } from '@/stores/order';
+import { tradeApi } from '@/api';
 
 const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
@@ -59,17 +60,27 @@ const tabList = ref([
   { name: '待评价' }
 ]);
 
-const orderList = computed(() => {
-  const statusMap: Record<number, string | null> = {
-    0: null,
-    1: 'pending',
-    2: 'paid',
-    3: 'shipped',
-    4: 'completed'
-  };
-  const targetStatus = statusMap[activeTab.value];
-  if (!targetStatus) return orderStore.orders;
-  return orderStore.orders.filter(o => o.status === targetStatus);
+const statusMap: Record<number, OrderStatus | undefined> = {
+  0: undefined,
+  1: 'pending',
+  2: 'paid',
+  3: 'shipped',
+  4: 'completed'
+};
+
+const orderList = computed(() => orderStore.orders);
+
+const fetchOrders = async (isRefresh = true) => {
+  const status = statusMap[activeTab.value];
+  await orderStore.fetchOrders(isRefresh, status);
+};
+
+watch(activeTab, () => {
+  fetchOrders(true);
+});
+
+onMounted(() => {
+  fetchOrders(true);
 });
 
 const goDetail = (order: any) => {
@@ -80,14 +91,19 @@ const handlePay = (order: any) => {
   uni.navigateTo({ url: `/pages-sub/trade/pay/index?id=${order.id}` });
 };
 
-const handleConfirm = (order: any) => {
+const handleConfirm = async (order: any) => {
   uni.showModal({
     title: '确认收货',
     content: '确认已收到商品吗？',
-    success: (res) => {
+    success: async (res) => {
       if (res.confirm) {
-        orderStore.updateOrderStatus(order.id, 'completed');
-        uni.showToast({ title: '确认成功', icon: 'success' });
+        try {
+          await tradeApi.confirmReceipt(order.id);
+          orderStore.updateOrderStatus(order.id, 'completed');
+          uni.showToast({ title: '确认成功', icon: 'success' });
+        } catch (error) {
+          uni.showToast({ title: '操作失败', icon: 'none' });
+        }
       }
     }
   });

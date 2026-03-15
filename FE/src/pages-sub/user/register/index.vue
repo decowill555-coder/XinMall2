@@ -116,6 +116,7 @@
 import { ref, computed } from 'vue';
 import { useUserStore, useAuthStore } from '@/stores';
 import { handleRedirectAfterLogin } from '@/utils/navigation';
+import { authApi } from '@/api';
 
 const userStore = useUserStore();
 const authStore = useAuthStore();
@@ -140,7 +141,7 @@ const canRegister = computed(() =>
   agreed.value
 );
 
-const sendCode = () => {
+const sendCode = async () => {
   if (!canSendCode.value || countdown.value > 0) return;
   
   uni.showToast({ title: '验证码已发送', icon: 'success' });
@@ -165,9 +166,15 @@ const handleRegister = async () => {
   uni.showLoading({ title: '注册中...' });
   
   try {
-    const mockToken = `token_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    userStore.setToken(mockToken);
-    authStore.setAuth('user_001', 'user');
+    const result = await authApi.register({
+      phone: phone.value,
+      code: code.value,
+      password: password.value
+    });
+    
+    userStore.setToken(result.token);
+    userStore.setUserInfo(result.user);
+    authStore.setAuth(result.user.id, 'user');
     
     uni.hideLoading();
     uni.showToast({ title: '注册成功', icon: 'success' });
@@ -175,9 +182,9 @@ const handleRegister = async () => {
     setTimeout(() => {
       handleRedirectAfterLogin();
     }, 1500);
-  } catch (error) {
+  } catch (error: any) {
     uni.hideLoading();
-    uni.showToast({ title: '注册失败', icon: 'none' });
+    uni.showToast({ title: error.message || '注册失败', icon: 'none' });
   }
 };
 

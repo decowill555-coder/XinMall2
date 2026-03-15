@@ -96,6 +96,7 @@
 import { ref, computed } from 'vue';
 import { useUserStore, useAuthStore } from '@/stores';
 import { handleRedirectAfterLogin } from '@/utils/navigation';
+import { authApi } from '@/api';
 
 const userStore = useUserStore();
 const authStore = useAuthStore();
@@ -114,10 +115,14 @@ const handleLogin = async () => {
   uni.showLoading({ title: '登录中...' });
   
   try {
-    const mockToken = `token_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    userStore.setToken(mockToken);
+    const result = await authApi.login({ 
+      phone: phone.value, 
+      password: password.value 
+    });
     
-    authStore.setAuth('user_001', 'user');
+    userStore.setToken(result.token);
+    userStore.setUserInfo(result.user);
+    authStore.setAuth(result.user.id, 'user');
     
     uni.hideLoading();
     uni.showToast({ title: '登录成功', icon: 'success' });
@@ -125,9 +130,9 @@ const handleLogin = async () => {
     setTimeout(() => {
       handleRedirectAfterLogin();
     }, 1500);
-  } catch (error) {
+  } catch (error: any) {
     uni.hideLoading();
-    uni.showToast({ title: '登录失败', icon: 'none' });
+    uni.showToast({ title: error.message || '登录失败', icon: 'none' });
   }
 };
 

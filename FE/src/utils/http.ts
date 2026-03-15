@@ -1,7 +1,8 @@
 // src/utils/http.ts
 
-// 基础配置 - 根据环境自动切换
-const BASE_URL = process.env.NODE_ENV === 'production'
+const DEBUG = process.env.NODE_ENV !== 'production';
+
+export const BASE_URL = process.env.NODE_ENV === 'production'
   ? 'https://api.xinmall.com/api'
   : 'http://localhost:8080/api';
 const TIMEOUT = 10000;
@@ -44,6 +45,13 @@ export const http = <T>(options: RequestOptions): Promise<T> => {
       }
     }
 
+    if (DEBUG) {
+      console.log('[API Request]', options.method || 'GET', url);
+      if (options.data) {
+        console.log('[API Request Data]', options.data);
+      }
+    }
+
     uni.request({
       url,
       method: options.method || 'GET',
@@ -51,6 +59,10 @@ export const http = <T>(options: RequestOptions): Promise<T> => {
       header: header,
       timeout: TIMEOUT,
       success: (res: any) => {
+        if (DEBUG) {
+          console.log('[API Response]', url, res.statusCode, res.data);
+        }
+        
         if (res.statusCode >= 200 && res.statusCode < 300) {
           if (res.data.code === 200 || res.data.code === 201) {
             resolve(res.data.data as T);
@@ -62,13 +74,31 @@ export const http = <T>(options: RequestOptions): Promise<T> => {
           uni.removeStorageSync('token');
           uni.navigateTo({ url: '/pages-sub/user/login/index' });
           reject(res);
+        } else if (res.statusCode === 403) {
+          uni.showToast({ title: '没有访问权限', icon: 'none' });
+          reject(res);
+        } else if (res.statusCode === 404) {
+          uni.showToast({ title: '接口不存在', icon: 'none' });
+          reject(res);
         } else {
-          uni.showToast({ title: '服务器开小差了', icon: 'none' });
+          uni.showToast({ title: `服务器错误(${res.statusCode})`, icon: 'none' });
           reject(res);
         }
       },
       fail: (err) => {
-        uni.showToast({ title: '网络连接失败', icon: 'none' });
+        if (DEBUG) {
+          console.error('[API Error]', url, err);
+        }
+        
+        let message = '网络连接失败';
+        if (err.errMsg) {
+          if (err.errMsg.includes('timeout')) {
+            message = '请求超时，请检查网络或后端服务';
+          } else if (err.errMsg.includes('network')) {
+            message = '网络不可用，请检查网络连接';
+          }
+        }
+        uni.showToast({ title: message, icon: 'none' });
         reject(err);
       },
       complete: () => {

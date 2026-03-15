@@ -2,7 +2,13 @@
   <view class="message-page">
     <view class="page-header" :style="{ paddingTop: (safeAreaTop + headerExtraTop) + 'px' }">
       <ui-card :glass="true" :shadow="true" radius="lg" padding="lg" class="header-card">
-        <ui-text size="xl" weight="bold" color="main">消息</ui-text>
+        <view class="header-title-row">
+          <ui-text size="xl" weight="bold" color="main">消息</ui-text>
+          <view v-if="!chatStore.isConnected" class="connection-status">
+            <view class="status-dot disconnected"></view>
+            <text class="status-text">{{ chatStore.isConnecting ? '连接中...' : '未连接' }}</text>
+          </view>
+        </view>
       </ui-card>
       
       <view class="message-tabs">
@@ -17,7 +23,11 @@
             <view class="group-title">
               <ui-text size="sm" color="sub">交易消息</ui-text>
             </view>
+            <view v-if="isLoading" class="loading-state">
+              <ui-text size="md" color="sub">加载中...</ui-text>
+            </view>
             <view 
+              v-else
               v-for="item in tradeMessages" 
               :key="item.id" 
               class="message-item"
@@ -104,6 +114,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
+import { onShow } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { useChatStore } from '@/stores';
 import { formatTimeAgo } from '@/utils/date';
@@ -117,6 +128,7 @@ const { safeAreaTop, headerExtraTop, headerHeight, scrollHeight } = usePageLayou
 const chatStore = useChatStore();
 
 const activeTab = ref(0);
+const isLoading = ref(false);
 
 const tabList = ref([
   { name: '交易' },
@@ -124,12 +136,27 @@ const tabList = ref([
   { name: '互动' }
 ]);
 
+const formatLastMessage = (content: string, type: string): string => {
+  if (!content) return '';
+  
+  switch (type) {
+    case '图片':
+      return '[图片]';
+    case '商品卡片':
+      return '[商品]';
+    case '订单卡片':
+      return '[订单]';
+    default:
+      return content.length > 30 ? content.substring(0, 30) + '...' : content;
+  }
+};
+
 const tradeMessages = computed(() => 
   chatStore.sortedConversations.map(c => ({
     id: c.id,
     avatar: c.targetUserAvatar,
     title: `卖家：${c.targetUserName}`,
-    lastMessage: c.lastMessage,
+    lastMessage: formatLastMessage(c.lastMessage, c.lastMessageType),
     time: formatTimeAgo(c.lastMessageTime),
     unread: c.unreadCount
   }))
@@ -224,7 +251,7 @@ const interactMessages = ref([
 ]);
 
 const isEmpty = computed(() => {
-  if (activeTab.value === 0) return tradeMessages.value.length === 0;
+  if (activeTab.value === 0) return tradeMessages.value.length === 0 && !isLoading.value;
   if (activeTab.value === 1) return systemMessages.value.length === 0;
   if (activeTab.value === 2) return interactMessages.value.length === 0;
   return false;
@@ -243,53 +270,29 @@ const handleInteract = (item: any) => {
   uni.navigateTo({ url: `/pages-sub/community/user/index?id=${item.id}` });
 };
 
-onMounted(() => {
-  if (chatStore.conversations.length === 0) {
-    chatStore.setConversations([
-      {
-        id: 'conv-1',
-        targetUserId: 'user-1',
-        targetUserName: '数码达人',
-        targetUserAvatar: 'https://picsum.photos/100/100?random=seller1',
-        lastMessage: '好的，明天发货',
-        lastMessageTime: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
-        unreadCount: 2,
-        isOnline: true,
-        isMuted: false,
-        isPinned: false,
-        createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 10 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'conv-2',
-        targetUserId: 'user-2',
-        targetUserName: '二手书店',
-        targetUserAvatar: 'https://picsum.photos/100/100?random=seller2',
-        lastMessage: '这本书还有吗？',
-        lastMessageTime: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-        unreadCount: 0,
-        isOnline: false,
-        isMuted: false,
-        isPinned: false,
-        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'conv-3',
-        targetUserId: 'user-3',
-        targetUserName: '游戏玩家',
-        targetUserAvatar: 'https://picsum.photos/100/100?random=seller3',
-        lastMessage: 'PS5 能便宜点吗？',
-        lastMessageTime: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-        unreadCount: 1,
-        isOnline: true,
-        isMuted: false,
-        isPinned: true,
-        createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-      }
-    ]);
+const loadConversations = async () => {
+  if (isLoading.value) return;
+  
+  isLoading.value = true;
+  try {
+    await chatStore.fetchConversations();
+  } catch (error) {
+    uni.showToast({ title: '加载失败，请重试', icon: 'none' });
+  } finally {
+    isLoading.value = false;
   }
+};
+
+const onRefresh = async () => {
+  await loadConversations();
+};
+
+onMounted(() => {
+  loadConversations();
+});
+
+onShow(() => {
+  loadConversations();
 });
 </script>
 
@@ -310,6 +313,43 @@ onMounted(() => {
 
 .header-card {
   margin: $space-md;
+  
+  .header-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .connection-status {
+    display: flex;
+    align-items: center;
+    gap: 8rpx;
+    
+    .status-dot {
+      width: 12rpx;
+      height: 12rpx;
+      border-radius: 50%;
+      
+      &.disconnected {
+        background: $color-error;
+      }
+      
+      &.connecting {
+        background: $color-warning;
+        animation: blink 1s infinite;
+      }
+    }
+    
+    .status-text {
+      font-size: $font-size-xs;
+      color: $color-text-sub;
+    }
+  }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
 .message-tabs {
@@ -399,5 +439,10 @@ onMounted(() => {
   .empty-text {
     margin-top: $space-md;
   }
+}
+
+.loading-state {
+  @include flex-center;
+  padding: $space-xl $space-md;
 }
 </style>

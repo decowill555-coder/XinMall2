@@ -14,8 +14,11 @@ import com.example.xinmall.entity.user.UserProfile;
 import com.example.xinmall.entity.user.enums.AuthStatus;
 import com.example.xinmall.entity.user.enums.UserStatus;
 import com.example.xinmall.mapper.user.UserAddressMapper;
+import com.example.xinmall.mapper.user.UserFollowMapper;
 import com.example.xinmall.mapper.user.UserMapper;
 import com.example.xinmall.mapper.user.UserProfileMapper;
+import com.example.xinmall.mapper.system.ShopMapper;
+import com.example.xinmall.entity.system.Shop;
 import com.example.xinmall.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +41,8 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final UserProfileMapper userProfileMapper;
     private final UserAddressMapper userAddressMapper;
+    private final UserFollowMapper userFollowMapper;
+    private final ShopMapper shopMapper;
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
     private final CacheService cacheService;
@@ -123,6 +128,25 @@ public class UserServiceImpl implements UserService {
 
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(user, userVO);
+        
+        Integer followers = userFollowMapper.countFollowers(userId);
+        Integer following = userFollowMapper.countFollowing(userId);
+        userVO.setFollowers(followers != null ? followers : 0);
+        userVO.setFollowing(following != null ? following : 0);
+        
+        Shop shop = shopMapper.selectOne(
+                new LambdaQueryWrapper<Shop>().eq(Shop::getUserId, userId)
+        );
+        if (shop != null) {
+            userVO.setIsSeller(true);
+            userVO.setSellerId(shop.getId());
+        } else {
+            userVO.setIsSeller(false);
+            userVO.setSellerId(null);
+        }
+        
+        userVO.setLikes(0);
+        
         cacheService.set(cacheKey, userVO, USER_CACHE_EXPIRE);
         return userVO;
     }

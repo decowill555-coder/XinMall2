@@ -1,20 +1,22 @@
 import { http } from '@/utils/http';
+import { BASE_URL } from '@/utils/http';
 
 export type UploadScene = 'avatar' | 'product' | 'post' | 'comment' | 'evaluation' | 'other';
 
 export type UploadType = 'image' | 'video' | 'audio' | 'document' | 'other';
 
 export interface UploadResponse {
-  url: string;
-  key: string;
-  filename: string;
-  size: number;
-  type: UploadType;
+  id: number;
+  fileKey: string;
+  fileUrl: string;
+  fileName: string;
+  fileSize: number;
+  fileType: string;
   mimeType: string;
   width?: number;
   height?: number;
-  duration?: number;
-  thumbnailUrl?: string;
+  scene?: string;
+  createdAt?: string;
 }
 
 export interface UploadProgress {
@@ -38,19 +40,37 @@ export interface BatchUploadResult {
 }
 
 export const uploadApi = {
-  uploadFile: (file: string, scene: UploadScene, options?: Omit<UploadOptions, 'scene'>) => {
-    return http<UploadResponse>({
-      url: '/upload',
-      method: 'POST',
-      data: {
-        file,
-        scene,
-        compress: options?.compress,
-        maxWidth: options?.maxWidth,
-        maxHeight: options?.maxHeight,
-        quality: options?.quality
-      },
-      loading: true
+  uploadFile: (file: string, scene: UploadScene, options?: Omit<UploadOptions, 'scene'>): Promise<UploadResponse> => {
+    return new Promise((resolve, reject) => {
+      const token = uni.getStorageSync('token');
+      uni.uploadFile({
+        url: `${BASE_URL}/upload`,
+        filePath: file,
+        name: 'file',
+        formData: { scene },
+        header: {
+          Authorization: token ? `Bearer ${token}` : ''
+        },
+        success: (res) => {
+          if (res.statusCode === 200) {
+            try {
+              const data = JSON.parse(res.data);
+              if (data.code === 200) {
+                resolve(data.data);
+              } else {
+                reject(new Error(data.message || '上传失败'));
+              }
+            } catch {
+              reject(new Error('解析响应失败'));
+            }
+          } else {
+            reject(new Error(`上传失败: ${res.statusCode}`));
+          }
+        },
+        fail: (err) => {
+          reject(new Error(err.errMsg || '上传失败'));
+        }
+      });
     });
   },
 

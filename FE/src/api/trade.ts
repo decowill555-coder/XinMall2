@@ -55,30 +55,32 @@ export interface ProductListParams {
   sort?: 'recommend' | 'new' | 'price' | 'sales';
   priceOrder?: 'asc' | 'desc';
   page?: number;
-  pageSize?: number;
+  size?: number;
 }
 
 export interface ProductListItem {
   id: string;
-  cover: string;
   title: string;
+  cover: string;
   price: number;
   originalPrice?: number;
-  condition: string;
-  sellerType: 'personal' | 'merchant';
-  sellerId: string;
-  sellerName: string;
-  sellerAvatar: string;
-  tags: string[];
-  viewCount: number;
-  likeCount: number;
-  createdAt: string;
+  conditionLevel?: number;
+  sellerId?: string;
+  sellerName?: string;
+  sellerAvatar?: string;
+  location?: string;
+  viewCount?: number;
+  likeCount?: number;
+  createdAt?: string;
+  sellerType?: 'personal' | 'merchant';
 }
 
 export interface ProductListResult {
-  list: ProductListItem[];
+  records: ProductListItem[];
   total: number;
-  hasMore: boolean;
+  size: number;
+  current: number;
+  pages: number;
 }
 
 export interface CreateOrderParams {
@@ -167,7 +169,7 @@ export interface EvaluationInfo {
 export interface OrderListParams {
   status?: OrderStatus;
   page?: number;
-  pageSize?: number;
+  size?: number;
 }
 
 export interface OrderListItem {
@@ -182,9 +184,11 @@ export interface OrderListItem {
 }
 
 export interface OrderListResult {
-  list: OrderListItem[];
+  records: OrderListItem[];
   total: number;
-  hasMore: boolean;
+  size: number;
+  current: number;
+  pages: number;
 }
 
 export interface PayOrderParams {
@@ -375,11 +379,11 @@ export const tradeApi = {
     });
   },
 
-  getProductEvaluations: (productId: string, page?: number, pageSize?: number) => {
-    return http<{ list: EvaluationDetail[]; total: number; hasMore: boolean }>({
+  getProductEvaluations: (productId: string, page?: number, size?: number) => {
+    return http<{ records: EvaluationDetail[]; total: number; size: number; current: number; pages: number }>({
       url: `/evaluation/goods/${productId}`,
       method: 'GET',
-      data: { page, pageSize }
+      data: { page, size }
     });
   }
 };

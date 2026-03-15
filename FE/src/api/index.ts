@@ -5,8 +5,10 @@ import { uploadApi } from './upload';
 import { searchApi } from './search';
 import { forumApi } from './community';
 import { categoryApi } from './category';
+import { bannerApi } from './banner';
+import { messageApi } from './message';
 
-export { authApi, spuApi, tradeApi, uploadApi, searchApi, forumApi, categoryApi };
+export { authApi, spuApi, tradeApi, uploadApi, searchApi, forumApi, categoryApi, bannerApi, messageApi };
 
 export const api = {
   auth: authApi,
@@ -15,5 +17,7 @@ export const api = {
   upload: uploadApi,
   search: searchApi,
   forum: forumApi,
-  category: categoryApi
+  category: categoryApi,
+  banner: bannerApi,
+  message: messageApi
 };

@@ -87,9 +87,11 @@ export interface PostListParams {
 }
 
 export interface PostListResult {
-  list: PostListItem[];
+  records: PostListItem[];
   total: number;
-  hasMore: boolean;
+  size: number;
+  current: number;
+  pages: number;
 }
 
 export interface PostDetail extends PostListItem {
@@ -375,6 +377,14 @@ export const forumApi = {
   getUserPosts: (userId: string, page?: number, pageSize?: number) => {
     return http<PostListResult>({
       url: `/post/user/${userId}`,
+      method: 'GET',
+      data: { page, pageSize }
+    });
+  },
+
+  getFollowedPosts: (page?: number, pageSize?: number) => {
+    return http<PostListResult>({
+      url: '/post/followed',
       method: 'GET',
       data: { page, pageSize }
     });

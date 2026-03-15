@@ -1,7 +1,7 @@
 package com.example.xinmall.common.cache;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -27,7 +27,7 @@ public class CacheService {
         try {
             String json = objectMapper.writeValueAsString(value);
             redisTemplate.opsForValue().set(key, json, expireSeconds, TimeUnit.SECONDS);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             log.error("Cache set error, key: {}", key, e);
         }
     }
@@ -39,7 +39,7 @@ public class CacheService {
         }
         try {
             return objectMapper.readValue(json, clazz);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             log.error("Cache get error, key: {}", key, e);
             return null;
         }
@@ -52,7 +52,7 @@ public class CacheService {
         }
         try {
             return objectMapper.readValue(json, objectMapper.getTypeFactory().constructType(type));
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             log.error("Cache get error, key: {}", key, e);
             return null;
         }

@@ -305,21 +305,21 @@ public class SearchServiceImpl implements SearchService {
         if (keyword != null && !keyword.isEmpty()) {
             goodsWrapper.like(Goods::getTitle, keyword);
         }
-        aggregations.setProductCount((int) goodsMapper.selectCount(goodsWrapper));
+        aggregations.setProductCount(goodsMapper.selectCount(goodsWrapper));
         
         LambdaQueryWrapper<Spu> spuWrapper = new LambdaQueryWrapper<>();
         spuWrapper.eq(Spu::getStatus, 1);
         if (keyword != null && !keyword.isEmpty()) {
             spuWrapper.like(Spu::getName, keyword);
         }
-        aggregations.setModelCount((int) spuMapper.selectCount(spuWrapper));
+        aggregations.setModelCount(spuMapper.selectCount(spuWrapper));
         
         LambdaQueryWrapper<Community> communityWrapper = new LambdaQueryWrapper<>();
         communityWrapper.eq(Community::getStatus, 1);
         if (keyword != null && !keyword.isEmpty()) {
             communityWrapper.like(Community::getName, keyword);
         }
-        aggregations.setCommunityCount((int) communityMapper.selectCount(communityWrapper));
+        aggregations.setCommunityCount(communityMapper.selectCount(communityWrapper));
         
         return aggregations;
     }

@@ -44,6 +44,7 @@
 <script setup lang="ts">
 import { usePageLayout } from '@/composables/usePageLayout';
 import { useUserStore, useAuthStore } from '@/stores';
+import { authApi } from '@/api';
 
 const { scrollHeight } = usePageLayout({
   hasSubNavbar: true
@@ -92,8 +93,14 @@ const handleLogout = () => {
   uni.showModal({
     title: '提示',
     content: '确定退出登录吗？',
-    success: (res) => {
+    success: async (res) => {
       if (res.confirm) {
+        try {
+          await authApi.logout();
+        } catch (error) {
+          console.error('退出登录接口调用失败:', error);
+        }
+        
         userStore.logout();
         authStore.clearAuth();
         uni.showToast({ title: '已退出登录', icon: 'success' });

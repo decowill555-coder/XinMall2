@@ -111,15 +111,16 @@
       <view class="start-search" @click="handleSearch"><text>开始搜索</text></view>
     </view>
 
-    <ui-filter-sidebar v-model:show="showFilterSidebar" @confirm="fetchProducts" @reset="handleFilterReset" />
+    <ui-filter-sidebar v-model="showFilterSidebar" @confirm="fetchProducts" @reset="handleFilterReset" />
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick } from 'vue';
+import { ref, computed, onMounted, nextTick, watch } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { useAppStore, useSearchHistoryStore, useSearchFilterStore } from '@/stores';
 import { useNavigation } from '@/composables/useNavigation';
+import { searchApi, type SearchResultItem } from '@/api/search';
 import UiFilterSidebar from '@/ui-kit/organisms/UiFilterSidebar.vue';
 
 interface Product {
@@ -127,11 +128,9 @@ interface Product {
   cover: string;
   title: string;
   price: number;
-  sales: number;
+  sales?: number;
   condition?: string;
-  specs?: string;
   tags?: string[];
-  timeStr?: string;
 }
 
 const appStore = useAppStore();
@@ -144,6 +143,7 @@ const headerHeight = ref(0);
 const scrollHeight = ref(0);
 
 const keyword = ref('');
+const modelId = ref('');
 const currentModel = ref<{ name: string; brand: string; cover: string } | null>(null);
 const hasSearched = ref(false);
 const viewMode = ref<'list' | 'waterfall'>('waterfall');
@@ -152,12 +152,13 @@ const hasMore = ref(true);
 const totalCount = ref(0);
 const currentPage = ref(1);
 const showFilterSidebar = ref(false);
-const activeSort = ref('recommend');
+const activeSort = ref<'relevance' | 'new' | 'price' | 'sales'>('relevance');
 const priceSortOrder = ref<'asc' | 'desc'>('asc');
 
 const displayKeyword = computed(() => currentModel.value?.name || keyword.value || '搜索商品...');
+
 const sortTabs = [
-  { label: '推荐', value: 'recommend' },
+  { label: '综合', value: 'relevance' },
   { label: '销量', value: 'sales' },
   { label: '新品', value: 'new' },
   { label: '价格', value: 'price' }
@@ -173,72 +174,100 @@ const calcLayout = () => {
   scrollHeight.value = systemInfo.windowHeight - headerHeight.value;
 };
 
+const transformSearchResult = (item: SearchResultItem): Product => ({
+  id: item.id,
+  cover: item.cover,
+  title: item.title,
+  price: item.price ? item.price / 100 : 0,
+  sales: item.memberCount || 0,
+  condition: item.condition,
+  tags: item.tags || []
+});
+
+const fetchProducts = async (isRefresh = false) => {
+  if (loading.value) return;
+  if (!isRefresh && !hasMore.value) return;
+
+  loading.value = true;
+
+  if (isRefresh) {
+    currentPage.value = 1;
+    hasMore.value = true;
+  }
+
+  try {
+    const params: any = {
+      keyword: keyword.value || undefined,
+      modelId: modelId.value || undefined,
+      sort: activeSort.value,
+      priceOrder: activeSort.value === 'price' ? priceSortOrder.value : undefined,
+      page: currentPage.value,
+      pageSize: 10
+    };
+
+    const res = await searchApi.searchProducts(params);
+    const newProducts = res.list.map(transformSearchResult);
+
+    if (isRefresh) {
+      productList.value = newProducts;
+    } else {
+      productList.value = [...productList.value, ...newProducts];
+    }
+
+    totalCount.value = res.total;
+    hasMore.value = res.hasMore;
+
+    if (res.hasMore) {
+      currentPage.value++;
+    }
+  } catch (error) {
+    console.error('搜索商品失败:', error);
+    if (isRefresh) {
+      productList.value = [];
+    }
+  } finally {
+    loading.value = false;
+  }
+};
+
 onMounted(() => nextTick(calcLayout));
 
 onLoad((options: any) => {
   if (options.keyword) {
     keyword.value = decodeURIComponent(options.keyword);
-    handleSearch();
   }
   if (options.modelId) {
-    currentModel.value = { name: keyword.value || '型号商品', brand: 'Apple', cover: 'https://picsum.photos/200/200?random=model' };
+    modelId.value = options.modelId;
+    currentModel.value = { name: options.keyword || '型号商品', brand: 'Apple', cover: 'https://picsum.photos/200/200?random=model' };
   }
+  handleSearch();
 });
 
-const fetchProducts = async () => {
-  loading.value = true;
-  await new Promise(r => setTimeout(r, 500));
-  
-  const mockProducts: Product[] = [
-    { id: 1, cover: 'https://picsum.photos/400/400?random=801', title: 'iPhone 15 Pro Max 256GB 钛金属原色', price: 7999, sales: 128, condition: '99新', tags: ['国行', '在保'], timeStr: '3分钟前' },
-    { id: 2, cover: 'https://picsum.photos/400/400?random=802', title: 'iPhone 15 Pro 128GB 蓝色钛金属', price: 6999, sales: 89, condition: '全新', tags: ['全新', '官方'], timeStr: '10分钟前' },
-    { id: 3, cover: 'https://picsum.photos/400/400?random=803', title: 'iPhone 15 Plus 256GB 粉色', price: 5999, sales: 56, condition: '95新', tags: ['95新'], timeStr: '30分钟前' },
-    { id: 4, cover: 'https://picsum.photos/400/400?random=801', title: 'iPhone 15 Pro Max 256GB 钛金属原色', price: 7999, sales: 128, condition: '99新', tags: ['国行', '在保'], timeStr: '3分钟前' },
-    { id: 5, cover: 'https://picsum.photos/400/400?random=802', title: 'iPhone 15 Pro 128GB 蓝色钛金属', price: 6999, sales: 89, condition: '全新', tags: ['全新', '官方'], timeStr: '10分钟前' },
-    { id: 6, cover: 'https://picsum.photos/400/400?random=803', title: 'iPhone 15 Plus 256GB 粉色', price: 5999, sales: 56, condition: '95新', tags: ['95新'], timeStr: '30分钟前' },
-    { id: 7, cover: 'https://picsum.photos/400/400?random=801', title: 'iPhone 15 Pro Max 256GB 钛金属原色', price: 7999, sales: 128, condition: '99新', tags: ['国行', '在保'], timeStr: '3分钟前' },
-    { id: 8, cover: 'https://picsum.photos/400/400?random=802', title: 'iPhone 15 Pro 128GB 蓝色钛金属', price: 6999, sales: 89, condition: '全新', tags: ['全新', '官方'], timeStr: '10分钟前' },
-    { id: 9, cover: 'https://picsum.photos/400/400?random=803', title: 'iPhone 15 Plus 256GB 粉色', price: 5999, sales: 56, condition: '95新', tags: ['95新'], timeStr: '30分钟前' },
-    { id: 10, cover: 'https://picsum.photos/400/400?random=804', title: 'MacBook Pro 14寸 M3 Pro', price: 14999, sales: 23, condition: '99新', tags: ['国行'], timeStr: '1小时前' },
-  ];
-
-  productList.value = currentPage.value === 1 ? mockProducts : [...productList.value, ...mockProducts];
-  totalCount.value = productList.value.length;
-  loading.value = false;
-};
-
 const handleSearch = () => {
-  if (!keyword.value.trim() && !currentModel.value) return;
+  if (!keyword.value.trim() && !modelId.value) return;
   searchHistoryStore.addHistory(keyword.value.trim() || currentModel.value?.name || '', 'product');
   hasSearched.value = true;
-  currentPage.value = 1;
-  hasMore.value = true;
-  fetchProducts();
+  fetchProducts(true);
 };
 
 const handleSortChange = (value: string) => {
   if (value === 'price' && activeSort.value === 'price') {
     priceSortOrder.value = priceSortOrder.value === 'asc' ? 'desc' : 'asc';
   } else {
-    activeSort.value = value;
+    activeSort.value = value as any;
   }
-  currentPage.value = 1;
-  fetchProducts();
+  fetchProducts(true);
 };
 
 const handleFilterReset = () => {
   searchFilterStore.resetAdvancedFilters();
-  currentPage.value = 1;
-  fetchProducts();
+  fetchProducts(true);
 };
 
-const loadMore = async () => {
-  if (loading.value || !hasMore.value) return;
-  loading.value = true;
-  currentPage.value++;
-  await new Promise(r => setTimeout(r, 500));
-  hasMore.value = false;
-  loading.value = false;
+const loadMore = () => {
+  if (!loading.value && hasMore.value) {
+    fetchProducts(false);
+  }
 };
 
 const goBack = () => smartBack();
