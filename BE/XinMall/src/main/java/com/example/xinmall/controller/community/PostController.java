@@ -1,6 +1,6 @@
 package com.example.xinmall.controller.community;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.example.xinmall.common.result.PageResult;
 import com.example.xinmall.common.result.Result;
 import com.example.xinmall.dto.community.request.CreatePostRequest;
 import com.example.xinmall.dto.community.request.PostQueryRequest;
@@ -22,8 +22,8 @@ public class PostController {
 
     @Operation(summary = "帖子列表")
     @GetMapping("/list")
-    public Result<IPage<PostVO>> list(PostQueryRequest request) {
-        return Result.success(postService.getList(request));
+    public Result<PageResult<PostVO>> list(PostQueryRequest request) {
+        return Result.success(PageResult.of(postService.getList(request)));
     }
 
     @Operation(summary = "帖子详情")
@@ -96,26 +96,26 @@ public class PostController {
 
     @Operation(summary = "用户帖子列表")
     @GetMapping("/user/{userId}")
-    public Result<IPage<PostVO>> userPosts(
+    public Result<PageResult<PostVO>> userPosts(
             @PathVariable Long userId,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer pageSize) {
-        return Result.success(postService.getUserPosts(userId, page, pageSize));
+        return Result.success(PageResult.of(postService.getUserPosts(userId, page, pageSize)));
     }
 
     @Operation(summary = "我的帖子")
     @GetMapping("/my")
-    public Result<IPage<PostVO>> myPosts(
+    public Result<PageResult<PostVO>> myPosts(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer pageSize) {
-        return Result.success(postService.getMyPosts(page, pageSize));
+        return Result.success(PageResult.of(postService.getMyPosts(page, pageSize)));
     }
 
     @Operation(summary = "关注帖子列表")
     @GetMapping("/followed")
-    public Result<IPage<PostVO>> followedPosts(
+    public Result<PageResult<PostVO>> followedPosts(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer pageSize) {
-        return Result.success(postService.getFollowedPosts(page, pageSize));
+        return Result.success(PageResult.of(postService.getFollowedPosts(page, pageSize)));
     }
 }

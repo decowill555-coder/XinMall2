@@ -1,5 +1,6 @@
 server:
   port: 8080
+  base-url: https://api.xinmall.com
 
 spring:
   application:

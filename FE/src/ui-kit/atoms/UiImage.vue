@@ -23,7 +23,7 @@
     <image
       class="real-image"
       :class="{ 'fade-in': loaded }"
-      :src="src"
+      :src="processedSrc"
       :mode="mode"
       :lazy-load="true"
       @load="onLoad"
@@ -33,7 +33,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
+import { getImageUrl } from '@/utils/http';
 
 const props = withDefaults(defineProps<{
   src: string;
@@ -54,12 +55,13 @@ const loading = ref(true);
 const loaded = ref(false);
 const error = ref(false);
 
-// 监听 src 变化重置状态
 watch(() => props.src, () => {
   loading.value = true;
   loaded.value = false;
   error.value = false;
 });
+
+const processedSrc = computed(() => getImageUrl(props.src));
 
 const onLoad = () => {
   loading.value = false;

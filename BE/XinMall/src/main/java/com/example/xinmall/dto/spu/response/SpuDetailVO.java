@@ -23,6 +23,10 @@ public class SpuDetailVO implements Serializable {
 
     private String categoryName;
 
+    private Long deviceTypeId;
+
+    private String deviceTypeName;
+
     private String cover;
 
     private List<String> images;
@@ -36,6 +40,8 @@ public class SpuDetailVO implements Serializable {
     private BigDecimal priceMin;
 
     private BigDecimal priceMax;
+
+    private PriceRangeVO priceRange;
 
     private BigDecimal avgRating;
 
@@ -53,5 +59,11 @@ public class SpuDetailVO implements Serializable {
     public static class SpuSpecVO implements Serializable {
         private String name;
         private List<String> options;
+    }
+
+    @Data
+    public static class PriceRangeVO implements Serializable {
+        private BigDecimal min;
+        private BigDecimal max;
     }
 }

@@ -41,6 +41,8 @@ public class PostVO implements Serializable {
 
     private Boolean isLiked;
 
+    private Boolean isCollected;
+
     private Boolean isPinned;
 
     private Boolean isEssence;

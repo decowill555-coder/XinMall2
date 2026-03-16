@@ -1,4 +1,4 @@
-﻿<!-- src/ui-kit/atoms/UiAvatar.vue -->
+<!-- src/ui-kit/atoms/UiAvatar.vue -->
 <template>
   <view 
     class="ui-avatar" 
@@ -15,9 +15,9 @@
   >
     <!-- 1. 图片头像 -->
     <image 
-      v-if="src && !loadError" 
+      v-if="processedSrc && !loadError" 
       class="avatar-img" 
-      :src="src" 
+      :src="processedSrc" 
       mode="aspectFill" 
       @error="handleError"
     />
@@ -43,6 +43,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
+import { getImageUrl } from '@/utils/http';
 
 const props = withDefaults(defineProps<{
   src?: string;
@@ -61,12 +62,13 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits(['click']);
 const loadError = ref(false);
 
-// 监听 src 变化重置错误状态
 watch(() => props.src, () => {
   loadError.value = false;
 });
 
 const textSize = computed(() => props.size * 0.45);
+
+const processedSrc = computed(() => getImageUrl(props.src));
 
 const handleError = () => {
   loadError.value = true;

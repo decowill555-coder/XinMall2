@@ -9,12 +9,17 @@ import com.example.xinmall.dto.trade.request.GoodsPublishRequest;
 import com.example.xinmall.dto.trade.request.GoodsQueryRequest;
 import com.example.xinmall.dto.trade.response.GoodsDetailVO;
 import com.example.xinmall.dto.trade.response.GoodsVO;
+import com.example.xinmall.dto.trade.response.ProductSellerVO;
+import com.example.xinmall.dto.trade.response.ProductModelVO;
 import com.example.xinmall.entity.trade.Goods;
 import com.example.xinmall.entity.trade.enums.GoodsStatus;
 import com.example.xinmall.entity.user.User;
 import com.example.xinmall.mapper.trade.GoodsMapper;
 import com.example.xinmall.service.trade.GoodsService;
 import com.example.xinmall.service.user.UserService;
+import com.example.xinmall.service.system.CollectionService;
+import com.example.xinmall.mapper.system.ShopMapper;
+import com.example.xinmall.entity.system.Shop;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
@@ -36,6 +41,8 @@ public class GoodsServiceImpl implements GoodsService {
 
     private final GoodsMapper goodsMapper;
     private final UserService userService;
+    private final CollectionService collectionService;
+    private final ShopMapper shopMapper;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -141,11 +148,56 @@ public class GoodsServiceImpl implements GoodsService {
 
         User seller = userService.getById(goods.getSellerId());
         if (seller != null) {
-            vo.setSellerName(seller.getNickname());
-            vo.setSellerAvatar(seller.getAvatar());
+            ProductSellerVO sellerVO = new ProductSellerVO();
+            sellerVO.setId(seller.getId());
+            sellerVO.setName(seller.getNickname());
+            sellerVO.setAvatar(seller.getAvatar());
+            vo.setSeller(sellerVO);
+        }
+
+        if (goods.getModelId() != null) {
+            ProductModelVO modelVO = new ProductModelVO();
+            modelVO.setId(goods.getModelId());
+            modelVO.setName(vo.getModel() != null ? vo.getModel().getName() : null);
+            vo.setModel(modelVO);
+        }
+
+        String conditionStr = convertConditionToString(goods.getConditionLevel());
+        vo.setCondition(conditionStr);
+
+        String statusStr = convertStatusToString(goods.getStatus());
+        vo.setStatus(statusStr);
+
+        try {
+            Long userId = getCurrentUserId();
+            boolean isCollected = collectionService.isCollected(goods.getId(), 1);
+            vo.setIsCollected(isCollected);
+        } catch (Exception e) {
+            vo.setIsCollected(false);
         }
 
         return vo;
+    }
+
+    private String convertConditionToString(Integer conditionLevel) {
+        if (conditionLevel == null) return "未知";
+        return switch (conditionLevel) {
+            case 100 -> "全新";
+            case 99 -> "99新";
+            case 95 -> "95新";
+            case 90 -> "9成新";
+            case 80 -> "8成新";
+            default -> "未知";
+        };
+    }
+
+    private String convertStatusToString(GoodsStatus status) {
+        if (status == null) return "off_sale";
+        return switch (status) {
+            case ON_SHELF -> "on_sale";
+            case SOLD -> "sold";
+            case OFF_SHELF, AUDITING -> "off_sale";
+        };
     }
 
     @Override
@@ -291,6 +343,11 @@ public class GoodsServiceImpl implements GoodsService {
             vo.setSellerName(seller.getNickname());
             vo.setSellerAvatar(seller.getAvatar());
         }
+
+        Shop shop = shopMapper.selectOne(
+                new LambdaQueryWrapper<Shop>().eq(Shop::getUserId, goods.getSellerId())
+        );
+        vo.setSellerType(shop != null ? "merchant" : "personal");
 
         return vo;
     }

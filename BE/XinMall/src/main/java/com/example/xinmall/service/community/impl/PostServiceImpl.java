@@ -361,12 +361,18 @@ public class PostServiceImpl implements PostService {
         }
 
         if (currentUserId != null) {
-            LambdaQueryWrapper<PostLike> wrapper = new LambdaQueryWrapper<>();
-            wrapper.eq(PostLike::getPostId, post.getId())
+            LambdaQueryWrapper<PostLike> likeWrapper = new LambdaQueryWrapper<>();
+            likeWrapper.eq(PostLike::getPostId, post.getId())
                     .eq(PostLike::getUserId, currentUserId);
-            vo.setIsLiked(postLikeMapper.selectCount(wrapper) > 0);
+            vo.setIsLiked(postLikeMapper.selectCount(likeWrapper) > 0);
+
+            LambdaQueryWrapper<PostCollect> collectWrapper = new LambdaQueryWrapper<>();
+            collectWrapper.eq(PostCollect::getPostId, post.getId())
+                    .eq(PostCollect::getUserId, currentUserId);
+            vo.setIsCollected(postCollectMapper.selectCount(collectWrapper) > 0);
         } else {
             vo.setIsLiked(false);
+            vo.setIsCollected(false);
         }
 
         return vo;
@@ -404,12 +410,18 @@ public class PostServiceImpl implements PostService {
         }
 
         if (currentUserId != null) {
-            LambdaQueryWrapper<PostLike> wrapper = new LambdaQueryWrapper<>();
-            wrapper.eq(PostLike::getPostId, post.getId())
+            LambdaQueryWrapper<PostLike> likeWrapper = new LambdaQueryWrapper<>();
+            likeWrapper.eq(PostLike::getPostId, post.getId())
                     .eq(PostLike::getUserId, currentUserId);
-            vo.setIsLiked(postLikeMapper.selectCount(wrapper) > 0);
+            vo.setIsLiked(postLikeMapper.selectCount(likeWrapper) > 0);
+
+            LambdaQueryWrapper<PostCollect> collectWrapper = new LambdaQueryWrapper<>();
+            collectWrapper.eq(PostCollect::getPostId, post.getId())
+                    .eq(PostCollect::getUserId, currentUserId);
+            vo.setIsCollected(postCollectMapper.selectCount(collectWrapper) > 0);
         } else {
             vo.setIsLiked(false);
+            vo.setIsCollected(false);
         }
 
         return vo;

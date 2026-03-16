@@ -1,6 +1,7 @@
 package com.example.xinmall.controller.spu;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.example.xinmall.common.result.PageResult;
 import com.example.xinmall.common.result.Result;
 import com.example.xinmall.dto.spu.request.SpuProductRequest;
 import com.example.xinmall.dto.spu.request.SpuQueryRequest;
@@ -32,9 +33,9 @@ public class SpuController {
 
     @Operation(summary = "SPU列表")
     @GetMapping("/list")
-    public Result<IPage<SpuListVO>> getList(SpuQueryRequest request) {
+    public Result<PageResult<SpuListVO>> getList(SpuQueryRequest request) {
         IPage<SpuListVO> result = spuService.search(request);
-        return Result.success(result);
+        return Result.success(PageResult.of(result));
     }
 
     @Operation(summary = "SPU搜索")
@@ -46,34 +47,34 @@ public class SpuController {
 
     @Operation(summary = "SPU商品列表")
     @GetMapping("/{id}/products")
-    public Result<IPage<SpuProductVO>> getProducts(
+    public Result<PageResult<SpuProductVO>> getProducts(
             @PathVariable Long id,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer pageSize) {
         IPage<SpuProductVO> result = spuService.getProducts(id, page, pageSize);
-        return Result.success(result);
+        return Result.success(PageResult.of(result));
     }
 
     @Operation(summary = "SPU帖子列表")
     @GetMapping("/{id}/posts")
-    public Result<IPage<SpuPostVO>> getPosts(
+    public Result<PageResult<SpuPostVO>> getPosts(
             @PathVariable Long id,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String sort,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer pageSize) {
         IPage<SpuPostVO> result = spuService.getPosts(id, type, sort, page, pageSize);
-        return Result.success(result);
+        return Result.success(PageResult.of(result));
     }
 
     @Operation(summary = "SPU评价列表")
     @GetMapping("/{id}/evaluations")
-    public Result<IPage<SpuEvaluationVO>> getEvaluations(
+    public Result<PageResult<SpuEvaluationVO>> getEvaluations(
             @PathVariable Long id,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer pageSize) {
         IPage<SpuEvaluationVO> result = spuService.getEvaluations(id, page, pageSize);
-        return Result.success(result);
+        return Result.success(PageResult.of(result));
     }
 
     @Operation(summary = "关注SPU")
@@ -134,10 +135,10 @@ public class SpuController {
 
     @Operation(summary = "已关注的SPU")
     @GetMapping("/followed")
-    public Result<IPage<SpuListVO>> getFollowedSpus(
+    public Result<PageResult<SpuListVO>> getFollowedSpus(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer pageSize) {
         IPage<SpuListVO> result = spuService.getFollowedSpus(page, pageSize);
-        return Result.success(result);
+        return Result.success(PageResult.of(result));
     }
 }

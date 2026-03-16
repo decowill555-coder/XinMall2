@@ -16,15 +16,9 @@ public class GoodsDetailVO implements Serializable {
 
     private String title;
 
-    private Long sellerId;
+    private ProductSellerVO seller;
 
-    private String sellerName;
-
-    private String sellerAvatar;
-
-    private Long modelId;
-
-    private String modelName;
+    private ProductModelVO model;
 
     private Long categoryId;
 
@@ -37,6 +31,8 @@ public class GoodsDetailVO implements Serializable {
     private BigDecimal price;
 
     private BigDecimal originalPrice;
+
+    private String condition;
 
     private Integer conditionLevel;
 
@@ -55,6 +51,10 @@ public class GoodsDetailVO implements Serializable {
     private Integer viewCount;
 
     private Integer likeCount;
+
+    private Boolean isCollected;
+
+    private String status;
 
     private LocalDateTime createdAt;
 }

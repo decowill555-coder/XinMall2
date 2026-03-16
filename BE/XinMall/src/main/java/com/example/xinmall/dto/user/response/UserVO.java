@@ -1,6 +1,5 @@
 package com.example.xinmall.dto.user.response;
 
-import com.example.xinmall.entity.user.enums.Gender;
 import com.example.xinmall.entity.user.enums.UserStatus;
 import lombok.Data;
 
@@ -21,7 +20,7 @@ public class UserVO implements Serializable {
 
     private String avatar;
 
-    private Gender gender;
+    private Integer gender;
 
     private LocalDate birthday;
 
@@ -30,6 +29,8 @@ public class UserVO implements Serializable {
     private UserStatus status;
 
     private LocalDateTime createdAt;
+
+    private String createTime;
 
     private Integer followers;
 

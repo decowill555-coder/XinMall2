@@ -101,15 +101,52 @@ public class UserServiceImpl implements UserService {
         userMapper.update(null, updateWrapper);
 
         String token = jwtUtils.generateToken(user.getId(), user.getPhone());
+        String refreshToken = jwtUtils.generateToken(user.getId(), user.getPhone());
 
-        UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(user, userVO);
+        UserVO userVO = convertToUserVO(user);
 
         LoginVO loginVO = new LoginVO();
         loginVO.setToken(token);
+        loginVO.setRefreshToken(refreshToken);
+        loginVO.setExpiresIn(86400000L);
         loginVO.setUser(userVO);
 
         return loginVO;
+    }
+
+    private UserVO convertToUserVO(User user) {
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(user, userVO);
+
+        if (user.getGender() != null) {
+            userVO.setGender(user.getGender().getCode());
+        } else {
+            userVO.setGender(0);
+        }
+
+        if (user.getCreatedAt() != null) {
+            userVO.setCreateTime(user.getCreatedAt().toString());
+        }
+
+        Integer followers = userFollowMapper.countFollowers(user.getId());
+        Integer following = userFollowMapper.countFollowing(user.getId());
+        userVO.setFollowers(followers != null ? followers : 0);
+        userVO.setFollowing(following != null ? following : 0);
+
+        Shop shop = shopMapper.selectOne(
+                new LambdaQueryWrapper<Shop>().eq(Shop::getUserId, user.getId())
+        );
+        if (shop != null) {
+            userVO.setIsSeller(true);
+            userVO.setSellerId(shop.getId());
+        } else {
+            userVO.setIsSeller(false);
+            userVO.setSellerId(null);
+        }
+
+        userVO.setLikes(0);
+
+        return userVO;
     }
 
     @Override
@@ -126,27 +163,8 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException("用户不存在");
         }
 
-        UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(user, userVO);
-        
-        Integer followers = userFollowMapper.countFollowers(userId);
-        Integer following = userFollowMapper.countFollowing(userId);
-        userVO.setFollowers(followers != null ? followers : 0);
-        userVO.setFollowing(following != null ? following : 0);
-        
-        Shop shop = shopMapper.selectOne(
-                new LambdaQueryWrapper<Shop>().eq(Shop::getUserId, userId)
-        );
-        if (shop != null) {
-            userVO.setIsSeller(true);
-            userVO.setSellerId(shop.getId());
-        } else {
-            userVO.setIsSeller(false);
-            userVO.setSellerId(null);
-        }
-        
-        userVO.setLikes(0);
-        
+        UserVO userVO = convertToUserVO(user);
+
         cacheService.set(cacheKey, userVO, USER_CACHE_EXPIRE);
         return userVO;
     }
@@ -180,9 +198,7 @@ public class UserServiceImpl implements UserService {
 
         cacheService.delete(RedisKey.getUserInfoKey(userId));
 
-        UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(user, userVO);
-        return userVO;
+        return convertToUserVO(user);
     }
 
     @Override

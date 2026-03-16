@@ -5,8 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.xinmall.common.exception.BusinessException;
 import com.example.xinmall.dto.trade.request.OrderCreateRequest;
-import com.example.xinmall.dto.trade.response.OrderDetailVO;
-import com.example.xinmall.dto.trade.response.OrderVO;
+import com.example.xinmall.dto.trade.response.*;
 import com.example.xinmall.entity.trade.Goods;
 import com.example.xinmall.entity.trade.Order;
 import com.example.xinmall.entity.trade.enums.GoodsStatus;
@@ -18,6 +17,7 @@ import com.example.xinmall.mapper.trade.OrderMapper;
 import com.example.xinmall.mapper.user.UserAddressMapper;
 import com.example.xinmall.service.trade.OrderService;
 import com.example.xinmall.service.user.UserService;
+import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +26,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
@@ -152,10 +155,84 @@ public class OrderServiceImpl implements OrderService {
 
         User seller = userService.getById(order.getSellerId());
         if (seller != null) {
-            vo.setSellerName(seller.getNickname());
+            OrderSellerVO sellerVO = new OrderSellerVO();
+            sellerVO.setId(seller.getId());
+            sellerVO.setName(seller.getNickname());
+            sellerVO.setAvatar(seller.getAvatar());
+            sellerVO.setPhone(seller.getPhone());
+            vo.setSeller(sellerVO);
         }
 
+        if (StringUtils.hasText(order.getGoodsSnapshot())) {
+            try {
+                OrderProductVO productVO = new OrderProductVO();
+                JsonNode goodsNode = objectMapper.readTree(order.getGoodsSnapshot());
+                productVO.setId(goodsNode.has("id") ? goodsNode.get("id").asLong() : null);
+                productVO.setTitle(goodsNode.has("title") ? goodsNode.get("title").asText() : null);
+                productVO.setPrice(goodsNode.has("price") ? new BigDecimal(goodsNode.get("price").asText()) : null);
+                productVO.setQuantity(order.getQuantity());
+
+                if (goodsNode.has("images")) {
+                    String imagesStr = goodsNode.get("images").asText();
+                    if (StringUtils.hasText(imagesStr)) {
+                        List<String> images = objectMapper.readValue(imagesStr, new TypeReference<List<String>>() {});
+                        if (!images.isEmpty()) {
+                            productVO.setCover(images.get(0));
+                        }
+                    }
+                }
+
+                if (goodsNode.has("conditionLevel")) {
+                    productVO.setCondition(convertConditionToString(goodsNode.get("conditionLevel").asInt()));
+                }
+
+                vo.setProduct(productVO);
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+
+        if (StringUtils.hasText(order.getAddressSnapshot())) {
+            try {
+                OrderAddressVO addressVO = new OrderAddressVO();
+                JsonNode addressNode = objectMapper.readTree(order.getAddressSnapshot());
+                addressVO.setId(addressNode.has("id") ? addressNode.get("id").asLong() : null);
+                addressVO.setName(addressNode.has("name") ? addressNode.get("name").asText() : null);
+                addressVO.setPhone(addressNode.has("phone") ? addressNode.get("phone").asText() : null);
+                addressVO.setProvince(addressNode.has("province") ? addressNode.get("province").asText() : null);
+                addressVO.setCity(addressNode.has("city") ? addressNode.get("city").asText() : null);
+                addressVO.setDistrict(addressNode.has("district") ? addressNode.get("district").asText() : null);
+                addressVO.setDetail(addressNode.has("detail") ? addressNode.get("detail").asText() : null);
+                vo.setAddress(addressVO);
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+
+        if (StringUtils.hasText(order.getExpressCompany()) || StringUtils.hasText(order.getExpressNo())) {
+            LogisticsVO logisticsVO = new LogisticsVO();
+            logisticsVO.setCompany(order.getExpressCompany());
+            logisticsVO.setTrackingNo(order.getExpressNo());
+            logisticsVO.setStatus(order.getStatus() == OrderStatus.COMPLETED ? "已签收" : "运输中");
+            logisticsVO.setUpdateTime(order.getShipTime() != null ? order.getShipTime().toString() : null);
+            vo.setLogistics(logisticsVO);
+        }
+
+        vo.setPaymentMethod("wechat");
+
         return vo;
+    }
+
+    private String convertConditionToString(Integer conditionLevel) {
+        if (conditionLevel == null) return "未知";
+        return switch (conditionLevel) {
+            case 100 -> "全新";
+            case 99 -> "99新";
+            case 95 -> "95新";
+            case 90 -> "9成新";
+            case 80 -> "8成新";
+            default -> "未知";
+        };
     }
 
     @Override

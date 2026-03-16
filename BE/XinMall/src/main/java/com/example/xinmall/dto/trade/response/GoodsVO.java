@@ -21,6 +21,8 @@ public class GoodsVO implements Serializable {
 
     private String sellerAvatar;
 
+    private String sellerType;
+
     private String cover;
 
     private BigDecimal price;

@@ -109,3 +109,17 @@ export const http = <T>(options: RequestOptions): Promise<T> => {
     });
   });
 };
+
+export const getImageUrl = (url: string | undefined | null): string => {
+  if (!url) return '/static/default-avatar.png';
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  if (url.startsWith('/uploads')) {
+    return BASE_URL.replace('/api', '') + url;
+  }
+  if (url.startsWith('/static')) return url;
+  return url;
+};
+
+export const getServerBaseUrl = (): string => {
+  return BASE_URL.replace('/api', '');
+};

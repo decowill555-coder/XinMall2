@@ -1,6 +1,6 @@
 package com.example.xinmall.controller.search;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.example.xinmall.common.result.PageResult;
 import com.example.xinmall.common.result.Result;
 import com.example.xinmall.dto.search.request.SearchRequest;
 import com.example.xinmall.dto.search.response.*;
@@ -45,26 +45,23 @@ public class SearchController {
 
     @Operation(summary = "商品搜索")
     @GetMapping("/products")
-    public Result<IPage<SearchResultVO.SearchItemVO>> searchProducts(SearchRequest request) {
+    public Result<PageResult<SearchResultVO.SearchItemVO>> searchProducts(SearchRequest request) {
         request.setType("product");
-        IPage<SearchResultVO.SearchItemVO> result = searchService.searchProducts(request);
-        return Result.success(result);
+        return Result.success(PageResult.of(searchService.searchProducts(request)));
     }
 
     @Operation(summary = "型号搜索")
     @GetMapping("/models")
-    public Result<IPage<SearchResultVO.SearchItemVO>> searchModels(SearchRequest request) {
+    public Result<PageResult<SearchResultVO.SearchItemVO>> searchModels(SearchRequest request) {
         request.setType("model");
-        IPage<SearchResultVO.SearchItemVO> result = searchService.searchModels(request);
-        return Result.success(result);
+        return Result.success(PageResult.of(searchService.searchModels(request)));
     }
 
     @Operation(summary = "社区搜索")
     @GetMapping("/communities")
-    public Result<IPage<SearchResultVO.SearchItemVO>> searchCommunities(SearchRequest request) {
+    public Result<PageResult<SearchResultVO.SearchItemVO>> searchCommunities(SearchRequest request) {
         request.setType("community");
-        IPage<SearchResultVO.SearchItemVO> result = searchService.searchCommunities(request);
-        return Result.success(result);
+        return Result.success(PageResult.of(searchService.searchCommunities(request)));
     }
 
     @Operation(summary = "热门型号")

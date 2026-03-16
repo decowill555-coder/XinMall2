@@ -20,13 +20,13 @@ public class OrderDetailVO implements Serializable {
 
     private String userName;
 
-    private Long sellerId;
+    private OrderProductVO product;
 
-    private String sellerName;
+    private OrderSellerVO seller;
 
-    private Long goodsId;
+    private OrderAddressVO address;
 
-    private String goodsSnapshot;
+    private LogisticsVO logistics;
 
     private Integer quantity;
 
@@ -36,11 +36,7 @@ public class OrderDetailVO implements Serializable {
 
     private String remark;
 
-    private String addressSnapshot;
-
-    private String expressCompany;
-
-    private String expressNo;
+    private String paymentMethod;
 
     private LocalDateTime payTime;
 

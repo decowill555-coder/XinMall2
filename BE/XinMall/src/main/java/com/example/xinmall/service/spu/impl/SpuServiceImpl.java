@@ -62,6 +62,17 @@ public class SpuServiceImpl implements SpuService {
 
         SpuDetailVO vo = new SpuDetailVO();
         BeanUtils.copyProperties(spu, vo);
+
+        vo.setDeviceTypeId(spu.getCategoryId());
+        vo.setDeviceTypeName(spu.getCategoryName());
+
+        if (spu.getPriceMin() != null || spu.getPriceMax() != null) {
+            SpuDetailVO.PriceRangeVO priceRange = new SpuDetailVO.PriceRangeVO();
+            priceRange.setMin(spu.getPriceMin());
+            priceRange.setMax(spu.getPriceMax());
+            vo.setPriceRange(priceRange);
+        }
+
         vo.setIsFollowed(checkIsFollowed(id));
         return vo;
     }
@@ -431,6 +442,17 @@ public class SpuServiceImpl implements SpuService {
     private SpuListVO convertToListVO(Spu spu) {
         SpuListVO vo = new SpuListVO();
         BeanUtils.copyProperties(spu, vo);
+
+        vo.setDeviceTypeId(spu.getCategoryId());
+        vo.setDeviceTypeName(spu.getCategoryName());
+
+        if (spu.getPriceMin() != null || spu.getPriceMax() != null) {
+            SpuListVO.PriceRangeVO priceRange = new SpuListVO.PriceRangeVO();
+            priceRange.setMin(spu.getPriceMin());
+            priceRange.setMax(spu.getPriceMax());
+            vo.setPriceRange(priceRange);
+        }
+
         vo.setIsFollowed(checkIsFollowed(spu.getId()));
         Spu spuDetail = spuMapper.selectById(spu.getId());
         if (spuDetail != null) {

@@ -11,5 +11,9 @@ public class LoginVO implements Serializable {
 
     private String token;
 
+    private String refreshToken;
+
+    private Long expiresIn;
+
     private UserVO user;
 }

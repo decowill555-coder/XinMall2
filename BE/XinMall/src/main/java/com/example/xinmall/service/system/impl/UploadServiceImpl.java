@@ -36,6 +36,9 @@ public class UploadServiceImpl implements UploadService {
     @Value("${upload.url-prefix:/uploads}")
     private String urlPrefix;
 
+    @Value("${server.base-url:http://localhost:8080}")
+    private String serverBaseUrl;
+
     @Override
     @Transactional
     public UploadFileVO upload(MultipartFile file, String scene) {
@@ -67,7 +70,7 @@ public class UploadServiceImpl implements UploadService {
         UploadFile uploadFile = new UploadFile();
         uploadFile.setUserId(userId);
         uploadFile.setFileKey(relativePath);
-        uploadFile.setFileUrl(urlPrefix + "/" + relativePath);
+        uploadFile.setFileUrl(serverBaseUrl + urlPrefix + "/" + relativePath);
         uploadFile.setFileName(originalFilename);
         uploadFile.setFileSize(file.getSize());
         uploadFile.setFileType(determineFileType(file.getContentType()));

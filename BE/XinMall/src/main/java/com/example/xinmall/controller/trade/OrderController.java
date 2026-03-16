@@ -1,6 +1,7 @@
 package com.example.xinmall.controller.trade;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.example.xinmall.common.result.PageResult;
 import com.example.xinmall.common.result.Result;
 import com.example.xinmall.dto.trade.request.OrderCreateRequest;
 import com.example.xinmall.dto.trade.request.ShipRequest;
@@ -34,12 +35,12 @@ public class OrderController {
 
     @Operation(summary = "订单列表")
     @GetMapping
-    public Result<IPage<OrderVO>> getList(
+    public Result<PageResult<OrderVO>> getList(
             @RequestParam(required = false) OrderStatus status,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
         IPage<OrderVO> result = orderService.getMyOrders(status, page, size);
-        return Result.success(result);
+        return Result.success(PageResult.of(result));
     }
 
     @Operation(summary = "订单详情")
@@ -98,11 +99,11 @@ public class OrderController {
 
     @Operation(summary = "卖家订单列表")
     @GetMapping("/seller")
-    public Result<IPage<OrderVO>> getSellerOrders(
+    public Result<PageResult<OrderVO>> getSellerOrders(
             @RequestParam(required = false) OrderStatus status,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
         IPage<OrderVO> result = orderService.getMySales(status, page, size);
-        return Result.success(result);
+        return Result.success(PageResult.of(result));
     }
 }
