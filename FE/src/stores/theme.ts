@@ -1,129 +1,45 @@
+// =============================================================================
+// THEME STORE - 主题状态管理
+// 使用 config/theme.config.ts 作为单一数据源
+// =============================================================================
+
 import { defineStore } from 'pinia';
 import { ref, computed, watch } from 'vue';
+import {
+  type ThemeMode,
+  type ThemeColor,
+  type ThemeConfig,
+  type ThemeColorConfig,
+  THEME_COLORS,
+  THEME_COLOR_LABELS,
+  FONT_SIZE_MAP,
+  BORDER_RADIUS_MAP,
+  DEFAULT_THEME_CONFIG,
+  generateColorVars,
+  generateFontSizeVars,
+  generateRadiusVars,
+  generateFeatureVars,
+  generateLightModeVars,
+  generateDarkModeVars
+} from '@/config/theme.config';
 
-export type ThemeMode = 'light' | 'dark' | 'system';
-
-export type ThemeColor = 'emerald' | 'blue' | 'purple' | 'green' | 'orange' | 'pink' | 'sunset';
-
-export interface ThemeColors {
-  primary: string;
-  primaryLight: string;
-  primaryDark: string;
-  gradient: string;
-  success?: string;
-  successLight?: string;
-  successDark?: string;
-  warning?: string;
-  warningLight?: string;
-  warningDark?: string;
-  error?: string;
-  errorLight?: string;
-  errorDark?: string;
-  info?: string;
-  infoLight?: string;
-  infoDark?: string;
-}
-
-export interface ThemeConfig {
-  mode: ThemeMode;
-  color: ThemeColor;
-  fontSize: 'small' | 'medium' | 'large';
-  borderRadius: 'small' | 'medium' | 'large';
-  animationEnabled: boolean;
-  glassEffectEnabled: boolean;
-  highContrast: boolean;
-}
-
-const THEME_COLORS: Record<ThemeColor, ThemeColors> = {
-  emerald: {
-    primary: '#1ABC9C',
-    primaryLight: '#E8F8F5',
-    primaryDark: '#16A085',
-    gradient: 'linear-gradient(135deg, #1ABC9C 0%, #10AC84 100%)'
-  },
-  blue: {
-    primary: '#2979FF',
-    primaryLight: '#E3F2FD',
-    primaryDark: '#1565C0',
-    gradient: 'linear-gradient(135deg, #2979FF 0%, #7C4DFF 100%)'
-  },
-  purple: {
-    primary: '#7C4DFF',
-    primaryLight: '#EDE7F6',
-    primaryDark: '#651FFF',
-    gradient: 'linear-gradient(135deg, #7C4DFF 0%, #E040FB 100%)'
-  },
-  green: {
-    primary: '#00C853',
-    primaryLight: '#E8F5E9',
-    primaryDark: '#00A844',
-    gradient: 'linear-gradient(135deg, #00C853 0%, #00BFA5 100%)'
-  },
-  orange: {
-    primary: '#FF6D00',
-    primaryLight: '#FFF3E0',
-    primaryDark: '#E65100',
-    gradient: 'linear-gradient(135deg, #FF6D00 0%, #FFAB00 100%)'
-  },
-  pink: {
-    primary: '#FF4081',
-    primaryLight: '#FCE4EC',
-    primaryDark: '#C51162',
-    gradient: 'linear-gradient(135deg, #FF4081 0%, #F50057 100%)'
-  },
-  sunset: {
-    primary: '#D946EF',
-    primaryLight: '#FAE8FF',
-    primaryDark: '#A21CAF',
-    gradient: 'linear-gradient(135deg, #C026D3 0%, #F43F5E 60%, #FF7849 100%)',
-    success: '#00F5D4',
-    successLight: '#E0FFFA',
-    successDark: '#00C4AA',
-    warning: '#FFD600',
-    warningLight: '#FFFBE6',
-    warningDark: '#CCAB00',
-    error: '#FF2A6D',
-    errorLight: '#FFEDF2',
-    errorDark: '#D91855',
-    info: '#00D2FF',
-    infoLight: '#E5FAFF',
-    infoDark: '#00A6CC'
-  }
-};
-
-const FONT_SIZE_MAP = {
-  small: { base: 28, ratio: 0.9 },
-  medium: { base: 32, ratio: 1 },
-  large: { base: 36, ratio: 1.1 }
-};
-
-const BORDER_RADIUS_MAP = {
-  small: { sm: 4, md: 8, lg: 12 },
-  medium: { sm: 8, md: 16, lg: 24 },
-  large: { sm: 12, md: 24, lg: 32 }
-};
-
-const hexToRgb = (hex: string): string => {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result 
-    ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
-    : '0, 0, 0';
-};
+// Re-export types for backward compatibility
+export type { ThemeMode, ThemeColor, ThemeConfig, ThemeColorConfig };
 
 export const useThemeStore = defineStore('theme', () => {
-  const config = ref<ThemeConfig>({
-    mode: 'light',
-    color: 'pink',
-    fontSize: 'medium',
-    borderRadius: 'medium',
-    animationEnabled: true,
-    glassEffectEnabled: true,
-    highContrast: false
-  });
+  // =============================================================================
+  // STATE - 状态
+  // =============================================================================
 
+  const config = ref<ThemeConfig>({ ...DEFAULT_THEME_CONFIG });
   const systemTheme = ref<'light' | 'dark'>('light');
   const isTransitioning = ref(false);
 
+  // =============================================================================
+  // COMPUTED - 计算属性
+  // =============================================================================
+
+  /** 当前实际主题模式（解析 system 后） */
   const currentMode = computed(() => {
     if (config.value.mode === 'system') {
       return systemTheme.value;
@@ -134,197 +50,62 @@ export const useThemeStore = defineStore('theme', () => {
   const isDark = computed(() => currentMode.value === 'dark');
   const isLight = computed(() => currentMode.value === 'light');
 
-  const currentColors = computed(() => THEME_COLORS[config.value.color]);
+  /** 当前主题色配置 */
+  const currentColors = computed<ThemeColorConfig>(() => THEME_COLORS[config.value.color]);
 
+  /** 当前字体大小配置 */
   const currentFontSize = computed(() => FONT_SIZE_MAP[config.value.fontSize]);
 
-  const currentBorderRadius = computed(() => 
-    BORDER_RADIUS_MAP[config.value.borderRadius]
+  /** 当前圆角配置 */
+  const currentBorderRadius = computed(() => BORDER_RADIUS_MAP[config.value.borderRadius]);
+
+  /** 主题色相关 CSS 变量 */
+  const colorVars = computed(() => generateColorVars(currentColors.value));
+
+  /** 字体大小相关 CSS 变量 */
+  const fontSizeVars = computed(() => generateFontSizeVars(config.value.fontSize));
+
+  /** 圆角相关 CSS 变量 */
+  const radiusVars = computed(() => generateRadiusVars(config.value.borderRadius));
+
+  /** 功能相关 CSS 变量（动画、玻璃效果） */
+  const featureVars = computed(() => generateFeatureVars(config.value));
+
+  /** 浅色模式 CSS 变量 */
+  const lightModeVars = computed(() => isDark.value ? {} : generateLightModeVars());
+
+  /** 深色模式 CSS 变量 */
+  const darkModeVars = computed(() => isDark.value ? generateDarkModeVars() : {});
+
+  /** 所有 CSS 变量对象 */
+  const themeVarsObject = computed(() => ({
+    ...colorVars.value,
+    ...fontSizeVars.value,
+    ...radiusVars.value,
+    ...featureVars.value,
+    ...lightModeVars.value,
+    ...darkModeVars.value
+  }));
+
+  /** CSS 变量字符串（用于内联样式） */
+  const allThemeVars = computed(() =>
+    Object.entries(themeVarsObject.value)
+      .map(([key, value]) => `${key}: ${value}`)
+      .join('; ')
   );
 
-  const themeVars = computed(() => {
-    const colors = currentColors.value;
-    const fontSize = currentFontSize.value;
-    const radius = currentBorderRadius.value;
-    
-    return {
-      '--color-primary': colors.primary,
-      '--color-primary-light': colors.primaryLight,
-      '--color-primary-dark': colors.primaryDark,
-      '--color-primary-glass': `rgba(${hexToRgb(colors.primary)}, 0.15)`,
-      '--gradient-primary': colors.gradient,
-      
-      '--color-success': colors.success || '#00C853',
-      '--color-success-light': colors.successLight || '#E8F5E9',
-      '--color-success-dark': colors.successDark || '#00A844',
-      '--color-warning': colors.warning || '#FFAB00',
-      '--color-warning-light': colors.warningLight || '#FFF8E1',
-      '--color-warning-dark': colors.warningDark || '#E69500',
-      '--color-error': colors.error || '#FF3D00',
-      '--color-error-light': colors.errorLight || '#FFEBEE',
-      '--color-error-dark': colors.errorDark || '#D32F2F',
-      '--color-info': colors.info || '#00B8D4',
-      '--color-info-light': colors.infoLight || '#E0F7FA',
-      '--color-info-dark': colors.infoDark || '#0097A7',
-      
-      '--font-size-xs': `${fontSize.base * 0.625 * fontSize.ratio}rpx`,
-      '--font-size-sm': `${fontSize.base * 0.75 * fontSize.ratio}rpx`,
-      '--font-size-md': `${fontSize.base * fontSize.ratio}rpx`,
-      '--font-size-lg': `${fontSize.base * 1.25 * fontSize.ratio}rpx`,
-      '--font-size-xl': `${fontSize.base * 1.5 * fontSize.ratio}rpx`,
-      
-      '--radius-sm': `${radius.sm}rpx`,
-      '--radius-md': `${radius.md}rpx`,
-      '--radius-lg': `${radius.lg}rpx`,
-      
-      '--animation-duration': config.value.animationEnabled ? '0.4s' : '0s',
-      '--glass-blur': config.value.glassEffectEnabled ? '24px' : '0px'
-    };
-  });
+  // =============================================================================
+  // ACTIONS - 操作方法
+  // =============================================================================
 
-  const lightModeVars = computed(() => {
-    if (isDark.value) return {};
-    
-    return {
-      '--color-bg-page': '#FFF5F2',
-      '--color-bg-card': 'rgba(255, 255, 255, 0.65)',
-      '--color-bg-white': '#FFFFFF',
-      '--color-bg-gray': '#FAF8F7',
-      '--color-bg-glass': 'rgba(255, 255, 255, 0.65)',
-      '--color-text-main': '#2C2624',
-      '--color-text-sub': '#867A76',
-      '--color-text-disabled': '#C4C0BE',
-      '--color-text-placeholder': '#A9A5A2',
-      '--color-text-white': '#FFFFFF',
-      '--color-white': '#FFFFFF',
-      '--color-border': 'rgba(44, 38, 36, 0.08)',
-      '--color-border-light': 'rgba(44, 38, 36, 0.04)',
-      '--color-divider': 'rgba(44, 38, 36, 0.06)',
-      '--glass-white-high': 'rgba(255, 255, 255, 0.85)',
-      '--glass-white-mid': 'rgba(255, 255, 255, 0.65)',
-      '--glass-white-low': 'rgba(255, 255, 255, 0.45)',
-      '--glass-crystal': 'rgba(255, 255, 255, 0.25)',
-      '--glass-crystal-mid': 'rgba(255, 255, 255, 0.45)',
-      '--glass-crystal-high': 'rgba(255, 255, 255, 0.65)',
-      '--glass-solid': 'rgba(255, 255, 255, 0.85)',
-      '--glass-border-light': 'rgba(255, 255, 255, 0.6)',
-      '--glass-border-mid': 'rgba(255, 255, 255, 0.5)',
-      '--glass-border-subtle': 'rgba(255, 255, 255, 0.3)',
-      '--glass-border-highlight': 'rgba(255, 255, 255, 0.8)',
-      '--input-bg': 'rgba(255, 255, 255, 0.65)',
-      '--input-border': 'rgba(44, 38, 36, 0.08)',
-      '--input-focus-glow': '0 0 15px rgba(255, 106, 0, 0.3)',
-      '--shadow-card': '0 8rpx 24rpx rgba(0, 0, 0, 0.04), 0 2rpx 6rpx rgba(0, 0, 0, 0.02)',
-      '--shadow-glow-primary': '0 0 25px rgba(255, 106, 0, 0.5)',
-      '--color-price': '#FF3B30',
-      '--color-price-glow': '0 0 20px rgba(255, 59, 48, 0.4)',
-      '--skeleton-from': '#F5F5F5',
-      '--skeleton-to': '#FAFAFA',
-      '--overlay-bg': 'rgba(0, 0, 0, 0.5)',
-      '--tabbar-bg': 'rgba(255, 255, 255, 0.95)',
-      '--tabbar-border': 'rgba(0, 0, 0, 0.05)',
-      '--tabbar-icon-inactive': '#6B7280',
-      '--tabbar-icon-active': '#FF6A00',
-      '--tabbar-icon-glow': '0 0 8px rgba(255, 106, 0, 0.6)',
-      '--modal-bg': 'rgba(255, 255, 255, 0.95)',
-      '--modal-border': 'rgba(0, 0, 0, 0.1)',
-      '--tag-hot-bg': 'rgba(255, 106, 0, 0.1)',
-      '--tag-hot-text': '#FF6A00',
-      '--tag-hot-border': 'rgba(255, 106, 0, 0.2)',
-      '--tag-new-bg': 'rgba(52, 199, 89, 0.1)',
-      '--tag-new-text': '#34C759',
-      '--tag-new-border': 'rgba(52, 199, 89, 0.2)'
-    };
-  });
-
-  const darkModeVars = computed(() => {
-    if (!isDark.value) return {};
-    
-    return {
-      '--color-bg-page': '#0B0A12',
-      '--color-bg-card': 'rgba(255, 255, 255, 0.06)',
-      '--color-bg-white': '#16161E',
-      '--color-bg-gray': '#0F0E16',
-      '--color-bg-glass': 'rgba(255, 255, 255, 0.06)',
-      
-      '--color-text-main': '#F2F2F7',
-      '--color-text-sub': '#A1A1AA',
-      '--color-text-disabled': '#52525B',
-      '--color-text-placeholder': '#6B7280',
-      '--color-text-white': '#FFFFFF',
-      '--color-white': '#FFFFFF',
-      
-      '--color-border': 'rgba(255, 255, 255, 0.1)',
-      '--color-border-light': 'rgba(255, 255, 255, 0.05)',
-      '--color-divider': 'rgba(255, 255, 255, 0.08)',
-      
-      '--glass-white-high': 'rgba(22, 22, 30, 0.85)',
-      '--glass-white-mid': 'rgba(255, 255, 255, 0.06)',
-      '--glass-white-low': 'rgba(255, 255, 255, 0.04)',
-      '--glass-crystal': 'rgba(255, 255, 255, 0.04)',
-      '--glass-crystal-mid': 'rgba(255, 255, 255, 0.06)',
-      '--glass-crystal-high': 'rgba(255, 255, 255, 0.08)',
-      '--glass-solid': 'rgba(22, 22, 30, 0.90)',
-      '--glass-border-light': 'rgba(255, 255, 255, 0.12)',
-      '--glass-border-mid': 'rgba(255, 255, 255, 0.1)',
-      '--glass-border-subtle': 'rgba(255, 255, 255, 0.08)',
-      '--glass-border-highlight': 'rgba(255, 255, 255, 0.25)',
-      
-      '--input-bg': 'rgba(0, 0, 0, 0.3)',
-      '--input-border': 'rgba(255, 255, 255, 0.05)',
-      '--input-focus-glow': '0 0 15px rgba(217, 70, 239, 0.3)',
-      
-      '--shadow-card': '0 10px 30px -10px rgba(0, 0, 0, 0.8)',
-      '--shadow-glow-primary': '0 0 25px rgba(217, 70, 239, 0.5)',
-      
-      '--color-price': '#FF78E1',
-      '--color-price-glow': '0 0 20px rgba(255, 120, 225, 0.6)',
-      
-      '--skeleton-from': '#1F1F25',
-      '--skeleton-to': '#2A2A35',
-      
-      '--overlay-bg': 'rgba(0, 0, 0, 0.7)',
-      
-      '--tabbar-bg': 'rgba(20, 20, 30, 0.75)',
-      '--tabbar-border': 'rgba(255, 255, 255, 0.1)',
-      '--tabbar-icon-inactive': '#6B7280',
-      '--tabbar-icon-active': '#D946EF',
-      '--tabbar-icon-glow': '0 0 8px rgba(217, 70, 239, 0.6)',
-      
-      '--modal-bg': 'rgba(30, 25, 35, 0.85)',
-      '--modal-border': 'rgba(255, 255, 255, 0.2)',
-      
-      '--tag-hot-bg': 'rgba(255, 42, 109, 0.2)',
-      '--tag-hot-text': '#FF2A6D',
-      '--tag-hot-border': 'rgba(255, 42, 109, 0.5)',
-      '--tag-new-bg': 'rgba(0, 245, 212, 0.2)',
-      '--tag-new-text': '#00F5D4',
-      '--tag-new-border': 'rgba(0, 245, 212, 0.5)',
-      
-      '--gradient-sunset': 'linear-gradient(135deg, #C026D3 0%, #F43F5E 60%, #FF7849 100%)'
-    };
-  });
-
-  const themeVarsObject = computed(() => {
-    return {
-      ...themeVars.value,
-      ...lightModeVars.value,
-      ...darkModeVars.value
-    };
-  });
-
-  const allThemeVars = computed(() => {
-    return Object.entries(themeVarsObject.value)
-      .map(([key, value]) => `${key}: ${value}`)
-      .join('; ');
-  });
-
+  /** 设置主题模式 */
   const setMode = (mode: ThemeMode) => {
     config.value.mode = mode;
     applyTheme();
     saveToStorage();
   };
 
+  /** 切换深色/浅色模式 */
   const toggleMode = () => {
     if (config.value.mode === 'light') {
       setMode('dark');
@@ -335,90 +116,99 @@ export const useThemeStore = defineStore('theme', () => {
     }
   };
 
+  /** 设置主题色 */
   const setColor = (color: ThemeColor) => {
     config.value.color = color;
     applyTheme();
     saveToStorage();
   };
 
-  const setFontSize = (size: 'small' | 'medium' | 'large') => {
+  /** 设置字体大小 */
+  const setFontSize = (size: ThemeConfig['fontSize']) => {
     config.value.fontSize = size;
     applyTheme();
     saveToStorage();
   };
 
-  const setBorderRadius = (radius: 'small' | 'medium' | 'large') => {
+  /** 设置圆角大小 */
+  const setBorderRadius = (radius: ThemeConfig['borderRadius']) => {
     config.value.borderRadius = radius;
     applyTheme();
     saveToStorage();
   };
 
+  /** 设置动画开关 */
   const setAnimationEnabled = (enabled: boolean) => {
     config.value.animationEnabled = enabled;
     applyTheme();
     saveToStorage();
   };
 
+  /** 设置玻璃效果开关 */
   const setGlassEffectEnabled = (enabled: boolean) => {
     config.value.glassEffectEnabled = enabled;
     applyTheme();
     saveToStorage();
   };
 
+  /** 设置高对比度模式 */
   const setHighContrast = (enabled: boolean) => {
     config.value.highContrast = enabled;
     applyTheme();
     saveToStorage();
   };
 
+  /** 更新系统主题 */
   const updateSystemTheme = () => {
     // #ifdef H5
     const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
     systemTheme.value = isDarkMode ? 'dark' : 'light';
-    
+
     if (config.value.mode === 'system') {
       applyTheme();
     }
     // #endif
-    
+
     // #ifndef H5
     try {
       const sys = uni.getSystemInfoSync();
       const osTheme = sys.osTheme || 'light';
       systemTheme.value = osTheme === 'dark' ? 'dark' : 'light';
-      
+
       if (config.value.mode === 'system') {
         applyTheme();
       }
-    } catch (e) {
+    } catch {
       systemTheme.value = 'light';
     }
     // #endif
   };
 
+  /** 应用主题到页面 */
   const applyTheme = () => {
     isTransitioning.value = true;
-    
+
     const vars = themeVarsObject.value;
-    
+
     // #ifdef H5
     const root = document?.documentElement || document?.body;
-    
+
     if (root) {
       Object.entries(vars).forEach(([key, value]) => {
         root.style.setProperty(key, value);
       });
-      
+
       root.setAttribute('data-theme', currentMode.value);
       root.setAttribute('data-color', config.value.color);
     }
     // #endif
-    
+
     // #ifndef H5
     uni.setStorageSync('theme_mode', currentMode.value);
     uni.setStorageSync('theme_color', config.value.color);
     // #endif
-    
+
+    // 设置导航栏颜色
     try {
       uni.setNavigationBarColor({
         frontColor: isDark.value ? '#ffffff' : '#000000',
@@ -428,49 +218,42 @@ export const useThemeStore = defineStore('theme', () => {
           timingFunc: 'easeInOut'
         }
       });
-    } catch (e) {
-      console.warn('setNavigationBarColor failed:', e);
+    } catch {
+      // 忽略错误
     }
-    
+
     setTimeout(() => {
       isTransitioning.value = false;
     }, 300);
   };
 
+  /** 初始化主题 */
   const initTheme = () => {
     loadFromStorage();
     updateSystemTheme();
     applyTheme();
-    
+
     // #ifdef H5
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     mediaQuery.addEventListener('change', updateSystemTheme);
     // #endif
   };
 
+  /** 重置主题为默认值 */
   const resetTheme = () => {
-    config.value = {
-      mode: 'light',
-      color: 'pink',
-      fontSize: 'medium',
-      borderRadius: 'medium',
-      animationEnabled: true,
-      glassEffectEnabled: true,
-      highContrast: false
-    };
-    
+    config.value = { ...DEFAULT_THEME_CONFIG };
     applyTheme();
     saveToStorage();
   };
 
-  const exportTheme = (): string => {
-    return JSON.stringify(config.value);
-  };
+  /** 导出主题配置 */
+  const exportTheme = (): string => JSON.stringify(config.value);
 
+  /** 导入主题配置 */
   const importTheme = (data: string): boolean => {
     try {
       const parsed = JSON.parse(data) as ThemeConfig;
-      
+
       if (parsed.mode && parsed.color) {
         config.value = parsed;
         applyTheme();
@@ -483,15 +266,17 @@ export const useThemeStore = defineStore('theme', () => {
     return false;
   };
 
-  const getAvailableColors = (): Array<{ key: ThemeColor; name: string; colors: ThemeColors }> => [
-    { key: 'emerald', name: '翡翠绿', colors: THEME_COLORS.emerald },
-    { key: 'blue', name: '科技蓝', colors: THEME_COLORS.blue },
-    { key: 'purple', name: '优雅紫', colors: THEME_COLORS.purple },
-    { key: 'green', name: '清新绿', colors: THEME_COLORS.green },
-    { key: 'orange', name: '活力橙', colors: THEME_COLORS.orange },
-    { key: 'pink', name: '浪漫粉', colors: THEME_COLORS.pink },
-    { key: 'sunset', name: '超现实日落', colors: THEME_COLORS.sunset }
-  ];
+  /** 获取所有可用的主题色选项 */
+  const getAvailableColors = () =>
+    (Object.keys(THEME_COLORS) as ThemeColor[]).map(key => ({
+      key,
+      name: THEME_COLOR_LABELS[key],
+      colors: THEME_COLORS[key]
+    }));
+
+  // =============================================================================
+  // PERSISTENCE - 持久化
+  // =============================================================================
 
   const loadFromStorage = () => {
     const stored = uni.getStorageSync('theme_config');
@@ -511,28 +296,44 @@ export const useThemeStore = defineStore('theme', () => {
     uni.setStorageSync('theme_config', JSON.stringify(config.value));
   };
 
+  // 自动保存配置变更
   watch(
     () => config.value,
-    () => {
-      saveToStorage();
-    },
+    () => saveToStorage(),
     { deep: true }
   );
 
+  // =============================================================================
+  // RETURN - 导出
+  // =============================================================================
+
   return {
+    // State
     config,
     systemTheme,
     isTransitioning,
+
+    // Computed - 模式
     currentMode,
     isDark,
     isLight,
+
+    // Computed - 配置
     currentColors,
     currentFontSize,
     currentBorderRadius,
-    themeVars,
-    themeVarsObject,
+
+    // Computed - CSS 变量
+    colorVars,
+    fontSizeVars,
+    radiusVars,
+    featureVars,
+    lightModeVars,
     darkModeVars,
+    themeVarsObject,
     allThemeVars,
+
+    // Actions - 设置
     setMode,
     toggleMode,
     setColor,
@@ -541,13 +342,19 @@ export const useThemeStore = defineStore('theme', () => {
     setAnimationEnabled,
     setGlassEffectEnabled,
     setHighContrast,
+
+    // Actions - 生命周期
     updateSystemTheme,
     applyTheme,
     initTheme,
     resetTheme,
+
+    // Actions - 导入导出
     exportTheme,
     importTheme,
     getAvailableColors,
+
+    // Persistence
     loadFromStorage,
     saveToStorage
   };

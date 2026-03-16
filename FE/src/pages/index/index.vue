@@ -215,17 +215,17 @@ const fetchGoodsList = async (isRefresh = false) => {
     }
     
     const res = await tradeApi.getProductList(params);
-    
-    if (res && res.records && Array.isArray(res.records)) {
-      const newGoods = res.records.map(transformProductToGoods);
-      
+
+    if (res && res.list && Array.isArray(res.list)) {
+      const newGoods = res.list.map(transformProductToGoods);
+
       if (isRefresh) {
         goodsList.value = newGoods;
       } else {
         goodsList.value = [...goodsList.value, ...newGoods];
       }
-      
-      hasMore.value = res.current < res.pages;
+
+      hasMore.value = res.hasMore;
       if (hasMore.value) {
         currentPage.value++;
       }

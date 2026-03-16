@@ -76,11 +76,9 @@ export interface ProductListItem {
 }
 
 export interface ProductListResult {
-  records: ProductListItem[];
+  list: ProductListItem[];
   total: number;
-  size: number;
-  current: number;
-  pages: number;
+  hasMore: boolean;
 }
 
 export interface CreateOrderParams {
@@ -184,11 +182,9 @@ export interface OrderListItem {
 }
 
 export interface OrderListResult {
-  records: OrderListItem[];
+  list: OrderListItem[];
   total: number;
-  size: number;
-  current: number;
-  pages: number;
+  hasMore: boolean;
 }
 
 export interface PayOrderParams {

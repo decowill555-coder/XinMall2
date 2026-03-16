@@ -36,11 +36,14 @@ export interface SendMessageRequest {
 }
 
 export interface PageResult<T> {
-  records: T[];
+  list: T[];
   total: number;
-  size: number;
-  current: number;
-  pages: number;
+  hasMore: boolean;
+  // 兼容旧格式
+  records?: T[];
+  size?: number;
+  current?: number;
+  pages?: number;
 }
 
 export const messageApi = {

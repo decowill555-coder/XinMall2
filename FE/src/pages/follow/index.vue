@@ -86,7 +86,7 @@ const fetchFeed = async (page: number = 1) => {
       spuApi.getFollowedSpus(page, pageSize)
     ]);
     
-    const postItems: FeedItem[] = (postsResult?.records || []).map((item: PostListItem) => ({
+    const postItems: FeedItem[] = (postsResult?.list || []).map((item: PostListItem) => ({
       id: item.id,
       cover: item.images && item.images.length > 0 ? item.images[0] : '',
       title: item.title || '',
@@ -99,7 +99,7 @@ const fetchFeed = async (page: number = 1) => {
       itemType: 'post'
     }));
     
-    const spuItems: FeedItem[] = (spusResult?.records || []).map((item: any) => ({
+    const spuItems: FeedItem[] = (spusResult?.list || []).map((item: any) => ({
       id: item.id,
       cover: item.cover || '',
       title: item.name || '',
@@ -120,8 +120,8 @@ const fetchFeed = async (page: number = 1) => {
     }
     
     currentPage.value = page;
-    const postHasMore = postsResult ? postsResult.current < postsResult.pages : false;
-    const spuHasMore = spusResult ? spusResult.current < spusResult.pages : false;
+    const postHasMore = postsResult?.hasMore ?? false;
+    const spuHasMore = spusResult?.hasMore ?? false;
     hasMore.value = postHasMore || spuHasMore;
   } catch (error) {
     console.error('获取关注数据失败:', error);

@@ -163,7 +163,7 @@ export const useOrderStore = defineStore('order', () => {
       }
 
       const res = await tradeApi.getOrderList(params);
-      const newOrders = (res.records || []).map(transformApiOrder);
+      const newOrders = (res.list || []).map(transformApiOrder);
 
       if (isRefresh) {
         orders.value = newOrders;
@@ -171,7 +171,7 @@ export const useOrderStore = defineStore('order', () => {
         orders.value = [...orders.value, ...newOrders];
       }
 
-      hasMore.value = res.current < res.pages;
+      hasMore.value = res.hasMore;
       if (hasMore.value) {
         currentPage.value++;
       }

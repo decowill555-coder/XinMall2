@@ -158,18 +158,18 @@ export const useChatStore = defineStore('chat', () => {
     try {
       const result = await messageApi.getMessages(Number(conversationId), page, size);
       if (result) {
-        const transformedMessages = result.records.map(transformMessage);
-        
+        const transformedMessages = (result.list || result.records || []).map(transformMessage);
+
         if (page === 1) {
           messages.value[conversationId] = transformedMessages.reverse();
         } else {
           messages.value[conversationId] = [...transformedMessages.reverse(), ...(messages.value[conversationId] || [])];
         }
-        
+
         messagePages.value[conversationId] = {
-          current: result.current,
-          pages: result.pages,
-          hasMore: result.current < result.pages
+          current: result.current || page,
+          pages: result.pages || Math.ceil(result.total / size),
+          hasMore: result.hasMore ?? (result.current !== undefined && result.pages !== undefined && result.current < result.pages)
         };
       }
     } catch (error) {

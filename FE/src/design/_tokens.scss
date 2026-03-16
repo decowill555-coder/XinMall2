@@ -1,47 +1,52 @@
 // =============================================================================
-// DESIGN TOKENS - 2025 BIOLUMINESCENCE DARK MODE
-// XinMall 数码电商系统核心设计变量 - 生物荧光感深色模式
-// 灵感来源：深海发光生物 / 霓虹城市 / 赛博朋克
+// DESIGN TOKENS - XinMall 设计令牌
+// 配合 config/theme.config.ts 作为单一数据源
+// JS 运行时通过 CSS 变量实现动态主题切换
 // =============================================================================
 
-// --- CSS 变量定义（支持深浅模式动态切换）---
-:root {
-  // 1. 品牌色 - 活力橙色系
-  --color-primary: #FF6A00;
-  --color-primary-light: #FFF3E0;
-  --color-primary-dark: #E65100;
-  --color-primary-glass: rgba(255, 106, 0, 0.12);
+// =============================================================================
+// 1. CSS 变量定义 (运行时可动态修改)
+// =============================================================================
 
-  // 2. 辅助色 - 金橙/暖红
+:root {
+  // ---------------------------------------------------------------------------
+  // 1.1 主题色 - 默认主题色 (pink/浪漫粉)
+  // 可通过 data-color 属性切换
+  // ---------------------------------------------------------------------------
+  --color-primary: #FF4081;
+  --color-primary-light: #FCE4EC;
+  --color-primary-dark: #C51162;
+  --color-primary-glass: rgba(255, 64, 129, 0.15);
+  --gradient-primary: linear-gradient(135deg, #FF4081 0%, #F50057 100%);
+  --gradient-sunset: linear-gradient(135deg, #C026D3 0%, #F43F5E 60%, #FF7849 100%);
+  --shadow-glow-primary: 0 0 25px rgba(255, 64, 129, 0.5);
+
+  // ---------------------------------------------------------------------------
+  // 1.2 辅助色
+  // ---------------------------------------------------------------------------
   --color-accent: #FF8F00;
   --color-accent-dark: #FF6D00;
   --color-accent-light: rgba(255, 143, 0, 0.12);
 
-  // 3. 渐变色 - 活力渐变
-  --gradient-primary: linear-gradient(135deg, #FF6A00 0%, #FF8F00 100%);
-  --gradient-vibrant: linear-gradient(135deg, #FF6A00 0%, #FF3D00 100%);
-  --gradient-gold: linear-gradient(135deg, #FFB300 0%, #FF6A00 100%);
-  --gradient-sunset: linear-gradient(135deg, #FF9800 0%, #FF5722 50%, #FF6A00 100%);
+  // ---------------------------------------------------------------------------
+  // 1.3 功能色
+  // ---------------------------------------------------------------------------
+  --color-success: #00C853;
+  --color-success-light: #E8F5E9;
+  --color-success-dark: #00A844;
+  --color-warning: #FFAB00;
+  --color-warning-light: #FFF8E1;
+  --color-warning-dark: #E69500;
+  --color-error: #FF3D00;
+  --color-error-light: #FFEBEE;
+  --color-error-dark: #D32F2F;
+  --color-info: #00B8D4;
+  --color-info-light: #E0F7FA;
+  --color-info-dark: #0097A7;
 
-  // 4. 功能色 - 保持语义但调整色温
-  --color-success: #34C759;
-  --color-success-light: #EDFCF2;
-  --color-success-dark: #248A3D;
-  --color-success-glass: rgba(52, 199, 89, 0.12);
-  --color-warning: #FFD60A;
-  --color-warning-light: #FFFBE6;
-  --color-warning-dark: #D4A300;
-  --color-warning-glass: rgba(255, 214, 10, 0.12);
-  --color-error: #FF3B30;
-  --color-error-light: #FFF0F0;
-  --color-error-dark: #D70015;
-  --color-error-glass: rgba(255, 59, 48, 0.12);
-  --color-info: #5856D6;
-  --color-info-light: #EDEDFF;
-  --color-info-dark: #3634A3;
-  --color-info-glass: rgba(88, 86, 214, 0.12);
-
-  // 5. 背景色 - 拒绝纯白，使用暖调
+  // ---------------------------------------------------------------------------
+  // 1.4 背景色 - 浅色模式
+  // ---------------------------------------------------------------------------
   --color-bg-page: #FFF5F2;
   --color-bg-card: rgba(255, 255, 255, 0.65);
   --color-bg-white: #FFFFFF;
@@ -49,7 +54,9 @@
   --color-bg-glass: rgba(255, 255, 255, 0.65);
   --color-bg-gradient-start: #F5E6DC;
 
-  // 6. 文本色 - 暖灰代替冷灰
+  // ---------------------------------------------------------------------------
+  // 1.5 文本色
+  // ---------------------------------------------------------------------------
   --color-text-main: #2C2624;
   --color-text-sub: #867A76;
   --color-text-disabled: #C4C0BE;
@@ -57,80 +64,111 @@
   --color-text-white: #FFFFFF;
   --color-white: #FFFFFF;
 
-  // 7. 边框色
+  // ---------------------------------------------------------------------------
+  // 1.6 边框与分割线
+  // ---------------------------------------------------------------------------
   --color-border: rgba(44, 38, 36, 0.08);
   --color-border-light: rgba(44, 38, 36, 0.04);
   --color-divider: rgba(44, 38, 36, 0.06);
 
-  // 8. 玻璃光感与边框
-  --glass-border: rgba(255, 255, 255, 0.6);
-  --glass-border-subtle: rgba(255, 255, 255, 0.3);
-  --glass-border-highlight: rgba(255, 255, 255, 0.8);
-  --glass-shine: rgba(255, 255, 255, 0.4);
-
-  // 9. 玻璃材质层级
+  // ---------------------------------------------------------------------------
+  // 1.7 玻璃材质层级
+  // ---------------------------------------------------------------------------
+  --glass-white-high: rgba(255, 255, 255, 0.85);
+  --glass-white-mid: rgba(255, 255, 255, 0.65);
+  --glass-white-low: rgba(255, 255, 255, 0.45);
   --glass-crystal: rgba(255, 255, 255, 0.25);
   --glass-crystal-mid: rgba(255, 255, 255, 0.45);
   --glass-crystal-high: rgba(255, 255, 255, 0.65);
   --glass-solid: rgba(255, 255, 255, 0.85);
-  --glass-float: rgba(255, 255, 255, 0.80);
-  --glass-sidebar: rgba(255, 255, 255, 0.75);
-  
-  // 10. 输入框
+  --glass-border-light: rgba(255, 255, 255, 0.6);
+  --glass-border-mid: rgba(255, 255, 255, 0.5);
+  --glass-border-subtle: rgba(255, 255, 255, 0.3);
+  --glass-border-highlight: rgba(255, 255, 255, 0.8);
+
+  // ---------------------------------------------------------------------------
+  // 1.8 输入框
+  // ---------------------------------------------------------------------------
   --input-bg: rgba(255, 255, 255, 0.65);
   --input-border: rgba(44, 38, 36, 0.08);
   --input-focus-glow: 0 0 15px rgba(255, 106, 0, 0.3);
-  
-  // 11. 阴影与光晕
+
+  // ---------------------------------------------------------------------------
+  // 1.9 阴影与光晕
+  // ---------------------------------------------------------------------------
   --shadow-card: 0 8rpx 24rpx rgba(0, 0, 0, 0.04), 0 2rpx 6rpx rgba(0, 0, 0, 0.02);
-  --shadow-glow-primary: 0 0 25px rgba(255, 106, 0, 0.5);
-  
-  // 12. 价格强调色
+
+  // ---------------------------------------------------------------------------
+  // 1.10 价格强调色
+  // ---------------------------------------------------------------------------
   --color-price: #FF3B30;
   --color-price-glow: 0 0 20px rgba(255, 59, 48, 0.4);
-  
-  // 13. 骨架屏
+
+  // ---------------------------------------------------------------------------
+  // 1.11 骨架屏
+  // ---------------------------------------------------------------------------
   --skeleton-from: #F5F5F5;
   --skeleton-to: #FAFAFA;
-  
-  // 14. 遮罩层
+
+  // ---------------------------------------------------------------------------
+  // 1.12 遮罩层
+  // ---------------------------------------------------------------------------
   --overlay-bg: rgba(0, 0, 0, 0.5);
-  
-  // 15. 标签色
+
+  // ---------------------------------------------------------------------------
+  // 1.13 Tabbar
+  // ---------------------------------------------------------------------------
+  --tabbar-bg: rgba(255, 255, 255, 0.95);
+  --tabbar-border: rgba(0, 0, 0, 0.05);
+  --tabbar-icon-inactive: #6B7280;
+  --tabbar-icon-glow: 0 0 8px rgba(255, 106, 0, 0.6);
+
+  // ---------------------------------------------------------------------------
+  // 1.14 Modal
+  // ---------------------------------------------------------------------------
+  --modal-bg: rgba(255, 255, 255, 0.95);
+  --modal-border: rgba(0, 0, 0, 0.1);
+
+  // ---------------------------------------------------------------------------
+  // 1.15 标签色
+  // ---------------------------------------------------------------------------
   --tag-hot-bg: rgba(255, 106, 0, 0.1);
   --tag-hot-text: #FF6A00;
   --tag-hot-border: rgba(255, 106, 0, 0.2);
   --tag-new-bg: rgba(52, 199, 89, 0.1);
   --tag-new-text: #34C759;
   --tag-new-border: rgba(52, 199, 89, 0.2);
-  
-  // 16. 装饰光晕
+
+  // ---------------------------------------------------------------------------
+  // 1.16 装饰光晕
+  // ---------------------------------------------------------------------------
   --decoration-circle-1: radial-gradient(circle, rgba(255, 106, 0, 0.15) 0%, transparent 70%);
   --decoration-circle-2: radial-gradient(circle, rgba(255, 143, 0, 0.1) 0%, transparent 70%);
-  
-  // 17. 页面渐变背景
-  --page-gradient: linear-gradient(170deg, var(--color-bg-gradient-start) 0%, var(--color-bg-page) 35%, var(--color-bg-page) 100%);
-  
-  // 18. 在线状态颜色
+
+  // ---------------------------------------------------------------------------
+  // 1.17 在线状态
+  // ---------------------------------------------------------------------------
   --color-online: #34C759;
   --color-online-glow: rgba(52, 199, 89, 0.5);
-  
-  // 19. 交互状态
+
+  // ---------------------------------------------------------------------------
+  // 1.18 交互状态
+  // ---------------------------------------------------------------------------
   --color-active-bg: rgba(0, 0, 0, 0.05);
   --color-focus-bg: rgba(255, 106, 0, 0.05);
   --color-focus-border-glow: rgba(255, 106, 0, 0.1);
 }
 
 // =============================================================================
-// THEME COLOR VARIANTS - 主题色变体
-// 通过 data-color 属性切换主题色
+// 2. 主题色变体 - 通过 data-color 属性切换
+// 与 config/theme.config.ts 中 THEME_COLORS 保持一致
 // =============================================================================
 
 [data-color="emerald"] {
   --color-primary: #1ABC9C;
   --color-primary-light: #E8F8F5;
   --color-primary-dark: #16A085;
-  --color-primary-glass: rgba(26, 188, 156, 0.12);
+  --color-primary-glass: rgba(26, 188, 156, 0.15);
   --gradient-primary: linear-gradient(135deg, #1ABC9C 0%, #10AC84 100%);
   --shadow-glow-primary: 0 0 25px rgba(26, 188, 156, 0.5);
 }
@@ -139,7 +177,7 @@
   --color-primary: #2979FF;
   --color-primary-light: #E3F2FD;
   --color-primary-dark: #1565C0;
-  --color-primary-glass: rgba(41, 121, 255, 0.12);
+  --color-primary-glass: rgba(41, 121, 255, 0.15);
   --gradient-primary: linear-gradient(135deg, #2979FF 0%, #7C4DFF 100%);
   --shadow-glow-primary: 0 0 25px rgba(41, 121, 255, 0.5);
 }
@@ -148,7 +186,7 @@
   --color-primary: #7C4DFF;
   --color-primary-light: #EDE7F6;
   --color-primary-dark: #651FFF;
-  --color-primary-glass: rgba(124, 77, 255, 0.12);
+  --color-primary-glass: rgba(124, 77, 255, 0.15);
   --gradient-primary: linear-gradient(135deg, #7C4DFF 0%, #E040FB 100%);
   --shadow-glow-primary: 0 0 25px rgba(124, 77, 255, 0.5);
 }
@@ -157,7 +195,7 @@
   --color-primary: #00C853;
   --color-primary-light: #E8F5E9;
   --color-primary-dark: #00A844;
-  --color-primary-glass: rgba(0, 200, 83, 0.12);
+  --color-primary-glass: rgba(0, 200, 83, 0.15);
   --gradient-primary: linear-gradient(135deg, #00C853 0%, #00BFA5 100%);
   --shadow-glow-primary: 0 0 25px rgba(0, 200, 83, 0.5);
 }
@@ -166,7 +204,7 @@
   --color-primary: #FF6D00;
   --color-primary-light: #FFF3E0;
   --color-primary-dark: #E65100;
-  --color-primary-glass: rgba(255, 109, 0, 0.12);
+  --color-primary-glass: rgba(255, 109, 0, 0.15);
   --gradient-primary: linear-gradient(135deg, #FF6D00 0%, #FFAB00 100%);
   --shadow-glow-primary: 0 0 25px rgba(255, 109, 0, 0.5);
 }
@@ -175,7 +213,7 @@
   --color-primary: #FF4081;
   --color-primary-light: #FCE4EC;
   --color-primary-dark: #C51162;
-  --color-primary-glass: rgba(255, 64, 129, 0.12);
+  --color-primary-glass: rgba(255, 64, 129, 0.15);
   --gradient-primary: linear-gradient(135deg, #FF4081 0%, #F50057 100%);
   --shadow-glow-primary: 0 0 25px rgba(255, 64, 129, 0.5);
 }
@@ -184,7 +222,7 @@
   --color-primary: #D946EF;
   --color-primary-light: #FAE8FF;
   --color-primary-dark: #A21CAF;
-  --color-primary-glass: rgba(217, 70, 239, 0.12);
+  --color-primary-glass: rgba(217, 70, 239, 0.15);
   --gradient-primary: linear-gradient(135deg, #C026D3 0%, #F43F5E 60%, #FF7849 100%);
   --shadow-glow-primary: 0 0 25px rgba(217, 70, 239, 0.5);
   --color-success: #00F5D4;
@@ -202,33 +240,20 @@
 }
 
 // =============================================================================
-// BIOLUMINESCENCE DARK MODE - 生物荧光感深色模式
-// 核心理念：五彩斑斓的黑，像深海发光生物一样
+// 3. 深色模式 - 通过 data-theme="dark" 切换
+// 与 config/theme.config.ts 中 generateDarkModeVars() 保持一致
 // =============================================================================
+
 [data-theme="dark"] {
-  // 1. 背景：深邃的虚空紫黑
+  // 背景色
   --color-bg-page: #0B0A12;
+  --color-bg-card: rgba(255, 255, 255, 0.06);
   --color-bg-white: #16161E;
   --color-bg-gray: #0F0E16;
-  --color-bg-card: rgba(255, 255, 255, 0.06);
   --color-bg-glass: rgba(255, 255, 255, 0.06);
   --color-bg-gradient-start: #1A1520;
 
-  // 2. 玻璃卡片：幽灵般的通透感
-  --glass-card-bg: rgba(255, 255, 255, 0.06);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-border-subtle: rgba(255, 255, 255, 0.08);
-  --glass-border-highlight: rgba(255, 255, 255, 0.25);
-  --glass-shine: rgba(255, 255, 255, 0.1);
-  
-  --glass-crystal: rgba(255, 255, 255, 0.04);
-  --glass-crystal-mid: rgba(255, 255, 255, 0.06);
-  --glass-crystal-high: rgba(255, 255, 255, 0.08);
-  --glass-solid: rgba(22, 22, 30, 0.90);
-  --glass-float: rgba(255, 255, 255, 0.08);
-  --glass-sidebar: rgba(15, 15, 20, 0.85);
-
-  // 3. 文字：降低对比度，防止刺眼
+  // 文本色
   --color-text-main: #F2F2F7;
   --color-text-sub: #A1A1AA;
   --color-text-disabled: #52525B;
@@ -236,261 +261,411 @@
   --color-text-white: #FFFFFF;
   --color-white: #FFFFFF;
 
-  // 4. 边框色
+  // 边框
   --color-border: rgba(255, 255, 255, 0.1);
   --color-border-light: rgba(255, 255, 255, 0.05);
   --color-divider: rgba(255, 255, 255, 0.08);
 
-  // 5. 梦幻主色在深色模式的表现 - 荧光化
-  --color-primary: #E879F9;
-  --color-primary-light: rgba(232, 121, 249, 0.2);
-  --color-primary-glass: rgba(232, 121, 249, 0.15);
-  --color-primary-dark: #C026D3;
-  
-  --color-accent: #F472B6;
-  --color-accent-light: rgba(244, 114, 182, 0.2);
+  // 玻璃材质
+  --glass-white-high: rgba(22, 22, 30, 0.85);
+  --glass-white-mid: rgba(255, 255, 255, 0.06);
+  --glass-white-low: rgba(255, 255, 255, 0.04);
+  --glass-crystal: rgba(255, 255, 255, 0.04);
+  --glass-crystal-mid: rgba(255, 255, 255, 0.06);
+  --glass-crystal-high: rgba(255, 255, 255, 0.08);
+  --glass-solid: rgba(22, 22, 30, 0.90);
+  --glass-border-light: rgba(255, 255, 255, 0.12);
+  --glass-border-mid: rgba(255, 255, 255, 0.1);
+  --glass-border-subtle: rgba(255, 255, 255, 0.08);
+  --glass-border-highlight: rgba(255, 255, 255, 0.25);
 
-  // 6. 渐变 - 超现实日落（液态霓虹）
-  --gradient-primary: linear-gradient(135deg, #C026D3 0%, #F43F5E 100%);
-  --gradient-sunset: linear-gradient(135deg, #C026D3 0%, #F43F5E 60%, #FF7849 100%);
-  --gradient-vibrant: linear-gradient(135deg, #D946EF 0%, #F43F5E 50%, #FF78E1 100%);
-  --gradient-gold: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
-
-  // 7. 功能色：荧光化
-  --color-success: #00F5D4;
-  --color-success-light: rgba(0, 245, 212, 0.2);
-  --color-success-dark: #00C4AA;
-  --color-success-glass: rgba(0, 245, 212, 0.15);
-  
-  --color-warning: #FFE600;
-  --color-warning-light: rgba(255, 230, 0, 0.2);
-  --color-warning-dark: #CCB800;
-  --color-warning-glass: rgba(255, 230, 0, 0.15);
-  
-  --color-error: #FF4081;
-  --color-error-light: rgba(255, 64, 129, 0.2);
-  --color-error-dark: #D91855;
-  --color-error-glass: rgba(255, 64, 129, 0.15);
-  
-  --color-info: #00D2FF;
-  --color-info-light: rgba(0, 210, 255, 0.2);
-  --color-info-dark: #00A6CC;
-  --color-info-glass: rgba(0, 210, 255, 0.15);
-
-  // 8. 输入框：凹陷的深潭
+  // 输入框
   --input-bg: rgba(0, 0, 0, 0.3);
   --input-border: rgba(255, 255, 255, 0.05);
   --input-focus-glow: 0 0 15px rgba(217, 70, 239, 0.3);
 
-  // 9. 阴影：有色光晕代替黑色投影
+  // 阴影
   --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.8);
-  --shadow-glow-primary: 0 0 25px rgba(217, 70, 239, 0.5);
-  
-  // 10. 价格强调色 - 霓虹灯效果
+
+  // 价格
   --color-price: #FF78E1;
   --color-price-glow: 0 0 20px rgba(255, 120, 225, 0.6);
-  
-  // 11. 骨架屏 - 呼吸的暗物质
+
+  // 骨架屏
   --skeleton-from: #1F1F25;
   --skeleton-to: #2A2A35;
-  
-  // 12. 遮罩层
+
+  // 遮罩层
   --overlay-bg: rgba(0, 0, 0, 0.7);
-  
-  // 13. 标签色 - 激光全息
+
+  // Tabbar
+  --tabbar-bg: rgba(20, 20, 30, 0.75);
+  --tabbar-border: rgba(255, 255, 255, 0.1);
+  --tabbar-icon-inactive: #6B7280;
+  --tabbar-icon-glow: 0 0 8px rgba(217, 70, 239, 0.6);
+
+  // Modal
+  --modal-bg: rgba(30, 25, 35, 0.85);
+  --modal-border: rgba(255, 255, 255, 0.2);
+
+  // 标签色
   --tag-hot-bg: rgba(255, 42, 109, 0.2);
   --tag-hot-text: #FF2A6D;
   --tag-hot-border: rgba(255, 42, 109, 0.5);
   --tag-new-bg: rgba(0, 245, 212, 0.2);
   --tag-new-text: #00F5D4;
   --tag-new-border: rgba(0, 245, 212, 0.5);
-  
-  // 14. Tabbar 专用
-  --tabbar-bg: rgba(20, 20, 30, 0.75);
-  --tabbar-border: rgba(255, 255, 255, 0.1);
-  --tabbar-icon-inactive: #6B7280;
-  --tabbar-icon-active: #D946EF;
-  --tabbar-icon-glow: 0 0 8px rgba(217, 70, 239, 0.6);
-  
-  // 15. 弹窗/对话框
-  --modal-bg: rgba(30, 25, 35, 0.85);
-  --modal-border: rgba(255, 255, 255, 0.2);
-  
-  // 16. 装饰光晕 - 深色模式荧光效果
+
+  // 装饰光晕
   --decoration-circle-1: radial-gradient(circle, rgba(217, 70, 239, 0.2) 0%, transparent 70%);
   --decoration-circle-2: radial-gradient(circle, rgba(0, 245, 212, 0.12) 0%, transparent 70%);
-  
-  // 17. 页面渐变背景
-  --page-gradient: linear-gradient(170deg, var(--color-bg-gradient-start) 0%, var(--color-bg-page) 35%, var(--color-bg-page) 100%);
-  
-  // 18. 在线状态颜色 - 深色模式荧光
+
+  // 在线状态
   --color-online: #00F5D4;
   --color-online-glow: rgba(0, 245, 212, 0.5);
-  
-  // 19. 交互状态 - 深色模式
+
+  // 交互状态
   --color-active-bg: rgba(255, 255, 255, 0.08);
   --color-focus-bg: rgba(217, 70, 239, 0.1);
   --color-focus-border-glow: rgba(217, 70, 239, 0.3);
+
+  // 渐变
+  --gradient-sunset: linear-gradient(135deg, #C026D3 0%, #F43F5E 60%, #FF7849 100%);
 }
 
-// --- 系统深色模式支持 ---
+// 系统深色模式支持
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    // 背景：深邃的虚空紫黑
     --color-bg-page: #0B0A12;
     --color-bg-white: #16161E;
     --color-bg-gray: #0F0E16;
     --color-bg-card: rgba(255, 255, 255, 0.06);
     --color-bg-glass: rgba(255, 255, 255, 0.06);
 
-    // 玻璃卡片
-    --glass-card-bg: rgba(255, 255, 255, 0.06);
-    --glass-border: rgba(255, 255, 255, 0.12);
-    --glass-border-subtle: rgba(255, 255, 255, 0.08);
-    --glass-border-highlight: rgba(255, 255, 255, 0.25);
-
-    // 文字
     --color-text-main: #F2F2F7;
     --color-text-sub: #A1A1AA;
     --color-text-disabled: #52525B;
     --color-text-placeholder: #6B7280;
 
-    // 边框
     --color-border: rgba(255, 255, 255, 0.1);
     --color-border-light: rgba(255, 255, 255, 0.05);
     --color-divider: rgba(255, 255, 255, 0.08);
 
-    // 主色荧光化
-    --color-primary: #E879F9;
-    --color-primary-glass: rgba(232, 121, 249, 0.15);
-
-    // 功能色
-    --color-success: #00F5D4;
-    --color-warning: #FFE600;
-    --color-error: #FF4081;
-
-    // 阴影
     --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.8);
-    --shadow-glow-primary: 0 0 25px rgba(217, 70, 239, 0.5);
-    
-    // 价格
     --color-price: #FF78E1;
-    
-    // 输入框
+
     --input-bg: rgba(0, 0, 0, 0.3);
     --input-border: rgba(255, 255, 255, 0.05);
   }
 }
 
 // =============================================================================
-// SCSS VARIABLES (编译变量)
+// 4. SCSS 变量 - 编译时常量 (通过 CSS 变量获取运行时值)
 // =============================================================================
 
-// --- 1. Color Palette (活力橙色系) ---
+// --- 主题色 ---
+$color-primary: var(--color-primary, #FF4081);
+$color-primary-light: var(--color-primary-light, #FCE4EC);
+$color-primary-dark: var(--color-primary-dark, #C51162);
+$color-primary-glass: var(--color-primary-glass, rgba(255, 64, 129, 0.15));
+$gradient-primary: var(--gradient-primary, linear-gradient(135deg, #FF4081 0%, #F50057 100%));
+$gradient-sunset: var(--gradient-sunset, linear-gradient(135deg, #C026D3 0%, #F43F5E 60%, #FF7849 100%));
+$shadow-glow-primary: var(--shadow-glow-primary, 0 0 25px rgba(255, 64, 129, 0.5));
 
-// 品牌色：活力橙 - 热情、活力、购买欲
-$color-primary:       var(--color-primary, #FF6A00);
-$color-primary-light: var(--color-primary-light, #FFF3E0);
-$color-primary-dark:  var(--color-primary-dark, #E65100);
-$color-primary-glass: var(--color-primary-glass, rgba(255, 106, 0, 0.12));
+// --- 辅助色 ---
+$color-accent: var(--color-accent, #FF8F00);
+$color-accent-dark: var(--color-accent-dark, #FF6D00);
 
-// 辅助色
-$color-accent:        var(--color-accent, #FF8F00);
-$color-accent-dark:   var(--color-accent-dark, #FF6D00);
-$color-accent-light:  var(--color-accent-light, rgba(255, 143, 0, 0.12));
+// --- 功能色 ---
+$color-success: var(--color-success, #00C853);
+$color-success-light: var(--color-success-light, #E8F5E9);
+$color-success-dark: var(--color-success-dark, #00A844);
+$color-warning: var(--color-warning, #FFAB00);
+$color-warning-light: var(--color-warning-light, #FFF8E1);
+$color-warning-dark: var(--color-warning-dark, #E69500);
+$color-error: var(--color-error, #FF3D00);
+$color-error-light: var(--color-error-light, #FFEBEE);
+$color-error-dark: var(--color-error-dark, #D32F2F);
+$color-info: var(--color-info, #00B8D4);
+$color-info-light: var(--color-info-light, #E0F7FA);
+$color-info-dark: var(--color-info-dark, #0097A7);
 
-// 渐变定义
-$gradient-primary:    var(--gradient-primary, linear-gradient(135deg, #FF6A00 0%, #FF8F00 100%));
-$gradient-sunset:     var(--gradient-sunset, linear-gradient(135deg, #FF9800 0%, #FF5722 50%, #FF6A00 100%));
-$gradient-vibrant:    var(--gradient-vibrant, linear-gradient(135deg, #FF6A00 0%, #FF3D00 100%));
-$gradient-gold:       var(--gradient-gold, linear-gradient(135deg, #FFB300 0%, #FF6A00 100%));
-$gradient-glass:      linear-gradient(145deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.3) 100%);
-$gradient-glass-light: linear-gradient(145deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.3) 100%);
+// --- 第三方登录品牌色 ---
+$color-wechat: #07C160;
+$color-wechat-dark: #00a854;
+$color-alipay: #1677FF;
+$color-alipay-dark: #0958d9;
 
-// 功能色
-$color-success:       var(--color-success, #34C759);
-$color-success-light: var(--color-success-light, #EDFCF2);
-$color-success-dark:  var(--color-success-dark, #248A3D);
-$color-success-glass: var(--color-success-glass, rgba(52, 199, 89, 0.12));
-$color-warning:       var(--color-warning, #FFD60A);
-$color-warning-light: var(--color-warning-light, #FFFBE6);
-$color-warning-dark:  var(--color-warning-dark, #D4A300);
-$color-warning-glass: var(--color-warning-glass, rgba(255, 214, 10, 0.12));
-$color-error:         var(--color-error, #FF3B30);
-$color-error-light:   var(--color-error-light, #FFF0F0);
-$color-error-dark:    var(--color-error-dark, #D70015);
-$color-error-glass:   var(--color-error-glass, rgba(255, 59, 48, 0.12));
-$color-info:          var(--color-info, #5856D6);
-$color-info-light:    var(--color-info-light, #EDEDFF);
-$color-info-dark:     var(--color-info-dark, #3634A3);
-$color-info-glass:    var(--color-info-glass, rgba(88, 86, 214, 0.12));
-
-// 背景色
-$color-bg-page:       var(--color-bg-page, #FFF5F2);
-$color-bg-card:       var(--color-bg-card, rgba(255, 255, 255, 0.65));
-$color-bg-white:      var(--color-bg-white, #FFFFFF);
-$color-bg-gray:       var(--color-bg-gray, #FAF8F7);
-$color-bg-glass:      var(--color-bg-glass, rgba(255, 255, 255, 0.65));
+// --- 背景色 ---
+$color-bg-page: var(--color-bg-page, #FFF5F2);
+$color-bg-card: var(--color-bg-card, rgba(255, 255, 255, 0.65));
+$color-bg-white: var(--color-bg-white, #FFFFFF);
+$color-bg-gray: var(--color-bg-gray, #FAF8F7);
+$color-bg-glass: var(--color-bg-glass, rgba(255, 255, 255, 0.65));
 $color-bg-gradient-start: var(--color-bg-gradient-start, #F5E6DC);
 
-// 第三方登录品牌色
-$color-wechat:        #07C160;
-$color-wechat-dark:   #00a854;
-$color-alipay:        #1677FF;
-$color-alipay-dark:   #0958d9;
-
-// 文本色 (暖灰层级)
-$color-text-main:     var(--color-text-main, #2C2624);
-$color-text-sub:      var(--color-text-sub, #867A76);
+// --- 文本色 ---
+$color-text-main: var(--color-text-main, #2C2624);
+$color-text-sub: var(--color-text-sub, #867A76);
 $color-text-disabled: var(--color-text-disabled, #C4C0BE);
 $color-text-placeholder: var(--color-text-placeholder, #A9A5A2);
-$color-text-white:    var(--color-text-white, #FFFFFF);
-$color-white:         var(--color-white, #FFFFFF);
-$color-text-link:     var(--color-primary, #FF6A00);
+$color-text-white: var(--color-text-white, #FFFFFF);
+$color-white: var(--color-white, #FFFFFF);
 
-// 边框色
-$color-border:        var(--color-border, rgba(44, 38, 36, 0.08));
-$color-border-light:  var(--color-border-light, rgba(44, 38, 36, 0.04));
-$color-divider:       var(--color-divider, rgba(44, 38, 36, 0.06));
+// --- 边框 ---
+$color-border: var(--color-border, rgba(44, 38, 36, 0.08));
+$color-border-light: var(--color-border-light, rgba(44, 38, 36, 0.04));
+$color-divider: var(--color-divider, rgba(44, 38, 36, 0.06));
 
-// 价格色
-$color-price:         var(--color-price, #FF3B30);
-$color-price-glow:    var(--color-price-glow, 0 0 20px rgba(255, 59, 48, 0.4));
+// --- 价格 ---
+$color-price: var(--color-price, #FF3B30);
+$color-price-glow: var(--color-price-glow, 0 0 20px rgba(255, 59, 48, 0.4));
 
-// 遮罩层
-$overlay-bg:          var(--overlay-bg, rgba(0, 0, 0, 0.5));
+// --- 遮罩层 ---
+$overlay-bg: var(--overlay-bg, rgba(0, 0, 0, 0.5));
 
-// 骨架屏
-$skeleton-from:       var(--skeleton-from, #F5F5F5);
-$skeleton-to:         var(--skeleton-to, #FAFAFA);
+// --- 骨架屏 ---
+$skeleton-from: var(--skeleton-from, #F5F5F5);
+$skeleton-to: var(--skeleton-to, #FAFAFA);
 
-// 装饰光晕
+// --- 装饰光晕 ---
 $decoration-circle-1: var(--decoration-circle-1, radial-gradient(circle, rgba(255, 106, 0, 0.15) 0%, transparent 70%));
 $decoration-circle-2: var(--decoration-circle-2, radial-gradient(circle, rgba(255, 143, 0, 0.1) 0%, transparent 70%));
 
-// 页面渐变背景
-$page-gradient: var(--page-gradient, linear-gradient(170deg, $color-bg-gradient-start 0%, $color-bg-page 35%, $color-bg-page 100%));
+// --- 在线状态 ---
+$color-online: var(--color-online, #34C759);
+$color-online-glow: var(--color-online-glow, rgba(52, 199, 89, 0.5));
 
 // =============================================================================
-// CHAT PAGE TOKENS - 聊天页面专用变量
+// 5. 尺寸系统 - 固定值 (不随主题变化)
 // =============================================================================
 
-// 在线状态颜色
-$color-online: #34C759;
+// --- 字号 ---
+$font-size-xs: 20rpx;
+$font-size-sm: 24rpx;
+$font-size-md: 28rpx;
+$font-size-lg: 32rpx;
+$font-size-xl: 40rpx;
+$font-size-xxl: 48rpx;
+$font-size-xxxl: 64rpx;
+$font-size-price-lg: 44rpx;
+$font-size-price-sm: 26rpx;
+
+// --- 字重 ---
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 600;
+
+// --- 行高 ---
+$line-height-tight: 1.2;
+$line-height-normal: 1.5;
+$line-height-loose: 1.8;
+
+// --- 字间距 ---
+$letter-spacing-tight: -0.02em;
+$letter-spacing-normal: 0;
+$letter-spacing-wide: 0.05em;
+
+// --- 字体 ---
+$font-family-system: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+$font-family-price: 'DIN-Bold', 'Helvetica Neue', -apple-system, sans-serif;
+
+// --- 间距 (4px 栅格) ---
+$space-2: 4rpx;
+$space-4: 8rpx;
+$space-6: 12rpx;
+$space-8: 16rpx;
+$space-12: 24rpx;
+$space-16: 32rpx;
+$space-20: 40rpx;
+$space-24: 48rpx;
+$space-32: 64rpx;
+
+// 简写别名
+$space-xs: $space-4;
+$space-sm: $space-8;
+$space-md: $space-12;
+$space-lg: $space-16;
+$space-xl: $space-24;
+
+// --- 圆角 ---
+$radius-xs: 4rpx;
+$radius-sm: 8rpx;
+$radius-md: 16rpx;
+$radius-lg: 24rpx;
+$radius-xl: 32rpx;
+$radius-full: 999px;
+$radius-card: 24rpx;
+$radius-btn: 999px;
+$radius-img: 16rpx;
+
+// =============================================================================
+// 6. 玻璃材质系统
+// =============================================================================
+
+// --- 材质层级 ---
+$glass-base: rgba(255, 255, 255, 0.65);
+$glass-float: rgba(255, 255, 255, 0.80);
+$glass-crystal: var(--glass-crystal, rgba(255, 255, 255, 0.25));
+$glass-crystal-mid: var(--glass-crystal-mid, rgba(255, 255, 255, 0.45));
+$glass-crystal-high: var(--glass-crystal-high, rgba(255, 255, 255, 0.65));
+$glass-solid: var(--glass-solid, rgba(255, 255, 255, 0.85));
+
+// --- 边框光效 ---
+$glass-border-light: var(--glass-border-light, rgba(255, 255, 255, 0.6));
+$glass-border-mid: var(--glass-border-mid, rgba(255, 255, 255, 0.5));
+$glass-border-subtle: var(--glass-border-subtle, rgba(255, 255, 255, 0.3));
+$glass-border-highlight: var(--glass-border-highlight, rgba(255, 255, 255, 0.8));
+
+// --- 模糊度 ---
+$blur-xs: 8px;
+$blur-sm: 12px;
+$blur-default: 25px;
+$blur-md: 25px;
+$blur-high: 40px;
+$blur-lg: 32px;
+$blur-xl: 48px;
+$blur-xxl: 64px;
+$blur-backdrop: saturate(180%) blur(25px);
+
+// =============================================================================
+// 7. 阴影系统
+// =============================================================================
+
+$shadow-xs: 0 2rpx 12rpx rgba(0, 0, 0, 0.015);
+$shadow-sm: 0 4rpx 12rpx rgba(0, 0, 0, 0.03);
+$shadow-md: 0 8rpx 24rpx rgba(0, 0, 0, 0.03);
+$shadow-lg: 0 16rpx 48rpx rgba(0, 0, 0, 0.04);
+$shadow-xl: 0 24rpx 64rpx rgba(0, 0, 0, 0.05);
+$shadow-card: var(--shadow-card, 0 8rpx 24rpx rgba(0, 0, 0, 0.04));
+$shadow-glow-primary: var(--shadow-glow-primary, 0 0 25px rgba(255, 64, 129, 0.5));
+
+// 玻璃态阴影
+$glass-shadow-xs: 0 2rpx 8rpx rgba(0, 0, 0, 0.01), inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+$glass-shadow-sm: 0 4rpx 20rpx rgba(0, 0, 0, 0.02), inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+$glass-shadow-md: 0 8rpx 32rpx rgba(0, 0, 0, 0.03), inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
+$glass-shadow-lg: 0 16rpx 48rpx rgba(0, 0, 0, 0.04), inset 0 1px 0 0 rgba(255, 255, 255, 0.7);
+$glass-shadow-xl: 0 24rpx 64rpx rgba(0, 0, 0, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+
+// 功能色阴影
+$shadow-success: 0 8rpx 32rpx rgba(52, 199, 89, 0.12);
+$shadow-warning: 0 8rpx 32rpx rgba(255, 214, 10, 0.12);
+$shadow-error: 0 8rpx 32rpx rgba(255, 59, 48, 0.12);
+
+// 光晕效果
+$glow-primary: 0 0 40rpx rgba(255, 64, 129, 0.15);
+$glow-white: 0 0 60rpx rgba(255, 255, 255, 0.3);
+
+// =============================================================================
+// 8. 动画系统
+// =============================================================================
+
+// 时长
+$duration-fast: 0.2s;
+$duration-normal: 0.3s;
+$duration-slow: 0.5s;
+
+// 缓动函数
+$ease-in: cubic-bezier(0.4, 0, 1, 1);
+$ease-out: cubic-bezier(0, 0, 0.2, 1);
+$ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+$ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+$ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+$ease-fluid: cubic-bezier(0.25, 0.1, 0.25, 1);
+
+// 毛玻璃过渡
+$glass-transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+// =============================================================================
+// 9. Z-Index 与断点
+// =============================================================================
+
+$z-dropdown: 100;
+$z-sticky: 200;
+$z-fixed: 300;
+$z-modal-backdrop: 400;
+$z-modal: 500;
+$z-popover: 600;
+$z-toast: 700;
+
+$breakpoint-xs: 320px;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+
+// =============================================================================
+// 10. 组件专用变量
+// =============================================================================
+
+// 按钮
+$btn-height-sm: 56rpx;
+$btn-height-md: 80rpx;
+$btn-height-lg: 96rpx;
+
+// 输入框
+$input-height: 88rpx;
+$input-padding: $space-md;
+$input-bg: var(--input-bg, rgba(255, 255, 255, 0.65));
+$input-border: var(--input-border, rgba(44, 38, 36, 0.08));
+$input-focus-glow: var(--input-focus-glow, 0 0 15px rgba(255, 106, 0, 0.3));
+
+// 导航栏
+$navbar-height: 88rpx;
+
+// 标签栏
+$tabbar-height: 100rpx;
+$tabbar-bg: var(--tabbar-bg, rgba(255, 255, 255, 0.95));
+$tabbar-border: var(--tabbar-border, rgba(0, 0, 0, 0.05));
+
+// 卡片
+$card-padding: $space-md;
+$card-radius: $radius-lg;
+
+// 图标尺寸
+$icon-size-xs: 32rpx;
+$icon-size-sm: 40rpx;
+$icon-size-md: 48rpx;
+$icon-size-lg: 56rpx;
+$icon-size-xl: 64rpx;
+$icon-size-xxl: 80rpx;
+
+// =============================================================================
+// 11. 电商设计令牌
+// =============================================================================
+
+$color-brand-primary: var(--color-primary, #FF4081);
+$color-brand-price: var(--color-price, #FF3B30);
+$color-text-primary: var(--color-text-main, #2C2624);
+$color-text-secondary: var(--color-text-sub, #867A76);
+$color-text-tertiary: var(--color-text-disabled, #C4C0BE);
+
+$radius-card-l: 24rpx;
+$radius-card-s: 12rpx;
+$radius-button: 44rpx;
+
+$shadow-card-hover: 0 12rpx 32rpx rgba(0, 0, 0, 0.1);
+$shadow-button: 0 6rpx 20rpx rgba(255, 64, 129, 0.3);
+
+$height-button-modern: 88rpx;
+$height-tabbar: 100rpx;
+$height-tabbar-icon: 48rpx;
+
+$price-font-size: 36rpx;
+$price-font-size-sm: 28rpx;
+$price-font-weight: 600;
+
+// =============================================================================
+// 12. 聊天页面专用变量
+// =============================================================================
+
 $color-online-dark: #00F5D4;
-$color-online-glow: rgba(52, 199, 89, 0.5);
 $color-online-glow-dark: rgba(0, 245, 212, 0.5);
-
-// 消息气泡颜色
 $color-bubble-self-text: $color-text-white;
 $color-bubble-other-text: $color-text-main;
 $color-bubble-shadow-dark: rgba(0, 0, 0, 0.2);
-
-// 装饰光晕颜色（深色模式）
 $color-glow-primary-dark: rgba(217, 70, 239, 0.2);
 $color-glow-accent-dark: rgba(0, 245, 212, 0.12);
-
-// 交互状态颜色
 $color-active-bg-dark: rgba(255, 255, 255, 0.08);
 $color-active-primary-dark: rgba(217, 70, 239, 0.15);
 $color-focus-bg-dark: rgba(217, 70, 239, 0.1);
@@ -499,372 +674,17 @@ $color-input-border-dark: rgba(255, 255, 255, 0.05);
 $color-panel-bg-dark: rgba(0, 0, 0, 0.2);
 
 // =============================================================================
-// 2025 ADVANCED GLASS SYSTEM - 高级材质系统
-// 核心逻辑：高模糊 + 饱和度提升 + 混合模式
+// 13. 深色模式专用变量
 // =============================================================================
 
-// --- 材质层级 (Materials) ---
-$glass-base:          rgba(255, 255, 255, 0.65);
-$glass-float:         var(--glass-float, rgba(255, 255, 255, 0.80));
-$glass-sidebar:       var(--glass-sidebar, rgba(255, 255, 255, 0.75));
-$glass-crystal:       var(--glass-crystal, rgba(255, 255, 255, 0.25));
-$glass-crystal-mid:   var(--glass-crystal-mid, rgba(255, 255, 255, 0.45));
-$glass-crystal-high:  var(--glass-crystal-high, rgba(255, 255, 255, 0.65));
-$glass-solid:         var(--glass-solid, rgba(255, 255, 255, 0.85));
-
-// --- 彩色毛玻璃 (Colored Glass) ---
-$glass-primary:       var(--color-primary-glass, rgba(255, 106, 0, 0.12));
-$glass-accent:        rgba(255, 143, 0, 0.12);
-$glass-success:       var(--color-success-glass, rgba(52, 199, 89, 0.12));
-$glass-warning:       var(--color-warning-glass, rgba(255, 214, 10, 0.12));
-$glass-error:         var(--color-error-glass, rgba(255, 59, 48, 0.12));
-$glass-info:          var(--color-info-glass, rgba(88, 86, 214, 0.12));
-
-// --- 边框光效 (Lighting Borders) ---
-$border-light-source: 1px solid var(--glass-border);
-$border-gradient:     1px solid transparent;
-$glass-border-light:    var(--glass-border, rgba(255, 255, 255, 0.6));
-$glass-border-mid:      var(--glass-border, rgba(255, 255, 255, 0.5));
-$glass-border-subtle:   var(--glass-border-subtle, rgba(255, 255, 255, 0.3));
-$glass-border-highlight: var(--glass-border-highlight, rgba(255, 255, 255, 0.8));
-$glass-border-shadow:   rgba(0, 0, 0, 0.04);
-$glass-border-glow:     rgba(255, 106, 0, 0.3);
-
-// --- 模糊度 (Blurs) ---
-$blur-xs:   8px;
-$blur-sm:   12px;
-$blur-default: 25px;
-$blur-md:   25px;
-$blur-high: 40px;
-$blur-lg:   32px;
-$blur-xl:   48px;
-$blur-xxl:  64px;
-$blur-backdrop: saturate(180%) blur(25px);
-
-// --- 光晕效果 (Glow Effects) ---
-$glow-primary:   0 0 40rpx rgba(255, 106, 0, 0.15);
-$glow-accent:    0 0 40rpx rgba(255, 143, 0, 0.15);
-$glow-success:   0 0 40rpx rgba(52, 199, 89, 0.15);
-$glow-warning:   0 0 40rpx rgba(255, 214, 10, 0.15);
-$glow-error:     0 0 40rpx rgba(255, 59, 48, 0.15);
-$glow-white:     0 0 60rpx rgba(255, 255, 255, 0.3);
-
-// =============================================================================
-// 2025 SHADOWS & GLOWS - 有色弥散阴影
-// 拒绝纯黑阴影，使用暖色阴影营造通透感
-// =============================================================================
-
-// 基础阴影 (更柔和、更弥散)
-$shadow-xs:  0 2rpx 12rpx rgba(0, 0, 0, 0.015);
-$shadow-sm:  0 4rpx 12rpx rgba(0, 0, 0, 0.03);
-$shadow-md:  0 8rpx 24rpx rgba(0, 0, 0, 0.03);
-$shadow-lg:  0 16rpx 48rpx rgba(0, 0, 0, 0.04);
-$shadow-xl:  0 24rpx 64rpx rgba(0, 0, 0, 0.05);
-
-// 卡片阴影
-$shadow-card:  var(--shadow-card, 0 8rpx 24rpx rgba(0, 0, 0, 0.04), 0 2rpx 6rpx rgba(0, 0, 0, 0.02));
-
-// 玻璃态阴影 (带白色内阴影增强质感)
-$glass-shadow-xs:
-  0 2rpx 8rpx rgba(0, 0, 0, 0.01),
-  inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
-$glass-shadow-sm:
-  0 4rpx 20rpx rgba(0, 0, 0, 0.02),
-  inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
-$glass-shadow-md:
-  0 8rpx 32rpx rgba(0, 0, 0, 0.03),
-  inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
-$glass-shadow-lg:
-  0 16rpx 48rpx rgba(0, 0, 0, 0.04),
-  inset 0 1px 0 0 rgba(255, 255, 255, 0.7);
-$glass-shadow-xl:
-  0 24rpx 64rpx rgba(0, 0, 0, 0.05),
-  inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
-
-// 关键：品牌色辉光 (Brand Glow) - 用于主按钮
-$shadow-glow-primary: var(--shadow-glow-primary, 0 8rpx 20rpx -4rpx rgba(255, 106, 0, 0.5));
-$shadow-glow-accent:  0 8rpx 20rpx -4rpx rgba(255, 143, 0, 0.4);
-$shadow-glow-red:     0 8rpx 20rpx -4rpx rgba(255, 59, 48, 0.4);
-
-// 玻璃内发光 (Inner Glow) - 增加厚度感
-$shadow-glass-inset: inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
-
-// 功能色阴影
-$shadow-success: 0 8rpx 32rpx rgba(52, 199, 89, 0.12);
-$shadow-warning: 0 8rpx 32rpx rgba(255, 214, 10, 0.12);
-$shadow-error:   0 8rpx 32rpx rgba(255, 59, 48, 0.12);
-
-// 内阴影 (用于输入框聚焦等)
-$shadow-inset: inset 0 2rpx 12rpx rgba(0, 0, 0, 0.03);
-$shadow-inset-glow: inset 0 0 20rpx rgba(255, 255, 255, 0.5);
-
-// =============================================================================
-// 2025 TYPOGRAPHY - 排版系统
-// 配合暖色调，字体建议使用 Rounded 或标准无衬线体
-// =============================================================================
-
-// 字号系统
-$font-size-xs:   20rpx;
-$font-size-sm:   24rpx;
-$font-size-md:   28rpx;
-$font-size-lg:   32rpx;
-$font-size-xl:   40rpx;
-$font-size-xxl:  48rpx;
-$font-size-xxxl: 64rpx;
-
-// 价格专用字号
-$font-size-price-lg:  44rpx;
-$font-size-price-sm:  26rpx;
-
-// 字重
-$font-weight-regular: 400;
-$font-weight-medium:  500;
-$font-weight-bold:    600;
-
-// 行高
-$line-height-tight:   1.2;
-$line-height-normal:  1.5;
-$line-height-loose:   1.8;
-
-// 字间距
-$letter-spacing-tight: -0.02em;
-$letter-spacing-normal: 0;
-$letter-spacing-wide:  0.05em;
-
-// 字体家族
-$font-family-system: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
-$font-family-price:  'DIN-Bold', 'Helvetica Neue', -apple-system, sans-serif;
-
-// =============================================================================
-// 2025 SPACING & RADIUS - 圆角与间距
-// =============================================================================
-
-// 间距 (4px栅格)
-$space-2:   4rpx;
-$space-4:   8rpx;
-$space-6:   12rpx;
-$space-8:   16rpx;
-$space-12:  24rpx;
-$space-16:  32rpx;
-$space-20:  40rpx;
-$space-24:  48rpx;
-$space-32:  64rpx;
-
-// 简写别名
-$space-xs:  $space-4;
-$space-sm:  $space-8;
-$space-md:  $space-12;
-$space-lg:  $space-16;
-$space-xl:  $space-24;
-
-// 圆角系统 (现代App流行的大圆角)
-$radius-xs:    4rpx;
-$radius-sm:    8rpx;
-$radius-md:    16rpx;
-$radius-lg:    24rpx;
-$radius-xl:    32rpx;
-$radius-full:  999px;
-
-// 组件专用圆角
-$radius-card:  24rpx;
-$radius-btn:   999px;
-$radius-img:   16rpx;
-
-// =============================================================================
-// 2025 ANIMATION - 动画系统
-// =============================================================================
-
-// 时长
-$duration-fast:   0.2s;
-$duration-normal: 0.3s;
-$duration-slow:   0.5s;
-
-// 缓动函数 (更自然的弹性效果)
-$ease-in:      cubic-bezier(0.4, 0, 1, 1);
-$ease-out:     cubic-bezier(0, 0, 0.2, 1);
-$ease-in-out:  cubic-bezier(0.4, 0, 0.2, 1);
-$ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
-$ease-bounce:  cubic-bezier(0.68, -0.55, 0.265, 1.55);
-$ease-fluid:   cubic-bezier(0.25, 0.1, 0.25, 1.2);
-
-// 毛玻璃过渡
-$glass-transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-$glass-transition-slow: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-
-// =============================================================================
-// 2025 Z-INDEX & BREAKPOINTS
-// =============================================================================
-
-// Z-Index (层级)
-$z-dropdown:   100;
-$z-sticky:     200;
-$z-fixed:      300;
-$z-modal-backdrop: 400;
-$z-modal:      500;
-$z-popover:    600;
-$z-toast:      700;
-
-// Breakpoints (断点)
-$breakpoint-xs: 320px;
-$breakpoint-sm: 576px;
-$breakpoint-md: 768px;
-$breakpoint-lg: 992px;
-$breakpoint-xl: 1200px;
-
-// =============================================================================
-// 2025 COMPONENT SPECIFICS - 组件专用变量
-// =============================================================================
-
-// 按钮
-$btn-height-sm:  56rpx;
-$btn-height-md:  80rpx;
-$btn-height-lg:  96rpx;
-
-// 输入框
-$input-height:   88rpx;
-$input-padding:  $space-md;
-$input-bg:       var(--input-bg, rgba(255, 255, 255, 0.65));
-$input-border:   var(--input-border, rgba(44, 38, 36, 0.08));
-$input-focus-glow: var(--input-focus-glow, 0 0 15px rgba(255, 106, 0, 0.3));
-
-// 导航栏
-$navbar-height:  88rpx;
-
-// 标签栏
-$tabbar-height:  100rpx;
-$tabbar-bg:      var(--tabbar-bg, rgba(255, 255, 255, 0.95));
-$tabbar-border:  var(--tabbar-border, rgba(0, 0, 0, 0.05));
-
-// 卡片
-$card-padding:   $space-md;
-$card-radius:    $radius-lg;
-
-// 图标尺寸
-$icon-size-xs:   32rpx;
-$icon-size-sm:   40rpx;
-$icon-size-md:   48rpx;
-$icon-size-lg:   56rpx;
-$icon-size-xl:   64rpx;
-$icon-size-xxl:  80rpx;
-
-// =============================================================================
-// 2025 GLASS COMPONENT VARIABLES - 玻璃态组件变量
-// =============================================================================
-
-// 玻璃卡片
-$glass-card-bg: var(--glass-card-bg, $glass-solid);
-$glass-card-border: 1rpx solid $glass-border-light;
-$glass-card-blur: $blur-lg;
-$glass-card-shadow: $glass-shadow-md;
-
-// 玻璃按钮
-$glass-btn-bg: $glass-crystal-high;
-$glass-btn-border: 1rpx solid $glass-border-light;
-$glass-btn-blur: $blur-md;
-$glass-btn-glow: $glow-primary;
-
-// 玻璃输入框
-$glass-input-bg: var(--input-bg, $glass-crystal-mid);
-$glass-input-border: 1rpx solid $glass-border-subtle;
-$glass-input-blur: $blur-sm;
-$glass-input-focus-glow: var(--input-focus-glow, $shadow-glow-primary);
-
-// =============================================================================
-// 2025 E-COMMERCE TOKENS - 电商风格设计令牌
-// =============================================================================
-
-// 品牌色系 (Brand Colors)
-$color-brand-primary:      var(--color-primary, #FF6A00);
-$color-brand-primary-light: var(--color-primary-light, rgba(255, 106, 0, 0.1));
-$color-brand-price:        var(--color-price, #FF3B30);
-$color-brand-price-light:  var(--color-error-light, rgba(255, 59, 48, 0.1));
-
-// 文本色 (电商风格)
-$color-text-primary:       var(--color-text-main, #2C2624);
-$color-text-secondary:     var(--color-text-sub, #867A76);
-$color-text-tertiary:      var(--color-text-disabled, #C4C0BE);
-
-// 圆角系统
-$radius-card-l:            24rpx;
-$radius-card-s:            12rpx;
-$radius-button:            44rpx;
-
-// 阴影系统 (弥散阴影)
-$shadow-card-hover:        0 12rpx 32rpx rgba(0, 0, 0, 0.1);
-$shadow-button:            0 6rpx 20rpx rgba(255, 106, 0, 0.3);
-
-// 组件高度
-$height-button-modern:     88rpx;
-$height-tabbar:            100rpx;
-$height-tabbar-icon:       48rpx;
-
-// 价格样式
-$price-font-size:          36rpx;
-$price-font-size-sm:       28rpx;
-$price-font-weight:        600;
-
-// =============================================================================
-// 2025 COMPONENT MIXINS - 组件配方
-// =============================================================================
-
-// [Button] 主操作按钮 - 液态霓虹
-@mixin btn-primary {
-  background: var(--gradient-sunset, linear-gradient(135deg, #C026D3 0%, #F43F5E 60%, #FF7849 100%));
-  color: white;
-  border: none;
-  font-weight: $font-weight-bold;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), var(--shadow-glow-primary, 0 0 20px rgba(217, 70, 239, 0.4));
-}
-
-// [Card] 玻璃卡片 - 幽灵玻璃
-@mixin card-glass {
-  background: var(--glass-card-bg, rgba(255, 255, 255, 0.06));
-  backdrop-filter: $blur-backdrop;
-  -webkit-backdrop-filter: $blur-backdrop;
-  border-top: 1px solid var(--glass-border-highlight, rgba(255, 255, 255, 0.25));
-  border-bottom: 1px solid transparent;
-  border-left: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
-  border-right: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
-  border-radius: $radius-card;
-  box-shadow: var(--shadow-card, 0 20px 40px rgba(0, 0, 0, 0.4));
-}
-
-// [Tag] 营销标签 - 激光全息
-@mixin tag-hot {
-  background: var(--tag-hot-bg, rgba(255, 106, 0, 0.1));
-  color: var(--tag-hot-text, #FF6A00);
-  border: 1px solid var(--tag-hot-border, rgba(255, 106, 0, 0.2));
-}
-
-@mixin tag-new {
-  background: var(--tag-new-bg, rgba(52, 199, 89, 0.1));
-  color: var(--tag-new-text, #34C759);
-  border: 1px solid var(--tag-new-border, rgba(52, 199, 89, 0.2));
-}
-
-// 玻璃态高光
-$glass-highlight: linear-gradient(
-  135deg,
-  rgba(255, 255, 255, 0.8) 0%,
-  rgba(255, 255, 255, 0.1) 50%,
-  rgba(255, 255, 255, 0.05) 100%
-);
-
-// =============================================================================
-// 2025 DARK MODE SPECIFIC - 深色模式专用变量
-// =============================================================================
-
-// Tabbar 深色模式
 $tabbar-dark-bg: rgba(20, 20, 30, 0.75);
 $tabbar-dark-border: rgba(255, 255, 255, 0.1);
 $tabbar-icon-inactive: #6B7280;
 $tabbar-icon-active: #D946EF;
 $tabbar-icon-glow: 0 0 8px rgba(217, 70, 239, 0.6);
 
-// Modal 深色模式
 $modal-dark-bg: rgba(30, 25, 35, 0.85);
 $modal-dark-border: rgba(255, 255, 255, 0.2);
 
-// 骨架屏深色模式
 $skeleton-dark-from: #1F1F25;
 $skeleton-dark-to: #2A2A35;

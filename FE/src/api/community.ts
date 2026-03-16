@@ -87,11 +87,9 @@ export interface PostListParams {
 }
 
 export interface PostListResult {
-  records: PostListItem[];
+  list: PostListItem[];
   total: number;
-  size: number;
-  current: number;
-  pages: number;
+  hasMore: boolean;
 }
 
 export interface PostDetail extends PostListItem {
