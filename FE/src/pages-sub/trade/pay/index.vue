@@ -317,13 +317,13 @@ onUnmounted(() => {
       .currency {
         font-size: $font-size-xl;
         font-weight: $font-weight-bold;
-        color: #FF3B30;
+        color: $color-error;
       }
-      
+
       .number {
         font-size: 64rpx;
         font-weight: $font-weight-bold;
-        color: #FF3B30;
+        color: $color-error;
         line-height: 1;
       }
     }
@@ -340,7 +340,7 @@ onUnmounted(() => {
     
     .countdown-text {
       font-size: $font-size-sm;
-      color: #FF9500;
+      color: $color-warning;
     }
   }
 }
@@ -387,7 +387,7 @@ onUnmounted(() => {
       .goods-price {
         font-size: $font-size-md;
         font-weight: $font-weight-bold;
-        color: #FF3B30;
+        color: $color-error;
       }
     }
   }
@@ -408,7 +408,7 @@ onUnmounted(() => {
         @include text-main;
         
         &.price {
-          color: #FF3B30;
+          color: $color-error;
           font-weight: $font-weight-bold;
         }
       }
@@ -571,13 +571,13 @@ onUnmounted(() => {
         .currency {
           font-size: $font-size-md;
           font-weight: $font-weight-bold;
-          color: #FF3B30;
+          color: $color-error;
         }
-        
+
         .amount {
           font-size: 40rpx;
           font-weight: $font-weight-bold;
-          color: #FF3B30;
+          color: $color-error;
         }
       }
     }

@@ -445,7 +445,7 @@ const scrollToLetter = (letter: string) => {
   .letter-text {
     font-size: $font-size-lg;
     font-weight: $font-weight-bold;
-    color: #FFFFFF;
+    color: $color-white;
   }
 }
 

@@ -142,6 +142,7 @@ import { ref, computed, onMounted, nextTick } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { useAppStore, useSearchFilterStore } from '@/stores';
 import { useNavigation } from '@/composables/useNavigation';
+import { categoryApi, type Brand } from '@/api';
 import UiFilterSidebar from '@/ui-kit/organisms/UiFilterSidebar.vue';
 import UiSubCategoryTabs, { type SubCategoryItem } from '@/ui-kit/molecules/UiSubCategoryTabs.vue';
 import UiBrandSelector, { type BrandItem } from '@/ui-kit/organisms/UiBrandSelector.vue';
@@ -226,108 +227,171 @@ onLoad((options: any) => {
 });
 
 const fetchDeviceTypeData = async () => {
-  const mockSubCategories: SubCategoryItem[] = [
-    { id: 'all', name: '全部' },
-    { id: 'sub1', name: '双开门' },
-    { id: 'sub2', name: '单开门' },
-    { id: 'sub3', name: '对开门' },
-    { id: 'sub4', name: '三开门' },
-    { id: 'sub5', name: '迷你冰箱' },
-    { id: 'sub6', name: '车载冰箱' }
-  ];
+  try {
+    // 获取品牌列表
+    const brandList = await categoryApi.getBrands(deviceTypeId.value);
+    brands.value = [
+      { id: 'all', name: '全部' },
+      ...brandList.map(b => ({
+        id: b.id,
+        name: b.name,
+        logo: b.logo
+      }))
+    ];
 
-  const mockBrands: BrandItem[] = [
-    { id: 'all', name: '全部' },
-    { id: 'b1', name: '海尔', logo: 'https://picsum.photos/100/100?random=brand1' },
-    { id: 'b2', name: '美的', logo: 'https://picsum.photos/100/100?random=brand2' },
-    { id: 'b3', name: '西门子', logo: 'https://picsum.photos/100/100?random=brand3' },
-    { id: 'b4', name: '松下', logo: 'https://picsum.photos/100/100?random=brand4' },
-    { id: 'b5', name: '容声', logo: 'https://picsum.photos/100/100?random=brand5' },
-    { id: 'b6', name: '格力', logo: 'https://picsum.photos/100/100?random=brand6' },
-    { id: 'b7', name: '三星', logo: 'https://picsum.photos/100/100?random=brand7' },
-    { id: 'b8', name: 'LG', logo: 'https://picsum.photos/100/100?random=brand8' }
-  ];
+    // 获取子分类 - 从分类详情中获取
+    const detail = await categoryApi.getDeviceTypeDetail(deviceTypeId.value);
+    if (detail.subCategories && detail.subCategories.length > 0) {
+      subCategories.value = [
+        { id: 'all', name: '全部' },
+        ...detail.subCategories.map(s => ({
+          id: s.id,
+          name: s.name
+        }))
+      ];
+    } else {
+      subCategories.value = [{ id: 'all', name: '全部' }];
+    }
+  } catch (error) {
+    console.error('获取设备类型数据失败:', error);
+    // 使用模拟数据作为降级
+    const mockSubCategories: SubCategoryItem[] = [
+      { id: 'all', name: '全部' },
+      { id: 'sub1', name: '双开门' },
+      { id: 'sub2', name: '单开门' },
+      { id: 'sub3', name: '对开门' },
+      { id: 'sub4', name: '三开门' },
+      { id: 'sub5', name: '迷你冰箱' },
+      { id: 'sub6', name: '车载冰箱' }
+    ];
 
-  subCategories.value = mockSubCategories;
-  brands.value = mockBrands;
+    const mockBrands: BrandItem[] = [
+      { id: 'all', name: '全部' },
+      { id: 'b1', name: '海尔', logo: 'https://picsum.photos/100/100?random=brand1' },
+      { id: 'b2', name: '美的', logo: 'https://picsum.photos/100/100?random=brand2' },
+      { id: 'b3', name: '西门子', logo: 'https://picsum.photos/100/100?random=brand3' },
+      { id: 'b4', name: '松下', logo: 'https://picsum.photos/100/100?random=brand4' },
+      { id: 'b5', name: '容声', logo: 'https://picsum.photos/100/100?random=brand5' },
+      { id: 'b6', name: '格力', logo: 'https://picsum.photos/100/100?random=brand6' },
+      { id: 'b7', name: '三星', logo: 'https://picsum.photos/100/100?random=brand7' },
+      { id: 'b8', name: 'LG', logo: 'https://picsum.photos/100/100?random=brand8' }
+    ];
+
+    subCategories.value = mockSubCategories;
+    brands.value = mockBrands;
+  }
 };
 
 const fetchProducts = async () => {
   loading.value = true;
 
-  await new Promise(resolve => setTimeout(resolve, 500));
+  try {
+    const result = await categoryApi.getModels({
+      deviceTypeId: deviceTypeId.value,
+      brandId: activeBrand.value === 'all' ? undefined : activeBrand.value,
+      subCategoryId: activeSubCategory.value === 'all' ? undefined : activeSubCategory.value,
+      sort: activeSort.value as 'recommend' | 'sales' | 'new' | 'price',
+      priceOrder: activeSort.value === 'price' ? priceSortOrder.value : undefined,
+      page: currentPage.value,
+      size: pageSize
+    });
 
-  const mockProducts: Product[] = [
-    {
-      id: 1,
-      cover: 'https://picsum.photos/400/400?random=101',
-      title: '海尔 BCD-470WDPG 对开门冰箱 470L 变频节能',
-      price: 3999,
-      sales: 256,
-      specs: '470L / 对开门 / 变频',
-      tags: ['节能', '静音', '智能'],
-      memberCount: '1.2万'
-    },
-    {
-      id: 2,
-      cover: 'https://picsum.photos/400/400?random=102',
-      title: '美的 BCD-536WKZM(E) 风冷无霜冰箱',
-      price: 3299,
-      sales: 189,
-      specs: '536L / 对开门 / 风冷',
-      tags: ['无霜', '大容量'],
-      memberCount: '8562'
-    },
-    {
-      id: 3,
-      cover: 'https://picsum.photos/400/400?random=103',
-      title: '西门子 BCD-610W(KA92NV02TI) 德国品质',
-      price: 5999,
-      sales: 145,
-      specs: '610L / 对开门 / 风冷',
-      tags: ['进口', '静音'],
-      memberCount: '6234'
-    },
-    {
-      id: 4,
-      cover: 'https://picsum.photos/400/400?random=104',
-      title: '松下 NR-EW45TGA-W 四门冰箱 455L',
-      price: 4599,
-      sales: 98,
-      specs: '455L / 四门 / 变频',
-      tags: ['节能', '智能'],
-      memberCount: '4521'
-    },
-    {
-      id: 5,
-      cover: 'https://picsum.photos/400/400?random=105',
-      title: '容声 BCD-529WD11HP 风冷无霜冰箱',
-      price: 2899,
-      sales: 312,
-      specs: '529L / 对开门 / 风冷',
-      tags: ['性价比', '大容量'],
-      memberCount: '1.5万'
-    },
-    {
-      id: 6,
-      cover: 'https://picsum.photos/400/400?random=106',
-      title: '格力 BCD-325WPQG 三门冰箱 变频节能',
-      price: 2499,
-      sales: 178,
-      specs: '325L / 三门 / 变频',
-      tags: ['节能', '小巧'],
-      memberCount: '3892'
+    const products: Product[] = result.list.map(item => ({
+      id: item.id,
+      cover: item.cover,
+      title: item.name,
+      price: item.priceRange.min / 100,
+      sales: item.productCount,
+      specs: Object.values(item.specs || {}).slice(0, 3).join(' / '),
+      tags: item.tags?.slice(0, 2),
+      memberCount: `${Math.floor(item.productCount / 100)}万`
+    }));
+
+    if (currentPage.value === 1) {
+      productList.value = products;
+    } else {
+      productList.value = [...productList.value, ...products];
     }
-  ];
 
-  if (currentPage.value === 1) {
-    productList.value = mockProducts;
-  } else {
-    productList.value = [...productList.value, ...mockProducts];
+    totalCount.value = result.total;
+    hasMore.value = result.hasMore;
+  } catch (error) {
+    console.error('获取商品列表失败:', error);
+    // 使用模拟数据作为降级
+    const mockProducts: Product[] = [
+      {
+        id: 1,
+        cover: 'https://picsum.photos/400/400?random=101',
+        title: '海尔 BCD-470WDPG 对开门冰箱 470L 变频节能',
+        price: 3999,
+        sales: 256,
+        specs: '470L / 对开门 / 变频',
+        tags: ['节能', '静音', '智能'],
+        memberCount: '1.2万'
+      },
+      {
+        id: 2,
+        cover: 'https://picsum.photos/400/400?random=102',
+        title: '美的 BCD-536WKZM(E) 风冷无霜冰箱',
+        price: 3299,
+        sales: 189,
+        specs: '536L / 对开门 / 风冷',
+        tags: ['无霜', '大容量'],
+        memberCount: '8562'
+      },
+      {
+        id: 3,
+        cover: 'https://picsum.photos/400/400?random=103',
+        title: '西门子 BCD-610W(KA92NV02TI) 德国品质',
+        price: 5999,
+        sales: 145,
+        specs: '610L / 对开门 / 风冷',
+        tags: ['进口', '静音'],
+        memberCount: '6234'
+      },
+      {
+        id: 4,
+        cover: 'https://picsum.photos/400/400?random=104',
+        title: '松下 NR-EW45TGA-W 四门冰箱 455L',
+        price: 4599,
+        sales: 98,
+        specs: '455L / 四门 / 变频',
+        tags: ['节能', '智能'],
+        memberCount: '4521'
+      },
+      {
+        id: 5,
+        cover: 'https://picsum.photos/400/400?random=105',
+        title: '容声 BCD-529WD11HP 风冷无霜冰箱',
+        price: 2899,
+        sales: 312,
+        specs: '529L / 对开门 / 风冷',
+        tags: ['性价比', '大容量'],
+        memberCount: '1.5万'
+      },
+      {
+        id: 6,
+        cover: 'https://picsum.photos/400/400?random=106',
+        title: '格力 BCD-325WPQG 三门冰箱 变频节能',
+        price: 2499,
+        sales: 178,
+        specs: '325L / 三门 / 变频',
+        tags: ['节能', '小巧'],
+        memberCount: '3892'
+      }
+    ];
+
+    if (currentPage.value === 1) {
+      productList.value = mockProducts;
+    } else {
+      productList.value = [...productList.value, ...mockProducts];
+    }
+
+    totalCount.value = productList.value.length;
+    hasMore.value = false;
+  } finally {
+    loading.value = false;
   }
-
-  totalCount.value = productList.value.length;
-  loading.value = false;
 };
 
 const handleSubCategoryChange = (item: SubCategoryItem) => {
@@ -370,13 +434,36 @@ const handleFilterReset = () => {
 const loadMore = async () => {
   if (loading.value || !hasMore.value) return;
 
-  loading.value = true;
   currentPage.value++;
 
-  await new Promise(resolve => setTimeout(resolve, 500));
+  try {
+    const result = await categoryApi.getModels({
+      deviceTypeId: deviceTypeId.value,
+      brandId: activeBrand.value === 'all' ? undefined : activeBrand.value,
+      subCategoryId: activeSubCategory.value === 'all' ? undefined : activeSubCategory.value,
+      sort: activeSort.value as 'recommend' | 'sales' | 'new' | 'price',
+      priceOrder: activeSort.value === 'price' ? priceSortOrder.value : undefined,
+      page: currentPage.value,
+      size: pageSize
+    });
 
-  hasMore.value = false;
-  loading.value = false;
+    const products: Product[] = result.list.map(item => ({
+      id: item.id,
+      cover: item.cover,
+      title: item.name,
+      price: item.priceRange.min / 100,
+      sales: item.productCount,
+      specs: Object.values(item.specs || {}).slice(0, 3).join(' / '),
+      tags: item.tags?.slice(0, 2),
+      memberCount: `${Math.floor(item.productCount / 100)}万`
+    }));
+
+    productList.value = [...productList.value, ...products];
+    hasMore.value = result.hasMore;
+  } catch (error) {
+    console.error('加载更多失败:', error);
+    hasMore.value = false;
+  }
 };
 
 const goBack = () => {
@@ -619,7 +706,7 @@ const goDeviceCommunity = (item: Product) => {
       
       text {
         font-size: $font-size-xs;
-        color: #FFFFFF;
+        color: $color-white;
       }
     }
   }

@@ -352,6 +352,8 @@ import { onLoad } from '@dcloudio/uni-app';
 import { useAppStore } from '@/stores';
 import { useNavigation } from '@/composables/useNavigation';
 import { forumApi, type PostListItem } from '@/api/community';
+import { authApi, type UserDetailInfo } from '@/api/auth';
+import { searchApi } from '@/api/search';
 import { formatTimeAgo } from '@/utils/date';
 
 interface UserInfo {
@@ -498,139 +500,145 @@ const formatCount = (count: number): string => {
 };
 
 const fetchUserInfo = async () => {
+  if (!userId.value) return;
+
   try {
-    // TODO: 调用真实API
+    const data = await authApi.getUserProfile(userId.value);
+    userInfo.value = {
+      id: data.id,
+      name: data.nickname || '用户',
+      avatar: data.avatar || 'https://picsum.photos/200/200?random=user1',
+      cover: data.cover || '',
+      signature: data.signature || '',
+      level: data.level,
+      levelName: data.levelName,
+      isVerified: data.isVerified || false,
+      isFollowed: data.isFollowed || false,
+      followersCount: data.followersCount || data.followers || 0,
+      followingCount: data.followingCount || data.following || 0,
+      likesCount: data.likesCount || data.likes || 0,
+      postsCount: data.postsCount || 0,
+      goodsCount: data.goodsCount || 0,
+      tags: data.tags || [],
+      location: data.location
+    };
   } catch (error) {
     console.error('获取用户信息失败:', error);
+    uni.showToast({
+      title: '获取用户信息失败',
+      icon: 'none'
+    });
   }
 };
 
 const fetchPosts = async () => {
+  if (!userId.value) return;
+
   postsLoading.value = true;
-  
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  const mockPosts: PostListItem[] = [
-    {
-      id: '1',
-      title: 'iPhone 15 Pro Max 深度测评：钛金属边框真的轻了很多',
-      content: '使用了一周，整体体验非常棒。钛金属边框确实比不锈钢轻了不少，手感提升明显...',
-      author: { id: userId.value, name: userInfo.value.name, avatar: userInfo.value.avatar },
-      images: [
-        'https://picsum.photos/400/300?random=p1',
-        'https://picsum.photos/400/300?random=p2'
-      ],
-      tags: ['评测'],
-      likeCount: 256,
-      commentCount: 45,
-      collectCount: 32,
-      isLiked: false,
-      isCollected: false,
-      isPinned: false,
-      isEssence: true,
-      createdAt: '2024-01-15T10:00:00Z',
-      forumName: 'iPhone 讨论'
-    },
-    {
-      id: '2',
-      title: '续航实测：日常使用一天完全没问题',
-      content: '今天测试了一下续航，早上8点出门，晚上8点回家还有35%的电...',
-      author: { id: userId.value, name: userInfo.value.name, avatar: userInfo.value.avatar },
-      images: [],
-      tags: [],
-      likeCount: 189,
-      commentCount: 32,
-      collectCount: 18,
-      isLiked: false,
-      isCollected: false,
-      isPinned: false,
-      isEssence: false,
-      createdAt: '2024-01-14T15:30:00Z'
-    },
-    {
-      id: '3',
-      title: '5倍长焦镜头太香了！样张分享',
-      content: '作为摄影爱好者，5倍长焦镜头是我最期待的功能。实际使用下来，画质非常出色...',
-      author: { id: userId.value, name: userInfo.value.name, avatar: userInfo.value.avatar },
-      images: [
-        'https://picsum.photos/400/300?random=p3',
-        'https://picsum.photos/400/300?random=p4',
-        'https://picsum.photos/400/300?random=p5'
-      ],
-      tags: ['摄影'],
-      likeCount: 345,
-      commentCount: 67,
-      collectCount: 89,
-      isLiked: false,
-      isCollected: false,
-      isPinned: false,
-      isEssence: true,
-      createdAt: '2024-01-13T09:00:00Z',
-      forumName: '摄影器材'
-    }
-  ];
-  
-  postsList.value = mockPosts;
-  postsLoading.value = false;
+
+  try {
+    const result = await forumApi.getUserPosts(userId.value, 1, 20);
+    postsList.value = result.list;
+    postsHasMore.value = result.hasMore;
+  } catch (error) {
+    console.error('获取帖子列表失败:', error);
+    postsList.value = [];
+    postsHasMore.value = false;
+  } finally {
+    postsLoading.value = false;
+  }
 };
 
 const fetchCollections = async () => {
+  if (!userId.value) return;
+
   collectionsLoading.value = true;
-  await new Promise(resolve => setTimeout(resolve, 300));
-  collectionsList.value = [];
-  collectionsLoading.value = false;
+
+  try {
+    const result = await authApi.getUserCollections(userId.value, { page: 1, pageSize: 20 });
+    collectionsList.value = result.list.map((item: any) => ({
+      id: item.id,
+      title: item.title,
+      content: item.content || '',
+      author: item.author || { id: userId.value, name: userInfo.value.name, avatar: userInfo.value.avatar },
+      images: item.images || [],
+      tags: item.tags || [],
+      likeCount: item.likeCount || 0,
+      commentCount: item.commentCount || 0,
+      collectCount: item.collectCount || 0,
+      isLiked: item.isLiked || false,
+      isCollected: true,
+      isPinned: false,
+      isEssence: item.isEssence || false,
+      createdAt: item.createdAt
+    }));
+  } catch (error) {
+    console.error('获取收藏列表失败:', error);
+    collectionsList.value = [];
+  } finally {
+    collectionsLoading.value = false;
+  }
 };
 
 const fetchLikes = async () => {
+  if (!userId.value) return;
+
   likesLoading.value = true;
-  await new Promise(resolve => setTimeout(resolve, 300));
-  likesList.value = [];
-  likesLoading.value = false;
+
+  try {
+    const result = await authApi.getUserLikes(userId.value, { page: 1, pageSize: 20 });
+    likesList.value = result.list.map((item: any) => ({
+      id: item.id,
+      title: item.title,
+      content: item.content || '',
+      author: item.author || { id: userId.value, name: userInfo.value.name, avatar: userInfo.value.avatar },
+      images: item.images || [],
+      tags: item.tags || [],
+      likeCount: item.likeCount || 0,
+      commentCount: item.commentCount || 0,
+      collectCount: item.collectCount || 0,
+      isLiked: true,
+      isCollected: item.isCollected || false,
+      isPinned: false,
+      isEssence: item.isEssence || false,
+      createdAt: item.createdAt
+    }));
+  } catch (error) {
+    console.error('获取点赞列表失败:', error);
+    likesList.value = [];
+  } finally {
+    likesLoading.value = false;
+  }
 };
 
 const fetchGoods = async () => {
+  if (!userId.value) return;
+
   goodsLoading.value = true;
-  
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  const mockGoods: Product[] = [
-    {
-      id: '1',
-      cover: 'https://picsum.photos/400/400?random=g1',
-      title: 'iPhone 15 Pro Max 256GB 原色钛金属',
-      price: 8999,
-      condition: '全新',
-      views: 256
-    },
-    {
-      id: '2',
-      cover: 'https://picsum.photos/400/400?random=g2',
-      title: 'MacBook Pro 14寸 M3 Pro',
-      price: 14999,
-      condition: '99新',
-      views: 189,
-      status: 'sold'
-    },
-    {
-      id: '3',
-      cover: 'https://picsum.photos/400/400?random=g3',
-      title: 'AirPods Pro 第二代',
-      price: 1399,
-      condition: '95新',
-      views: 98
-    },
-    {
-      id: '4',
-      cover: 'https://picsum.photos/400/400?random=g4',
-      title: 'Apple Watch Ultra 2',
-      price: 5999,
-      condition: '全新',
-      views: 145
-    }
-  ];
-  
-  goodsList.value = mockGoods;
-  goodsLoading.value = false;
+
+  try {
+    const result = await authApi.getUserGoods(userId.value, {
+      status: activeFilter.value as 'all' | 'selling' | 'sold',
+      page: 1,
+      pageSize: 20
+    });
+    goodsList.value = result.list.map((item: any) => ({
+      id: item.id,
+      cover: item.cover || item.images?.[0] || '',
+      title: item.title || item.name,
+      price: item.price,
+      condition: item.condition,
+      status: item.status,
+      views: item.views || item.viewCount || 0
+    }));
+    goodsHasMore.value = result.hasMore;
+  } catch (error) {
+    console.error('获取商品列表失败:', error);
+    goodsList.value = [];
+    goodsHasMore.value = false;
+  } finally {
+    goodsLoading.value = false;
+  }
 };
 
 const handleScroll = (e: any) => {
@@ -666,12 +674,28 @@ const handleMoreSelect = (item: any) => {
   }
 };
 
-const toggleFollow = () => {
-  userInfo.value.isFollowed = !userInfo.value.isFollowed;
-  uni.showToast({ 
-    title: userInfo.value.isFollowed ? '关注成功' : '已取消关注', 
-    icon: 'none' 
-  });
+const toggleFollow = async () => {
+  if (!userId.value) return;
+
+  try {
+    if (userInfo.value.isFollowed) {
+      await authApi.unfollowUser(userId.value);
+      userInfo.value.isFollowed = false;
+      userInfo.value.followersCount--;
+      uni.showToast({ title: '已取消关注', icon: 'none' });
+    } else {
+      await authApi.followUser(userId.value);
+      userInfo.value.isFollowed = true;
+      userInfo.value.followersCount++;
+      uni.showToast({ title: '关注成功', icon: 'none' });
+    }
+  } catch (error) {
+    console.error('关注操作失败:', error);
+    uni.showToast({
+      title: '操作失败，请重试',
+      icon: 'none'
+    });
+  }
 };
 
 const handleShare = () => {
@@ -859,7 +883,7 @@ const goProductDetail = (item: Product) => {
   text {
     font-size: $font-size-sm;
     font-weight: $font-weight-medium;
-    color: #FFFFFF;
+    color: $color-white;
   }
   
   &.is-followed {
@@ -1041,7 +1065,7 @@ const goProductDetail = (item: Product) => {
     
     .tab-count {
       background: var(--color-primary, #FF6A00);
-      color: #FFFFFF;
+      color: $color-white;
     }
   }
 }
@@ -1213,20 +1237,20 @@ const goProductDetail = (item: Product) => {
       top: 8rpx;
       left: 8rpx;
       background: rgba(0, 0, 0, 0.6);
-      color: #FFFFFF;
+      color: $color-white;
       font-size: $font-size-xs;
       padding: 4rpx 12rpx;
       border-radius: $radius-sm;
       backdrop-filter: blur($blur-sm);
       -webkit-backdrop-filter: blur($blur-sm);
     }
-    
+
     .sold-badge {
       position: absolute;
       top: 8rpx;
       right: 8rpx;
       background: $color-error;
-      color: #FFFFFF;
+      color: $color-white;
       font-size: $font-size-xs;
       padding: 4rpx 12rpx;
       border-radius: $radius-sm;

@@ -37,6 +37,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { aftersaleApi, type AftersaleListItem, type AftersaleStatus } from '@/api/aftersale';
 
 const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
@@ -52,18 +53,36 @@ const tabList = ref([
   { name: '已完成' }
 ]);
 
-const statusMap: Record<number, string | undefined> = {
+const statusMap: Record<number, AftersaleStatus | undefined> = {
   0: undefined,
   1: 'pending',
   2: 'processing',
   3: 'completed'
 };
 
-const aftersaleList = ref<any[]>([]);
+const aftersaleList = ref<AftersaleListItem[]>([]);
+const loading = ref(false);
 
 const fetchAftersaleList = async () => {
   const status = statusMap[activeTab.value];
-  
+
+  loading.value = true;
+  try {
+    const result = await aftersaleApi.getAftersaleList({
+      status,
+      page: 1,
+      size: 20
+    });
+    aftersaleList.value = result.list;
+  } catch (error) {
+    console.error('获取售后列表失败:', error);
+    uni.showToast({
+      title: '获取列表失败',
+      icon: 'none'
+    });
+  } finally {
+    loading.value = false;
+  }
 };
 
 watch(activeTab, () => {

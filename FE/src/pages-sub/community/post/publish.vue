@@ -588,9 +588,9 @@ const uploadImages = async (): Promise<string[]> => {
   
   &.can-publish {
     background: $gradient-sunset;
-    
+
     text {
-      color: #FFFFFF;
+      color: $color-white;
       font-weight: $font-weight-medium;
     }
   }
@@ -715,7 +715,7 @@ const uploadImages = async (): Promise<string[]> => {
     
     text {
       font-size: $font-size-xs;
-      color: #FFFFFF;
+      color: $color-white;
     }
   }
 }

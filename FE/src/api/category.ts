@@ -144,6 +144,13 @@ export interface HotModel {
   trend: 'up' | 'down' | 'stable';
 }
 
+export interface CategoryItem {
+  id: string;
+  name: string;
+  productCount: number;
+  letter: string;
+}
+
 export const categoryApi = {
   getDeviceCategories: () => {
     return http<CategoryVO[]>({
@@ -203,6 +210,13 @@ export const categoryApi = {
       url: '/spu/search',
       method: 'GET',
       data: { keyword, page, size }
+    });
+  },
+
+  getAllCategories: () => {
+    return http<AlphabetCategory[]>({
+      url: '/category/all',
+      method: 'GET'
     });
   }
 };

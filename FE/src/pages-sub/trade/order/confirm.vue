@@ -464,13 +464,13 @@ const handleSubmit = async () => {
       .price-symbol {
         font-size: $font-size-sm;
         font-weight: $font-weight-bold;
-        color: #FF3B30;
+        color: $color-error;
       }
-      
+
       .price-value {
         font-size: 36rpx;
         font-weight: $font-weight-bold;
-        color: #FF3B30;
+        color: $color-error;
       }
     }
   }
@@ -525,13 +525,13 @@ const handleSubmit = async () => {
       .price-symbol {
         font-size: $font-size-md;
         font-weight: $font-weight-bold;
-        color: #FF3B30;
+        color: $color-error;
       }
-      
+
       .price-value {
         font-size: 40rpx;
         font-weight: $font-weight-bold;
-        color: #FF3B30;
+        color: $color-error;
       }
     }
   }

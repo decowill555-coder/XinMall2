@@ -833,17 +833,17 @@ const goTopic = (tag: string) => {
     padding: 12rpx 32rpx;
     background: $gradient-sunset;
     border-radius: $radius-full;
-    
+
     text {
       font-size: $font-size-sm;
-      color: #FFFFFF;
+      color: $color-white;
       font-weight: $font-weight-medium;
     }
-    
+
     &.is-followed {
       background: var(--color-success-glass, rgba(52, 199, 89, 0.12));
       border: 2rpx solid var(--color-success, #34C759);
-      
+
       text {
         color: var(--color-success, #34C759);
       }
@@ -886,12 +886,12 @@ const goTopic = (tag: string) => {
       padding: 4rpx 12rpx;
       border-radius: $radius-sm;
       font-size: $font-size-xs;
-      color: #FFFFFF;
-      
+      color: $color-white;
+
       &.pinned {
         background: linear-gradient(135deg, #FF6A00 0%, #FF3B30 100%);
       }
-      
+
       &.essence {
         background: linear-gradient(135deg, #FF9500 0%, #FF6A00 100%);
       }

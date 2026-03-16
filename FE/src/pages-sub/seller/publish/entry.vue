@@ -384,7 +384,7 @@ const publish = () => {
     
     text {
       font-size: $font-size-xs;
-      color: #FFFFFF;
+      color: $color-white;
     }
   }
 }

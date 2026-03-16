@@ -64,6 +64,21 @@ export interface RefreshTokenResult {
   expiresIn: number;
 }
 
+export interface UserDetailInfo extends UserInfo {
+  cover: string;
+  level?: number;
+  levelName?: string;
+  isVerified: boolean;
+  isFollowed: boolean;
+  followersCount: number;
+  followingCount: number;
+  likesCount: number;
+  postsCount: number;
+  goodsCount: number;
+  tags: string[];
+  location?: string;
+}
+
 export const authApi = {
   login: (params: LoginParams) => {
     return http<LoginResult>({
@@ -152,6 +167,51 @@ export const authApi = {
       url: '/auth/check/phone',
       method: 'GET',
       data: { phone }
+    });
+  },
+
+  getUserProfile: (userId: string) => {
+    return http<UserDetailInfo>({
+      url: `/user/profile/${userId}`,
+      method: 'GET'
+    });
+  },
+
+  followUser: (userId: string) => {
+    return http<{ success: boolean; followersCount: number }>({
+      url: `/user/follow/${userId}`,
+      method: 'POST'
+    });
+  },
+
+  unfollowUser: (userId: string) => {
+    return http<{ success: boolean; followersCount: number }>({
+      url: `/user/unfollow/${userId}`,
+      method: 'POST'
+    });
+  },
+
+  getUserGoods: (userId: string, params?: { status?: 'all' | 'selling' | 'sold'; page?: number; pageSize?: number }) => {
+    return http<{ list: any[]; total: number; hasMore: boolean }>({
+      url: `/user/goods/${userId}`,
+      method: 'GET',
+      data: params
+    });
+  },
+
+  getUserCollections: (userId: string, params?: { page?: number; pageSize?: number }) => {
+    return http<{ list: any[]; total: number; hasMore: boolean }>({
+      url: `/user/collections/${userId}`,
+      method: 'GET',
+      data: params
+    });
+  },
+
+  getUserLikes: (userId: string, params?: { page?: number; pageSize?: number }) => {
+    return http<{ list: any[]; total: number; hasMore: boolean }>({
+      url: `/user/likes/${userId}`,
+      method: 'GET',
+      data: params
     });
   }
 };

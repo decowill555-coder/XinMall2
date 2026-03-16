@@ -29,7 +29,7 @@
       }
     },
     {
-      "path": "pages/publish/placeholder",
+      "path": "pages/publish/index",
       "style": {
         "navigationBarTitleText": "发布",
         "navigationStyle": "custom"
@@ -58,7 +58,8 @@
         { "path": "order/confirm", "style": { "navigationBarTitleText": "确认订单", "navigationStyle": "custom" } },
         { "path": "pay/index", "style": { "navigationBarTitleText": "支付", "navigationStyle": "custom" } },
         { "path": "evaluate/index", "style": { "navigationBarTitleText": "评价", "navigationStyle": "custom" } },
-        { "path": "aftersale/list", "style": { "navigationBarTitleText": "退款/售后", "navigationStyle": "custom" } }
+        { "path": "aftersale/list", "style": { "navigationBarTitleText": "退款/售后", "navigationStyle": "custom" } },
+        { "path": "aftersale/detail", "style": { "navigationBarTitleText": "售后详情", "navigationStyle": "custom" } }
       ]
     },
     {

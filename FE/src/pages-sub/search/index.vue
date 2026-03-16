@@ -140,6 +140,7 @@ import { onLoad } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { useNavigation } from '@/composables/useNavigation';
 import { useSearchHistoryStore, useSearchFilterStore } from '@/stores';
+import { searchApi, type SearchResultItem } from '@/api/search';
 import UiSearchFilterBar from '@/ui-kit/organisms/UiSearchFilterBar.vue';
 import UiFilterSidebar from '@/ui-kit/organisms/UiFilterSidebar.vue';
 
@@ -217,84 +218,17 @@ const hotList = computed(() => {
   ];
 });
 
-const resultList = ref([
-  { 
-    id: 1, 
-    cover: 'https://picsum.photos/400/400?random=801', 
-    title: 'iPhone 15 Pro Max 256GB 钛金属原色 国行双卡', 
-    price: 7999, 
-    sales: 128, 
-    condition: '99新',
-    specs: '256GB / 钛金属原色',
-    tags: ['国行', '在保', '有发票'], 
-    timeStr: '3分钟前'
-  },
-  { 
-    id: 2, 
-    cover: 'https://picsum.photos/400/400?random=802', 
-    title: 'iPhone 15 Pro 128GB 蓝色钛金属 全新未拆封', 
-    price: 6999, 
-    sales: 89, 
-    condition: '全新',
-    specs: '128GB / 蓝色钛金属',
-    tags: ['全新', '官方'], 
-    timeStr: '10分钟前'
-  },
-  { 
-    id: 3, 
-    cover: 'https://picsum.photos/400/400?random=803', 
-    title: 'iPhone 15 Plus 256GB 粉色 95新无划痕', 
-    price: 5999, 
-    sales: 56, 
-    condition: '95新',
-    specs: '256GB / 粉色',
-    tags: ['95新', '送壳'], 
-    timeStr: '30分钟前'
-  },
-  { 
-    id: 4, 
-    cover: 'https://picsum.photos/400/400?random=804', 
-    title: 'MacBook Pro 14寸 M3 Pro 18G+512G 深空黑', 
-    price: 14999, 
-    sales: 23, 
-    condition: '99新',
-    specs: 'M3 Pro / 18G+512G',
-    tags: ['国行', '在保'], 
-    timeStr: '1小时前'
-  },
-  { 
-    id: 5, 
-    cover: 'https://picsum.photos/400/400?random=805', 
-    title: '华为 Mate 60 Pro 12+512GB 雅丹黑', 
-    price: 6999, 
-    sales: 67, 
-    condition: '9新',
-    specs: '12+512GB / 雅丹黑',
-    tags: ['国行', '有发票'], 
-    timeStr: '2小时前'
-  },
-  { 
-    id: 6, 
-    cover: 'https://picsum.photos/400/400?random=806', 
-    title: '小米14 Ultra 16+512GB 黑色 徕卡影像', 
-    price: 5499, 
-    sales: 34, 
-    condition: '95新',
-    specs: '16+512GB / 黑色',
-    tags: ['国行', '在保'], 
-    timeStr: '3小时前'
-  }
-]);
+const resultList = ref<any[]>([]);
 
 const handleSearch = () => {
   if (!keyword.value.trim()) return;
-  
+
   searchHistoryStore.addHistory(keyword.value.trim(), 'product');
   hasSearched.value = true;
   currentPage.value = 1;
   hasMore.value = true;
-  totalCount.value = resultList.value.length;
-  
+  resultList.value = [];
+
   fetchProducts();
 };
 
@@ -350,23 +284,55 @@ const handleFilterReset = () => {
 
 const fetchProducts = async () => {
   loading.value = true;
-  
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  totalCount.value = resultList.value.length;
-  loading.value = false;
+
+  try {
+    const filters = searchFilterStore;
+    const result = await searchApi.searchProducts({
+      keyword: keyword.value.trim(),
+      sellerType: filters.sellerType === 'all' ? undefined : filters.sellerType as 'personal' | 'merchant',
+      condition: filters.condition || undefined,
+      deviceTypeId: filters.deviceType || undefined,
+      sort: 'relevance',
+      page: currentPage.value,
+      size: 20
+    });
+
+    totalCount.value = result.total;
+    hasMore.value = result.hasMore;
+
+    const items = result.list.map((item: SearchResultItem) => ({
+      id: item.id,
+      cover: item.cover,
+      title: item.title,
+      price: item.price || 0,
+      sales: item.productCount || 0,
+      condition: item.condition || '',
+      specs: item.subtitle || '',
+      tags: item.tags || [],
+      timeStr: item.highlight || ''
+    }));
+
+    if (currentPage.value === 1) {
+      resultList.value = items;
+    } else {
+      resultList.value = [...resultList.value, ...items];
+    }
+  } catch (error) {
+    console.error('搜索失败:', error);
+    if (currentPage.value === 1) {
+      resultList.value = [];
+    }
+    hasMore.value = false;
+  } finally {
+    loading.value = false;
+  }
 };
 
 const loadMore = async () => {
   if (loading.value || !hasMore.value) return;
-  
-  loading.value = true;
+
   currentPage.value++;
-  
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  hasMore.value = false;
-  loading.value = false;
+  await fetchProducts();
 };
 </script>
 

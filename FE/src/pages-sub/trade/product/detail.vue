@@ -336,21 +336,21 @@ const loadMore = () => {};
   .current-price {
     display: flex;
     align-items: baseline;
-    
+
     .price-symbol {
       font-size: $font-size-lg;
       font-weight: $font-weight-bold;
-      color: #FF3B30;
+      color: $color-error;
     }
-    
+
     .price-value {
       font-size: 48rpx;
       font-weight: $font-weight-bold;
-      color: #FF3B30;
+      color: $color-error;
       line-height: 1;
     }
   }
-  
+
   .original-price {
     text {
       font-size: $font-size-md;
@@ -358,13 +358,13 @@ const loadMore = () => {};
       text-decoration: line-through;
     }
   }
-  
+
   .price-discount {
     margin-top: $space-xs;
-    
+
     text {
       font-size: $font-size-xs;
-      color: #FF3B30;
+      color: $color-error;
       background: rgba(255, 59, 48, 0.1);
       padding: 4rpx 12rpx;
       border-radius: $radius-xs;
@@ -539,7 +539,7 @@ const loadMore = () => {};
       }
       
       &.is-active text {
-        color: #FF3B30;
+        color: $color-error;
       }
     }
   }

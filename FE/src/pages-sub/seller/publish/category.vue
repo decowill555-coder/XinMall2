@@ -280,10 +280,10 @@ const confirmSelect = () => {
   padding: 12rpx 32rpx;
   background: $gradient-sunset;
   border-radius: $radius-full;
-  
+
   text {
     font-size: $font-size-sm;
-    color: #FFFFFF;
+    color: $color-white;
     font-weight: $font-weight-medium;
   }
 }

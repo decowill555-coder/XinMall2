@@ -370,6 +370,8 @@ import { ref, computed, onMounted, nextTick } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { useAppStore } from '@/stores';
 import { useNavigation } from '@/composables/useNavigation';
+import { spuApi, type SpuDetail, type SpuProductItem, type SpuPostItem, type SpuEvaluation } from '@/api/spu';
+import { forumApi } from '@/api/community';
 
 interface DeviceInfo {
   id: string;
@@ -532,148 +534,139 @@ const formatCount = (count: number): string => {
 };
 
 const fetchDeviceData = async () => {
-  
+  if (!deviceId.value) return;
+
+  try {
+    const detail = await spuApi.getSpuDetail(deviceId.value);
+    deviceInfo.value = {
+      id: detail.id,
+      name: detail.name,
+      subtitle: `${detail.brandName} · ${detail.deviceTypeName}`,
+      score: detail.avgRating * 2,
+      memberCount: detail.memberCount,
+      postCount: detail.postCount,
+      productCount: detail.productCount,
+      reviewCount: 0,
+      isFollowed: detail.isFollowed,
+      isHot: detail.memberCount > 10000,
+      tags: detail.tags
+    };
+
+    if (detail.images?.length) {
+      deviceImages.value = detail.images;
+    }
+  } catch (error) {
+    console.error('获取设备详情失败:', error);
+  }
 };
 
 const fetchDiscussList = async () => {
   discussLoading.value = true;
-  
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  const mockPosts: Post[] = [
-    {
-      id: 1,
-      authorAvatar: 'https://picsum.photos/100/100?random=u1',
-      authorName: '数码达人',
-      isVerified: true,
-      time: '2小时前',
-      title: 'iPhone 15 Pro Max 深度测评：钛金属边框真的轻了很多',
-      content: '使用了一周，整体体验非常棒。钛金属边框确实比不锈钢轻了不少，手感提升明显。A17 Pro芯片性能强劲，玩游戏完全不卡顿...',
-      images: [
-        'https://picsum.photos/400/300?random=p1',
-        'https://picsum.photos/400/300?random=p2'
-      ],
-      tag: '评测',
-      isLiked: false,
-      likeCount: 256,
-      commentCount: 45,
-      shareCount: 12
-    },
-    {
-      id: 2,
-      authorAvatar: 'https://picsum.photos/100/100?random=u2',
-      authorName: '科技小白',
-      isVerified: false,
-      time: '5小时前',
-      title: '续航实测：日常使用一天完全没问题',
-      content: '今天测试了一下续航，早上8点出门，晚上8点回家还有35%的电。中间刷微博、看视频、聊微信，中度使用...',
-      images: [],
-      isLiked: true,
-      likeCount: 189,
-      commentCount: 32,
-      shareCount: 8
-    },
-    {
-      id: 3,
-      authorAvatar: 'https://picsum.photos/100/100?random=u3',
-      authorName: '摄影爱好者',
-      isVerified: true,
-      time: '昨天',
-      title: '5倍长焦镜头太香了！样张分享',
-      content: '作为摄影爱好者，5倍长焦镜头是我最期待的功能。实际使用下来，画质非常出色，特别是在拍远景的时候...',
-      images: [
-        'https://picsum.photos/400/300?random=p3',
-        'https://picsum.photos/400/300?random=p4',
-        'https://picsum.photos/400/300?random=p5'
-      ],
-      tag: '摄影',
-      isLiked: false,
-      likeCount: 345,
-      commentCount: 67,
-      shareCount: 23
-    }
-  ];
-  
-  discussList.value = mockPosts;
-  discussLoading.value = false;
+
+  try {
+    const result = await spuApi.getSpuPosts({
+      spuId: deviceId.value,
+      sort: currentSort.value === 'new' ? 'new' : 'hot',
+      page: 1,
+      size: 10
+    });
+
+    discussList.value = result.list.map(post => ({
+      id: post.id,
+      authorAvatar: post.author.avatar,
+      authorName: post.author.name,
+      isVerified: post.author.level && post.author.level >= 3,
+      time: formatTime(post.createdAt),
+      title: post.title,
+      content: post.content,
+      images: post.images,
+      tag: post.isEssence ? '精华' : (post.isPinned ? '置顶' : undefined),
+      isLiked: post.isLiked,
+      likeCount: post.likeCount,
+      commentCount: post.commentCount,
+      shareCount: 0
+    }));
+
+    discussHasMore.value = result.hasMore;
+  } catch (error) {
+    console.error('获取讨论列表失败:', error);
+    discussHasMore.value = false;
+  } finally {
+    discussLoading.value = false;
+  }
+};
+
+const formatTime = (dateStr: string): string => {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+  const minutes = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
+
+  if (minutes < 60) return `${minutes}分钟前`;
+  if (hours < 24) return `${hours}小时前`;
+  if (days < 7) return `${days}天前`;
+  return dateStr.split('T')[0];
 };
 
 const fetchReviewList = async () => {
-  const mockReviews: Review[] = [
-    {
-      id: 1,
-      authorAvatar: 'https://picsum.photos/100/100?random=r1',
-      authorName: '果粉老王',
-      score: 5,
-      time: '3天前',
-      content: '从iPhone 13 Pro Max换过来的，提升真的很明显。钛金属边框手感太好了，重量减轻后单手操作更轻松。续航也比之前强了不少。',
-      images: ['https://picsum.photos/200/200?random=ri1'],
-      likeCount: 56,
-      replyCount: 8
-    },
-    {
-      id: 2,
-      authorAvatar: 'https://picsum.photos/100/100?random=r2',
-      authorName: '科技控',
-      score: 4,
-      time: '1周前',
-      content: '整体很满意，就是价格有点贵。性能、拍照、屏幕都是顶级水平，就是希望苹果能在快充上再给力一点。',
-      images: [],
-      likeCount: 34,
-      replyCount: 5
+  try {
+    const result = await spuApi.getSpuEvaluations({
+      spuId: deviceId.value,
+      page: 1,
+      size: 10
+    });
+
+    reviewList.value = result.list.map(review => ({
+      id: review.id,
+      authorAvatar: review.author.avatar,
+      authorName: review.author.name,
+      score: review.rating,
+      time: formatTime(review.createdAt),
+      content: review.content,
+      images: review.images,
+      likeCount: 0,
+      replyCount: 0
+    }));
+
+    if (result.list.length > 0) {
+      deviceInfo.value.reviewCount = result.total;
     }
-  ];
-  
-  reviewList.value = mockReviews;
+  } catch (error) {
+    console.error('获取评价列表失败:', error);
+  }
 };
 
 const fetchProductList = async () => {
   productLoading.value = true;
-  
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  const mockProducts: Product[] = [
-    {
-      id: 1,
-      cover: 'https://picsum.photos/400/400?random=pr1',
-      title: 'iPhone 15 Pro Max 256GB 原色钛金属 全新未拆封',
-      price: 8999,
-      sales: 256,
-      condition: '全新',
-      specs: '256GB / 原色钛金属',
-      isNew: true
-    },
-    {
-      id: 2,
-      cover: 'https://picsum.photos/400/400?random=pr2',
-      title: 'iPhone 15 Pro Max 512GB 蓝色钛金属 99新',
-      price: 8299,
-      sales: 189,
-      condition: '99新',
-      specs: '512GB / 蓝色钛金属'
-    },
-    {
-      id: 3,
-      cover: 'https://picsum.photos/400/400?random=pr3',
-      title: 'iPhone 15 Pro Max 1TB 黑色钛金属 官换机',
-      price: 9599,
-      sales: 98,
-      condition: '官换',
-      specs: '1TB / 黑色钛金属'
-    },
-    {
-      id: 4,
-      cover: 'https://picsum.photos/400/400?random=pr4',
-      title: 'iPhone 15 Pro Max 256GB 白色钛金属 95新',
-      price: 7699,
-      sales: 145,
-      condition: '95新',
-      specs: '256GB / 白色钛金属'
-    }
-  ];
-  
-  productList.value = mockProducts;
-  productLoading.value = false;
+
+  try {
+    const result = await spuApi.getSpuProducts({
+      spuId: deviceId.value,
+      sort: activeFilter.value === 'price' ? 'price' : (activeFilter.value === 'new' ? 'new' : 'recommend'),
+      page: 1,
+      size: 20
+    });
+
+    productList.value = result.list.map(product => ({
+      id: product.id,
+      cover: product.cover,
+      title: product.title,
+      price: product.price / 100,
+      sales: product.viewCount,
+      condition: product.condition,
+      specs: Object.values(product.specValues || {}).join(' / '),
+      isNew: product.condition === '全新'
+    }));
+
+    productHasMore.value = result.hasMore;
+  } catch (error) {
+    console.error('获取商品列表失败:', error);
+    productHasMore.value = false;
+  } finally {
+    productLoading.value = false;
+  }
 };
 
 const handleScroll = (e: any) => {
@@ -705,12 +698,23 @@ const handleSortSelect = (item: any) => {
   fetchDiscussList();
 };
 
-const handleFollow = () => {
-  deviceInfo.value.isFollowed = !deviceInfo.value.isFollowed;
-  uni.showToast({ 
-    title: deviceInfo.value.isFollowed ? '关注成功' : '已取消关注', 
-    icon: 'none' 
-  });
+const handleFollow = async () => {
+  try {
+    if (deviceInfo.value.isFollowed) {
+      await spuApi.unfollowSpu(deviceId.value);
+      deviceInfo.value.isFollowed = false;
+      deviceInfo.value.memberCount--;
+      uni.showToast({ title: '已取消关注', icon: 'none' });
+    } else {
+      await spuApi.followSpu(deviceId.value);
+      deviceInfo.value.isFollowed = true;
+      deviceInfo.value.memberCount++;
+      uni.showToast({ title: '关注成功', icon: 'none' });
+    }
+  } catch (error) {
+    console.error('关注操作失败:', error);
+    uni.showToast({ title: '操作失败，请重试', icon: 'none' });
+  }
 };
 
 const handleShare = () => {
@@ -721,9 +725,21 @@ const handleMore = () => {
   uni.showToast({ title: '更多功能开发中', icon: 'none' });
 };
 
-const likePost = (post: Post) => {
-  post.isLiked = !post.isLiked;
-  post.likeCount += post.isLiked ? 1 : -1;
+const likePost = async (post: Post) => {
+  try {
+    if (post.isLiked) {
+      await forumApi.unlikePost(String(post.id));
+      post.isLiked = false;
+      post.likeCount--;
+    } else {
+      await forumApi.likePost(String(post.id));
+      post.isLiked = true;
+      post.likeCount++;
+    }
+  } catch (error) {
+    console.error('点赞操作失败:', error);
+    uni.showToast({ title: '操作失败', icon: 'none' });
+  }
 };
 
 const sharePost = (post: Post) => {
@@ -867,7 +883,7 @@ const goProductDetail = (item: Product) => {
   
   text {
     font-size: $font-size-xs;
-    color: #FFFFFF;
+    color: $color-white;
   }
 }
 
@@ -906,7 +922,7 @@ const goProductDetail = (item: Product) => {
     
     text {
       font-size: $font-size-xs;
-      color: #FFFFFF;
+      color: $color-white;
       font-weight: $font-weight-medium;
     }
   }
@@ -1009,7 +1025,7 @@ const goProductDetail = (item: Product) => {
     text {
       font-size: $font-size-md;
       font-weight: $font-weight-medium;
-      color: #FFFFFF;
+      color: $color-white;
     }
     
     &.is-followed {
@@ -1091,7 +1107,7 @@ const goProductDetail = (item: Product) => {
     
     .tab-count {
       background: var(--color-primary, #FF6A00);
-      color: #FFFFFF;
+      color: $color-white;
     }
   }
 }
@@ -1445,20 +1461,20 @@ const goProductDetail = (item: Product) => {
       top: 8rpx;
       left: 8rpx;
       background: rgba(0, 0, 0, 0.6);
-      color: #FFFFFF;
+      color: $color-white;
       font-size: $font-size-xs;
       padding: 4rpx 12rpx;
       border-radius: $radius-sm;
       backdrop-filter: blur($blur-sm);
       -webkit-backdrop-filter: blur($blur-sm);
     }
-    
+
     .new-badge {
       position: absolute;
       top: 8rpx;
       right: 8rpx;
       background: $gradient-sunset;
-      color: #FFFFFF;
+      color: $color-white;
       font-size: $font-size-xs;
       padding: 4rpx 12rpx;
       border-radius: $radius-sm;

@@ -431,7 +431,7 @@ const goDeviceCommunity = () => {
     border-radius: $radius-btn;
     padding: $space-md;
     text-align: center;
-    text { font-size: $font-size-md; font-weight: $font-weight-medium; color: #FFFFFF; }
+    text { font-size: $font-size-md; font-weight: $font-weight-medium; color: $color-white; }
   }
 }
 

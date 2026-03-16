@@ -85,7 +85,7 @@ const timeline = ref([
 
 const statusConfig = computed(() => {
   const configs: Record<string, any> = {
-    pending: { icon: 'clock', color: '#FF9500', title: '待处理', desc: '请在48小时内处理' },
+    pending: { icon: 'clock', color: '$color-warning', title: '待处理', desc: '请在48小时内处理' },
     processing: { icon: 'refresh', color: '#007AFF', title: '处理中', desc: '请等待买家退货' },
     completed: { icon: 'check-circle', color: '#34C759', title: '已完成', desc: '售后已完成' }
   };
