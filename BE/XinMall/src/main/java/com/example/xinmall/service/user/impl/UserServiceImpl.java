@@ -83,11 +83,11 @@ public class UserServiceImpl implements UserService {
                 new LambdaQueryWrapper<User>().eq(User::getPhone, request.getPhone())
         );
         if (user == null) {
-            throw new BusinessException("用户不存在");
+            throw new BusinessException("用户或密码错误");
         }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new BusinessException("密码错误");
+            throw new BusinessException("用户或密码错误");
         }
 
         if (user.getStatus() == UserStatus.DISABLED) {
