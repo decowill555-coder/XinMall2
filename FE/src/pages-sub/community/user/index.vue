@@ -25,14 +25,14 @@
           
           <view class="header-actions">
             <view class="back-btn" @click="goBack">
-              <ui-icon name="arrow-left" :size="40" color="#FFFFFF" />
+              <ui-icon name="arrow-left" :size="40" color="white" />
             </view>
             <view class="right-actions">
               <view class="action-btn" @click="handleShare">
-                <ui-icon name="share" :size="40" color="#FFFFFF" />
+                <ui-icon name="share" :size="40" color="white" />
               </view>
               <view class="action-btn" @click="showMoreOptions = true">
-                <ui-icon name="more" :size="40" color="#FFFFFF" />
+                <ui-icon name="more" :size="40" color="white" />
               </view>
             </view>
           </view>
@@ -42,7 +42,7 @@
           <view class="avatar-row">
             <ui-avatar :src="userInfo.avatar" :size="160" :border="true" />
             <view v-if="isOwnProfile" class="edit-btn" @click="goEditProfile">
-              <ui-icon name="edit" :size="28" color="var(--color-primary, #FF6A00)" />
+              <ui-icon name="edit" :size="28" color="primary" />
               <text>编辑</text>
             </view>
             <view v-else class="action-btns">
@@ -51,15 +51,15 @@
                 :class="{ 'is-followed': userInfo.isFollowed }"
                 @click="toggleFollow"
               >
-                <ui-icon 
-                  :name="userInfo.isFollowed ? 'check' : 'plus'" 
-                  :size="32" 
-                  :color="userInfo.isFollowed ? '#34C759' : '#FFFFFF'" 
+                <ui-icon
+                  :name="userInfo.isFollowed ? 'check' : 'plus'"
+                  :size="32"
+                  :color="userInfo.isFollowed ? 'success' : 'white'"
                 />
                 <text>{{ userInfo.isFollowed ? '已关注' : '关注' }}</text>
               </view>
               <view class="message-btn" @click="goChat">
-                <ui-icon name="message-circle" :size="32" color="var(--color-primary, #FF6A00)" />
+                <ui-icon name="message-circle" :size="32" color="primary" />
                 <text>私信</text>
               </view>
             </view>
@@ -69,7 +69,7 @@
             <view class="name-row">
               <text class="user-name">{{ userInfo.name }}</text>
               <view v-if="userInfo.isVerified" class="verified-badge">
-                <ui-icon name="check-circle" :size="28" color="#34C759" />
+                <ui-icon name="check-circle" :size="28" color="success" />
               </view>
               <view v-if="userInfo.levelName" class="level-badge">
                 <text>{{ userInfo.levelName }}</text>
@@ -87,7 +87,7 @@
             </view>
             
             <view class="user-location" v-if="userInfo.location">
-              <ui-icon name="map-pin" :size="24" color="#A1A1A6" />
+              <ui-icon name="map-pin" :size="24" color="placeholder" />
               <text>{{ userInfo.location }}</text>
             </view>
           </view>
@@ -170,15 +170,15 @@
                 
                 <view class="post-footer">
                   <view class="footer-item">
-                    <ui-icon name="heart" :size="28" color="#A1A1A6" />
+                    <ui-icon name="heart" :size="28" color="placeholder" />
                     <text>{{ post.likeCount }}</text>
                   </view>
                   <view class="footer-item">
-                    <ui-icon name="message-circle" :size="28" color="#A1A1A6" />
+                    <ui-icon name="message-circle" :size="28" color="placeholder" />
                     <text>{{ post.commentCount }}</text>
                   </view>
                   <view class="footer-item">
-                    <ui-icon name="star" :size="28" color="#A1A1A6" />
+                    <ui-icon name="star" :size="28" color="placeholder" />
                     <text>{{ post.collectCount }}</text>
                   </view>
                 </view>
@@ -194,7 +194,7 @@
             </view>
             
             <view v-if="!postsLoading && postsList.length === 0" class="empty-state">
-              <ui-icon name="file-text" :size="120" color="#C7C7CC" />
+              <ui-icon name="file-text" :size="120" color="disabled" />
               <text class="empty-text">暂无帖子</text>
             </view>
           </view>
@@ -216,11 +216,11 @@
                 
                 <view class="post-footer">
                   <view class="footer-item">
-                    <ui-icon name="heart" :size="28" color="#A1A1A6" />
+                    <ui-icon name="heart" :size="28" color="placeholder" />
                     <text>{{ post.likeCount }}</text>
                   </view>
                   <view class="footer-item">
-                    <ui-icon name="message-circle" :size="28" color="#A1A1A6" />
+                    <ui-icon name="message-circle" :size="28" color="placeholder" />
                     <text>{{ post.commentCount }}</text>
                   </view>
                 </view>
@@ -228,7 +228,7 @@
             </view>
             
             <view v-if="!collectionsLoading && collectionsList.length === 0" class="empty-state">
-              <ui-icon name="star" :size="120" color="#C7C7CC" />
+              <ui-icon name="star" :size="120" color="disabled" />
               <text class="empty-text">暂无收藏</text>
             </view>
           </view>
@@ -250,11 +250,11 @@
                 
                 <view class="post-footer">
                   <view class="footer-item">
-                    <ui-icon name="heart-fill" :size="28" color="#FF3B30" />
+                    <ui-icon name="heart-fill" :size="28" color="error" />
                     <text>{{ post.likeCount }}</text>
                   </view>
                   <view class="footer-item">
-                    <ui-icon name="message-circle" :size="28" color="#A1A1A6" />
+                    <ui-icon name="message-circle" :size="28" color="placeholder" />
                     <text>{{ post.commentCount }}</text>
                   </view>
                 </view>
@@ -262,7 +262,7 @@
             </view>
             
             <view v-if="!likesLoading && likesList.length === 0" class="empty-state">
-              <ui-icon name="heart" :size="120" color="#C7C7CC" />
+              <ui-icon name="heart" :size="120" color="disabled" />
               <text class="empty-text">暂无点赞</text>
             </view>
           </view>
@@ -320,7 +320,7 @@
             </view>
             
             <view v-if="!goodsLoading && goodsList.length === 0" class="empty-state">
-              <ui-icon name="shopping-bag" :size="120" color="#C7C7CC" />
+              <ui-icon name="shopping-bag" :size="120" color="disabled" />
               <text class="empty-text">暂无商品</text>
             </view>
           </view>

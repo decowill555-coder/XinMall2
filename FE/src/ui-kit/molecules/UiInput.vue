@@ -35,7 +35,7 @@
         class="ui-input__icon-btn" 
         @tap.stop="handleClear"
       >
-        <UiIcon name="close-circle-fill" :color="'#A1A1A6'" :size="40" />
+        <UiIcon name="close-circle-fill" color="placeholder" :size="40" />
       </view>
 
       <!-- 密码切换 -->
@@ -44,7 +44,7 @@
         class="ui-input__icon-btn" 
         @tap.stop="togglePassword"
       >
-        <UiIcon :name="showPassword ? 'eye' : 'eye-off'" :color="'#6E6E73'" size="36" />
+        <UiIcon :name="showPassword ? 'eye' : 'eye-off'" color="sub" size="36" />
       </view>
     </view>
 

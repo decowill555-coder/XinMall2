@@ -9,7 +9,7 @@
         <view class="header-center">
           <text class="page-title">{{ deviceTypeName }}</text>
           <view class="search-bar" @click="goSearch">
-            <ui-icon name="search" :size="32" color="#A1A1A6" />
+            <ui-icon name="search" :size="32" color="placeholder" />
             <text class="search-placeholder">搜索{{ deviceTypeName }}型号...</text>
           </view>
         </view>
@@ -49,18 +49,18 @@
                 <ui-icon
                   name="arrow-up"
                   :size="20"
-                  :color="priceSortOrder === 'asc' ? '#FF6A00' : '#C7C7CC'"
+                  :color="priceSortOrder === 'asc' ? 'primary' : 'disabled'"
                 />
                 <ui-icon
                   name="arrow-down"
                   :size="20"
-                  :color="priceSortOrder === 'desc' ? '#FF6A00' : '#C7C7CC'"
+                  :color="priceSortOrder === 'desc' ? 'primary' : 'disabled'"
                 />
               </view>
             </view>
           </view>
           <view class="filter-btn" @click="openFilterSidebar">
-            <ui-icon name="filter" :size="32" color="#FF6A00" />
+            <ui-icon name="filter" :size="32" color="primary" />
             <text class="filter-btn-text">筛选</text>
             <view v-if="filterCount > 0" class="filter-dot" />
           </view>
@@ -82,7 +82,7 @@
                     radius="12rpx 12rpx 0 0"
                   />
                   <view class="community-badge">
-                    <ui-icon name="users" :size="20" color="#FFFFFF" />
+                    <ui-icon name="users" :size="20" color="white" />
                     <text>{{ item.memberCount || '1.2万' }}</text>
                   </view>
                 </view>
@@ -105,7 +105,7 @@
                     </view>
                     <view class="community-arrow">
                       <text class="community-text">进入社区</text>
-                      <ui-icon name="arrow-right" :size="24" color="#FF6A00" />
+                      <ui-icon name="arrow-right" :size="24" color="primary" />
                     </view>
                   </view>
                 </view>
@@ -122,7 +122,7 @@
           </view>
 
           <view v-if="!loading && productList.length === 0" class="empty-state">
-            <ui-icon name="inbox" :size="120" color="#C7C7CC" />
+            <ui-icon name="inbox" :size="120" color="disabled" />
             <text class="empty-text">暂无相关商品</text>
           </view>
         </view>

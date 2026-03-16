@@ -85,7 +85,7 @@
         </view>
         
         <view class="publish-location" v-if="product.location">
-          <ui-icon name="map-pin" :size="28" color="#A1A1A6" />
+          <ui-icon name="map-pin" :size="28" color="placeholder" />
           <text>{{ product.location }}</text>
         </view>
         
@@ -104,7 +104,7 @@
       </template>
       
       <view v-else class="error-state">
-        <ui-icon name="error-circle" :size="120" color="#C7C7CC" />
+        <ui-icon name="error-circle" :size="120" color="disabled" />
         <text class="error-text">商品不存在或已下架</text>
         <ui-button size="sm" @click="goBack">返回</ui-button>
       </view>
@@ -116,14 +116,14 @@
           <ui-icon 
             :name="isCollected ? 'heart-fill' : 'heart'" 
             :size="40" 
-            :color="isCollected ? '#FF3B30' : '#A1A1A6'" 
+            :color="isCollected ? 'error' : 'placeholder'" 
           />
           <text>{{ isCollected ? '已收藏' : '收藏' }}</text>
         </view>
       </view>
       <view class="action-btns">
         <ui-button class="btn-chat" @click="handleChat">
-          <ui-icon name="message" :size="32" color="#FF6A00" />
+          <ui-icon name="message" :size="32" color="primary" />
           <text>聊一聊</text>
         </ui-button>
         <ui-button class="btn-buy" type="primary" @click="handleBuy">立即购买</ui-button>

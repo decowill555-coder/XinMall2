@@ -19,7 +19,7 @@
               </view>
               <text class="mode-name">{{ mode.label }}</text>
               <view v-if="themeStore.config.mode === mode.value" class="mode-check">
-                <ui-icon name="check" :size="32" color="#1ABC9C" />
+                <ui-icon name="check" :size="32" color="success" />
               </view>
             </view>
           </view>
@@ -37,7 +37,7 @@
             >
               <view class="color-preview" :style="{ background: color.colors.primary }">
                 <view v-if="themeStore.config.color === color.key" class="color-check">
-                  <ui-icon name="check" :size="32" color="#FFFFFF" />
+                  <ui-icon name="check" :size="32" color="white" />
                 </view>
               </view>
               <text class="color-name">{{ color.name }}</text>
@@ -58,7 +58,7 @@
               <text class="font-size-label">{{ size.label }}</text>
               <text class="font-size-preview" :style="{ fontSize: size.previewSize }">Aa</text>
               <view v-if="themeStore.config.fontSize === size.value" class="font-size-check">
-                <ui-icon name="check" :size="32" color="#1ABC9C" />
+                <ui-icon name="check" :size="32" color="success" />
               </view>
             </view>
           </view>
@@ -77,7 +77,7 @@
               <view class="radius-preview" :style="{ borderRadius: radius.previewRadius }"></view>
               <text class="radius-label">{{ radius.label }}</text>
               <view v-if="themeStore.config.borderRadius === radius.value" class="radius-check">
-                <ui-icon name="check" :size="32" color="#1ABC9C" />
+                <ui-icon name="check" :size="32" color="success" />
               </view>
             </view>
           </view>
@@ -91,7 +91,7 @@
               <switch 
                 :checked="themeStore.config.animationEnabled" 
                 @change="handleAnimationToggle"
-                color="#1ABC9C"
+                color="success"
               />
             </view>
             <view class="setting-item">
@@ -99,7 +99,7 @@
               <switch 
                 :checked="themeStore.config.glassEffectEnabled" 
                 @change="handleGlassEffectToggle"
-                color="#1ABC9C"
+                color="success"
               />
             </view>
             <view class="setting-item">
@@ -107,7 +107,7 @@
               <switch 
                 :checked="themeStore.config.highContrast" 
                 @change="handleHighContrastToggle"
-                color="#1ABC9C"
+                color="success"
               />
             </view>
           </view>

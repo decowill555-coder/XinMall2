@@ -24,7 +24,7 @@
           >
             <template #right>
               <view class="item-action" @click.stop="cancelCollect(item)">
-                <ui-icon name="heart-fill" :size="40" color="#FF3D00" />
+                <ui-icon name="heart-fill" :size="40" color="error" />
               </view>
             </template>
           </ui-goods-list-item>

@@ -20,7 +20,7 @@
                   mode="aspectFill"
                 />
                 <view class="delete-btn" @click.stop="removeImage(index)">
-                  <ui-icon name="close" :size="24" color="#FFFFFF" />
+                  <ui-icon name="close" :size="24" color="white" />
                 </view>
                 <view v-if="index === 0" class="cover-tag">
                   <text>封面</text>
@@ -32,7 +32,7 @@
                 class="add-image-btn"
                 @click="chooseImage"
               >
-                <ui-icon name="camera" :size="48" color="#C7C7CC" />
+                <ui-icon name="camera" :size="48" color="disabled" />
                 <text class="add-text">添加图片</text>
                 <text class="add-hint">{{ imageList.length }}/9</text>
               </view>

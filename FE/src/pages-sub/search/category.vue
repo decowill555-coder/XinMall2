@@ -9,7 +9,7 @@
         <view class="header-center">
           <text class="page-title">找产品</text>
           <view class="search-bar" @click="goSearch">
-            <ui-icon name="search" :size="32" color="#A1A1A6" />
+            <ui-icon name="search" :size="32" color="placeholder" />
             <text class="search-placeholder">搜索产品类型...</text>
           </view>
         </view>
@@ -29,7 +29,7 @@
           <view class="section-header">
             <view class="section-title-wrapper">
               <view class="section-icon">
-                <ui-icon name="grid" :size="32" color="#FF6A00" />
+                <ui-icon name="grid" :size="32" color="primary" />
               </view>
               <text class="section-title">设备类型</text>
             </view>

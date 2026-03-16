@@ -17,7 +17,7 @@
             <ui-icon 
               :name="item.isSelected ? 'check-circle-fill' : 'circle'" 
               :size="40" 
-              :color="item.isSelected ? '#1ABC9C' : '#A1A1A6'" 
+              :color="item.isSelected ? 'success' : 'placeholder'" 
             />
           </view>
           <ui-image :src="item.cover" width="180rpx" height="180rpx" radius="12rpx" />
@@ -39,7 +39,7 @@
           <ui-icon 
             :name="isAllSelected ? 'check-circle-fill' : 'circle'" 
             :size="40" 
-            :color="isAllSelected ? '#1ABC9C' : '#A1A1A6'" 
+            :color="isAllSelected ? 'success' : 'placeholder'" 
           />
           <text>全选</text>
         </view>

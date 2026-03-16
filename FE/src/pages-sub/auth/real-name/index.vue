@@ -5,7 +5,7 @@
     <scroll-view scroll-y class="auth-scroll" :style="{ height: scrollHeight + 'px' }">
       <view class="auth-content">
         <view class="auth-tips">
-          <ui-icon name="shield" :size="40" color="#1ABC9C" />
+          <ui-icon name="shield" :size="40" color="success" />
           <text class="tips-text">实名认证后可发布商品、提现等功能</text>
         </view>
         

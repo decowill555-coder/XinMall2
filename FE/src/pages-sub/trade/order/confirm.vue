@@ -27,7 +27,7 @@
               <ui-icon name="plus" :size="36" color="var(--color-primary, #FF6A00)" />
               <text>添加收货地址</text>
             </view>
-            <ui-icon name="arrow-right" :size="32" color="#C7C7CC" />
+            <ui-icon name="arrow-right" :size="32" color="disabled" />
           </view>
           
           <view class="goods-card">
@@ -60,7 +60,7 @@
               <text class="info-label">订单备注</text>
               <view class="info-right">
                 <text class="info-value">{{ remark || '选填，建议与卖家协商一致' }}</text>
-                <ui-icon name="arrow-right" :size="28" color="#C7C7CC" />
+                <ui-icon name="arrow-right" :size="28" color="disabled" />
               </view>
             </view>
           </view>

@@ -55,14 +55,14 @@
               :class="{ 'is-active': viewMode === 'list' }"
               @click="viewMode = 'list'"
             >
-              <ui-icon name="list" :size="32" :color="viewMode === 'list' ? '#1ABC9C' : ''" />
+              <ui-icon name="list" :size="32" :color="viewMode === 'list' ? 'success' : ''" />
             </view>
             <view 
               class="toggle-item" 
               :class="{ 'is-active': viewMode === 'waterfall' }"
               @click="viewMode = 'waterfall'"
             >
-              <ui-icon name="grid" :size="32" :color="viewMode === 'waterfall' ? '#1ABC9C' : ''" />
+              <ui-icon name="grid" :size="32" :color="viewMode === 'waterfall' ? 'success' : ''" />
             </view>
           </view>
         </view>

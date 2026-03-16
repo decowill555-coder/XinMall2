@@ -57,7 +57,7 @@
             >
               <image :src="img" class="preview-image" mode="aspectFill" />
               <view class="delete-btn" @click="removeImage(index)">
-                <ui-icon name="x" :size="24" color="#FFFFFF" />
+                <ui-icon name="x" :size="24" color="white" />
               </view>
               <view 
                 v-if="index === 0" 
@@ -72,7 +72,7 @@
               class="add-image-btn"
               @click="chooseImage"
             >
-              <ui-icon name="plus" :size="48" color="#C7C7CC" />
+              <ui-icon name="plus" :size="48" color="disabled" />
               <text>添加图片</text>
             </view>
           </view>
@@ -109,7 +109,7 @@
               @focus="showTopicSearch = true"
             />
             <view v-if="topicKeyword" class="clear-btn" @click="clearTopicKeyword">
-              <ui-icon name="x" :size="28" color="#C7C7CC" />
+              <ui-icon name="x" :size="28" color="disabled" />
             </view>
           </view>
           
@@ -122,7 +122,7 @@
             >
               <ui-avatar v-if="result.icon" :src="result.icon" :size="48" />
               <view v-else class="result-icon">
-                <ui-icon name="hash" :size="32" color="var(--color-primary, #FF6A00)" />
+                <ui-icon name="hash" :size="32" color="primary" />
               </view>
               <view class="result-info">
                 <text class="result-name">{{ result.name }}</text>
@@ -179,7 +179,7 @@
         <view class="options-section">
           <view class="option-item">
             <view class="option-left">
-              <ui-icon name="eye" :size="36" color="#A1A1A6" />
+              <ui-icon name="eye" :size="36" color="placeholder" />
               <text class="option-label">公开可见</text>
             </view>
             <ui-switch v-model="isPublic" />
@@ -187,7 +187,7 @@
           
           <view class="option-item">
             <view class="option-left">
-              <ui-icon name="message-circle" :size="36" color="#A1A1A6" />
+              <ui-icon name="message-circle" :size="36" color="placeholder" />
               <text class="option-label">允许评论</text>
             </view>
             <ui-switch v-model="allowComment" />
@@ -195,20 +195,20 @@
           
           <view class="option-item" @click="showProductPicker = true">
             <view class="option-left">
-              <ui-icon name="shopping-bag" :size="36" color="#A1A1A6" />
+              <ui-icon name="shopping-bag" :size="36" color="placeholder" />
               <text class="option-label">关联商品</text>
             </view>
             <view class="option-right">
               <text v-if="relatedProduct" class="option-value">{{ relatedProduct.title }}</text>
               <text v-else class="option-placeholder">可选</text>
-              <ui-icon name="arrow-right" :size="32" color="#C7C7CC" />
+              <ui-icon name="arrow-right" :size="32" color="disabled" />
             </view>
           </view>
         </view>
         
         <view class="tips-section">
           <view class="tips-header">
-            <ui-icon name="info" :size="28" color="var(--color-primary, #FF6A00)" />
+            <ui-icon name="info" :size="28" color="primary" />
             <text class="tips-title">发帖提示</text>
           </view>
           <view class="tips-content">
@@ -228,7 +228,7 @@
         <view class="picker-header">
           <text class="picker-title">选择商品</text>
           <view class="picker-close" @click="showProductPicker = false">
-            <ui-icon name="x" :size="40" color="#A1A1A6" />
+            <ui-icon name="x" :size="40" color="placeholder" />
           </view>
         </view>
         <scroll-view scroll-y class="picker-content">

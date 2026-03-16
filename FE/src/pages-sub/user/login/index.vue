@@ -67,13 +67,13 @@
       <view class="login-icons">
         <view class="icon-item" @click="loginByWechat">
           <view class="icon-circle wechat">
-            <ui-icon name="message" :size="44" color="#FFFFFF" />
+            <ui-icon name="message" :size="44" color="white" />
           </view>
           <text>微信</text>
         </view>
         <view class="icon-item" @click="loginByAlipay">
           <view class="icon-circle alipay">
-            <ui-icon name="credit-card" :size="44" color="#FFFFFF" />
+            <ui-icon name="credit-card" :size="44" color="white" />
           </view>
           <text>支付宝</text>
         </view>

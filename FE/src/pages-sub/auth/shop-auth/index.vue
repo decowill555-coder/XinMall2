@@ -4,7 +4,7 @@
     
     <scroll-view scroll-y class="auth-scroll" :style="{ height: scrollHeight + 'px' }">
       <view class="auth-tips">
-        <ui-icon name="store" ::size="40" color="#1ABC9C" />
+        <ui-icon name="store" :size="40" color="success" />
         <text class="tips-text">店铺认证后可开通店铺、发布商品等功能</text>
       </view>
       

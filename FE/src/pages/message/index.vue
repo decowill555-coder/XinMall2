@@ -102,7 +102,7 @@
         </view>
         
         <view class="empty-state" v-if="isEmpty">
-          <ui-icon name="message" :size="80" color="#A1A1A6" />
+          <ui-icon name="message" :size="80" color="placeholder" />
           <ui-text size="md" color="placeholder" class="empty-text">暂无消息</ui-text>
         </view>
       </scroll-view>
@@ -166,7 +166,7 @@ const systemMessages = ref([
   {
     id: 1,
     icon: 'check-circle',
-    iconColor: '#00C853',
+    iconColor: 'var(--color-success)',
     title: '订单发货通知',
     content: '您购买的 iPhone 15 Pro Max 已发货，预计3天内送达',
     time: formatTimeAgo(Date.now() - 2 * 60 * 60 * 1000)
@@ -174,7 +174,7 @@ const systemMessages = ref([
   {
     id: 2,
     icon: 'info-circle',
-    iconColor: '#00B8D4',
+    iconColor: 'var(--color-info)',
     title: '实名认证成功',
     content: '恭喜您完成实名认证，现在可以发布商品了',
     time: formatTimeAgo(Date.now() - 24 * 60 * 60 * 1000)
@@ -182,7 +182,7 @@ const systemMessages = ref([
   {
     id: 3,
     icon: 'close-circle',
-    iconColor: '#FF3D00',
+    iconColor: 'var(--color-error)',
     title: '商品审核未通过',
     content: '您发布的商品"测试商品"因信息不完整被驳回，请补充后重新提交',
     time: formatTimeAgo(Date.now() - 3 * 24 * 60 * 60 * 1000)
@@ -190,7 +190,7 @@ const systemMessages = ref([
   {
     id: 4,
     icon: 'check-circle',
-    iconColor: '#00C853',
+    iconColor: 'var(--color-success)',
     title: '交易成功',
     content: '您出售的"MacBook Pro 2023"已成功交易，款项已到账',
     time: formatTimeAgo(Date.now() - 5 * 60 * 1000)
@@ -198,7 +198,7 @@ const systemMessages = ref([
   {
     id: 5,
     icon: 'info-circle',
-    iconColor: '#00B8D4',
+    iconColor: 'var(--color-info)',
     title: '账户安全提醒',
     content: '您的账号于今日在新设备登录，如非本人操作请及时修改密码',
     time: formatTimeAgo(Date.now() - 30 * 60 * 1000)

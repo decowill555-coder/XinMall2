@@ -7,7 +7,7 @@
           <ui-icon name="arrow-left" :size="40" />
         </view>
         <view class="search-bar" @click="goSearchPage">
-          <ui-icon name="search" :size="32" color="#A1A1A6" />
+          <ui-icon name="search" :size="32" color="placeholder" />
           <text class="search-placeholder">{{ displayKeyword }}</text>
         </view>
       </view>
@@ -32,13 +32,13 @@
             >
               <text class="tab-text">{{ tab.label }}</text>
               <view v-if="tab.value === 'price'" class="sort-arrows">
-                <ui-icon name="arrow-up" :size="20" :color="priceSortOrder === 'asc' ? '#FF6A00' : '#C7C7CC'" />
-                <ui-icon name="arrow-down" :size="20" :color="priceSortOrder === 'desc' ? '#FF6A00' : '#C7C7CC'" />
+                <ui-icon name="arrow-up" :size="20" :color="priceSortOrder === 'asc' ? 'primary' : 'disabled'" />
+                <ui-icon name="arrow-down" :size="20" :color="priceSortOrder === 'desc' ? 'primary' : 'disabled'" />
               </view>
             </view>
           </view>
           <view class="filter-btn" @click="showFilterSidebar = true">
-            <ui-icon name="filter" :size="32" color="#FF6A00" />
+            <ui-icon name="filter" :size="32" color="primary" />
             <text class="filter-btn-text">筛选</text>
           </view>
         </view>
@@ -48,10 +48,10 @@
             <text class="result-count">共 {{ totalCount }} 件商品</text>
             <view class="view-toggle">
               <view class="toggle-item" :class="{ 'is-active': viewMode === 'list' }" @click="viewMode = 'list'">
-                <ui-icon name="list" :size="32" :color="viewMode === 'list' ? '#FF6A00' : ''" />
+                <ui-icon name="list" :size="32" :color="viewMode === 'list' ? 'primary' : ''" />
               </view>
               <view class="toggle-item" :class="{ 'is-active': viewMode === 'waterfall' }" @click="viewMode = 'waterfall'">
-                <ui-icon name="grid" :size="32" :color="viewMode === 'waterfall' ? '#FF6A00' : ''" />
+                <ui-icon name="grid" :size="32" :color="viewMode === 'waterfall' ? 'primary' : ''" />
               </view>
             </view>
           </view>
@@ -89,7 +89,7 @@
           <view v-if="loading" class="loading-more"><text>加载中...</text></view>
           <view v-if="!hasMore && productList.length > 0" class="no-more"><text>没有更多了</text></view>
           <view v-if="!loading && productList.length === 0" class="empty-state">
-            <ui-icon name="inbox" :size="120" color="#C7C7CC" />
+            <ui-icon name="inbox" :size="120" color="disabled" />
             <text class="empty-text">暂无相关商品</text>
           </view>
         </view>
@@ -104,7 +104,7 @@
           <text class="model-brand">{{ currentModel.brand }}</text>
           <view class="model-community">
             <text class="community-text">进入设备社区</text>
-            <ui-icon name="arrow-right" :size="28" color="#FF6A00" />
+            <ui-icon name="arrow-right" :size="28" color="primary" />
           </view>
         </view>
       </view>

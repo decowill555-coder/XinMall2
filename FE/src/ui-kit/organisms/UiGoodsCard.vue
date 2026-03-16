@@ -17,7 +17,7 @@
         />
         <!-- 视频标识 -->
         <view v-if="data.isVideo" class="video-tag">
-           <ui-icon name="play" :size="40" color="#FFFFFF" />
+           <ui-icon name="play" :size="40" color="white" />
         </view>
       </view>
 
@@ -38,7 +38,7 @@
           <view class="action-info">
             <ui-price v-if="data.price" :value="data.price" :size="28" :bold="true" />
             <view v-else class="like-box">
-              <ui-icon name="heart" :size="40" :color="'#6E6E73'" />
+              <ui-icon name="heart" :size="40" color="sub" />
               <text class="like-count">{{ data.likeCount }}</text>
             </view>
           </view>
@@ -82,7 +82,7 @@
 
           <!-- 底部价格�?-->
           <view class="list-footer">
-            <ui-price :value="data.price" :size="36" color="#FF3D00" />
+            <ui-price :value="data.price" :size="36" color="error" />
             <text class="post-time">{{ data.timeStr }}</text>
           </view>
         </view>

@@ -49,7 +49,7 @@
           <template #extra>
             <view class="section-more" @click="goOrders">
               <ui-text size="sm" color="sub">全部订单</ui-text>
-              <ui-icon name="arrow-right" :size="32" color="#6E6E73" />
+              <ui-icon name="arrow-right" :size="32" color="sub" />
             </view>
           </template>
           

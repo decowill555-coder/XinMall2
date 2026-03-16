@@ -41,20 +41,20 @@
           </view>
           
           <view v-if="post.forumName" class="forum-info" @click="goForum">
-            <ui-icon name="message" :size="28" color="var(--color-primary, #FF6A00)" />
+            <ui-icon name="message" :size="28" color="primary" />
             <text class="forum-name">{{ post.forumName }}</text>
-            <ui-icon name="arrow-right" :size="24" color="#C7C7CC" />
+            <ui-icon name="arrow-right" :size="24" color="disabled" />
           </view>
         </view>
         
         <view class="post-content">
           <view class="post-badges">
             <view v-if="post.isPinned" class="badge pinned">
-              <ui-icon name="arrow-up" :size="24" color="#FFFFFF" />
+              <ui-icon name="arrow-up" :size="24" color="white" />
               <text>置顶</text>
             </view>
             <view v-if="post.isEssence" class="badge essence">
-              <ui-icon name="star" :size="24" color="#FFFFFF" />
+              <ui-icon name="star" :size="24" color="white" />
               <text>精华</text>
             </view>
           </view>
@@ -90,11 +90,11 @@
           
           <view class="post-stats">
             <view class="stat-item">
-              <ui-icon name="eye" :size="28" color="#A1A1A6" />
+              <ui-icon name="eye" :size="28" color="placeholder" />
               <text>{{ formatCount(post.viewCount) }}浏览</text>
             </view>
             <view class="stat-item">
-              <ui-icon name="share" :size="28" color="#A1A1A6" />
+              <ui-icon name="share" :size="28" color="placeholder" />
               <text>{{ formatCount(post.shareCount) }}分享</text>
             </view>
           </view>
@@ -106,15 +106,15 @@
             :class="{ 'is-active': post.isLiked }"
             @click="toggleLike"
           >
-            <ui-icon 
-              :name="post.isLiked ? 'heart-fill' : 'heart'" 
-              :size="40" 
-              :color="post.isLiked ? '#FF3B30' : '#A1A1A6'" 
+            <ui-icon
+              :name="post.isLiked ? 'heart-fill' : 'heart'"
+              :size="40"
+              :color="post.isLiked ? 'error' : 'placeholder'"
             />
             <text>{{ formatCount(post.likeCount) }}</text>
           </view>
           <view class="interact-item">
-            <ui-icon name="message" :size="40" color="#A1A1A6" />
+            <ui-icon name="message" :size="40" color="placeholder" />
             <text>{{ formatCount(post.commentCount) }}</text>
           </view>
           <view 
@@ -122,15 +122,15 @@
             :class="{ 'is-active': post.isCollected }"
             @click="toggleCollect"
           >
-            <ui-icon 
-              :name="post.isCollected ? 'star-fill' : 'star'" 
-              :size="40" 
-              :color="post.isCollected ? '#FF9500' : '#A1A1A6'" 
+            <ui-icon
+              :name="post.isCollected ? 'star-fill' : 'star'"
+              :size="40"
+              :color="post.isCollected ? 'warning' : 'placeholder'"
             />
             <text>{{ post.isCollected ? '已收藏' : '收藏' }}</text>
           </view>
           <view class="interact-item" @click="handleShare">
-            <ui-icon name="share" :size="40" color="#A1A1A6" />
+            <ui-icon name="share" :size="40" color="placeholder" />
             <text>分享</text>
           </view>
         </view>
@@ -154,7 +154,7 @@
           </view>
           
           <view v-if="comments.length === 0 && !commentLoading" class="empty-comments">
-            <ui-icon name="message" :size="80" color="#C7C7CC" />
+            <ui-icon name="message" :size="80" color="disabled" />
             <text class="empty-text">暂无评论，快来抢沙发吧~</text>
           </view>
           
@@ -200,15 +200,15 @@
                       :class="{ 'is-liked': comment.isLiked }"
                       @click="likeComment(comment)"
                     >
-                      <ui-icon 
-                        :name="comment.isLiked ? 'heart-fill' : 'heart'" 
-                        :size="28" 
-                        :color="comment.isLiked ? '#FF3B30' : '#A1A1A6'" 
+                      <ui-icon
+                        :name="comment.isLiked ? 'heart-fill' : 'heart'"
+                        :size="28"
+                        :color="comment.isLiked ? 'error' : 'placeholder'"
                       />
                       <text>{{ comment.likeCount || '' }}</text>
                     </view>
                     <view class="action-item" @click="replyToComment(comment)">
-                      <ui-icon name="message" :size="28" color="#A1A1A6" />
+                      <ui-icon name="message" :size="28" color="placeholder" />
                       <text>回复</text>
                     </view>
                   </view>
@@ -240,15 +240,15 @@
                             :class="{ 'is-liked': reply.isLiked }"
                             @click="likeComment(reply)"
                           >
-                            <ui-icon 
-                              :name="reply.isLiked ? 'heart-fill' : 'heart'" 
-                              :size="24" 
-                              :color="reply.isLiked ? '#FF3B30' : '#A1A1A6'" 
-                            />
+                            <ui-icon
+                            :name="reply.isLiked ? 'heart-fill' : 'heart'"
+                            :size="24"
+                            :color="reply.isLiked ? 'error' : 'placeholder'"
+                          />
                             <text>{{ reply.likeCount || '' }}</text>
                           </view>
                           <view class="action-item" @click="replyToComment(reply, comment)">
-                            <ui-icon name="message" :size="24" color="#A1A1A6" />
+                            <ui-icon name="message" :size="24" color="placeholder" />
                             <text>回复</text>
                           </view>
                         </view>
@@ -261,7 +261,7 @@
                       @click="loadMoreReplies(comment)"
                     >
                       <text>展开更多{{ comment.replyCount - (comment.replies?.length || 0) }}条回复</text>
-                      <ui-icon name="arrow-down" :size="24" color="var(--color-primary, #FF6A00)" />
+                      <ui-icon name="arrow-down" :size="24" color="primary" />
                     </view>
                   </view>
                 </view>
@@ -280,7 +280,7 @@
       </template>
       
       <view v-else class="error-state">
-        <ui-icon name="error-circle" :size="120" color="#C7C7CC" />
+        <ui-icon name="error-circle" :size="120" color="disabled" />
         <text class="error-text">帖子不存在或已删除</text>
         <ui-button size="sm" @click="goBack">返回</ui-button>
       </view>

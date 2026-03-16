@@ -21,7 +21,7 @@
           <view class="avatar-wrapper" @click="changeAvatar">
             <ui-avatar :src="userInfo.avatar" :size="160" :bordered="true" />
             <view class="avatar-edit">
-              <ui-icon name="camera" :size="32" color="#FFFFFF" />
+              <ui-icon name="camera" :size="32" color="white" />
             </view>
           </view>
           <text class="avatar-tip">点击更换头像</text>
@@ -36,7 +36,7 @@
               </view>
               <view class="form-value">
                 <text class="value-text">{{ userInfo.nickname || '未设置' }}</text>
-                <ui-icon name="arrow-right" :size="36" color="#A1A1AA" />
+                <ui-icon name="arrow-right" :size="36" color="sub" />
               </view>
             </view>
             
@@ -47,7 +47,7 @@
               </view>
               <view class="form-value">
                 <text class="value-text signature">{{ userInfo.signature || '未设置' }}</text>
-                <ui-icon name="arrow-right" :size="36" color="#A1A1AA" />
+                <ui-icon name="arrow-right" :size="36" color="sub" />
               </view>
             </view>
             
@@ -58,7 +58,7 @@
               </view>
               <view class="form-value">
                 <text class="value-text">{{ genderText }}</text>
-                <ui-icon name="arrow-right" :size="36" color="#A1A1AA" />
+                <ui-icon name="arrow-right" :size="36" color="sub" />
               </view>
             </view>
             
@@ -69,7 +69,7 @@
               </view>
               <view class="form-value">
                 <text class="value-text">{{ userInfo.birthday || '未设置' }}</text>
-                <ui-icon name="arrow-right" :size="36" color="#A1A1AA" />
+                <ui-icon name="arrow-right" :size="36" color="sub" />
               </view>
             </view>
             
@@ -80,7 +80,7 @@
               </view>
               <view class="form-value">
                 <text class="value-text">{{ userInfo.location || '未设置' }}</text>
-                <ui-icon name="arrow-right" :size="36" color="#A1A1AA" />
+                <ui-icon name="arrow-right" :size="36" color="sub" />
               </view>
             </view>
           </ui-card>
@@ -108,7 +108,7 @@
                 <text class="value-text" :class="{ 'verified': userInfo.isVerified }">
                   {{ userInfo.isVerified ? '已认证' : '未认证' }}
                 </text>
-                <ui-icon name="arrow-right" :size="36" color="#A1A1AA" />
+                <ui-icon name="arrow-right" :size="36" color="sub" />
               </view>
             </view>
             
@@ -121,7 +121,7 @@
                 <text class="value-text" :class="{ 'verified': userInfo.isShopVerified }">
                   {{ userInfo.isShopVerified ? '已认证' : '未认证' }}
                 </text>
-                <ui-icon name="arrow-right" :size="36" color="#A1A1AA" />
+                <ui-icon name="arrow-right" :size="36" color="sub" />
               </view>
             </view>
           </ui-card>
@@ -136,7 +136,7 @@
                 <text class="label-text">我的二维码</text>
               </view>
               <view class="form-value">
-                <ui-icon name="arrow-right" :size="36" color="#A1A1AA" />
+                <ui-icon name="arrow-right" :size="36" color="sub" />
               </view>
             </view>
             
@@ -146,7 +146,7 @@
                 <text class="label-text">分享主页</text>
               </view>
               <view class="form-value">
-                <ui-icon name="arrow-right" :size="36" color="#A1A1AA" />
+                <ui-icon name="arrow-right" :size="36" color="sub" />
               </view>
             </view>
           </ui-card>
@@ -172,7 +172,7 @@
               :class="{ 'is-selected': tempGender === 1 }"
               @click="tempGender = 1"
             >
-              <ui-icon name="user" :size="48" :color="tempGender === 1 ? 'var(--color-primary)' : '#A1A1AA'" />
+              <ui-icon name="user" :size="48" :color="tempGender === 1 ? 'primary' : 'sub'" />
               <text>男</text>
             </view>
             <view 
@@ -180,7 +180,7 @@
               :class="{ 'is-selected': tempGender === 2 }"
               @click="tempGender = 2"
             >
-              <ui-icon name="user" :size="48" :color="tempGender === 2 ? 'var(--color-primary)' : '#A1A1AA'" />
+              <ui-icon name="user" :size="48" :color="tempGender === 2 ? 'primary' : 'sub'" />
               <text>女</text>
             </view>
             <view 
@@ -188,7 +188,7 @@
               :class="{ 'is-selected': tempGender === 0 }"
               @click="tempGender = 0"
             >
-              <ui-icon name="help-circle" :size="48" :color="tempGender === 0 ? 'var(--color-primary)' : '#A1A1AA'" />
+              <ui-icon name="help-circle" :size="48" :color="tempGender === 0 ? 'primary' : 'sub'" />
               <text>保密</text>
             </view>
           </view>

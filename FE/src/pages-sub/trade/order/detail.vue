@@ -13,7 +13,7 @@
         <view class="status-card">
           <view class="status-icon-wrapper">
             <view class="status-icon">
-              <ui-icon :name="statusConfig.icon" :size="48" color="#FFFFFF" />
+              <ui-icon :name="statusConfig.icon" :size="48" color="white" />
             </view>
             <view class="status-glow"></view>
           </view>

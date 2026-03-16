@@ -36,14 +36,14 @@
           
           <view class="swiper-overlay">
             <view class="back-btn" @click="goBack">
-              <ui-icon name="arrow-left" :size="40" color="#FFFFFF" />
+              <ui-icon name="arrow-left" :size="40" color="white" />
             </view>
             <view class="header-actions">
               <view class="action-btn" @click="handleShare">
-                <ui-icon name="share" :size="40" color="#FFFFFF" />
+                <ui-icon name="share" :size="40" color="white" />
               </view>
               <view class="action-btn" @click="handleMore">
-                <ui-icon name="more" :size="40" color="#FFFFFF" />
+                <ui-icon name="more" :size="40" color="white" />
               </view>
             </view>
           </view>
@@ -58,7 +58,7 @@
             <view class="device-title-row">
               <text class="device-name">{{ deviceInfo.name }}</text>
               <view v-if="deviceInfo.isHot" class="hot-badge">
-                <ui-icon name="flame" :size="24" color="#FFFFFF" />
+                <ui-icon name="flame" :size="24" color="white" />
                 <text>热门</text>
               </view>
             </view>
@@ -108,7 +108,7 @@
               <ui-icon 
                 :name="deviceInfo.isFollowed ? 'check' : 'plus'" 
                 :size="32" 
-                :color="deviceInfo.isFollowed ? '#34C759' : '#FFFFFF'" 
+                :color="deviceInfo.isFollowed ? 'success' : 'white'" 
               />
               <text>{{ deviceInfo.isFollowed ? '已关注' : '关注' }}</text>
             </view>
@@ -164,7 +164,7 @@
                     <view class="author-row">
                       <text class="author-name">{{ post.authorName }}</text>
                       <view v-if="post.isVerified" class="verified-badge">
-                        <ui-icon name="check-circle" :size="24" color="#34C759" />
+                        <ui-icon name="check-circle" :size="24" color="success" />
                       </view>
                     </view>
                     <text class="post-time">{{ post.time }}</text>
@@ -190,16 +190,16 @@
                     <ui-icon 
                       :name="post.isLiked ? 'heart-fill' : 'heart'" 
                       :size="32" 
-                      :color="post.isLiked ? '#FF3B30' : '#A1A1A6'" 
+                      :color="post.isLiked ? 'error' : 'placeholder'" 
                     />
                     <text :class="{ 'is-liked': post.isLiked }">{{ post.likeCount }}</text>
                   </view>
                   <view class="footer-item">
-                    <ui-icon name="message-circle" :size="32" color="#A1A1A6" />
+                    <ui-icon name="message-circle" :size="32" color="placeholder" />
                     <text>{{ post.commentCount }}</text>
                   </view>
                   <view class="footer-item" @click.stop="sharePost(post)">
-                    <ui-icon name="share" :size="32" color="#A1A1A6" />
+                    <ui-icon name="share" :size="32" color="placeholder" />
                     <text>{{ post.shareCount }}</text>
                   </view>
                 </view>
@@ -278,11 +278,11 @@
                 
                 <view class="review-footer">
                   <view class="footer-item">
-                    <ui-icon name="thumbs-up" :size="28" color="#A1A1A6" />
+                    <ui-icon name="thumbs-up" :size="28" color="placeholder" />
                     <text>{{ review.likeCount }}</text>
                   </view>
                   <view class="footer-item">
-                    <ui-icon name="message" :size="28" color="#A1A1A6" />
+                    <ui-icon name="message" :size="28" color="placeholder" />
                     <text>{{ review.replyCount }}</text>
                   </view>
                 </view>
@@ -346,7 +346,7 @@
             </view>
             
             <view v-if="!productLoading && productList.length === 0" class="empty-state">
-              <ui-icon name="inbox" :size="120" color="#C7C7CC" />
+              <ui-icon name="inbox" :size="120" color="disabled" />
               <text class="empty-text">暂无在售商品</text>
             </view>
           </view>

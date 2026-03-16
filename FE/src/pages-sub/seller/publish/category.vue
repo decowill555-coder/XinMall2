@@ -15,7 +15,7 @@
     
     <view class="search-section">
       <view class="search-box">
-        <ui-icon name="search" :size="32" color="#A1A1A6" />
+        <ui-icon name="search" :size="32" color="placeholder" />
         <input 
           v-model="searchKeyword"
           class="search-input"
@@ -23,7 +23,7 @@
           @input="handleSearch"
         />
         <view v-if="searchKeyword" class="clear-btn" @click="clearSearch">
-          <ui-icon name="x" :size="28" color="#C7C7CC" />
+          <ui-icon name="x" :size="28" color="disabled" />
         </view>
       </view>
     </view>
@@ -34,7 +34,7 @@
       :style="{ height: scrollHeight + 'px' }"
     >
       <view v-if="searchKeyword && searchResults.length === 0" class="empty-state">
-        <ui-icon name="search" :size="120" color="#C7C7CC" />
+        <ui-icon name="search" :size="120" color="disabled" />
         <text class="empty-text">未找到相关分类</text>
       </view>
       
@@ -59,7 +59,7 @@
               @click="selectCategory(cat)"
             >
               <view class="recent-icon">
-                <ui-icon :name="cat.icon || 'folder'" :size="32" color="var(--color-primary, #FF6A00)" />
+                <ui-icon :name="cat.icon || 'folder'" :size="32" color="primary" />
               </view>
               <text class="recent-name">{{ cat.name }}</text>
             </view>
@@ -91,7 +91,7 @@
               <view class="category-right">
                 <text v-if="cat.productCount" class="product-count">{{ cat.productCount }}件商品</text>
                 <view v-if="selectedCategory?.id === cat.id" class="check-icon">
-                  <ui-icon name="check" :size="32" color="#FFFFFF" />
+                  <ui-icon name="check" :size="32" color="white" />
                 </view>
               </view>
             </view>

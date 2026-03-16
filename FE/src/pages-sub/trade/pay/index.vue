@@ -22,7 +22,7 @@
             </view>
           </view>
           <view class="countdown-wrapper" v-if="countdown > 0">
-            <ui-icon name="clock" :size="24" color="#FF9500" />
+            <ui-icon name="clock" :size="24" color="warning" />
             <text class="countdown-text">剩余支付时间 {{ formatTime(countdown) }}</text>
           </view>
         </view>
@@ -78,7 +78,7 @@
           >
             <view class="method-left">
               <view class="method-icon" :style="{ background: method.bgColor }">
-                <ui-icon :name="method.icon" :size="32" color="#FFFFFF" />
+                <ui-icon :name="method.icon" :size="32" color="white" />
               </view>
               <view class="method-info">
                 <text class="method-name">{{ method.name }}</text>
@@ -90,11 +90,11 @@
                 class="check-circle"
                 :class="{ checked: selectedMethod === method.id }"
               >
-                <ui-icon 
-                  v-if="selectedMethod === method.id" 
-                  name="check" 
-                  :size="20" 
-                  color="#FFFFFF" 
+                <ui-icon
+                  v-if="selectedMethod === method.id"
+                  name="check"
+                  :size="20"
+                  color="white"
                 />
               </view>
             </view>

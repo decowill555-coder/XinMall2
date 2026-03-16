@@ -44,14 +44,14 @@
       
       <scroll-view scroll-y class="transaction-scroll" :style="{ height: scrollHeight + 'px' }">
         <view v-if="transactions.length === 0" class="empty-state">
-          <ui-icon name="file-text" :size="80" color="#A1A1A6" />
+          <ui-icon name="file-text" :size="80" color="placeholder" />
           <text class="empty-text">暂无交易记录</text>
         </view>
         
         <view v-else class="transaction-list">
           <view v-for="item in transactions" :key="item.id" class="transaction-item">
             <view class="item-left">
-              <ui-icon :name="item.type === 'income' ? 'arrow-down' : 'arrow-up'" ::size="40" :color="item.type === 'income' ? '#1ABC9C' : '#FF3D00'" />
+              <ui-icon :name="item.type === 'income' ? 'arrow-down' : 'arrow-up'" ::size="40" :color="item.type === 'income' ? 'success' : 'error'" />
               <view class="item-info">
                 <text class="item-title">{{ item.title }}</text>
                 <text class="item-time">{{ item.time }}</text>
