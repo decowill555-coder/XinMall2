@@ -48,7 +48,7 @@ springdoc:
       packages-to-scan: com.example.xinmall.controller
 
 knife4j:
-  enable: true
+  enable: false
   setting:
     language: zh_cn
 
