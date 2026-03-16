@@ -206,7 +206,8 @@ const fetchProducts = async (isRefresh = false) => {
     };
 
     const res = await searchApi.searchProducts(params);
-    const newProducts = res.list.map(transformSearchResult);
+    const list = res?.list || res?.records || [];
+    const newProducts = list.map(transformSearchResult);
 
     if (isRefresh) {
       productList.value = newProducts;
@@ -214,10 +215,10 @@ const fetchProducts = async (isRefresh = false) => {
       productList.value = [...productList.value, ...newProducts];
     }
 
-    totalCount.value = res.total;
-    hasMore.value = res.hasMore;
+    totalCount.value = res?.total || 0;
+    hasMore.value = res?.hasMore ?? (res?.current !== undefined && res?.pages !== undefined && res.current < res.pages);
 
-    if (res.hasMore) {
+    if (hasMore.value) {
       currentPage.value++;
     }
   } catch (error) {

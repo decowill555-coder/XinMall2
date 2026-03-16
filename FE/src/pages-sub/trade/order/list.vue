@@ -72,7 +72,7 @@ const statusMap: Record<number, OrderStatus | undefined> = {
 const typeToTabMap: Record<string, number> = {
   'pending': 1,
   'paid': 2,
-  'shipped': 3,
+  'shipped': 2,
   'completed': 4,
   'received': 3,
   'reviewed': 4,
