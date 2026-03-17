@@ -157,28 +157,28 @@ const sendCode = async () => {
 
 const handleRegister = async () => {
   if (!canRegister.value) return;
-  
+
   if (password.value !== confirmPassword.value) {
     uni.showToast({ title: '两次密码不一致', icon: 'none' });
     return;
   }
-  
+
   uni.showLoading({ title: '注册中...' });
-  
+
   try {
     const result = await authApi.register({
       phone: phone.value,
       code: code.value,
       password: password.value
     });
-    
-    userStore.setToken(result.token);
+
+    userStore.setTokens(result.token, result.refreshToken);
     userStore.setUserInfo(result.user);
     authStore.setAuth(result.user.id, 'user');
-    
+
     uni.hideLoading();
     uni.showToast({ title: '注册成功', icon: 'success' });
-    
+
     setTimeout(() => {
       handleRedirectAfterLogin();
     }, 1500);

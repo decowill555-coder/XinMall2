@@ -5,6 +5,7 @@ import type { UserInfo } from '@/api/auth';
 export const useUserStore = defineStore('user', () => {
   // State
   const token = ref(uni.getStorageSync('token') || '');
+  const refreshToken = ref(uni.getStorageSync('refreshToken') || '');
   const userInfo = ref<UserInfo | null>(
     uni.getStorageSync('userInfo') || null
   );
@@ -13,6 +14,16 @@ export const useUserStore = defineStore('user', () => {
   const setToken = (newToken: string) => {
     token.value = newToken;
     uni.setStorageSync('token', newToken);
+  };
+
+  const setRefreshToken = (newRefreshToken: string) => {
+    refreshToken.value = newRefreshToken;
+    uni.setStorageSync('refreshToken', newRefreshToken);
+  };
+
+  const setTokens = (newToken: string, newRefreshToken: string) => {
+    setToken(newToken);
+    setRefreshToken(newRefreshToken);
   };
 
   const setUserInfo = (info: UserInfo | null) => {
@@ -33,8 +44,10 @@ export const useUserStore = defineStore('user', () => {
 
   const logout = () => {
     token.value = '';
+    refreshToken.value = '';
     userInfo.value = null;
     uni.removeStorageSync('token');
+    uni.removeStorageSync('refreshToken');
     uni.removeStorageSync('userInfo');
     uni.reLaunch({ url: '/pages/index/index' });
   };
@@ -45,8 +58,11 @@ export const useUserStore = defineStore('user', () => {
 
   return {
     token,
+    refreshToken,
     userInfo,
     setToken,
+    setRefreshToken,
+    setTokens,
     setUserInfo,
     updateUserInfo,
     logout,

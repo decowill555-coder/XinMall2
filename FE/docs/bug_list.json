@@ -1,0 +1,118 @@
+{
+  "lastUpdated": "2026-03-17T11:15:00Z",
+  "summary": {
+    "total": 5,
+    "fixed": 2,
+    "inProgress": 0,
+    "pending": 3
+  },
+  "bugs": [
+    {
+      "id": "BUG-001",
+      "title": "parseInt 缺少 radix 参数",
+      "priority": "medium",
+      "category": "code-quality",
+      "description": "多处 parseInt 调用未指定 radix 参数，可能导致意外行为（特别是以0开头的字符串）",
+      "files": [
+        "src/pages-sub/seller/publish/entry.vue:197",
+        "src/pages-sub/seller/publish/entry.vue:207-208",
+        "src/pages-sub/seller/publish/category.vue:161"
+      ],
+      "testSteps": [
+        "检查所有 parseInt 调用",
+        "确认是否指定了第二个参数 (radix: 10)"
+      ],
+      "status": "fixed",
+      "passes": true,
+      "fixedBy": "Claude",
+      "fixedAt": "2026-03-17T11:15:00Z",
+      "fixDetails": {
+        "modified": "为所有 parseInt 调用添加 radix 参数 (10)"
+      }
+    },
+    {
+      "id": "BUG-002",
+      "title": "HTTP 工具缺少 token 刷新逻辑",
+      "priority": "high",
+      "category": "functional",
+      "description": "当 token 过期时，http.ts 直接跳转到登录页面，没有尝试使用 refreshToken 刷新。这会导致用户体验中断",
+      "files": [
+        "src/utils/http.ts"
+      ],
+      "testSteps": [
+        "登录系统获取 token",
+        "等待 token 过期",
+        "发起请求",
+        "观察是否尝试刷新 token"
+      ],
+      "status": "fixed",
+      "passes": true,
+      "fixedBy": "Claude",
+      "fixedAt": "2026-03-17T11:00:00Z",
+      "fixDetails": {
+        "added": "refreshAccessToken 函数，支持并发请求时共享刷新 Promise",
+        "modified": "401 处理逻辑，先尝试刷新 token 再重试请求",
+        "added": "skipAuthRefresh 选项用于跳过刷新逻辑",
+        "added": "userStore.setTokens 方法同时保存 token 和 refreshToken"
+      }
+    },
+    {
+      "id": "BUG-003",
+      "title": "console.log 遗留在生产代码中",
+      "priority": "low",
+      "category": "code-quality",
+      "description": "29个文件中存在 console.log/console.error 调用，部分可能在生产环境执行",
+      "files": [
+        "src/utils/http.ts:49,51,63,90",
+        "src/stores/chat.ts",
+        "src/stores/theme.ts",
+        "其他文件"
+      ],
+      "testSteps": [
+        "全局搜索 console.log",
+        "确认是否需要移除或使用条件编译"
+      ],
+      "status": "pending",
+      "passes": false,
+      "fixedBy": null,
+      "fixedAt": null
+    },
+    {
+      "id": "BUG-004",
+      "title": "loginByWechat/loginByAlipay 未实现真实登录",
+      "priority": "medium",
+      "category": "functional",
+      "description": "微信和支付宝登录仅显示 Toast 提示，未调用实际的社交登录 API",
+      "files": [
+        "src/pages-sub/user/login/index.vue:147-161"
+      ],
+      "testSteps": [
+        "打开登录页面",
+        "点击微信或支付宝登录",
+        "观察是否发起登录请求"
+      ],
+      "status": "pending",
+      "passes": false,
+      "fixedBy": null,
+      "fixedAt": null
+    },
+    {
+      "id": "BUG-005",
+      "title": "TypeScript 类型检查无法运行",
+      "priority": "medium",
+      "category": "tooling",
+      "description": "vue-tsc --noEmit 命令执行失败，报错 'Search string not found'，可能是版本兼容性问题",
+      "files": [
+        "package.json"
+      ],
+      "testSteps": [
+        "运行 npm run type-check",
+        "观察错误输出"
+      ],
+      "status": "pending",
+      "passes": false,
+      "fixedBy": null,
+      "fixedAt": null
+    }
+  ]
+}

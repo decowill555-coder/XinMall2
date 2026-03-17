@@ -12,8 +12,58 @@ interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
   data?: any;
   header?: any;
-  loading?: boolean; // 是否显示 loading
+  loading?: boolean;
+  skipAuthRefresh?: boolean;
 }
+
+let isRefreshing = false;
+let refreshPromise: Promise<boolean> | null = null;
+
+const refreshAccessToken = async (): Promise<boolean> => {
+  if (isRefreshing && refreshPromise) {
+    return refreshPromise;
+  }
+
+  const refreshToken = uni.getStorageSync('refreshToken');
+  if (!refreshToken) {
+    return false;
+  }
+
+  isRefreshing = true;
+  refreshPromise = new Promise((resolve) => {
+    uni.request({
+      url: BASE_URL + '/auth/token/refresh',
+      method: 'POST',
+      data: { refreshToken },
+      header: { 'Content-Type': 'application/json' },
+      success: (res: any) => {
+        if (res.statusCode === 200 && res.data.code === 200) {
+          const { token, refreshToken: newRefreshToken } = res.data.data;
+          uni.setStorageSync('token', token);
+          if (newRefreshToken) {
+            uni.setStorageSync('refreshToken', newRefreshToken);
+          }
+          resolve(true);
+        } else {
+          uni.removeStorageSync('token');
+          uni.removeStorageSync('refreshToken');
+          resolve(false);
+        }
+      },
+      fail: () => {
+        uni.removeStorageSync('token');
+        uni.removeStorageSync('refreshToken');
+        resolve(false);
+      },
+      complete: () => {
+        isRefreshing = false;
+        refreshPromise = null;
+      }
+    });
+  });
+
+  return refreshPromise;
+};
 
 export const http = <T>(options: RequestOptions): Promise<T> => {
   return new Promise((resolve, reject) => {
@@ -62,7 +112,7 @@ export const http = <T>(options: RequestOptions): Promise<T> => {
         if (DEBUG) {
           console.log('[API Response]', url, res.statusCode, res.data);
         }
-        
+
         if (res.statusCode >= 200 && res.statusCode < 300) {
           if (res.data.code === 200 || res.data.code === 201) {
             resolve(res.data.data as T);
@@ -71,9 +121,44 @@ export const http = <T>(options: RequestOptions): Promise<T> => {
             reject(res.data);
           }
         } else if (res.statusCode === 401) {
-          uni.removeStorageSync('token');
-          uni.navigateTo({ url: '/pages-sub/user/login/index' });
-          reject(res);
+          if (options.skipAuthRefresh) {
+            uni.removeStorageSync('token');
+            uni.navigateTo({ url: '/pages-sub/user/login/index' });
+            reject(res);
+            return;
+          }
+
+          refreshAccessToken().then((success) => {
+            if (success) {
+              const newToken = uni.getStorageSync('token');
+              header['Authorization'] = `Bearer ${newToken}`;
+              uni.request({
+                url,
+                method: options.method || 'GET',
+                data: options.method !== 'GET' ? options.data : undefined,
+                header: header,
+                timeout: TIMEOUT,
+                success: (retryRes: any) => {
+                  if (retryRes.statusCode >= 200 && retryRes.statusCode < 300) {
+                    if (retryRes.data.code === 200 || retryRes.data.code === 201) {
+                      resolve(retryRes.data.data as T);
+                    } else {
+                      uni.showToast({ title: retryRes.data.message || '请求失败', icon: 'none' });
+                      reject(retryRes.data);
+                    }
+                  } else {
+                    uni.removeStorageSync('token');
+                    uni.navigateTo({ url: '/pages-sub/user/login/index' });
+                    reject(retryRes);
+                  }
+                },
+                fail: reject
+              });
+            } else {
+              uni.navigateTo({ url: '/pages-sub/user/login/index' });
+              reject(res);
+            }
+          });
         } else if (res.statusCode === 403) {
           uni.showToast({ title: '没有访问权限', icon: 'none' });
           reject(res);

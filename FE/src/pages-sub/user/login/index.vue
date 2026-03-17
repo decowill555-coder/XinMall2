@@ -111,22 +111,22 @@ const canLogin = computed(() => phone.value.length === 11 && password.value.leng
 
 const handleLogin = async () => {
   if (!canLogin.value) return;
-  
+
   uni.showLoading({ title: '登录中...' });
-  
+
   try {
-    const result = await authApi.login({ 
-      phone: phone.value, 
-      password: password.value 
+    const result = await authApi.login({
+      phone: phone.value,
+      password: password.value
     });
-    
-    userStore.setToken(result.token);
+
+    userStore.setTokens(result.token, result.refreshToken);
     userStore.setUserInfo(result.user);
     authStore.setAuth(result.user.id, 'user');
-    
+
     uni.hideLoading();
     uni.showToast({ title: '登录成功', icon: 'success' });
-    
+
     setTimeout(() => {
       handleRedirectAfterLogin();
     }, 1500);

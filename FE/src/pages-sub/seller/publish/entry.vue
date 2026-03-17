@@ -194,7 +194,7 @@ onMounted(() => {
 
 onLoad((options: any) => {
   if (options?.categoryId) {
-    form.categoryId = parseInt(options.categoryId);
+    form.categoryId = parseInt(options.categoryId, 10);
     form.categoryName = options.categoryName ? decodeURIComponent(options.categoryName) : '';
   }
 });
@@ -204,8 +204,8 @@ onShow(() => {
   const currentPage = pages[pages.length - 1] as any;
   if (currentPage?.options?.categoryId) {
     const options = currentPage.options;
-    if (parseInt(options.categoryId) !== form.categoryId) {
-      form.categoryId = parseInt(options.categoryId);
+    if (parseInt(options.categoryId, 10) !== form.categoryId) {
+      form.categoryId = parseInt(options.categoryId, 10);
       form.categoryName = options.categoryName ? decodeURIComponent(options.categoryName) : '';
     }
   }

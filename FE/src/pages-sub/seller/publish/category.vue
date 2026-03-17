@@ -158,7 +158,7 @@ onMounted(() => {
 
 onLoad((options: any) => {
   if (options?.selectedId) {
-    const id = parseInt(options.selectedId);
+    const id = parseInt(options.selectedId, 10);
     const cat = allCategories.value.find(c => c.id === id);
     if (cat) {
       selectedCategory.value = cat;
