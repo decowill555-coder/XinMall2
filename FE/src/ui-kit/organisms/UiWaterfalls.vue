@@ -55,11 +55,12 @@ const handleClick = (item: any) => {
   display: flex;
   width: 100%;
   box-sizing: border-box;
-  padding: $space-sm $space-md;
+  overflow: hidden;
 }
 
 .waterfalls-column {
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: $space-sm;
@@ -71,5 +72,7 @@ const handleClick = (item: any) => {
 
 .waterfalls-item {
   break-inside: avoid;
+  width: 100%;
+  box-sizing: border-box;
 }
 </style>

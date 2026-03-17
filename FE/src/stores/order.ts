@@ -41,7 +41,17 @@ export interface OrderSummary {
 }
 
 const mapOrderStatus = (status: number | string): OrderStatus => {
-  const statusMap: Record<number, OrderStatus> = {
+  // Handle string status from backend (lowercase enum name)
+  const stringStatusMap: Record<string, OrderStatus> = {
+    'pending_payment': 'pending',
+    'pending_shipment': 'paid',
+    'pending_receipt': 'shipped',
+    'completed': 'completed',
+    'cancelled': 'cancelled',
+    'refunded': 'refunded'
+  };
+  // Handle numeric status code
+  const numericStatusMap: Record<number, OrderStatus> = {
     1: 'pending',
     2: 'paid',
     3: 'shipped',
@@ -50,9 +60,9 @@ const mapOrderStatus = (status: number | string): OrderStatus => {
     6: 'refunded'
   };
   if (typeof status === 'number') {
-    return statusMap[status] || 'pending';
+    return numericStatusMap[status] || 'pending';
   }
-  return status as OrderStatus;
+  return stringStatusMap[status] || status as OrderStatus;
 };
 
 const mapStatusToBackend = (status: OrderStatus): string => {
@@ -81,7 +91,7 @@ const transformApiOrder = (apiOrder: any): OrderItem => ({
   totalAmount: Number(apiOrder.totalAmount) / 100,
   status: mapOrderStatus(apiOrder.status),
   createdAt: apiOrder.createdAt,
-  productType: 'standard'
+  productType: 'standard' as const
 });
 
 export const useOrderStore = defineStore('order', () => {
@@ -164,7 +174,8 @@ export const useOrderStore = defineStore('order', () => {
       }
 
       const res = await tradeApi.getOrderList(params);
-      const newOrders = (res.list || []).map(transformApiOrder);
+      // Backend returns PageResult with 'list' field
+      const newOrders = (res.list || res.records || []).map(transformApiOrder);
 
       if (isRefresh) {
         orders.value = newOrders;

@@ -140,11 +140,11 @@
           <ui-button plain @click="cancelOrder">取消订单</ui-button>
           <ui-button type="primary" @click="handlePay">立即付款</ui-button>
         </view>
-        <view v-else-if="order.status === 'shipped'" class="footer-actions">
+        <view v-else-if="order.status === 'paid'" class="footer-actions">
           <ui-button plain @click="checkLogistics">查看物流</ui-button>
           <ui-button type="primary" @click="remindShip">提醒发货</ui-button>
         </view>
-        <view v-else-if="order.status === 'received'" class="footer-actions">
+        <view v-else-if="order.status === 'shipped'" class="footer-actions">
           <ui-button plain @click="applyAftersale">申请售后</ui-button>
           <ui-button plain @click="checkLogistics">查看物流</ui-button>
           <ui-button type="primary" @click="handleConfirm">确认收货</ui-button>
@@ -160,50 +160,134 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { tradeApi, type OrderDetail } from '@/api/trade';
+import { logError } from '@/utils/logger';
 
 const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
   headerEstimatedHeight: 120
 });
 
+const orderId = ref('');
+const loading = ref(true);
+const orderData = ref<OrderDetail | null>(null);
+
 const order = ref({
-  id: 1,
-  orderNo: 'XM202401150001',
-  shopName: '数码达人小店',
-  status: 'received',
-  createTime: '2024-01-15 10:30:00',
-  payMethod: '微信支付',
-  payTime: '2024-01-15 10:32:15',
-  goodsTotal: 9398,
+  id: '',
+  orderNo: '',
+  shopName: '',
+  status: 'pending' as string,
+  createTime: '',
+  payMethod: '',
+  payTime: '',
+  goodsTotal: 0,
   freight: 0,
-  totalPrice: 9398,
-  goods: [
-    { id: 1, cover: 'https://picsum.photos/200/200?random=501', title: 'iPhone 15 Pro Max 256GB', spec: '钛金属原色', price: 7999, quantity: 1 },
-    { id: 2, cover: 'https://picsum.photos/200/200?random=502', title: 'AirPods Pro 第二代', spec: 'USB-C', price: 1399, quantity: 1 }
-  ]
+  totalPrice: 0,
+  goods: [] as { id: string; cover: string; title: string; spec: string; price: number; quantity: number }[]
 });
 
 const address = ref({
-  name: '张三',
-  phone: '138****8888',
-  detail: '北京市朝阳区建国路88号SOHO现代城A座1201室'
+  name: '',
+  phone: '',
+  detail: ''
 });
 
-const countdown = ref('29:45');
+const countdown = ref('30:00');
+let countdownTimer: number | null = null;
+let countdownSeconds = 1800;
 
 const totalQuantity = computed(() => order.value.goods.reduce((sum, item) => sum + item.quantity, 0));
 
 const statusConfig = computed(() => {
   const configs: Record<string, any> = {
     pending: { icon: 'clock', text: '待付款', desc: '请在30分钟内完成付款' },
-    shipped: { icon: 'package', text: '待发货', desc: '商家正在准备发货' },
-    received: { icon: 'truck', text: '待收货', desc: '商品正在配送中' },
-    completed: { icon: 'check-circle', text: '已完成', desc: '订单已完成' }
+    paid: { icon: 'package', text: '待发货', desc: '商家正在准备发货' },
+    shipped: { icon: 'truck', text: '待收货', desc: '商品正在配送中' },
+    completed: { icon: 'check-circle', text: '已完成', desc: '订单已完成' },
+    cancelled: { icon: 'x-circle', text: '已取消', desc: '订单已取消' }
   };
   return configs[order.value.status] || configs.pending;
 });
+
+const formatCountdown = (seconds: number) => {
+  const min = Math.floor(seconds / 60);
+  const sec = seconds % 60;
+  return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+};
+
+const startCountdown = () => {
+  if (countdownTimer) clearInterval(countdownTimer);
+  countdownTimer = setInterval(() => {
+    if (countdownSeconds > 0) {
+      countdownSeconds--;
+      countdown.value = formatCountdown(countdownSeconds);
+    } else {
+      if (countdownTimer) clearInterval(countdownTimer);
+    }
+  }, 1000) as unknown as number;
+};
+
+const fetchOrderDetail = async () => {
+  if (!orderId.value) return;
+
+  loading.value = true;
+  try {
+    const res = await tradeApi.getOrderDetail(orderId.value);
+    orderData.value = res;
+
+    // Map backend status to frontend status
+    const statusMap: Record<string, string> = {
+      'pending_payment': 'pending',
+      'pending_shipment': 'paid',
+      'pending_receipt': 'shipped',
+      'completed': 'completed',
+      'cancelled': 'cancelled',
+      'refunded': 'cancelled'
+    };
+
+    order.value = {
+      id: res.id,
+      orderNo: res.orderNo,
+      shopName: res.seller?.name || '卖家店铺',
+      status: statusMap[res.status] || 'pending',
+      createTime: res.createdAt,
+      payMethod: res.paymentMethod === 'wechat' ? '微信支付' :
+                 res.paymentMethod === 'alipay' ? '支付宝' :
+                 res.paymentMethod === 'balance' ? '余额支付' : '-',
+      payTime: res.paymentTime || '',
+      goodsTotal: res.product.price && res.quantity ? (res.product.price * res.quantity) / 100 : 0,
+      freight: res.freightAmount ? res.freightAmount / 100 : 0,
+      totalPrice: res.totalAmount ? res.totalAmount / 100 : 0,
+      goods: [{
+        id: res.product.id,
+        cover: res.product.cover,
+        title: res.product.title,
+        spec: res.product.condition,
+        price: res.product.price ? res.product.price / 100 : 0,
+        quantity: res.quantity
+      }]
+    };
+
+    address.value = {
+      name: res.address?.name || '',
+      phone: res.address?.phone || '',
+      detail: res.address ? `${res.address.province}${res.address.city}${res.address.district}${res.address.detail}` : ''
+    };
+
+    // Start countdown for pending orders
+    if (res.status === 'pending_payment') {
+      startCountdown();
+    }
+  } catch (error) {
+    logError('获取订单详情失败:', error);
+    uni.showToast({ title: '获取订单详情失败', icon: 'none' });
+  } finally {
+    loading.value = false;
+  }
+};
 
 const copyOrderNo = () => {
   uni.setClipboardData({
@@ -215,7 +299,7 @@ const copyOrderNo = () => {
 };
 
 const handlePay = () => {
-  uni.navigateTo({ url: `/pages-sub/trade/pay/index?id=${order.value.id}` });
+  uni.navigateTo({ url: `/pages-sub/trade/pay/index?orderId=${order.value.id}` });
 };
 
 const handleConfirm = () => {
@@ -224,7 +308,7 @@ const handleConfirm = () => {
     content: '确认已收到商品吗？',
     success: (res) => {
       if (res.confirm) {
-        uni.showToast({ title: '确认成功', icon: 'success' });
+        handleConfirmReceive();
       }
     }
   });
@@ -240,7 +324,7 @@ const cancelOrder = () => {
     content: '确定要取消此订单吗？',
     success: (res) => {
       if (res.confirm) {
-        uni.showToast({ title: '订单已取消', icon: 'success' });
+        handleCancelOrder();
       }
     }
   });
@@ -265,6 +349,39 @@ const contactService = () => {
 const applyAftersale = () => {
   uni.navigateTo({ url: `/pages-sub/trade/aftersale/apply?orderId=${order.value.id}` });
 };
+
+const handleConfirmReceive = async () => {
+  try {
+    await tradeApi.confirmReceive(orderId.value);
+    uni.showToast({ title: '确认收货成功', icon: 'success' });
+    fetchOrderDetail();
+  } catch (error) {
+    logError('确认收货失败:', error);
+    uni.showToast({ title: '确认收货失败', icon: 'none' });
+  }
+};
+
+const handleCancelOrder = async () => {
+  try {
+    await tradeApi.cancelOrder(orderId.value);
+    uni.showToast({ title: '订单已取消', icon: 'success' });
+    fetchOrderDetail();
+  } catch (error) {
+    logError('取消订单失败:', error);
+    uni.showToast({ title: '取消订单失败', icon: 'none' });
+  }
+};
+
+onLoad((options: any) => {
+  if (options.id) {
+    orderId.value = options.id;
+    fetchOrderDetail();
+  }
+});
+
+onMounted(() => {
+  // Cleanup handled in onUnmounted
+});
 </script>
 
 <style lang="scss" scoped>

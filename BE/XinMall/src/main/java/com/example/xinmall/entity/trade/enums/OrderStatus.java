@@ -17,11 +17,15 @@ public enum OrderStatus {
     @EnumValue
     private final Integer code;
 
-    @JsonValue
     private final String desc;
 
     OrderStatus(Integer code, String desc) {
         this.code = code;
         this.desc = desc;
+    }
+
+    @JsonValue
+    public String getName() {
+        return name().toLowerCase();
     }
 }

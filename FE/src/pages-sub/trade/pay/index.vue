@@ -235,17 +235,19 @@ const fetchOrderDetail = async () => {
   loading.value = true;
   try {
     const res = await tradeApi.getOrderDetail(orderId.value);
+    const productPrice = res.product.price ? res.product.price / 100 : 0;
+    const totalAmount = res.totalAmount ? res.totalAmount / 100 : 0;
     order.value = {
       orderNo: res.orderNo,
       title: res.product.title,
       cover: res.product.cover,
-      price: res.product.price.toFixed(2),
-      freight: res.totalAmount - res.product.price,
-      totalAmount: res.totalAmount.toFixed(2),
+      price: productPrice.toFixed(2),
+      freight: totalAmount - productPrice,
+      totalAmount: totalAmount.toFixed(2),
       createdAt: res.createdAt
     };
     orderNo.value = res.orderNo;
-    amount.value = res.totalAmount.toFixed(2);
+    amount.value = totalAmount.toFixed(2);
   } catch (error) {
     logError('获取订单详情失败:', error);
     uni.showToast({ title: '获取订单信息失败', icon: 'none' });

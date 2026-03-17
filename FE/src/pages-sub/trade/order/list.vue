@@ -72,7 +72,7 @@ const statusMap: Record<number, OrderStatus | undefined> = {
 const typeToTabMap: Record<string, number> = {
   'pending': 1,
   'paid': 2,
-  'shipped': 2,
+  'shipped': 3,
   'completed': 4,
   'received': 3,
   'reviewed': 4,
@@ -108,7 +108,7 @@ const goDetail = (order: any) => {
 };
 
 const handlePay = (order: any) => {
-  uni.navigateTo({ url: `/pages-sub/trade/pay/index?id=${order.id}` });
+  uni.navigateTo({ url: `/pages-sub/trade/pay/index?orderId=${order.id}` });
 };
 
 const handleConfirm = async (order: any) => {
@@ -118,7 +118,7 @@ const handleConfirm = async (order: any) => {
     success: async (res) => {
       if (res.confirm) {
         try {
-          await tradeApi.confirmReceipt(order.id);
+          await tradeApi.confirmReceive(order.id);
           orderStore.updateOrderStatus(order.id, 'completed');
           uni.showToast({ title: '确认成功', icon: 'success' });
         } catch (error) {

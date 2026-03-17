@@ -122,7 +122,7 @@ export interface OrderDetail {
   seller: OrderSeller;
 }
 
-export type OrderStatus = 'pending' | 'paid' | 'shipped' | 'completed' | 'cancelled';
+export type OrderStatus = 'pending_payment' | 'pending_shipment' | 'pending_receipt' | 'completed' | 'cancelled' | 'refunded';
 
 export interface OrderProduct {
   id: string;
@@ -189,6 +189,9 @@ export interface OrderListResult {
   list: OrderListItem[];
   total: number;
   hasMore: boolean;
+  page?: number;
+  size?: number;
+  pages?: number;
 }
 
 export interface PayOrderParams {

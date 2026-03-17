@@ -32,6 +32,8 @@ public class OrderDetailVO implements Serializable {
 
     private BigDecimal totalAmount;
 
+    private BigDecimal freightAmount;
+
     private OrderStatus status;
 
     private String remark;

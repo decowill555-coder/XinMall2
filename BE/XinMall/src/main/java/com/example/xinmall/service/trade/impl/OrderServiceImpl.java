@@ -147,6 +147,7 @@ public class OrderServiceImpl implements OrderService {
 
         OrderDetailVO vo = new OrderDetailVO();
         BeanUtils.copyProperties(order, vo);
+        vo.setFreightAmount(BigDecimal.ZERO);
 
         User buyer = userService.getById(order.getUserId());
         if (buyer != null) {

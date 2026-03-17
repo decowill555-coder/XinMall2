@@ -162,6 +162,7 @@ const toUser = () => {
   // === 瀑布流样式 ===
   &.mode-waterfall {
     width: 100%; // 由父?Grid 决定宽度
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     margin-bottom: $space-sm;

@@ -62,5 +62,5 @@ jwt:
 
 # 文件上传配置
 upload:
-  path: C:/Users/willdc/Documents/WorkPlace/XinMall/uploads
+  path: C:/Users/willdc/Documents/WorkPlace/XinMall/XinMall2/BE/XinMall/uploads
   url-prefix: /uploads

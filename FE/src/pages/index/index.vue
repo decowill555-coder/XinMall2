@@ -427,9 +427,10 @@ const loadMore = () => {
 }
 
 .goods-list {
+  padding: $space-sm $space-md;
   box-sizing: border-box;
   overflow: hidden;
-  
+
   :deep(.ui-goods-card) {
     background: $color-bg-card;
     backdrop-filter: blur(20px);
