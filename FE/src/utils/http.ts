@@ -1,5 +1,7 @@
 // src/utils/http.ts
 
+import { apiLogger } from './logger';
+
 const DEBUG = process.env.NODE_ENV !== 'production';
 
 export const BASE_URL = process.env.NODE_ENV === 'production'
@@ -96,9 +98,9 @@ export const http = <T>(options: RequestOptions): Promise<T> => {
     }
 
     if (DEBUG) {
-      console.log('[API Request]', options.method || 'GET', url);
+      apiLogger.log('[Request]', options.method || 'GET', url);
       if (options.data) {
-        console.log('[API Request Data]', options.data);
+        apiLogger.debug('[Request Data]', options.data);
       }
     }
 
@@ -110,7 +112,7 @@ export const http = <T>(options: RequestOptions): Promise<T> => {
       timeout: TIMEOUT,
       success: (res: any) => {
         if (DEBUG) {
-          console.log('[API Response]', url, res.statusCode, res.data);
+          apiLogger.log('[Response]', url, res.statusCode, res.data);
         }
 
         if (res.statusCode >= 200 && res.statusCode < 300) {
@@ -172,7 +174,7 @@ export const http = <T>(options: RequestOptions): Promise<T> => {
       },
       fail: (err) => {
         if (DEBUG) {
-          console.error('[API Error]', url, err);
+          apiLogger.error('[Error]', url, err);
         }
         
         let message = '网络连接失败';

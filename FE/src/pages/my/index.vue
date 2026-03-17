@@ -143,6 +143,7 @@ import { onShow } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { useUserStore, useAuthStore, useOrderStore } from '@/stores';
 import { authApi } from '@/api';
+import { logError } from '@/utils/logger';
 
 const { safeAreaTop, headerExtraTop, headerHeight, scrollHeight } = usePageLayout({
   hasTabbar: true,
@@ -161,7 +162,7 @@ const fetchUserInfo = async () => {
     const userInfo = await authApi.getUserInfo();
     userStore.setUserInfo(userInfo);
   } catch (error) {
-    console.error('获取用户信息失败:', error);
+    logError('获取用户信息失败:', error);
   }
 };
 
@@ -171,7 +172,7 @@ const fetchOrderSummary = async () => {
   try {
     await orderStore.fetchOrders(true);
   } catch (error) {
-    console.error('获取订单统计失败:', error);
+    logError('获取订单统计失败:', error);
   }
 };
 

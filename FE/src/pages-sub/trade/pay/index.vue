@@ -143,6 +143,8 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { useNavigation } from '@/composables/useNavigation';
+import { tradeApi } from '@/api';
+import { logError } from '@/utils/logger';
 
 const { safeAreaBottom, scrollHeight } = usePageLayout({
   hasSubNavbar: true,
@@ -151,20 +153,22 @@ const { safeAreaBottom, scrollHeight } = usePageLayout({
 
 const { smartBack } = useNavigation();
 
+const orderId = ref('');
 const orderNo = ref('');
-const amount = ref('6999.00');
+const amount = ref('0.00');
 const selectedMethod = ref('wechat');
 const paying = ref(false);
 const countdown = ref(1800);
+const loading = ref(true);
 
 const order = ref({
-  orderNo: 'XM202401150001',
-  title: 'iPhone 14 Pro Max 256GB 远峰蓝',
-  cover: 'https://picsum.photos/400/400?random=1',
-  price: '6999.00',
+  orderNo: '',
+  title: '',
+  cover: '',
+  price: '0.00',
   freight: 0,
-  totalAmount: '6999.00',
-  createdAt: '2024-01-15 14:30:00'
+  totalAmount: '0.00',
+  createdAt: ''
 });
 
 let timer: number | null = null;
@@ -199,27 +203,61 @@ const formatTime = (seconds: number) => {
   return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
 };
 
-const handlePay = () => {
+const handlePay = async () => {
   if (countdown.value <= 0) {
     uni.showToast({ title: '订单已超时', icon: 'none' });
     return;
   }
-  
+
   paying.value = true;
-  
-  setTimeout(() => {
-    paying.value = false;
+
+  try {
+    await tradeApi.payOrder({
+      orderId: orderId.value,
+      method: selectedMethod.value as 'wechat' | 'alipay' | 'balance'
+    });
+
     uni.showToast({ title: '支付成功', icon: 'success' });
     setTimeout(() => {
-      uni.redirectTo({ url: `/pages-sub/trade/order/detail?id=${orderNo.value}` });
+      uni.redirectTo({ url: `/pages-sub/trade/order/detail?id=${orderId.value}` });
     }, 1500);
-  }, 2000);
+  } catch (error) {
+    logError('支付失败:', error);
+    uni.showToast({ title: '支付失败，请重试', icon: 'none' });
+  } finally {
+    paying.value = false;
+  }
+};
+
+const fetchOrderDetail = async () => {
+  if (!orderId.value) return;
+
+  loading.value = true;
+  try {
+    const res = await tradeApi.getOrderDetail(orderId.value);
+    order.value = {
+      orderNo: res.orderNo,
+      title: res.product.title,
+      cover: res.product.cover,
+      price: res.product.price.toFixed(2),
+      freight: res.totalAmount - res.product.price,
+      totalAmount: res.totalAmount.toFixed(2),
+      createdAt: res.createdAt
+    };
+    orderNo.value = res.orderNo;
+    amount.value = res.totalAmount.toFixed(2);
+  } catch (error) {
+    logError('获取订单详情失败:', error);
+    uni.showToast({ title: '获取订单信息失败', icon: 'none' });
+  } finally {
+    loading.value = false;
+  }
 };
 
 onLoad((options: any) => {
-  if (options.orderNo) {
-    orderNo.value = options.orderNo;
-    order.value.orderNo = options.orderNo;
+  if (options.orderId) {
+    orderId.value = options.orderId;
+    fetchOrderDetail();
   }
 });
 

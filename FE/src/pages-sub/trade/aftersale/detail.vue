@@ -34,7 +34,6 @@
               >
                 <view class="timeline-dot" :class="{ 'is-active': index === 0 }"></view>
                 <view class="timeline-content">
-                  <text class="timeline-status">{{ item.status }}</text>
                   <text class="timeline-desc">{{ item.description }}</text>
                   <text class="timeline-time">{{ item.time }}</text>
                 </view>
@@ -231,6 +230,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { aftersaleApi, type AftersaleDetail, type AftersaleStatus } from '@/api/aftersale';
+import { logError } from '@/utils/logger';
 
 const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
@@ -316,7 +316,7 @@ const fetchDetail = async () => {
     const result = await aftersaleApi.getAftersaleDetail(id);
     detail.value = result;
   } catch (error) {
-    console.error('获取售后详情失败:', error);
+    logError('获取售后详情失败:', error);
     uni.showToast({ title: '获取详情失败', icon: 'none' });
   } finally {
     loading.value = false;

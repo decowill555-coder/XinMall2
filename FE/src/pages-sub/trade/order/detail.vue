@@ -145,10 +145,12 @@
           <ui-button type="primary" @click="remindShip">提醒发货</ui-button>
         </view>
         <view v-else-if="order.status === 'received'" class="footer-actions">
+          <ui-button plain @click="applyAftersale">申请售后</ui-button>
           <ui-button plain @click="checkLogistics">查看物流</ui-button>
           <ui-button type="primary" @click="handleConfirm">确认收货</ui-button>
         </view>
         <view v-else-if="order.status === 'completed'" class="footer-actions">
+          <ui-button plain @click="applyAftersale">申请售后</ui-button>
           <ui-button plain @click="buyAgain">再次购买</ui-button>
           <ui-button type="primary" @click="goEvaluate">去评价</ui-button>
         </view>
@@ -258,6 +260,10 @@ const buyAgain = () => {
 
 const contactService = () => {
   uni.showToast({ title: '联系客服', icon: 'none' });
+};
+
+const applyAftersale = () => {
+  uni.navigateTo({ url: `/pages-sub/trade/aftersale/apply?orderId=${order.value.id}` });
 };
 </script>
 
@@ -787,12 +793,12 @@ const contactService = () => {
   
   .footer-actions {
     display: flex;
-    gap: $space-md;
-    
+    gap: $space-sm;
+
     :deep(.ui-button) {
       flex: 1;
       height: 80rpx;
-      font-size: $font-size-md;
+      font-size: $font-size-sm;
       font-weight: $font-weight-medium;
       border-radius: $radius-lg;
       

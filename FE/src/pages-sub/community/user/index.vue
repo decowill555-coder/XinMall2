@@ -355,6 +355,7 @@ import { forumApi, type PostListItem } from '@/api/community';
 import { authApi, type UserDetailInfo } from '@/api/auth';
 import { searchApi } from '@/api/search';
 import { formatTimeAgo } from '@/utils/date';
+import { logError } from '@/utils/logger';
 
 interface UserInfo {
   id: string;
@@ -523,7 +524,7 @@ const fetchUserInfo = async () => {
       location: data.location
     };
   } catch (error) {
-    console.error('获取用户信息失败:', error);
+    logError('获取用户信息失败:', error);
     uni.showToast({
       title: '获取用户信息失败',
       icon: 'none'
@@ -541,7 +542,7 @@ const fetchPosts = async () => {
     postsList.value = result.list;
     postsHasMore.value = result.hasMore;
   } catch (error) {
-    console.error('获取帖子列表失败:', error);
+    logError('获取帖子列表失败:', error);
     postsList.value = [];
     postsHasMore.value = false;
   } finally {
@@ -573,7 +574,7 @@ const fetchCollections = async () => {
       createdAt: item.createdAt
     }));
   } catch (error) {
-    console.error('获取收藏列表失败:', error);
+    logError('获取收藏列表失败:', error);
     collectionsList.value = [];
   } finally {
     collectionsLoading.value = false;
@@ -604,7 +605,7 @@ const fetchLikes = async () => {
       createdAt: item.createdAt
     }));
   } catch (error) {
-    console.error('获取点赞列表失败:', error);
+    logError('获取点赞列表失败:', error);
     likesList.value = [];
   } finally {
     likesLoading.value = false;
@@ -633,7 +634,7 @@ const fetchGoods = async () => {
     }));
     goodsHasMore.value = result.hasMore;
   } catch (error) {
-    console.error('获取商品列表失败:', error);
+    logError('获取商品列表失败:', error);
     goodsList.value = [];
     goodsHasMore.value = false;
   } finally {
@@ -690,7 +691,7 @@ const toggleFollow = async () => {
       uni.showToast({ title: '关注成功', icon: 'none' });
     }
   } catch (error) {
-    console.error('关注操作失败:', error);
+    logError('关注操作失败:', error);
     uni.showToast({
       title: '操作失败，请重试',
       icon: 'none'

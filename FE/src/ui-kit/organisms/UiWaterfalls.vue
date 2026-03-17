@@ -51,21 +51,22 @@ const handleClick = (item: any) => {
 </script>
 
 <style lang="scss" scoped>
-
-
 .ui-waterfalls {
   display: flex;
-  gap: 16rpx;
   width: 100%;
   box-sizing: border-box;
-  padding-top: $space-sm;
+  padding: $space-sm $space-md;
 }
 
 .waterfalls-column {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
+  gap: $space-sm;
+
+  &:not(:last-child) {
+    padding-right: $space-sm;
+  }
 }
 
 .waterfalls-item {

@@ -1,4 +1,5 @@
 import { BASE_URL } from './http';
+import { wsLogger } from './logger';
 
 const WS_BASE_URL = process.env.NODE_ENV === 'production'
   ? 'wss://api.xinmall.com/ws/chat'
@@ -58,19 +59,19 @@ class WebSocketService {
         this.ws = uni.connectSocket({
           url: this.url,
           success: () => {
-            console.log('[WebSocket] 连接中...');
+            wsLogger.log('连接中...');
           },
           fail: (err) => {
-            console.error('[WebSocket] 连接失败:', err);
+            wsLogger.error('连接失败:', err);
             this.setStatus('error');
             this.scheduleReconnect();
             resolve(false);
           }
         });
-        
+
         this.setupEventListeners(resolve);
       } catch (error) {
-        console.error('[WebSocket] 创建连接异常:', error);
+        wsLogger.error('创建连接异常:', error);
         this.setStatus('error');
         resolve(false);
       }
@@ -81,36 +82,36 @@ class WebSocketService {
     if (!this.ws) return;
     
     this.ws.onOpen(() => {
-      console.log('[WebSocket] 连接成功');
+      wsLogger.log('连接成功');
       this.setStatus('connected');
       this.reconnectAttempts = 0;
       this.startHeartbeat();
       this.flushMessageQueue();
       resolve(true);
     });
-    
+
     this.ws.onMessage((res) => {
       try {
         const message: WsMessage = JSON.parse(res.data as string);
-        console.log('[WebSocket] 收到消息:', message);
+        wsLogger.debug('收到消息:', message);
         this.handleMessage(message);
       } catch (error) {
-        console.error('[WebSocket] 解析消息失败:', error);
+        wsLogger.error('解析消息失败:', error);
       }
     });
-    
+
     this.ws.onClose((res) => {
-      console.log('[WebSocket] 连接关闭:', res.code, res.reason);
+      wsLogger.log('连接关闭:', res.code, res.reason);
       this.setStatus('disconnected');
       this.stopHeartbeat();
-      
+
       if (!this.isManualClose) {
         this.scheduleReconnect();
       }
     });
-    
+
     this.ws.onError((err) => {
-      console.error('[WebSocket] 连接错误:', err);
+      wsLogger.error('连接错误:', err);
       this.setStatus('error');
     });
   }
@@ -119,37 +120,37 @@ class WebSocketService {
     if (message.type === 'pong') {
       return;
     }
-    
+
     this.messageHandlers.forEach(handler => {
       try {
         handler(message);
       } catch (error) {
-        console.error('[WebSocket] 消息处理器错误:', error);
+        wsLogger.error('消息处理器错误:', error);
       }
     });
   }
 
   send(message: WsMessage): boolean {
     if (this._status !== 'connected' || !this.ws) {
-      console.warn('[WebSocket] 未连接，消息已缓存');
+      wsLogger.warn('未连接，消息已缓存');
       this.messageQueue.push(message);
       return false;
     }
-    
+
     try {
       this.ws.send({
         data: JSON.stringify(message),
         success: () => {
-          console.log('[WebSocket] 消息发送成功');
+          wsLogger.debug('消息发送成功');
         },
         fail: (err) => {
-          console.error('[WebSocket] 消息发送失败:', err);
+          wsLogger.error('消息发送失败:', err);
           this.messageQueue.push(message);
         }
       });
       return true;
     } catch (error) {
-      console.error('[WebSocket] 发送异常:', error);
+      wsLogger.error('发送异常:', error);
       return false;
     }
   }
@@ -171,7 +172,7 @@ class WebSocketService {
         this.ws.send({
           data: JSON.stringify({ type: 'ping' }),
           fail: () => {
-            console.warn('[WebSocket] 心跳发送失败');
+            wsLogger.warn('心跳发送失败');
           }
         });
       }
@@ -187,20 +188,20 @@ class WebSocketService {
 
   private scheduleReconnect() {
     if (this.isManualClose) return;
-    
+
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.error('[WebSocket] 达到最大重连次数');
+      wsLogger.error('达到最大重连次数');
       return;
     }
-    
+
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
     }
-    
+
     this.reconnectAttempts++;
     const delay = this.reconnectDelay * this.reconnectAttempts;
-    
-    console.log(`[WebSocket] ${delay / 1000}秒后尝试第${this.reconnectAttempts}次重连`);
+
+    wsLogger.log(`${delay / 1000}秒后尝试第${this.reconnectAttempts}次重连`);
     
     this.reconnectTimer = setTimeout(() => {
       const token = uni.getStorageSync('token');

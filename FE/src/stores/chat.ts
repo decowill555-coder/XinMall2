@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { messageApi, MessageTypeMap, MessageTypeReverseMap, MessageStatusMap, type ConversationVO, type MessageVO, type SendMessageRequest, type MessageType, type MessageStatus } from '@/api/message';
+import { logError } from '@/utils/logger';
 
 export type { MessageType, MessageStatus } from '@/api/message';
 
@@ -144,7 +145,7 @@ export const useChatStore = defineStore('chat', () => {
         conversations.value = result.map(transformConversation);
       }
     } catch (error) {
-      console.error('获取会话列表失败:', error);
+      logError('获取会话列表失败:', error);
       throw error;
     } finally {
       isLoadingConversations.value = false;
@@ -173,7 +174,7 @@ export const useChatStore = defineStore('chat', () => {
         };
       }
     } catch (error) {
-      console.error('获取消息列表失败:', error);
+      logError('获取消息列表失败:', error);
       throw error;
     } finally {
       isLoadingMessages.value[conversationId] = false;
@@ -275,7 +276,7 @@ export const useChatStore = defineStore('chat', () => {
     try {
       await messageApi.clearUnreadCount(Number(conversationId));
     } catch (error) {
-      console.error('清空未读数失败:', error);
+      logError('清空未读数失败:', error);
     }
   };
 
@@ -297,7 +298,7 @@ export const useChatStore = defineStore('chat', () => {
         }
         conversation.isPinned = !conversation.isPinned;
       } catch (error) {
-        console.error('置顶操作失败:', error);
+        logError('置顶操作失败:', error);
         throw error;
       }
     }
@@ -314,7 +315,7 @@ export const useChatStore = defineStore('chat', () => {
         }
         conversation.isMuted = !conversation.isMuted;
       } catch (error) {
-        console.error('免打扰操作失败:', error);
+        logError('免打扰操作失败:', error);
         throw error;
       }
     }
@@ -325,7 +326,7 @@ export const useChatStore = defineStore('chat', () => {
       await messageApi.deleteConversation(Number(conversationId));
       removeConversation(conversationId);
     } catch (error) {
-      console.error('删除会话失败:', error);
+      logError('删除会话失败:', error);
       throw error;
     }
   };

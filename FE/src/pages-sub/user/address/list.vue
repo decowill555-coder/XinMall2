@@ -42,6 +42,7 @@ import { ref, onMounted } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { useNavigation } from '@/composables/useNavigation';
 import { tradeApi, type Address } from '@/api/trade';
+import { logError } from '@/utils/logger';
 
 const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
@@ -59,7 +60,7 @@ const fetchAddressList = async () => {
     const res = await tradeApi.getAddressList();
     addressList.value = res;
   } catch (error) {
-    console.error('获取地址列表失败:', error);
+    logError('获取地址列表失败:', error);
     addressList.value = [];
   } finally {
     loading.value = false;

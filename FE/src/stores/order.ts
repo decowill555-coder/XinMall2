@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed, watch } from 'vue';
 import { tradeApi, type OrderListItem, type OrderListParams } from '@/api/trade';
+import { logError } from '@/utils/logger';
 
 export type OrderStatus = 
   | 'pending'      // 待付款
@@ -178,7 +179,7 @@ export const useOrderStore = defineStore('order', () => {
 
       updateSummary();
     } catch (error) {
-      console.error('获取订单列表失败:', error);
+      logError('获取订单列表失败:', error);
     } finally {
       loading.value = false;
     }

@@ -64,6 +64,7 @@ import { onReady, onShow } from '@dcloudio/uni-app';
 import { useAppStore } from '@/stores';
 import { useNavigation } from '@/composables/useNavigation';
 import { searchApi, categoryApi, tradeApi, bannerApi, type ProductListItem } from '@/api';
+import { logError } from '@/utils/logger';
 
 const appStore = useAppStore();
 const { navigateTo } = useNavigation();
@@ -157,7 +158,7 @@ const fetchHotKeywords = async () => {
       }));
     }
   } catch (error) {
-    console.error('获取热门关键词失败:', error);
+    logError('获取热门关键词失败:', error);
   }
 };
 
@@ -172,7 +173,7 @@ const fetchBanners = async () => {
       }));
     }
   } catch (error) {
-    console.error('获取Banner列表失败:', error);
+    logError('获取Banner列表失败:', error);
   }
 };
 
@@ -187,7 +188,7 @@ const fetchCategories = async () => {
       ];
     }
   } catch (error) {
-    console.error('获取分类失败:', error);
+    logError('获取分类失败:', error);
   }
 };
 
@@ -233,7 +234,7 @@ const fetchGoodsList = async (isRefresh = false) => {
       hasMore.value = false;
     }
   } catch (error) {
-    console.error('获取商品列表失败:', error);
+    logError('获取商品列表失败:', error);
     if (isRefresh && goodsList.value.length === 0) {
       goodsList.value = [];
     }
@@ -426,7 +427,6 @@ const loadMore = () => {
 }
 
 .goods-list {
-  padding: $space-md;
   box-sizing: border-box;
   overflow: hidden;
   

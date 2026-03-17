@@ -82,7 +82,7 @@ export interface ProductListResult {
 }
 
 export interface CreateOrderParams {
-  productId: string;
+  goodsId: string;
   quantity: number;
   addressId: string;
   remark?: string;
@@ -94,6 +94,10 @@ export interface CreateOrderResult {
   totalAmount: number;
   freightAmount: number;
   finalAmount: number;
+}
+
+export interface CreateOrderResponse {
+  id: number;  // Backend returns order ID directly
 }
 
 export interface OrderDetail {
@@ -262,7 +266,7 @@ export const tradeApi = {
   },
 
   createOrder: (params: CreateOrderParams) => {
-    return http<CreateOrderResult>({
+    return http<number>({
       url: '/order',
       method: 'POST',
       data: params,

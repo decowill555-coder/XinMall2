@@ -45,6 +45,7 @@
 import { usePageLayout } from '@/composables/usePageLayout';
 import { useUserStore, useAuthStore } from '@/stores';
 import { authApi } from '@/api';
+import { logError } from '@/utils/logger';
 
 const { scrollHeight } = usePageLayout({
   hasSubNavbar: true
@@ -98,7 +99,7 @@ const handleLogout = () => {
         try {
           await authApi.logout();
         } catch (error) {
-          console.error('退出登录接口调用失败:', error);
+          logError('退出登录接口调用失败:', error);
         }
         
         userStore.logout();

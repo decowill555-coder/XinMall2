@@ -143,6 +143,7 @@ import { useSearchHistoryStore, useSearchFilterStore } from '@/stores';
 import { searchApi, type SearchResultItem } from '@/api/search';
 import UiSearchFilterBar from '@/ui-kit/organisms/UiSearchFilterBar.vue';
 import UiFilterSidebar from '@/ui-kit/organisms/UiFilterSidebar.vue';
+import { logError } from '@/utils/logger';
 
 const { safeAreaTop, headerExtraTop, scrollHeight, rpxToPx } = usePageLayout({
   hasSubNavbar: false,
@@ -318,7 +319,7 @@ const fetchProducts = async () => {
       resultList.value = [...resultList.value, ...items];
     }
   } catch (error) {
-    console.error('搜索失败:', error);
+    logError('搜索失败:', error);
     if (currentPage.value === 1) {
       resultList.value = [];
     }

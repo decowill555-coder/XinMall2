@@ -50,6 +50,7 @@ import { onLoad } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { useNavigation } from '@/composables/useNavigation';
 import { tradeApi, type Address } from '@/api/trade';
+import { logError } from '@/utils/logger';
 
 const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
@@ -106,7 +107,7 @@ const fetchAddressDetail = async (id: string) => {
       isDefault: res.isDefault
     };
   } catch (error) {
-    console.error('获取地址详情失败:', error);
+    logError('获取地址详情失败:', error);
     uni.showToast({ title: '获取地址失败', icon: 'none' });
   } finally {
     loading.value = false;

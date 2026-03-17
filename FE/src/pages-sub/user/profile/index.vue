@@ -251,6 +251,7 @@ import { useUserStore, useAuthStore } from '@/stores';
 import { authApi } from '@/api/auth';
 import { uploadApi } from '@/api/upload';
 import { BASE_URL } from '@/utils/http';
+import { logError } from '@/utils/logger';
 
 const userStore = useUserStore();
 const authStore = useAuthStore();
@@ -344,7 +345,7 @@ const onAvatarActionSelect = async (item: any) => {
         uni.hideLoading();
         uni.showToast({ title: '头像更新成功', icon: 'success' });
       } catch (error) {
-        console.error('上传头像失败:', error);
+        logError('上传头像失败:', error);
         uni.hideLoading();
         uni.showToast({ title: '上传失败', icon: 'none' });
       }
@@ -433,7 +434,7 @@ const saveEdit = async () => {
     showEditPopup.value = false;
     uni.showToast({ title: '保存成功', icon: 'success' });
   } catch (error) {
-    console.error('保存失败:', error);
+    logError('保存失败:', error);
     uni.showToast({ title: '保存失败', icon: 'none' });
   } finally {
     uni.hideLoading();

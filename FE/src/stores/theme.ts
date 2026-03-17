@@ -22,6 +22,7 @@ import {
   generateLightModeVars,
   generateDarkModeVars
 } from '@/config/theme.config';
+import { logError } from '@/utils/logger';
 
 // Re-export types for backward compatibility
 export type { ThemeMode, ThemeColor, ThemeConfig, ThemeColorConfig };
@@ -209,6 +210,7 @@ export const useThemeStore = defineStore('theme', () => {
     // #endif
 
     // 设置导航栏颜色
+    // #ifndef H5
     try {
       uni.setNavigationBarColor({
         frontColor: isDark.value ? '#ffffff' : '#000000',
@@ -221,6 +223,7 @@ export const useThemeStore = defineStore('theme', () => {
     } catch {
       // 忽略错误
     }
+    // #endif
 
     setTimeout(() => {
       isTransitioning.value = false;
@@ -261,7 +264,7 @@ export const useThemeStore = defineStore('theme', () => {
         return true;
       }
     } catch (e) {
-      console.error('Failed to import theme:', e);
+      logError('Failed to import theme:', e);
     }
     return false;
   };
@@ -287,7 +290,7 @@ export const useThemeStore = defineStore('theme', () => {
           ...JSON.parse(stored)
         };
       } catch (e) {
-        console.error('Failed to load theme config:', e);
+        logError('Failed to load theme config:', e);
       }
     }
   };

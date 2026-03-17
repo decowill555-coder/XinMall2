@@ -372,6 +372,7 @@ import { useAppStore } from '@/stores';
 import { useNavigation } from '@/composables/useNavigation';
 import { spuApi, type SpuDetail, type SpuProductItem, type SpuPostItem, type SpuEvaluation } from '@/api/spu';
 import { forumApi } from '@/api/community';
+import { logError } from '@/utils/logger';
 
 interface DeviceInfo {
   id: string;
@@ -556,7 +557,7 @@ const fetchDeviceData = async () => {
       deviceImages.value = detail.images;
     }
   } catch (error) {
-    console.error('获取设备详情失败:', error);
+    logError('获取设备详情失败:', error);
   }
 };
 
@@ -589,7 +590,7 @@ const fetchDiscussList = async () => {
 
     discussHasMore.value = result.hasMore;
   } catch (error) {
-    console.error('获取讨论列表失败:', error);
+    logError('获取讨论列表失败:', error);
     discussHasMore.value = false;
   } finally {
     discussLoading.value = false;
@@ -634,7 +635,7 @@ const fetchReviewList = async () => {
       deviceInfo.value.reviewCount = result.total;
     }
   } catch (error) {
-    console.error('获取评价列表失败:', error);
+    logError('获取评价列表失败:', error);
   }
 };
 
@@ -662,7 +663,7 @@ const fetchProductList = async () => {
 
     productHasMore.value = result.hasMore;
   } catch (error) {
-    console.error('获取商品列表失败:', error);
+    logError('获取商品列表失败:', error);
     productHasMore.value = false;
   } finally {
     productLoading.value = false;
@@ -712,7 +713,7 @@ const handleFollow = async () => {
       uni.showToast({ title: '关注成功', icon: 'none' });
     }
   } catch (error) {
-    console.error('关注操作失败:', error);
+    logError('关注操作失败:', error);
     uni.showToast({ title: '操作失败，请重试', icon: 'none' });
   }
 };
@@ -737,7 +738,7 @@ const likePost = async (post: Post) => {
       post.likeCount++;
     }
   } catch (error) {
-    console.error('点赞操作失败:', error);
+    logError('点赞操作失败:', error);
     uni.showToast({ title: '操作失败', icon: 'none' });
   }
 };

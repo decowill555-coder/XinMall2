@@ -12,7 +12,10 @@ import com.example.xinmall.entity.trade.enums.GoodsStatus;
 import com.example.xinmall.entity.trade.enums.OrderStatus;
 import com.example.xinmall.mapper.trade.GoodsMapper;
 import com.example.xinmall.mapper.trade.OrderMapper;
+import com.example.xinmall.mapper.user.UserAddressMapper;
 import com.example.xinmall.service.trade.impl.OrderServiceImpl;
+import com.example.xinmall.service.user.UserService;
+import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,6 +44,15 @@ class OrderServiceTest {
     @Mock
     private GoodsMapper goodsMapper;
 
+    @Mock
+    private UserAddressMapper userAddressMapper;
+
+    @Mock
+    private UserService userService;
+
+    @Mock
+    private ObjectMapper objectMapper;
+
     @InjectMocks
     private OrderServiceImpl orderService;
 
@@ -51,7 +63,7 @@ class OrderServiceTest {
     void setUp() {
         testGoods = new Goods();
         testGoods.setId(1L);
-        testGoods.setUserId(2L);
+        testGoods.setSellerId(2L);
         testGoods.setTitle("测试商品");
         testGoods.setPrice(new BigDecimal("99.99"));
         testGoods.setStatus(GoodsStatus.ON_SHELF);
@@ -153,7 +165,7 @@ class OrderServiceTest {
         when(goodsMapper.selectById(1L)).thenReturn(testGoods);
         when(goodsMapper.updateById(any(Goods.class))).thenReturn(1);
 
-        assertDoesNotThrow(() -> orderService.cancel(1L));
+        assertDoesNotThrow(() -> orderService.cancel(1L, "不想要了"));
     }
 
     @Test
@@ -164,7 +176,7 @@ class OrderServiceTest {
         when(orderMapper.selectById(1L)).thenReturn(null);
 
         BusinessException exception = assertThrows(BusinessException.class,
-                () -> orderService.cancel(1L));
+                () -> orderService.cancel(1L, "不想要了"));
         assertEquals("订单不存在", exception.getMessage());
     }
 
@@ -177,8 +189,8 @@ class OrderServiceTest {
         when(orderMapper.selectById(1L)).thenReturn(testOrder);
 
         BusinessException exception = assertThrows(BusinessException.class,
-                () -> orderService.cancel(1L));
-        assertEquals("当前状态不能取消订单", exception.getMessage());
+                () -> orderService.cancel(1L, "不想要了"));
+        assertEquals("当前状态不能取消", exception.getMessage());
     }
 
     @Test
@@ -269,7 +281,7 @@ class OrderServiceTest {
 
         when(orderMapper.selectPage(any(Page.class), any(LambdaQueryWrapper.class))).thenReturn(page);
 
-        IPage<OrderVO> result = orderService.getUserOrders(1, 10);
+        IPage<OrderVO> result = orderService.getMyOrders(null, 1, 10);
 
         assertNotNull(result);
         assertEquals(1, result.getTotal());

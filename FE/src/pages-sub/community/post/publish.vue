@@ -264,6 +264,7 @@ import { usePageLayout } from '@/composables/usePageLayout';
 import { useNavigation } from '@/composables/useNavigation';
 import { useAuthStore } from '@/stores';
 import { forumApi } from '@/api/community';
+import { logError } from '@/utils/logger';
 
 interface Topic {
   id: string;
@@ -363,7 +364,7 @@ const fetchHotTopics = async () => {
       }));
     }
   } catch (error) {
-    console.error('获取热门话题失败:', error);
+    logError('获取热门话题失败:', error);
   }
 };
 
@@ -379,7 +380,7 @@ const fetchMyTopics = async () => {
       }));
     }
   } catch (error) {
-    console.error('获取关注社区失败:', error);
+    logError('获取关注社区失败:', error);
   }
 };
 
@@ -399,7 +400,7 @@ const searchTopics = async () => {
       memberCount: f.memberCount
     }));
   } catch (error) {
-    console.error('搜索话题失败:', error);
+    logError('搜索话题失败:', error);
     searchResults.value = [];
   }
 };
@@ -531,7 +532,7 @@ const uploadImages = async (): Promise<string[]> => {
       });
       uploadedUrls.push(res);
     } catch (error) {
-      console.error('上传图片失败:', error);
+      logError('上传图片失败:', error);
     }
   }
   return uploadedUrls;

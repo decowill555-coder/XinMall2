@@ -23,8 +23,8 @@ import com.example.xinmall.entity.system.Shop;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class GoodsServiceImpl implements GoodsService {
 
     private final GoodsMapper goodsMapper;
@@ -44,6 +43,16 @@ public class GoodsServiceImpl implements GoodsService {
     private final CollectionService collectionService;
     private final ShopMapper shopMapper;
     private final ObjectMapper objectMapper;
+
+    public GoodsServiceImpl(GoodsMapper goodsMapper, UserService userService,
+                           @Lazy CollectionService collectionService,
+                           ShopMapper shopMapper, ObjectMapper objectMapper) {
+        this.goodsMapper = goodsMapper;
+        this.userService = userService;
+        this.collectionService = collectionService;
+        this.shopMapper = shopMapper;
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     @Transactional

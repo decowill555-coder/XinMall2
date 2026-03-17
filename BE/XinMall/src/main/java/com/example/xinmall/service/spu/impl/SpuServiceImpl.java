@@ -23,6 +23,8 @@ import com.example.xinmall.mapper.spu.SpuPriceTrendMapper;
 import com.example.xinmall.mapper.trade.EvaluationMapper;
 import com.example.xinmall.mapper.trade.GoodsMapper;
 import com.example.xinmall.mapper.user.UserMapper;
+import com.example.xinmall.mapper.product.CategoryMapper;
+import com.example.xinmall.entity.product.Category;
 import com.example.xinmall.service.spu.SpuService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +54,7 @@ public class SpuServiceImpl implements SpuService {
     private final PostMapper postMapper;
     private final PostLikeMapper postLikeMapper;
     private final EvaluationMapper evaluationMapper;
+    private final CategoryMapper categoryMapper;
 
     @Override
     public SpuDetailVO getDetailById(Long id) {
@@ -64,7 +67,8 @@ public class SpuServiceImpl implements SpuService {
         BeanUtils.copyProperties(spu, vo);
 
         vo.setDeviceTypeId(spu.getCategoryId());
-        vo.setDeviceTypeName(spu.getCategoryName());
+        Category category = categoryMapper.selectById(spu.getCategoryId());
+        vo.setDeviceTypeName(category != null ? category.getName() : null);
 
         if (spu.getPriceMin() != null || spu.getPriceMax() != null) {
             SpuDetailVO.PriceRangeVO priceRange = new SpuDetailVO.PriceRangeVO();
@@ -444,7 +448,8 @@ public class SpuServiceImpl implements SpuService {
         BeanUtils.copyProperties(spu, vo);
 
         vo.setDeviceTypeId(spu.getCategoryId());
-        vo.setDeviceTypeName(spu.getCategoryName());
+        Category category = categoryMapper.selectById(spu.getCategoryId());
+        vo.setDeviceTypeName(category != null ? category.getName() : null);
 
         if (spu.getPriceMin() != null || spu.getPriceMax() != null) {
             SpuListVO.PriceRangeVO priceRange = new SpuListVO.PriceRangeVO();

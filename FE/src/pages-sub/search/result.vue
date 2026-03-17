@@ -122,6 +122,7 @@ import { useAppStore, useSearchHistoryStore, useSearchFilterStore } from '@/stor
 import { useNavigation } from '@/composables/useNavigation';
 import { searchApi, type SearchResultItem } from '@/api/search';
 import UiFilterSidebar from '@/ui-kit/organisms/UiFilterSidebar.vue';
+import { logError } from '@/utils/logger';
 
 interface Product {
   id: string | number;
@@ -222,7 +223,7 @@ const fetchProducts = async (isRefresh = false) => {
       currentPage.value++;
     }
   } catch (error) {
-    console.error('搜索商品失败:', error);
+    logError('搜索商品失败:', error);
     if (isRefresh) {
       productList.value = [];
     }

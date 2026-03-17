@@ -48,6 +48,7 @@ import { ref, onMounted } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { forumApi, type PostListItem } from '@/api/community';
 import { spuApi } from '@/api';
+import { logError } from '@/utils/logger';
 
 interface FeedItem {
   id: string | number;
@@ -124,7 +125,7 @@ const fetchFeed = async (page: number = 1) => {
     const spuHasMore = spusResult?.hasMore ?? false;
     hasMore.value = postHasMore || spuHasMore;
   } catch (error) {
-    console.error('获取关注数据失败:', error);
+    logError('获取关注数据失败:', error);
     if (page === 1) {
       feedList.value = [];
     }

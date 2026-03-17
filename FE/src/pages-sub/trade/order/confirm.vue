@@ -133,6 +133,7 @@ import { usePageLayout } from '@/composables/usePageLayout';
 import { useNavigation } from '@/composables/useNavigation';
 import { useAuthStore } from '@/stores';
 import { tradeApi, type Address, type ProductDetail } from '@/api/trade';
+import { logError } from '@/utils/logger';
 
 const { safeAreaBottom, scrollHeight } = usePageLayout({
   hasSubNavbar: true,
@@ -199,7 +200,7 @@ const fetchOrderData = async () => {
     
     freight.value = 0;
   } catch (error) {
-    console.error('获取订单数据失败:', error);
+    logError('获取订单数据失败:', error);
     uni.showToast({ title: '获取数据失败', icon: 'none' });
   } finally {
     loading.value = false;
@@ -230,19 +231,19 @@ const handleSubmit = async () => {
   
   try {
     const orderRes = await tradeApi.createOrder({
-      productId: product.value.id,
+      goodsId: product.value.id,
       addressId: address.value.id,
       quantity: quantity.value,
       remark: remark.value
     });
     
     uni.showToast({ title: '订单创建成功', icon: 'success' });
-    
+
     setTimeout(() => {
-      uni.redirectTo({ url: `/pages-sub/trade/pay/index?orderNo=${orderRes.orderNo}` });
+      uni.redirectTo({ url: `/pages-sub/trade/pay/index?orderId=${orderRes}` });
     }, 1000);
   } catch (error) {
-    console.error('创建订单失败:', error);
+    logError('创建订单失败:', error);
     uni.showToast({ title: '订单创建失败，请重试', icon: 'none' });
   } finally {
     submitting.value = false;

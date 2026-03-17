@@ -117,7 +117,7 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits(['click', 'user-click']);
 
 const onClick = () => {
-  emit('click', props.data.id);
+  emit('click', props.data);
 };
 
 const toUser = () => {

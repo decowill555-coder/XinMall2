@@ -146,6 +146,7 @@ import { categoryApi, type Brand } from '@/api';
 import UiFilterSidebar from '@/ui-kit/organisms/UiFilterSidebar.vue';
 import UiSubCategoryTabs, { type SubCategoryItem } from '@/ui-kit/molecules/UiSubCategoryTabs.vue';
 import UiBrandSelector, { type BrandItem } from '@/ui-kit/organisms/UiBrandSelector.vue';
+import { logError } from '@/utils/logger';
 
 interface Product {
   id: string | number;
@@ -253,7 +254,7 @@ const fetchDeviceTypeData = async () => {
       subCategories.value = [{ id: 'all', name: '全部' }];
     }
   } catch (error) {
-    console.error('获取设备类型数据失败:', error);
+    logError('获取设备类型数据失败:', error);
     // 使用模拟数据作为降级
     const mockSubCategories: SubCategoryItem[] = [
       { id: 'all', name: '全部' },
@@ -316,7 +317,7 @@ const fetchProducts = async () => {
     totalCount.value = result.total;
     hasMore.value = result.hasMore;
   } catch (error) {
-    console.error('获取商品列表失败:', error);
+    logError('获取商品列表失败:', error);
     // 使用模拟数据作为降级
     const mockProducts: Product[] = [
       {
@@ -461,7 +462,7 @@ const loadMore = async () => {
     productList.value = [...productList.value, ...products];
     hasMore.value = result.hasMore;
   } catch (error) {
-    console.error('加载更多失败:', error);
+    logError('加载更多失败:', error);
     hasMore.value = false;
   }
 };

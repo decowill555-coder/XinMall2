@@ -55,6 +55,7 @@ import { onLoad } from '@dcloudio/uni-app';
 import { useAppStore, useSearchHistoryStore } from '@/stores';
 import { useNavigation } from '@/composables/useNavigation';
 import { searchApi, type SearchSuggestionItem, type HotSearchItem } from '@/api/search';
+import { logError } from '@/utils/logger';
 
 const appStore = useAppStore();
 const searchHistoryStore = useSearchHistoryStore();
@@ -110,7 +111,7 @@ const fetchHotKeywords = async () => {
     const res = await searchApi.getHotSearches(10);
     hotKeywords.value = res;
   } catch (error) {
-    console.error('获取热门搜索失败:', error);
+    logError('获取热门搜索失败:', error);
   }
 };
 
@@ -140,7 +141,7 @@ const fetchSuggestions = async () => {
     const res = await searchApi.getSearchSuggestions(keyword.value.trim());
     suggestions.value = res;
   } catch (error) {
-    console.error('获取搜索建议失败:', error);
+    logError('获取搜索建议失败:', error);
     suggestions.value = [];
   } finally {
     suggestionLoading.value = false;

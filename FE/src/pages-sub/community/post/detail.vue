@@ -326,6 +326,7 @@ import { usePageLayout } from '@/composables/usePageLayout';
 import { useAuthStore } from '@/stores';
 import { forumApi, type PostDetail, type CommentItem } from '@/api/community';
 import { formatTimeAgo } from '@/utils/date';
+import { logError } from '@/utils/logger';
 
 const { scrollHeight: baseScrollHeight, safeAreaBottom } = usePageLayout({
   hasSubNavbar: true,
@@ -385,7 +386,7 @@ const fetchPostDetail = async () => {
     post.value = res.data;
     isFollowed.value = false;
   } catch (error) {
-    console.error('获取帖子详情失败:', error);
+    logError('获取帖子详情失败:', error);
     post.value = {
       id: postId.value,
       title: 'iPhone 15 Pro Max 深度测评：钛金属边框真的轻了很多',
@@ -447,7 +448,7 @@ const fetchComments = async (isRefresh = false) => {
     commentTotal.value = res.data.total;
     commentHasMore.value = res.data.hasMore;
   } catch (error) {
-    console.error('获取评论失败:', error);
+    logError('获取评论失败:', error);
   } finally {
     commentLoading.value = false;
   }
@@ -467,7 +468,7 @@ const loadMoreReplies = async (comment: CommentItem) => {
       comments.value[commentIndex].replies = res.data.list;
     }
   } catch (error) {
-    console.error('获取回复失败:', error);
+    logError('获取回复失败:', error);
   }
 };
 
@@ -514,7 +515,7 @@ const toggleLike = async () => {
     }
     post.value.isLiked = !post.value.isLiked;
   } catch (error) {
-    console.error('操作失败:', error);
+    logError('操作失败:', error);
   }
 };
 
@@ -538,7 +539,7 @@ const toggleCollect = async () => {
       icon: 'none' 
     });
   } catch (error) {
-    console.error('操作失败:', error);
+    logError('操作失败:', error);
   }
 };
 
@@ -558,7 +559,7 @@ const likeComment = async (comment: CommentItem) => {
     }
     comment.isLiked = !comment.isLiked;
   } catch (error) {
-    console.error('操作失败:', error);
+    logError('操作失败:', error);
   }
 };
 
@@ -686,7 +687,7 @@ const submitComment = async () => {
     
     uni.showToast({ title: '评论成功', icon: 'success' });
   } catch (error) {
-    console.error('评论失败:', error);
+    logError('评论失败:', error);
     uni.showToast({ title: '评论失败', icon: 'none' });
   } finally {
     submitting.value = false;

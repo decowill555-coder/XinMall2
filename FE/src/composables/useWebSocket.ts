@@ -1,6 +1,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { wsService, type WsMessage } from '@/utils/websocket';
 import { useChatStore, useUserStore } from '@/stores';
+import { wsLogger } from '@/utils/logger';
 
 export type WsStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
 
@@ -15,10 +16,10 @@ export function useWebSocket() {
   const connect = async () => {
     const token = uni.getStorageSync('token');
     if (!token) {
-      console.warn('[useWebSocket] 未登录，跳过连接');
+      wsLogger.warn('未登录，跳过连接');
       return false;
     }
-    
+
     return wsService.connect(token);
   };
 
@@ -27,8 +28,8 @@ export function useWebSocket() {
   };
 
   const handleIncomingMessage = (message: WsMessage) => {
-    console.log('[useWebSocket] 处理消息:', message);
-    
+    wsLogger.debug('处理消息:', message);
+
     switch (message.type) {
       case 'chat':
         handleChatMessage(message);
@@ -37,7 +38,7 @@ export function useWebSocket() {
         handleSystemMessage(message);
         break;
       default:
-        console.log('[useWebSocket] 未知消息类型:', message.type);
+        wsLogger.debug('未知消息类型:', message.type);
     }
   };
 
@@ -74,8 +75,8 @@ export function useWebSocket() {
   };
 
   const handleSystemMessage = (message: WsMessage) => {
-    console.log('[useWebSocket] 系统消息:', message.content);
-    
+    wsLogger.log('系统消息:', message.content);
+
     if (message.content?.includes('连接成功')) {
       chatStore.setConnected(true);
     }

@@ -1,4 +1,5 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { logWarn } from '@/utils/logger';
 
 export type Platform = 'ios' | 'android' | 'mp-weixin' | 'h5' | 'unknown';
 
@@ -141,7 +142,7 @@ function getMPCapsuleInfo(): {
       };
     }
   } catch {
-    console.warn('获取胶囊按钮信息失败');
+    logWarn('获取胶囊按钮信息失败');
   }
 
   return {

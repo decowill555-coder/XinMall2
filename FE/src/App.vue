@@ -9,6 +9,7 @@ import { onLaunch, onShow, onHide } from '@dcloudio/uni-app';
 import { watch } from 'vue';
 import { useAppStore, useThemeStore, useUserStore, useAuthStore, useChatStore } from '@/stores';
 import { useWebSocketAutoConnect } from '@/composables/useWebSocket';
+import { logDebug } from '@/utils/logger';
 
 const AUTH_REQUIRED_PAGES = [
   'pages/follow/index',
@@ -108,7 +109,7 @@ const { status: wsStatus, autoConnect, autoDisconnect } = useWebSocketAutoConnec
 
 
 onLaunch(() => {
-  console.log('App Launch');
+  logDebug('App Launch');
   setupAuthInterceptor();
   appStore.init();
   themeStore.initTheme();
@@ -121,7 +122,7 @@ onLaunch(() => {
 });
 
 onShow(() => {
-  console.log('App Show');
+  logDebug('App Show');
   const token = uni.getStorageSync('token');
   if (token && wsStatus.value === 'disconnected') {
     autoConnect();
@@ -129,7 +130,7 @@ onShow(() => {
 });
 
 onHide(() => {
-  console.log('App Hide');
+  logDebug('App Hide');
 });
 
 watch(() => authStore.isAuthenticated, (isAuthenticated) => {

@@ -108,6 +108,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { logError } from '@/utils/logger';
 
 interface Category {
   id: number;
@@ -173,7 +174,7 @@ const loadRecentCategories = () => {
       recentCategories.value = JSON.parse(recent);
     }
   } catch (error) {
-    console.error('加载最近分类失败:', error);
+    logError('加载最近分类失败:', error);
   }
 };
 
@@ -185,7 +186,7 @@ const saveRecentCategory = (category: Category) => {
   try {
     uni.setStorageSync('recent_categories', JSON.stringify(recentCategories.value));
   } catch (error) {
-    console.error('保存最近分类失败:', error);
+    logError('保存最近分类失败:', error);
   }
 };
 

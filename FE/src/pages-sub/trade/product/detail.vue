@@ -141,6 +141,7 @@ import { useAuthStore } from '@/stores';
 import { formatTimeAgo } from '@/utils/date';
 import { tradeApi, type ProductDetail } from '@/api';
 import UiSellerCard from '@/ui-kit/molecules/UiSellerCard.vue';
+import { logError } from '@/utils/logger';
 
 const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
@@ -200,7 +201,7 @@ const fetchProductDetail = async () => {
     product.value = res;
     isCollected.value = res.isCollected;
   } catch (error) {
-    console.error('获取商品详情失败:', error);
+    logError('获取商品详情失败:', error);
     product.value = null;
   } finally {
     loading.value = false;
@@ -237,7 +238,7 @@ const handleCollect = async () => {
       }
     }
   } catch (error) {
-    console.error('收藏操作失败:', error);
+    logError('收藏操作失败:', error);
     uni.showToast({ title: '操作失败，请重试', icon: 'none' });
   }
 };

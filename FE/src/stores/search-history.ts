@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
+import { logError } from '@/utils/logger';
 
 export type SearchType = 'product' | 'shop' | 'brand' | 'topic';
 
@@ -166,7 +167,7 @@ export const useSearchHistoryStore = defineStore('search-history', () => {
         return true;
       }
     } catch (e) {
-      console.error('Failed to import search history:', e);
+      logError('Failed to import search history:', e);
     }
     return false;
   };

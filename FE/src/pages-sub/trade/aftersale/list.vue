@@ -38,6 +38,7 @@
 import { ref, watch, onMounted } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { aftersaleApi, type AftersaleListItem, type AftersaleStatus } from '@/api/aftersale';
+import { logError } from '@/utils/logger';
 
 const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
@@ -75,7 +76,7 @@ const fetchAftersaleList = async () => {
     });
     aftersaleList.value = result.list;
   } catch (error) {
-    console.error('获取售后列表失败:', error);
+    logError('获取售后列表失败:', error);
     uni.showToast({
       title: '获取列表失败',
       icon: 'none'
