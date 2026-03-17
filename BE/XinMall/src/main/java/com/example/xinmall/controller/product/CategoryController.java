@@ -1,6 +1,7 @@
 package com.example.xinmall.controller.product;
 
 import com.example.xinmall.common.result.Result;
+import com.example.xinmall.dto.product.response.AlphabetCategoryVO;
 import com.example.xinmall.dto.product.response.CategoryVO;
 import com.example.xinmall.service.product.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,5 +48,12 @@ public class CategoryController {
         result.put("brands", new ArrayList<>());
         result.put("productCount", 0);
         return Result.success(result);
+    }
+
+    @Operation(summary = "获取所有分类按字母分组")
+    @GetMapping("/all")
+    public Result<List<AlphabetCategoryVO>> getAllCategories() {
+        List<AlphabetCategoryVO> categories = categoryService.getAllCategoriesGroupByLetter();
+        return Result.success(categories);
     }
 }

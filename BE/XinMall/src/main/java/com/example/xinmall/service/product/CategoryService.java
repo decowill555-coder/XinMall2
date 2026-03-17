@@ -1,5 +1,6 @@
 package com.example.xinmall.service.product;
 
+import com.example.xinmall.dto.product.response.AlphabetCategoryVO;
 import com.example.xinmall.dto.product.response.CategoryVO;
 import com.example.xinmall.entity.product.Category;
 
@@ -12,4 +13,6 @@ public interface CategoryService {
     List<CategoryVO> getChildrenByParentId(Long parentId);
 
     Category getById(Long id);
+
+    List<AlphabetCategoryVO> getAllCategoriesGroupByLetter();
 }

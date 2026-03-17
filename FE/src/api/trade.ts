@@ -6,20 +6,20 @@ export interface ProductDetail {
   price: number;
   originalPrice?: number;
   condition: string;
-  warranty: boolean;
-  invoice: boolean;
-  canBargain: boolean;
-  description: string;
+  warranty?: boolean;
+  invoice?: boolean;
+  canBargain?: boolean;
+  description?: string;
   images: string[];
-  location: string;
-  viewCount: number;
-  likeCount: number;
-  isCollected: boolean;
-  createdAt: string;
+  location?: string;
+  viewCount?: number;
+  likeCount?: number;
+  isCollected?: boolean;
+  createdAt?: string;
   seller: ProductSeller;
   model?: ProductModel;
-  stock: number;
-  status: 'on_sale' | 'sold' | 'off_sale';
+  stock?: number;
+  status?: 'on_sale' | 'sold' | 'off_sale';
 }
 
 export interface ProductSeller {
@@ -29,18 +29,18 @@ export interface ProductSeller {
   type: 'personal' | 'merchant';
   levelName?: string;
   signature?: string;
-  sellingCount: number;
-  followerCount: number;
-  rating: number;
-  isFollowed: boolean;
+  sellingCount?: number;
+  followerCount?: number;
+  rating?: number;
+  isFollowed?: boolean;
 }
 
 export interface ProductModel {
   id: string;
-  name: string;
-  brandId: string;
-  brandName: string;
-  specs: Record<string, string>;
+  name?: string;
+  brandId?: string;
+  brandName?: string;
+  specs?: Record<string, string>;
 }
 
 export interface ProductListParams {

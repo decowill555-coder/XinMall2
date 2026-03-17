@@ -24,7 +24,9 @@ import com.example.xinmall.mapper.trade.EvaluationMapper;
 import com.example.xinmall.mapper.trade.GoodsMapper;
 import com.example.xinmall.mapper.user.UserMapper;
 import com.example.xinmall.mapper.product.CategoryMapper;
+import com.example.xinmall.mapper.product.BrandMapper;
 import com.example.xinmall.entity.product.Category;
+import com.example.xinmall.entity.product.Brand;
 import com.example.xinmall.service.spu.SpuService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +57,7 @@ public class SpuServiceImpl implements SpuService {
     private final PostLikeMapper postLikeMapper;
     private final EvaluationMapper evaluationMapper;
     private final CategoryMapper categoryMapper;
+    private final BrandMapper brandMapper;
 
     @Override
     public SpuDetailVO getDetailById(Long id) {
@@ -69,6 +72,12 @@ public class SpuServiceImpl implements SpuService {
         vo.setDeviceTypeId(spu.getCategoryId());
         Category category = categoryMapper.selectById(spu.getCategoryId());
         vo.setDeviceTypeName(category != null ? category.getName() : null);
+
+        // 设置品牌名称
+        if (spu.getBrandId() != null) {
+            Brand brand = brandMapper.selectById(spu.getBrandId());
+            vo.setBrandName(brand != null ? brand.getName() : null);
+        }
 
         if (spu.getPriceMin() != null || spu.getPriceMax() != null) {
             SpuDetailVO.PriceRangeVO priceRange = new SpuDetailVO.PriceRangeVO();
@@ -450,6 +459,12 @@ public class SpuServiceImpl implements SpuService {
         vo.setDeviceTypeId(spu.getCategoryId());
         Category category = categoryMapper.selectById(spu.getCategoryId());
         vo.setDeviceTypeName(category != null ? category.getName() : null);
+
+        // 设置品牌名称
+        if (spu.getBrandId() != null) {
+            Brand brand = brandMapper.selectById(spu.getBrandId());
+            vo.setBrandName(brand != null ? brand.getName() : null);
+        }
 
         if (spu.getPriceMin() != null || spu.getPriceMax() != null) {
             SpuListVO.PriceRangeVO priceRange = new SpuListVO.PriceRangeVO();

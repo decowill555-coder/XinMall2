@@ -14,7 +14,17 @@ import com.example.xinmall.dto.trade.response.ProductModelVO;
 import com.example.xinmall.entity.trade.Goods;
 import com.example.xinmall.entity.trade.enums.GoodsStatus;
 import com.example.xinmall.entity.user.User;
+import com.example.xinmall.entity.user.UserFollow;
+import com.example.xinmall.entity.product.ProductModel;
+import com.example.xinmall.entity.product.Brand;
+import com.example.xinmall.entity.product.ProductModelAttribute;
+import com.example.xinmall.entity.product.Attribute;
 import com.example.xinmall.mapper.trade.GoodsMapper;
+import com.example.xinmall.mapper.user.UserFollowMapper;
+import com.example.xinmall.mapper.product.ProductModelMapper;
+import com.example.xinmall.mapper.product.BrandMapper;
+import com.example.xinmall.mapper.product.ProductModelAttributeMapper;
+import com.example.xinmall.mapper.product.AttributeMapper;
 import com.example.xinmall.service.trade.GoodsService;
 import com.example.xinmall.service.user.UserService;
 import com.example.xinmall.service.system.CollectionService;
@@ -32,7 +42,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,15 +55,34 @@ public class GoodsServiceImpl implements GoodsService {
     private final CollectionService collectionService;
     private final ShopMapper shopMapper;
     private final ObjectMapper objectMapper;
+    private final UserFollowMapper userFollowMapper;
+    private final ProductModelMapper productModelMapper;
+    private final BrandMapper brandMapper;
+    private final ProductModelAttributeMapper productModelAttributeMapper;
+    private final AttributeMapper attributeMapper;
+
+    private static final int COLLECTION_TYPE_GOODS = 1;
+    private static final int COLLECTION_TYPE_SHOP = 3;
+    private static final int COLLECTION_TYPE_USER = 2;
 
     public GoodsServiceImpl(GoodsMapper goodsMapper, UserService userService,
                            @Lazy CollectionService collectionService,
-                           ShopMapper shopMapper, ObjectMapper objectMapper) {
+                           ShopMapper shopMapper, ObjectMapper objectMapper,
+                           UserFollowMapper userFollowMapper,
+                           ProductModelMapper productModelMapper,
+                           BrandMapper brandMapper,
+                           ProductModelAttributeMapper productModelAttributeMapper,
+                           AttributeMapper attributeMapper) {
         this.goodsMapper = goodsMapper;
         this.userService = userService;
         this.collectionService = collectionService;
         this.shopMapper = shopMapper;
         this.objectMapper = objectMapper;
+        this.userFollowMapper = userFollowMapper;
+        this.productModelMapper = productModelMapper;
+        this.brandMapper = brandMapper;
+        this.productModelAttributeMapper = productModelAttributeMapper;
+        this.attributeMapper = attributeMapper;
     }
 
     @Override
@@ -155,19 +186,16 @@ public class GoodsServiceImpl implements GoodsService {
             }
         }
 
+        // 构建卖家信息
         User seller = userService.getById(goods.getSellerId());
         if (seller != null) {
-            ProductSellerVO sellerVO = new ProductSellerVO();
-            sellerVO.setId(seller.getId());
-            sellerVO.setName(seller.getNickname());
-            sellerVO.setAvatar(seller.getAvatar());
+            ProductSellerVO sellerVO = buildSellerVO(seller, goods.getSellerId());
             vo.setSeller(sellerVO);
         }
 
+        // 构建商品型号信息
         if (goods.getModelId() != null) {
-            ProductModelVO modelVO = new ProductModelVO();
-            modelVO.setId(goods.getModelId());
-            modelVO.setName(vo.getModel() != null ? vo.getModel().getName() : null);
+            ProductModelVO modelVO = buildModelVO(goods.getModelId());
             vo.setModel(modelVO);
         }
 
@@ -179,13 +207,140 @@ public class GoodsServiceImpl implements GoodsService {
 
         try {
             Long userId = getCurrentUserId();
-            boolean isCollected = collectionService.isCollected(goods.getId(), 1);
+            boolean isCollected = collectionService.isCollected(goods.getId(), COLLECTION_TYPE_GOODS);
             vo.setIsCollected(isCollected);
         } catch (Exception e) {
             vo.setIsCollected(false);
         }
 
         return vo;
+    }
+
+    /**
+     * 构建卖家VO信息
+     */
+    private ProductSellerVO buildSellerVO(User seller, Long sellerId) {
+        ProductSellerVO sellerVO = new ProductSellerVO();
+        sellerVO.setId(seller.getId());
+        sellerVO.setName(seller.getNickname());
+        sellerVO.setAvatar(seller.getAvatar());
+        sellerVO.setSignature(seller.getSignature());
+
+        // 检查是否是商家
+        Shop shop = shopMapper.selectOne(
+                new LambdaQueryWrapper<Shop>().eq(Shop::getUserId, sellerId)
+        );
+        sellerVO.setType(shop != null ? "merchant" : "personal");
+
+        // 获取等级名称 (简单实现：根据交易量或注册时间)
+        sellerVO.setLevelName(calculateLevelName(sellerId));
+
+        // 获取在售商品数量
+        Integer sellingCount = goodsMapper.selectCount(
+                new LambdaQueryWrapper<Goods>()
+                        .eq(Goods::getSellerId, sellerId)
+                        .eq(Goods::getStatus, GoodsStatus.ON_SHELF)
+        );
+        sellerVO.setSellingCount(sellingCount);
+
+        // 获取粉丝数量
+        if (shop != null) {
+            sellerVO.setFollowerCount(shop.getFollowerCount());
+            sellerVO.setRating(shop.getRating());
+        } else {
+            // 个人卖家从用户关注表获取粉丝数
+            Integer followerCount = userFollowMapper.countFollowers(sellerId);
+            sellerVO.setFollowerCount(followerCount != null ? followerCount : 0);
+            sellerVO.setRating(null); // 个人卖家没有评分
+        }
+
+        // 检查当前用户是否关注了该卖家
+        try {
+            Long userId = getCurrentUserId();
+            if (shop != null) {
+                // 商家关注状态
+                boolean isFollowed = collectionService.isCollected(shop.getId(), COLLECTION_TYPE_SHOP);
+                sellerVO.setIsFollowed(isFollowed);
+            } else {
+                // 个人用户关注状态
+                UserFollow userFollow = userFollowMapper.selectOne(
+                        new LambdaQueryWrapper<UserFollow>()
+                                .eq(UserFollow::getUserId, userId)
+                                .eq(UserFollow::getFollowedId, sellerId)
+                );
+                sellerVO.setIsFollowed(userFollow != null);
+            }
+        } catch (Exception e) {
+            sellerVO.setIsFollowed(false);
+        }
+
+        return sellerVO;
+    }
+
+    /**
+     * 计算用户等级名称
+     */
+    private String calculateLevelName(Long userId) {
+        // 简单实现：根据发布商品数量计算等级
+        Integer goodsCount = goodsMapper.selectCount(
+                new LambdaQueryWrapper<Goods>()
+                        .eq(Goods::getSellerId, userId)
+                        .in(Goods::getStatus, GoodsStatus.ON_SHELF, GoodsStatus.SOLD)
+        );
+        if (goodsCount >= 100) {
+            return "钻石卖家";
+        } else if (goodsCount >= 50) {
+            return "金牌卖家";
+        } else if (goodsCount >= 20) {
+            return "银牌卖家";
+        } else if (goodsCount >= 5) {
+            return "铜牌卖家";
+        } else {
+            return "新手上路";
+        }
+    }
+
+    /**
+     * 构建商品型号VO信息
+     */
+    private ProductModelVO buildModelVO(Long modelId) {
+        ProductModelVO modelVO = new ProductModelVO();
+        modelVO.setId(modelId);
+
+        ProductModel model = productModelMapper.selectById(modelId);
+        if (model != null) {
+            modelVO.setName(model.getName());
+            modelVO.setBrandId(model.getBrandId());
+
+            // 获取品牌信息
+            if (model.getBrandId() != null) {
+                Brand brand = brandMapper.selectById(model.getBrandId());
+                if (brand != null) {
+                    modelVO.setBrandName(brand.getName());
+                }
+            }
+
+            // 获取型号规格属性
+            Map<String, String> specs = new HashMap<>();
+            List<ProductModelAttribute> modelAttributes = productModelAttributeMapper.selectList(
+                    new LambdaQueryWrapper<ProductModelAttribute>()
+                            .eq(ProductModelAttribute::getModelId, modelId)
+            );
+
+            for (ProductModelAttribute modelAttr : modelAttributes) {
+                Attribute attribute = attributeMapper.selectById(modelAttr.getAttributeId());
+                if (attribute != null && modelAttr.getValue() != null) {
+                    String displayValue = modelAttr.getValue();
+                    if (attribute.getUnit() != null && !attribute.getUnit().isEmpty()) {
+                        displayValue += attribute.getUnit();
+                    }
+                    specs.put(attribute.getName(), displayValue);
+                }
+            }
+            modelVO.setSpecs(specs);
+        }
+
+        return modelVO;
     }
 
     private String convertConditionToString(Integer conditionLevel) {
