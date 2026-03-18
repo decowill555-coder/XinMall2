@@ -236,12 +236,12 @@ public class GoodsServiceImpl implements GoodsService {
         sellerVO.setLevelName(calculateLevelName(sellerId));
 
         // 获取在售商品数量
-        Integer sellingCount = goodsMapper.selectCount(
+        Long sellingCountLong = goodsMapper.selectCount(
                 new LambdaQueryWrapper<Goods>()
                         .eq(Goods::getSellerId, sellerId)
                         .eq(Goods::getStatus, GoodsStatus.ON_SHELF)
         );
-        sellerVO.setSellingCount(sellingCount);
+        sellerVO.setSellingCount(sellingCountLong != null ? sellingCountLong.intValue() : 0);
 
         // 获取粉丝数量
         if (shop != null) {
@@ -282,11 +282,12 @@ public class GoodsServiceImpl implements GoodsService {
      */
     private String calculateLevelName(Long userId) {
         // 简单实现：根据发布商品数量计算等级
-        Integer goodsCount = goodsMapper.selectCount(
+        Long goodsCountLong = goodsMapper.selectCount(
                 new LambdaQueryWrapper<Goods>()
                         .eq(Goods::getSellerId, userId)
                         .in(Goods::getStatus, GoodsStatus.ON_SHELF, GoodsStatus.SOLD)
         );
+        int goodsCount = goodsCountLong != null ? goodsCountLong.intValue() : 0;
         if (goodsCount >= 100) {
             return "钻石卖家";
         } else if (goodsCount >= 50) {

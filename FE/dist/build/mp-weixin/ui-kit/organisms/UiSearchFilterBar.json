@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "ui-filter-dropdown": "../molecules/UiFilterDropdown"
+  }
+}

@@ -226,22 +226,17 @@ const confirmSelect = () => {
     uni.showToast({ title: '请选择分类', icon: 'none' });
     return;
   }
-  
+
   saveRecentCategory(selectedCategory.value);
-  
-  const pages = getCurrentPages();
-  const prevPage = pages[pages.length - 2];
-  
-  if (prevPage) {
-    uni.navigateBack({
-      success: () => {
-        const url = `/pages-sub/seller/publish/entry?categoryId=${selectedCategory.value!.id}&categoryName=${encodeURIComponent(selectedCategory.value!.name)}`;
-        uni.redirectTo({ url });
-      }
-    });
-  } else {
-    uni.navigateBack();
-  }
+
+  // 通过全局临时变量传递选中的分类
+  (uni as any).$tempCategory = {
+    id: selectedCategory.value.id,
+    name: selectedCategory.value.name
+  };
+
+  // 返回上一页
+  uni.navigateBack();
 };
 </script>
 

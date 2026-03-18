@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 interface Props {
-  sellerId?: string;
+  sellerId?: string | number;
   avatar?: string;
   name?: string;
   levelName?: string;

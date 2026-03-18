@@ -383,7 +383,17 @@ const fetchPostDetail = async () => {
   loading.value = true;
   try {
     const res = await forumApi.getPostDetail(postId.value);
-    post.value = res.data;
+    // 转换后端返回的数据格式
+    post.value = {
+      ...res.data,
+      author: {
+        id: String(res.data.author?.id || ''),
+        name: res.data.author?.name || '',
+        avatar: res.data.author?.avatar || '',
+        levelName: res.data.author?.levelName || ''
+      },
+      shareCount: res.data.shareCount || 0
+    };
     isFollowed.value = false;
   } catch (error) {
     logError('获取帖子详情失败:', error);
@@ -424,13 +434,13 @@ const fetchPostDetail = async () => {
 
 const fetchComments = async (isRefresh = false) => {
   if (commentLoading.value) return;
-  
+
   if (isRefresh) {
     commentPage.value = 1;
     comments.value = [];
     commentHasMore.value = true;
   }
-  
+
   commentLoading.value = true;
   try {
     const res = await forumApi.getComments({
@@ -439,14 +449,30 @@ const fetchComments = async (isRefresh = false) => {
       page: commentPage.value,
       pageSize: 20
     });
-    
+
+    // 转换后端返回的数据格式
+    const list = (res.data.list || res.data.records || []).map((comment: any) => ({
+      ...comment,
+      author: {
+        id: String(comment.author?.id || ''),
+        name: comment.author?.name || '',
+        avatar: comment.author?.avatar || '',
+        levelName: comment.author?.levelName || ''
+      },
+      replyTo: comment.replyToUser ? {
+        id: String(comment.replyToUser.id || ''),
+        authorName: comment.replyToUser.name || '',
+        content: ''
+      } : undefined
+    }));
+
     if (isRefresh) {
-      comments.value = res.data.list;
+      comments.value = list;
     } else {
-      comments.value = [...comments.value, ...res.data.list];
+      comments.value = [...comments.value, ...list];
     }
     commentTotal.value = res.data.total;
-    commentHasMore.value = res.data.hasMore;
+    commentHasMore.value = res.data.hasMore ?? (res.data.page < res.data.pages);
   } catch (error) {
     logError('获取评论失败:', error);
   } finally {
@@ -463,9 +489,23 @@ const loadMoreComments = () => {
 const loadMoreReplies = async (comment: CommentItem) => {
   try {
     const res = await forumApi.getReplies(comment.id, 1, 20);
+    const replies = (res.data.list || res.data.records || []).map((reply: any) => ({
+      ...reply,
+      author: {
+        id: String(reply.author?.id || ''),
+        name: reply.author?.name || '',
+        avatar: reply.author?.avatar || '',
+        levelName: reply.author?.levelName || ''
+      },
+      replyTo: reply.replyToUser ? {
+        id: String(reply.replyToUser.id || ''),
+        authorName: reply.replyToUser.name || '',
+        content: ''
+      } : undefined
+    }));
     const commentIndex = comments.value.findIndex(c => c.id === comment.id);
     if (commentIndex > -1) {
-      comments.value[commentIndex].replies = res.data.list;
+      comments.value[commentIndex].replies = replies;
     }
   } catch (error) {
     logError('获取回复失败:', error);

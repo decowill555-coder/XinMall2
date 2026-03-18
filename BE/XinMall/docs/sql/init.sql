@@ -484,15 +484,30 @@ CREATE TABLE `banner` (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '轮播图表' ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Table structure for user_follow
+-- ----------------------------
+DROP TABLE IF EXISTS `user_follow`;
+CREATE TABLE `user_follow`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '关注ID',
+  `user_id` bigint NOT NULL COMMENT '用户ID（关注者）',
+  `followed_id` bigint NOT NULL COMMENT '被关注的用户ID',
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '关注时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_user_followed`(`user_id` ASC, `followed_id` ASC) USING BTREE,
+  INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
+  INDEX `idx_followed_id`(`followed_id` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户关注表' ROW_FORMAT = Dynamic;
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- ============================================================
 -- 完成提示
 -- ============================================================
--- 共创建 23 张表：
--- 产品库模块: attribute, attribute_option, brand, brand_category, 
+-- 共创建 24 张表：
+-- 产品库模块: attribute, attribute_option, brand, brand_category,
 --            category, category_attribute, product_model, product_model_attribute
--- 用户模块: user, user_address, user_profile
+-- 用户模块: user, user_address, user_profile, user_follow
 -- 商品交易模块: goods, order, evaluation
 -- 消息模块: conversation, message
 -- 系统模块: shop, collection, upload_file, banner

@@ -1,6 +1,6 @@
 package com.example.xinmall.controller.community;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.example.xinmall.common.result.PageResult;
 import com.example.xinmall.common.result.Result;
 import com.example.xinmall.dto.community.request.CreateCommentRequest;
 import com.example.xinmall.dto.community.response.CommentVO;
@@ -9,8 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(name = "评论管理", description = "评论相关接口")
 @RestController
@@ -22,11 +20,11 @@ public class CommentController {
 
     @Operation(summary = "评论列表")
     @GetMapping("/list/{postId}")
-    public Result<IPage<CommentVO>> list(
+    public Result<PageResult<CommentVO>> list(
             @PathVariable Long postId,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer pageSize) {
-        return Result.success(commentService.getList(postId, page, pageSize));
+        return Result.success(PageResult.of(commentService.getList(postId, page, pageSize)));
     }
 
     @Operation(summary = "发表评论")
@@ -58,7 +56,10 @@ public class CommentController {
 
     @Operation(summary = "获取评论回复")
     @GetMapping("/replies/{parentId}")
-    public Result<List<CommentVO>> replies(@PathVariable Long parentId) {
-        return Result.success(commentService.getReplies(parentId));
+    public Result<PageResult<CommentVO>> replies(
+            @PathVariable Long parentId,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer pageSize) {
+        return Result.success(PageResult.of(commentService.getReplies(parentId, page, pageSize)));
     }
 }

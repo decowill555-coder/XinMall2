@@ -49,38 +49,45 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public IPage<PostVO> getList(PostQueryRequest request) {
-        Page<Post> page = new Page<>(request.getPage(), request.getPageSize());
-        LambdaQueryWrapper<Post> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Post::getStatus, 1);
+        log.debug("Getting post list, page: {}, pageSize: {}", request.getPage(), request.getPageSize());
+        try {
+            Page<Post> page = new Page<>(request.getPage(), request.getPageSize());
+            LambdaQueryWrapper<Post> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(Post::getStatus, 1);
 
-        if (request.getForumId() != null) {
-            wrapper.eq(Post::getForumId, request.getForumId());
-        }
-        if (request.getSpuId() != null) {
-            wrapper.eq(Post::getSpuId, request.getSpuId());
-        }
-        if (request.getAuthorId() != null) {
-            wrapper.eq(Post::getAuthorId, request.getAuthorId());
-        }
-        if (request.getKeyword() != null && !request.getKeyword().isEmpty()) {
-            wrapper.and(w -> w.like(Post::getTitle, request.getKeyword())
-                    .or()
-                    .like(Post::getContent, request.getKeyword()));
-        }
+            if (request.getForumId() != null) {
+                wrapper.eq(Post::getForumId, request.getForumId());
+            }
+            if (request.getSpuId() != null) {
+                wrapper.eq(Post::getSpuId, request.getSpuId());
+            }
+            if (request.getAuthorId() != null) {
+                wrapper.eq(Post::getAuthorId, request.getAuthorId());
+            }
+            if (request.getKeyword() != null && !request.getKeyword().isEmpty()) {
+                wrapper.and(w -> w.like(Post::getTitle, request.getKeyword())
+                        .or()
+                        .like(Post::getContent, request.getKeyword()));
+            }
 
-        if ("hot".equals(request.getSort())) {
-            wrapper.orderByDesc(Post::getLikeCount);
-        } else if ("essence".equals(request.getSort())) {
-            wrapper.orderByDesc(Post::getIsEssence);
-        } else {
-            wrapper.orderByDesc(Post::getIsPinned);
-            wrapper.orderByDesc(Post::getCreatedAt);
+            if ("hot".equals(request.getSort())) {
+                wrapper.orderByDesc(Post::getLikeCount);
+            } else if ("essence".equals(request.getSort())) {
+                wrapper.orderByDesc(Post::getIsEssence);
+            } else {
+                wrapper.orderByDesc(Post::getIsPinned);
+                wrapper.orderByDesc(Post::getCreatedAt);
+            }
+
+            IPage<Post> postPage = postMapper.selectPage(page, wrapper);
+            Long currentUserId = getCurrentUserId();
+
+            log.debug("Found {} posts", postPage.getRecords().size());
+            return postPage.convert(post -> convertToVO(post, currentUserId));
+        } catch (Exception e) {
+            log.error("Error getting post list: {}", e.getMessage(), e);
+            throw e;
         }
-
-        IPage<Post> postPage = postMapper.selectPage(page, wrapper);
-        Long currentUserId = getCurrentUserId();
-
-        return postPage.convert(post -> convertToVO(post, currentUserId));
     }
 
     @Override
@@ -332,50 +339,57 @@ public class PostServiceImpl implements PostService {
     }
 
     private PostVO convertToVO(Post post, Long currentUserId) {
-        PostVO vo = new PostVO();
-        BeanUtils.copyProperties(post, vo);
-        vo.setIsPinned(post.getIsPinned() != null && post.getIsPinned() == 1);
-        vo.setIsEssence(post.getIsEssence() != null && post.getIsEssence() == 1);
+        try {
+            log.debug("Converting post to VO, postId: {}", post != null ? post.getId() : "null");
 
-        PostVO.AuthorVO authorVO = new PostVO.AuthorVO();
-        User author = userMapper.selectById(post.getAuthorId());
-        if (author != null) {
-            authorVO.setId(author.getId());
-            authorVO.setName(author.getNickname());
-            authorVO.setAvatar(author.getAvatar());
-        }
-        vo.setAuthor(authorVO);
+            PostVO vo = new PostVO();
+            BeanUtils.copyProperties(post, vo);
+            vo.setIsPinned(post.getIsPinned() != null && post.getIsPinned() == 1);
+            vo.setIsEssence(post.getIsEssence() != null && post.getIsEssence() == 1);
 
-        if (post.getForumId() != null) {
-            Community community = communityMapper.selectById(post.getForumId());
-            if (community != null) {
-                vo.setForumName(community.getName());
+            PostVO.AuthorVO authorVO = new PostVO.AuthorVO();
+            User author = userMapper.selectById(post.getAuthorId());
+            if (author != null) {
+                authorVO.setId(author.getId());
+                authorVO.setName(author.getNickname());
+                authorVO.setAvatar(author.getAvatar());
             }
-        }
+            vo.setAuthor(authorVO);
 
-        if (post.getSpuId() != null) {
-            Spu spu = spuMapper.selectById(post.getSpuId());
-            if (spu != null) {
-                vo.setSpuName(spu.getName());
+            if (post.getForumId() != null) {
+                Community community = communityMapper.selectById(post.getForumId());
+                if (community != null) {
+                    vo.setForumName(community.getName());
+                }
             }
+
+            if (post.getSpuId() != null) {
+                Spu spu = spuMapper.selectById(post.getSpuId());
+                if (spu != null) {
+                    vo.setSpuName(spu.getName());
+                }
+            }
+
+            if (currentUserId != null) {
+                LambdaQueryWrapper<PostLike> likeWrapper = new LambdaQueryWrapper<>();
+                likeWrapper.eq(PostLike::getPostId, post.getId())
+                        .eq(PostLike::getUserId, currentUserId);
+                vo.setIsLiked(postLikeMapper.selectCount(likeWrapper) > 0);
+
+                LambdaQueryWrapper<PostCollect> collectWrapper = new LambdaQueryWrapper<>();
+                collectWrapper.eq(PostCollect::getPostId, post.getId())
+                        .eq(PostCollect::getUserId, currentUserId);
+                vo.setIsCollected(postCollectMapper.selectCount(collectWrapper) > 0);
+            } else {
+                vo.setIsLiked(false);
+                vo.setIsCollected(false);
+            }
+
+            return vo;
+        } catch (Exception e) {
+            log.error("Error converting post to VO: postId={}, error={}", post != null ? post.getId() : "null", e.getMessage(), e);
+            throw e;
         }
-
-        if (currentUserId != null) {
-            LambdaQueryWrapper<PostLike> likeWrapper = new LambdaQueryWrapper<>();
-            likeWrapper.eq(PostLike::getPostId, post.getId())
-                    .eq(PostLike::getUserId, currentUserId);
-            vo.setIsLiked(postLikeMapper.selectCount(likeWrapper) > 0);
-
-            LambdaQueryWrapper<PostCollect> collectWrapper = new LambdaQueryWrapper<>();
-            collectWrapper.eq(PostCollect::getPostId, post.getId())
-                    .eq(PostCollect::getUserId, currentUserId);
-            vo.setIsCollected(postCollectMapper.selectCount(collectWrapper) > 0);
-        } else {
-            vo.setIsLiked(false);
-            vo.setIsCollected(false);
-        }
-
-        return vo;
     }
 
     private PostDetailVO convertToDetailVO(Post post, Long currentUserId) {

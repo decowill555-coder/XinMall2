@@ -1,0 +1,1 @@
+<view class="ui-condition-picker data-v-250a9478"><view wx:for="{{a}}" wx:for-item="item" wx:key="b" class="{{['condition-item', 'data-v-250a9478', item.c && 'active']}}" bindtap="{{item.d}}"><text class="condition-text data-v-250a9478">{{item.a}}</text></view></view>

@@ -102,16 +102,26 @@ public class SpuServiceImpl implements SpuService {
         if (request.getBrandId() != null) {
             wrapper.eq(Spu::getBrandId, request.getBrandId());
         }
+        if (request.getSubCategoryId() != null) {
+            // 子分类筛选 - 通过parent_id进行筛选
+            wrapper.eq(Spu::getCategoryId, request.getSubCategoryId());
+        }
         if (request.getKeyword() != null && !request.getKeyword().isEmpty()) {
             wrapper.like(Spu::getName, request.getKeyword());
         }
 
-        if ("hot".equals(request.getSort())) {
+        if ("hot".equals(request.getSort()) || "recommend".equals(request.getSort())) {
             wrapper.orderByDesc(Spu::getMemberCount);
         } else if ("new".equals(request.getSort())) {
             wrapper.orderByDesc(Spu::getCreatedAt);
-        } else if ("product_count".equals(request.getSort())) {
+        } else if ("sales".equals(request.getSort()) || "product_count".equals(request.getSort())) {
             wrapper.orderByDesc(Spu::getProductCount);
+        } else if ("price".equals(request.getSort())) {
+            if ("asc".equals(request.getPriceOrder())) {
+                wrapper.orderByAsc(Spu::getPriceMin);
+            } else {
+                wrapper.orderByDesc(Spu::getPriceMin);
+            }
         } else {
             wrapper.orderByDesc(Spu::getCreatedAt);
         }
@@ -160,9 +170,27 @@ public class SpuServiceImpl implements SpuService {
             vo.setLikeCount(goods.getLikeCount());
             vo.setCreatedAt(goods.getCreatedAt() != null ? goods.getCreatedAt().toString() : null);
             
+            // 处理图片 - images字段在数据库中是JSON数组格式
             if (goods.getImages() != null && !goods.getImages().isEmpty()) {
-                String[] images = goods.getImages().split(",");
-                vo.setCover(images[0]);
+                String imagesStr = goods.getImages().trim();
+                // 如果是JSON数组格式，提取第一个URL
+                if (imagesStr.startsWith("[")) {
+                    try {
+                        com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                        java.util.List<String> imageList = mapper.readValue(imagesStr,
+                            new com.fasterxml.jackson.core.type.TypeReference<java.util.List<String>>() {});
+                        if (!imageList.isEmpty()) {
+                            vo.setCover(imageList.get(0));
+                        }
+                    } catch (Exception e) {
+                        // JSON解析失败，尝试其他方式
+                        vo.setCover(imagesStr);
+                    }
+                } else {
+                    // 逗号分隔的格式
+                    String[] images = imagesStr.split(",");
+                    vo.setCover(images[0].trim());
+                }
             }
             
             if (goods.getConditionLevel() != null) {

@@ -167,10 +167,61 @@ export const categoryApi = {
   },
 
   getModels: (params: ModelListParams) => {
-    return http<ModelListResult>({
-      url: '/spu/search',
+    // 将前端的 deviceTypeId 映射为后端的参数
+    const queryParams: Record<string, any> = {};
+    if (params.deviceTypeId) {
+      queryParams.deviceTypeId = params.deviceTypeId;
+    }
+    if (params.brandId) {
+      queryParams.brandId = params.brandId;
+    }
+    if (params.subCategoryId) {
+      queryParams.subCategoryId = params.subCategoryId;
+    }
+    if (params.keyword) {
+      queryParams.keyword = params.keyword;
+    }
+    if (params.sort) {
+      queryParams.sort = params.sort;
+    }
+    if (params.priceOrder) {
+      queryParams.priceOrder = params.priceOrder;
+    }
+    if (params.page) {
+      queryParams.page = params.page;
+    }
+    if (params.size) {
+      queryParams.pageSize = params.size;
+    }
+
+    // 使用 /search/models 接口，不需要 keyword 参数
+    return http<{ list: any[]; total: number; hasMore: boolean }>({
+      url: '/search/models',
       method: 'GET',
-      data: params
+      data: queryParams
+    }).then(result => {
+      // 转换后端返回的分页数据格式
+      const list = result.list || [];
+      return {
+        list: list.map((item: any) => ({
+          id: String(item.id),
+          name: item.title || item.name || '',
+          brandId: String(item.brandId || ''),
+          brandName: item.brandName || '',
+          deviceTypeId: String(item.deviceTypeId || item.categoryId || ''),
+          deviceTypeName: item.deviceTypeName || item.categoryName || '',
+          cover: item.cover || '',
+          productCount: item.productCount || 0,
+          priceRange: {
+            min: item.price ? item.price * 100 : (item.priceRange?.min || 0),
+            max: item.price ? item.price * 100 : (item.priceRange?.max || 0)
+          },
+          specs: item.specs || {},
+          tags: item.tags || []
+        })),
+        total: result.total || list.length,
+        hasMore: result.hasMore !== undefined ? result.hasMore : false
+      };
     });
   },
 

@@ -14,9 +14,13 @@ public class SpuQueryRequest implements Serializable {
 
     private Long brandId;
 
+    private Long subCategoryId;
+
     private String keyword;
 
     private String sort;
+
+    private String priceOrder;
 
     private Integer page = 1;
 

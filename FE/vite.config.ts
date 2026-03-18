@@ -9,6 +9,7 @@ export default defineConfig({
       pages: resolve(__dirname, 'src/pages.json')
     })
   ],
+  publicDir: 'public',
   build: {
     rollupOptions: {
       input: {

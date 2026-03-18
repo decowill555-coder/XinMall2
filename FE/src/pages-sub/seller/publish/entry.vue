@@ -200,14 +200,25 @@ onLoad((options: any) => {
 });
 
 onShow(() => {
+  // 检查是否有通过URL传递的分类选择
   const pages = getCurrentPages();
   const currentPage = pages[pages.length - 1] as any;
+
+  // 方式1: 通过URL options传递
   if (currentPage?.options?.categoryId) {
     const options = currentPage.options;
     if (parseInt(options.categoryId, 10) !== form.categoryId) {
       form.categoryId = parseInt(options.categoryId, 10);
       form.categoryName = options.categoryName ? decodeURIComponent(options.categoryName) : '';
     }
+  }
+
+  // 方式2: 通过全局临时变量传递
+  const tempCategory = (uni as any).$tempCategory;
+  if (tempCategory) {
+    form.categoryId = tempCategory.id;
+    form.categoryName = tempCategory.name;
+    (uni as any).$tempCategory = null;
   }
 });
 

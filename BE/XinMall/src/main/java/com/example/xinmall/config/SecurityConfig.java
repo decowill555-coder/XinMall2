@@ -85,6 +85,8 @@ public class SecurityConfig {
                                 "/api/spu/**",
                                 "/api/banner/**",
                                 "/api/evaluation/**",
+                                "/api/post/**",
+                                "/api/comment/**",
                                 "/uploads/**",
                                 "/ws/**",
                                 "/doc.html",

@@ -1,0 +1,1 @@
+<view class="ui-price-input data-v-9e29597b"><text class="price-symbol data-v-9e29597b">¥</text><input class="price-field data-v-9e29597b" type="digit" value="{{a}}" placeholder="{{b}}" bindinput="{{c}}"/></view>

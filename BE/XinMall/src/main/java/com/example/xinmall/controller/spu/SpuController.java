@@ -40,9 +40,13 @@ public class SpuController {
 
     @Operation(summary = "SPU搜索")
     @GetMapping("/search")
-    public Result<List<SpuListVO>> search(@RequestParam String keyword, @RequestParam(required = false) Integer limit) {
-        List<SpuListVO> result = spuService.searchByKeyword(keyword, limit);
-        return Result.success(result);
+    public Result<Map<String, Object>> search(SpuQueryRequest request) {
+        IPage<SpuListVO> result = spuService.search(request);
+        Map<String, Object> response = new HashMap<>();
+        response.put("list", result.getRecords());
+        response.put("total", result.getTotal());
+        response.put("hasMore", result.getCurrent() < result.getPages());
+        return Result.success(response);
     }
 
     @Operation(summary = "SPU商品列表")

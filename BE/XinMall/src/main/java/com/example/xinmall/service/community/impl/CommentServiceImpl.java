@@ -25,9 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -175,18 +172,17 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentVO> getReplies(Long parentId) {
+    public IPage<CommentVO> getReplies(Long parentId, Integer page, Integer pageSize) {
+        Page<Comment> commentPage = new Page<>(page, pageSize);
         LambdaQueryWrapper<Comment> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Comment::getParentId, parentId)
                 .eq(Comment::getStatus, 1)
                 .orderByAsc(Comment::getCreatedAt);
 
-        List<Comment> comments = commentMapper.selectList(wrapper);
+        IPage<Comment> result = commentMapper.selectPage(commentPage, wrapper);
         Long currentUserId = getCurrentUserId();
 
-        return comments.stream()
-                .map(comment -> convertToVO(comment, currentUserId))
-                .collect(Collectors.toList());
+        return result.convert(comment -> convertToVO(comment, currentUserId));
     }
 
     private CommentVO convertToVO(Comment comment, Long currentUserId) {

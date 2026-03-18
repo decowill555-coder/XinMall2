@@ -1,0 +1,1 @@
+<view class="ui-comment-input data-v-53c76a2c"><input class="input-field data-v-53c76a2c" value="{{a}}" placeholder="{{b}}" bindinput="{{c}}"/><ui-button wx:if="{{f}}" class="data-v-53c76a2c" u-s="{{['d']}}" bindclick="{{e}}" u-i="53c76a2c-0" bind:__l="__l" u-p="{{f}}">{{d}}</ui-button></view>

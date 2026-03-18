@@ -180,7 +180,7 @@ const productTags = computed<TagItem[]>(() => {
 
 const formatPrice = (price: number): string => {
   if (!price) return '0';
-  const yuanPrice = price / 100;
+  const yuanPrice = price;
   if (yuanPrice >= 10000) {
     return (yuanPrice / 10000).toFixed(2) + '万';
   }

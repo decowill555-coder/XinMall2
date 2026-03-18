@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "设备分类",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "ui-filter-sidebar": "../../ui-kit/organisms/UiFilterSidebar",
+    "ui-sub-category-tabs": "../../ui-kit/molecules/UiSubCategoryTabs",
+    "ui-brand-selector": "../../ui-kit/organisms/UiBrandSelector"
+  }
+}
