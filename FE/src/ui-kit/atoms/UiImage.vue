@@ -1,11 +1,11 @@
 <!-- src/ui-kit/atoms/UiImage.vue -->
 <template>
-  <view 
-    class="ui-image" 
-    :style="{ 
-      width, 
-      height, 
-      borderRadius: radius 
+  <view
+    class="ui-image"
+    :style="{
+      width,
+      height,
+      borderRadius: radius
     }"
     @click="emit('click')"
   >
@@ -21,6 +21,7 @@
 
     <!-- 3. 真实图片 -->
     <image
+      v-show="!error"
       class="real-image"
       :class="{ 'fade-in': loaded }"
       :src="processedSrc"

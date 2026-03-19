@@ -81,10 +81,6 @@
                     height="280rpx"
                     radius="12rpx 12rpx 0 0"
                   />
-                  <view class="community-badge">
-                    <ui-icon name="users" :size="20" color="white" />
-                    <text>{{ item.memberCount || '1.2万' }}</text>
-                  </view>
                 </view>
                 <view class="card-content">
                   <text class="card-title">{{ item.title }}</text>

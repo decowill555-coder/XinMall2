@@ -1,24 +1,24 @@
 server:
-  port: 8080
-  base-url: https://api.xinmall.com
+  port: ${SERVER_PORT:8080}
+  base-url: ${SERVER_BASE_URL:https://api.xinmall.com}
 
 spring:
   application:
     name: xinmall
   main:
     allow-bean-definition-overriding: true
-  
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/xinmall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
-    username: xinmall_user
-    password: your_secure_password
-  
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:xinmall}?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: ${DB_USERNAME:xinmall_user}
+    password: ${DB_PASSWORD:}
+
   data:
     redis:
-      host: localhost
-      port: 6379
-      password: your_redis_password
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
       database: 0
 
 mybatis-plus:
@@ -34,14 +34,14 @@ mybatis-plus:
       logic-not-delete-value: 0
 
 jwt:
-  secret: your-production-secret-key-at-least-256-bits-long-please-change-this
-  expiration: 86400000
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:86400000}
   header: Authorization
   prefix: Bearer
 
 upload:
-  path: /var/www/xinmall/uploads
-  url-prefix: /uploads
+  path: ${UPLOAD_PATH:/var/www/xinmall/uploads}
+  url-prefix: ${UPLOAD_URL_PREFIX:/uploads}
 
 springdoc:
   swagger-ui:

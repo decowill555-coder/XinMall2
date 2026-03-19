@@ -2,14 +2,18 @@ package com.example.xinmall.service.user.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.xinmall.common.cache.CacheService;
 import com.example.xinmall.common.constant.RedisKey;
 import com.example.xinmall.common.exception.BusinessException;
+import com.example.xinmall.common.result.PageResult;
 import com.example.xinmall.common.security.JwtUtils;
 import com.example.xinmall.dto.user.request.*;
 import com.example.xinmall.dto.user.response.*;
 import com.example.xinmall.entity.user.User;
 import com.example.xinmall.entity.user.UserAddress;
+import com.example.xinmall.entity.user.UserFollow;
 import com.example.xinmall.entity.user.UserProfile;
 import com.example.xinmall.entity.user.enums.AuthStatus;
 import com.example.xinmall.entity.user.enums.UserStatus;
@@ -31,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -457,6 +462,89 @@ public class UserServiceImpl implements UserService {
     private UserAddressVO convertToAddressVO(UserAddress address) {
         UserAddressVO vo = new UserAddressVO();
         BeanUtils.copyProperties(address, vo);
+        return vo;
+    }
+
+    @Override
+    @Transactional
+    public void followUser(Long userId, Long followedId) {
+        if (userId.equals(followedId)) {
+            throw new BusinessException("不能关注自己");
+        }
+
+        User followedUser = userMapper.selectById(followedId);
+        if (followedUser == null) {
+            throw new BusinessException("用户不存在");
+        }
+
+        if (userFollowMapper.isFollowing(userId, followedId)) {
+            throw new BusinessException("已关注该用户");
+        }
+
+        UserFollow userFollow = new UserFollow();
+        userFollow.setUserId(userId);
+        userFollow.setFollowedId(followedId);
+        userFollow.setCreatedAt(LocalDateTime.now());
+        userFollowMapper.insert(userFollow);
+    }
+
+    @Override
+    @Transactional
+    public void unfollowUser(Long userId, Long followedId) {
+        int deleted = userFollowMapper.deleteFollow(userId, followedId);
+        if (deleted == 0) {
+            throw new BusinessException("未关注该用户");
+        }
+    }
+
+    @Override
+    public boolean isFollowing(Long userId, Long followedId) {
+        return userFollowMapper.isFollowing(userId, followedId);
+    }
+
+    @Override
+    public PageResult<FollowUserVO> getFollowingList(Long userId, Integer page, Integer size) {
+        Page<Map<String, Object>> pageParam = new Page<>(page, size);
+        IPage<Map<String, Object>> result = userFollowMapper.selectFollowingPage(pageParam, userId);
+
+        List<FollowUserVO> list = result.getRecords().stream()
+                .map(this::convertToFollowUserVO)
+                .collect(Collectors.toList());
+
+        return PageResult.of(list, result.getTotal(), result.getCurrent(), result.getSize());
+    }
+
+    @Override
+    public PageResult<FollowUserVO> getFollowersList(Long userId, Integer page, Integer size) {
+        Long currentUserId = getCurrentUserId();
+        Page<Map<String, Object>> pageParam = new Page<>(page, size);
+        IPage<Map<String, Object>> result = userFollowMapper.selectFollowersPage(pageParam, userId, currentUserId);
+
+        List<FollowUserVO> list = result.getRecords().stream()
+                .map(this::convertToFollowUserVO)
+                .collect(Collectors.toList());
+
+        return PageResult.of(list, result.getTotal(), result.getCurrent(), result.getSize());
+    }
+
+    private FollowUserVO convertToFollowUserVO(Map<String, Object> map) {
+        FollowUserVO vo = new FollowUserVO();
+        vo.setUserId(((Number) map.get("userId")).longValue());
+        if (map.get("followedId") != null) {
+            vo.setUserId(((Number) map.get("followedId")).longValue());
+        }
+        vo.setNickname((String) map.get("nickname"));
+        vo.setAvatar((String) map.get("avatar"));
+        vo.setSignature((String) map.get("signature"));
+        if (map.get("gender") != null) {
+            vo.setGender(((Number) map.get("gender")).intValue());
+        }
+        if (map.get("createdAt") != null) {
+            vo.setCreatedAt((LocalDateTime) map.get("createdAt"));
+        }
+        if (map.get("isFollowed") != null) {
+            vo.setIsFollowed(((Number) map.get("isFollowed")).intValue() == 1);
+        }
         return vo;
     }
 }

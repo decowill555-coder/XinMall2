@@ -1,5 +1,6 @@
 package com.example.xinmall.service.user;
 
+import com.example.xinmall.common.result.PageResult;
 import com.example.xinmall.dto.common.PageRequest;
 import com.example.xinmall.dto.user.request.*;
 import com.example.xinmall.dto.user.response.*;
@@ -46,4 +47,29 @@ public interface UserService {
     TokenVO refreshToken(String refreshToken);
 
     boolean checkPhoneExists(String phone);
+
+    /**
+     * 关注用户
+     */
+    void followUser(Long userId, Long followedId);
+
+    /**
+     * 取消关注
+     */
+    void unfollowUser(Long userId, Long followedId);
+
+    /**
+     * 检查是否关注
+     */
+    boolean isFollowing(Long userId, Long followedId);
+
+    /**
+     * 获取关注列表
+     */
+    PageResult<FollowUserVO> getFollowingList(Long userId, Integer page, Integer size);
+
+    /**
+     * 获取粉丝列表
+     */
+    PageResult<FollowUserVO> getFollowersList(Long userId, Integer page, Integer size);
 }

@@ -151,6 +151,27 @@ export interface CategoryItem {
   letter: string;
 }
 
+export interface BackendModelItem {
+  id: number;
+  title?: string;
+  name?: string;
+  brandId?: number;
+  brandName?: string;
+  deviceTypeId?: number;
+  categoryId?: number;
+  deviceTypeName?: string;
+  categoryName?: string;
+  cover?: string;
+  productCount?: number;
+  price?: number;
+  priceRange?: {
+    min: number;
+    max: number;
+  };
+  specs?: Record<string, string>;
+  tags?: string[];
+}
+
 export const categoryApi = {
   getDeviceCategories: () => {
     return http<CategoryVO[]>({
@@ -168,7 +189,7 @@ export const categoryApi = {
 
   getModels: (params: ModelListParams) => {
     // 将前端的 deviceTypeId 映射为后端的参数
-    const queryParams: Record<string, any> = {};
+    const queryParams: Record<string, string | number | undefined> = {};
     if (params.deviceTypeId) {
       queryParams.deviceTypeId = params.deviceTypeId;
     }
@@ -195,7 +216,7 @@ export const categoryApi = {
     }
 
     // 使用 /search/models 接口，不需要 keyword 参数
-    return http<{ list: any[]; total: number; hasMore: boolean }>({
+    return http<{ list: BackendModelItem[]; total: number; hasMore: boolean }>({
       url: '/search/models',
       method: 'GET',
       data: queryParams
@@ -203,7 +224,7 @@ export const categoryApi = {
       // 转换后端返回的分页数据格式
       const list = result.list || [];
       return {
-        list: list.map((item: any) => ({
+        list: list.map((item: BackendModelItem) => ({
           id: String(item.id),
           name: item.title || item.name || '',
           brandId: String(item.brandId || ''),

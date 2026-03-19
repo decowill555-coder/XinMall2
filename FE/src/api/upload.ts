@@ -106,8 +106,9 @@ export const uploadApi = {
       try {
         const result = await uploadApi.uploadFile(file, scene);
         success.push(result);
-      } catch (error: any) {
-        failed.push({ file, error: error.msg || '上传失败' });
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : '上传失败';
+        failed.push({ file, error: errorMessage });
       }
     }
 

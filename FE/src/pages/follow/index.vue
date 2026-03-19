@@ -45,7 +45,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { onShow } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { useAuthStore } from '@/stores';
 import { forumApi, type PostListItem } from '@/api/community';
 import { spuApi } from '@/api';
 import { logError } from '@/utils/logger';
@@ -71,13 +73,31 @@ const { safeAreaTop, headerExtraTop, headerHeight, scrollHeight } = usePageLayou
   headerEstimatedHeight: 120
 });
 
+const authStore = useAuthStore();
+
 const loading = ref(false);
 const feedList = ref<FeedItem[]>([]);
 const currentPage = ref(1);
 const hasMore = ref(true);
 const pageSize = 10;
 
+const checkAuthAndRedirect = () => {
+  if (!authStore.isAuthenticated) {
+    uni.showToast({
+      title: '请先登录',
+      icon: 'none',
+      duration: 1500
+    });
+    setTimeout(() => {
+      uni.navigateTo({ url: '/pages-sub/user/login/index' });
+    }, 500);
+    return false;
+  }
+  return true;
+};
+
 const fetchFeed = async (page: number = 1) => {
+  if (!authStore.isAuthenticated) return;
   if (loading.value) return;
   loading.value = true;
   
@@ -154,7 +174,12 @@ const loadMore = () => {
 };
 
 onMounted(() => {
+  if (!checkAuthAndRedirect()) return;
   fetchFeed(1);
+});
+
+onShow(() => {
+  if (!checkAuthAndRedirect()) return;
 });
 </script>
 

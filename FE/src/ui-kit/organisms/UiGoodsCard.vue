@@ -30,7 +30,7 @@
         <view class="card-footer">
           <!-- 用户信息 -->
           <view class="user-info" @click.stop="toUser">
-            <ui-avatar :src="data.userAvatar" ::size="40" :bordered="false" />
+            <ui-avatar :src="data.userAvatar" :size="40" :bordered="false" />
             <text class="user-name">{{ data.userName }}</text>
           </view>
           

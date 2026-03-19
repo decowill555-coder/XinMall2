@@ -62,6 +62,15 @@ public class OrderServiceImpl implements OrderService {
         if (goods.getStock() < request.getQuantity()) {
             throw new BusinessException("库存不足");
         }
+        // 检查是否已有未支付的订单占用该商品库存
+        LambdaQueryWrapper<Order> existingOrderWrapper = new LambdaQueryWrapper<Order>()
+                .eq(Order::getGoodsId, goods.getId())
+                .eq(Order::getStatus, OrderStatus.PENDING_PAYMENT);
+        Long pendingOrderCount = orderMapper.selectCount(existingOrderWrapper);
+        int availableStock = goods.getStock() - pendingOrderCount.intValue();
+        if (availableStock < request.getQuantity()) {
+            throw new BusinessException("商品库存已被占用，请稍后再试");
+        }
 
         Order order = new Order();
         order.setOrderNo(generateOrderNo());
@@ -93,11 +102,10 @@ public class OrderServiceImpl implements OrderService {
         order.setUpdatedAt(LocalDateTime.now());
         orderMapper.insert(order);
 
-        goods.setStock(goods.getStock() - request.getQuantity());
-        if (goods.getStock() == 0) {
-            goods.setStatus(GoodsStatus.SOLD);
-        }
-        goodsMapper.updateById(goods);
+        // 创建订单时不扣减库存，仅记录
+        // 库存在支付成功后真正锁定，避免未支付订单占用库存
+        // 有效库存 = 实际库存 - 待支付订单数量
+        // 商品状态在支付成功后才变为SOLD
 
         return order.getId();
     }
@@ -257,14 +265,8 @@ public class OrderServiceImpl implements OrderService {
         order.setUpdatedAt(LocalDateTime.now());
         orderMapper.updateById(order);
 
-        Goods goods = goodsMapper.selectById(order.getGoodsId());
-        if (goods != null) {
-            goods.setStock(goods.getStock() + order.getQuantity());
-            if (goods.getStatus() == GoodsStatus.SOLD) {
-                goods.setStatus(GoodsStatus.ON_SHELF);
-            }
-            goodsMapper.updateById(goods);
-        }
+        // 取消订单时无需恢复库存（因为创建订单时并未扣减库存）
+        // 商品状态仍为ON_SHELF，无需修改
     }
 
     @Override
@@ -286,6 +288,13 @@ public class OrderServiceImpl implements OrderService {
         order.setPayTime(LocalDateTime.now());
         order.setUpdatedAt(LocalDateTime.now());
         orderMapper.updateById(order);
+
+        // 支付成功后，将商品状态改为已售出
+        Goods goods = goodsMapper.selectById(order.getGoodsId());
+        if (goods != null && goods.getStatus() == GoodsStatus.ON_SHELF) {
+            goods.setStatus(GoodsStatus.SOLD);
+            goodsMapper.updateById(goods);
+        }
     }
 
     @Override
@@ -354,12 +363,10 @@ public class OrderServiceImpl implements OrderService {
         order.setUpdatedAt(LocalDateTime.now());
         orderMapper.updateById(order);
 
+        // 退款时重新上架商品（库存未被扣减，仅恢复状态）
         Goods goods = goodsMapper.selectById(order.getGoodsId());
         if (goods != null) {
-            goods.setStock(goods.getStock() + order.getQuantity());
-            if (goods.getStatus() == GoodsStatus.SOLD) {
-                goods.setStatus(GoodsStatus.ON_SHELF);
-            }
+            goods.setStatus(GoodsStatus.ON_SHELF);
             goodsMapper.updateById(goods);
         }
     }

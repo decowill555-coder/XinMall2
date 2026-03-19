@@ -79,6 +79,53 @@ export interface UserDetailInfo extends UserInfo {
   location?: string;
 }
 
+export interface UserGoodsItem {
+  id: string;
+  title: string;
+  cover: string;
+  price: number;
+  status: 'on_sale' | 'sold' | 'off_sale';
+  viewCount: number;
+  likeCount: number;
+  createdAt: string;
+}
+
+export interface UserCollectionsItem {
+  id: string;
+  productId: string;
+  title: string;
+  cover: string;
+  price: number;
+  sellerId: string;
+  sellerName: string;
+  createdAt: string;
+}
+
+export interface UserLikesItem {
+  id: string;
+  productId: string;
+  title: string;
+  cover: string;
+  price: number;
+  createdAt: string;
+}
+
+export interface FollowUserItem {
+  userId: string;
+  nickname: string;
+  avatar: string;
+  signature: string;
+  gender: 0 | 1 | 2;
+  createdAt: string;
+  isFollowed?: boolean;
+}
+
+export interface PaginatedResult<T> {
+  list: T[];
+  total: number;
+  hasMore: boolean;
+}
+
 export const authApi = {
   login: (params: LoginParams) => {
     return http<LoginResult>({
@@ -186,13 +233,13 @@ export const authApi = {
 
   unfollowUser: (userId: string) => {
     return http<{ success: boolean; followersCount: number }>({
-      url: `/user/unfollow/${userId}`,
-      method: 'POST'
+      url: `/user/follow/${userId}`,
+      method: 'DELETE'
     });
   },
 
   getUserGoods: (userId: string, params?: { status?: 'all' | 'selling' | 'sold'; page?: number; pageSize?: number }) => {
-    return http<{ list: any[]; total: number; hasMore: boolean }>({
+    return http<PaginatedResult<UserGoodsItem>>({
       url: `/user/goods/${userId}`,
       method: 'GET',
       data: params
@@ -200,7 +247,7 @@ export const authApi = {
   },
 
   getUserCollections: (userId: string, params?: { page?: number; pageSize?: number }) => {
-    return http<{ list: any[]; total: number; hasMore: boolean }>({
+    return http<PaginatedResult<UserCollectionsItem>>({
       url: `/user/collections/${userId}`,
       method: 'GET',
       data: params
@@ -208,8 +255,31 @@ export const authApi = {
   },
 
   getUserLikes: (userId: string, params?: { page?: number; pageSize?: number }) => {
-    return http<{ list: any[]; total: number; hasMore: boolean }>({
+    return http<PaginatedResult<UserLikesItem>>({
       url: `/user/likes/${userId}`,
+      method: 'GET',
+      data: params
+    });
+  },
+
+  checkFollow: (userId: string) => {
+    return http<boolean>({
+      url: `/user/follow/check/${userId}`,
+      method: 'GET'
+    });
+  },
+
+  getFollowingList: (userId: string, params?: { page?: number; size?: number }) => {
+    return http<PaginatedResult<FollowUserItem>>({
+      url: `/user/following/${userId}`,
+      method: 'GET',
+      data: params
+    });
+  },
+
+  getFollowersList: (userId: string, params?: { page?: number; size?: number }) => {
+    return http<PaginatedResult<FollowUserItem>>({
+      url: `/user/followers/${userId}`,
       method: 'GET',
       data: params
     });

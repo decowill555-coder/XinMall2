@@ -199,10 +199,24 @@ export interface PayOrderParams {
   method: 'wechat' | 'alipay' | 'balance';
 }
 
+export interface WechatPayParams {
+  appId: string;
+  partnerId: string;
+  prepayId: string;
+  package: string;
+  nonceStr: string;
+  timeStamp: string;
+  sign: string;
+}
+
+export interface AlipayPayParams {
+  orderStr: string;
+}
+
 export interface PayOrderResult {
   success: boolean;
   paymentId: string;
-  payParams?: any;
+  payParams?: WechatPayParams | AlipayPayParams;
 }
 
 export interface Address {

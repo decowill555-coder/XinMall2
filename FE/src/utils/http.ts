@@ -9,11 +9,23 @@ export const BASE_URL = process.env.NODE_ENV === 'production'
   : 'http://localhost:8080/api';
 const TIMEOUT = 10000;
 
+export interface ApiResponse<T = unknown> {
+  code: number;
+  message: string;
+  data: T;
+}
+
+export interface HttpError {
+  statusCode: number;
+  message: string;
+  data?: unknown;
+}
+
 interface RequestOptions {
   url: string;
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  data?: any;
-  header?: any;
+  data?: Record<string, unknown>;
+  header?: Record<string, string>;
   loading?: boolean;
   skipAuthRefresh?: boolean;
 }
@@ -38,9 +50,10 @@ const refreshAccessToken = async (): Promise<boolean> => {
       method: 'POST',
       data: { refreshToken },
       header: { 'Content-Type': 'application/json' },
-      success: (res: any) => {
-        if (res.statusCode === 200 && res.data.code === 200) {
-          const { token, refreshToken: newRefreshToken } = res.data.data;
+      success: (res: UniApp.RequestSuccessCallbackResult) => {
+        const data = res.data as ApiResponse<{ token: string; refreshToken: string }>;
+        if (res.statusCode === 200 && data.code === 200) {
+          const { token, refreshToken: newRefreshToken } = data.data;
           uni.setStorageSync('token', token);
           if (newRefreshToken) {
             uni.setStorageSync('refreshToken', newRefreshToken);
@@ -110,57 +123,36 @@ export const http = <T>(options: RequestOptions): Promise<T> => {
       data: options.method !== 'GET' ? options.data : undefined,
       header: header,
       timeout: TIMEOUT,
-      success: (res: any) => {
+      success: (res: UniApp.RequestSuccessCallbackResult) => {
+        const response = res.data as ApiResponse;
         if (DEBUG) {
           apiLogger.log('[Response]', url, res.statusCode, res.data);
         }
 
         if (res.statusCode >= 200 && res.statusCode < 300) {
-          if (res.data.code === 200 || res.data.code === 201) {
+          if (response.code === 200 || response.code === 201) {
             resolve(res.data.data as T);
           } else {
-            uni.showToast({ title: res.data.message || '请求失败', icon: 'none' });
+            uni.showToast({ title: response.message || '请求失败', icon: 'none' });
             reject(res.data);
           }
         } else if (res.statusCode === 401) {
-          if (options.skipAuthRefresh) {
-            uni.removeStorageSync('token');
-            uni.navigateTo({ url: '/pages-sub/user/login/index' });
-            reject(res);
-            return;
-          }
+          // 清除过期的token
+          uni.removeStorageSync('token');
+          uni.removeStorageSync('refreshToken');
 
-          refreshAccessToken().then((success) => {
-            if (success) {
-              const newToken = uni.getStorageSync('token');
-              header['Authorization'] = `Bearer ${newToken}`;
-              uni.request({
-                url,
-                method: options.method || 'GET',
-                data: options.method !== 'GET' ? options.data : undefined,
-                header: header,
-                timeout: TIMEOUT,
-                success: (retryRes: any) => {
-                  if (retryRes.statusCode >= 200 && retryRes.statusCode < 300) {
-                    if (retryRes.data.code === 200 || retryRes.data.code === 201) {
-                      resolve(retryRes.data.data as T);
-                    } else {
-                      uni.showToast({ title: retryRes.data.message || '请求失败', icon: 'none' });
-                      reject(retryRes.data);
-                    }
-                  } else {
-                    uni.removeStorageSync('token');
-                    uni.navigateTo({ url: '/pages-sub/user/login/index' });
-                    reject(retryRes);
-                  }
-                },
-                fail: reject
-              });
-            } else {
-              uni.navigateTo({ url: '/pages-sub/user/login/index' });
-              reject(res);
-            }
+          // 显示提示并跳转登录页
+          uni.showToast({
+            title: '请先登录',
+            icon: 'none',
+            duration: 1500
           });
+
+          setTimeout(() => {
+            uni.navigateTo({ url: '/pages-sub/user/login/index' });
+          }, 500);
+
+          reject(res);
         } else if (res.statusCode === 403) {
           uni.showToast({ title: '没有访问权限', icon: 'none' });
           reject(res);

@@ -719,11 +719,15 @@ const goChat = () => {
 };
 
 const showFollowers = () => {
-  uni.showToast({ title: '粉丝列表开发中', icon: 'none' });
+  uni.navigateTo({
+    url: `/pages-sub/user/follow/index?id=${userId.value}&tab=followers&followers=${userInfo.value.followersCount}&following=${userInfo.value.followingCount}`
+  });
 };
 
 const showFollowing = () => {
-  uni.showToast({ title: '关注列表开发中', icon: 'none' });
+  uni.navigateTo({
+    url: `/pages-sub/user/follow/index?id=${userId.value}&tab=following&followers=${userInfo.value.followersCount}&following=${userInfo.value.followingCount}`
+  });
 };
 
 const goPostDetail = (post: PostListItem) => {

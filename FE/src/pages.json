@@ -89,7 +89,8 @@
         { "path": "settings/index", "style": { "navigationBarTitleText": "设置", "navigationStyle": "custom" } },
         { "path": "theme/index", "style": { "navigationBarTitleText": "主题设置", "navigationStyle": "custom" } },
         { "path": "wallet/index", "style": { "navigationBarTitleText": "我的钱包", "navigationStyle": "custom" } },
-        { "path": "profile/index", "style": { "navigationBarTitleText": "个人资料", "navigationStyle": "custom" } }
+        { "path": "profile/index", "style": { "navigationBarTitleText": "个人资料", "navigationStyle": "custom" } },
+        { "path": "follow/index", "style": { "navigationBarTitleText": "关注/粉丝", "navigationStyle": "custom" } }
       ]
     },
     {

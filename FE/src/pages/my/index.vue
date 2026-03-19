@@ -210,54 +210,85 @@ const goProfile = () => {
   uni.navigateTo({ url: '/pages-sub/user/profile/index' });
 };
 
+const checkAuthAndRedirect = () => {
+  if (!authStore.isAuthenticated) {
+    uni.showToast({
+      title: '请先登录',
+      icon: 'none',
+      duration: 1500
+    });
+    setTimeout(() => {
+      uni.navigateTo({ url: '/pages-sub/user/login/index' });
+    }, 500);
+    return false;
+  }
+  return true;
+};
+
 const goFollowers = () => {
-  uni.showToast({ title: '粉丝列表', icon: 'none' });
+  if (!checkAuthAndRedirect()) return;
+  uni.navigateTo({
+    url: `/pages-sub/user/follow/index?id=${authStore.userId}&tab=followers`
+  });
 };
 
 const goFollowing = () => {
-  uni.showToast({ title: '关注列表', icon: 'none' });
+  if (!checkAuthAndRedirect()) return;
+  uni.navigateTo({
+    url: `/pages-sub/user/follow/index?id=${authStore.userId}&tab=following`
+  });
 };
 
 const goLikes = () => {
+  if (!checkAuthAndRedirect()) return;
   uni.showToast({ title: '获赞记录', icon: 'none' });
 };
 
 const goOrders = (type?: string) => {
-  const url = type 
-    ? `/pages-sub/trade/order/list?type=${type}` 
+  if (!checkAuthAndRedirect()) return;
+  const url = type
+    ? `/pages-sub/trade/order/list?type=${type}`
     : '/pages-sub/trade/order/list';
   uni.navigateTo({ url });
 };
 
 const goAftersale = () => {
+  if (!checkAuthAndRedirect()) return;
   uni.navigateTo({ url: '/pages-sub/trade/aftersale/list' });
 };
 
 const goShop = () => {
+  if (!checkAuthAndRedirect()) return;
   uni.navigateTo({ url: '/pages-sub/seller/shop/index' });
 };
 
 const goMyPublish = () => {
+  if (!checkAuthAndRedirect()) return;
   uni.navigateTo({ url: '/pages-sub/seller/goods/list' });
 };
 
 const goCollection = () => {
+  if (!checkAuthAndRedirect()) return;
   uni.navigateTo({ url: '/pages-sub/user/collection/index' });
 };
 
 const goHistory = () => {
+  if (!checkAuthAndRedirect()) return;
   uni.navigateTo({ url: '/pages-sub/user/history/index' });
 };
 
 const goAddress = () => {
+  if (!checkAuthAndRedirect()) return;
   uni.navigateTo({ url: '/pages-sub/user/address/list' });
 };
 
 const goWallet = () => {
+  if (!checkAuthAndRedirect()) return;
   uni.navigateTo({ url: '/pages-sub/user/wallet/index' });
 };
 
 const goAuth = () => {
+  if (!checkAuthAndRedirect()) return;
   uni.navigateTo({ url: '/pages-sub/auth/real-name/index' });
 };
 

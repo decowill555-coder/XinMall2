@@ -116,7 +116,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { onShow } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
-import { useChatStore } from '@/stores';
+import { useChatStore, useAuthStore } from '@/stores';
 import { formatTimeAgo } from '@/utils/date';
 
 const { safeAreaTop, headerExtraTop, headerHeight, scrollHeight } = usePageLayout({
@@ -126,6 +126,7 @@ const { safeAreaTop, headerExtraTop, headerHeight, scrollHeight } = usePageLayou
 });
 
 const chatStore = useChatStore();
+const authStore = useAuthStore();
 
 const activeTab = ref(0);
 const isLoading = ref(false);
@@ -257,6 +258,21 @@ const isEmpty = computed(() => {
   return false;
 });
 
+const checkAuthAndRedirect = () => {
+  if (!authStore.isAuthenticated) {
+    uni.showToast({
+      title: '请先登录',
+      icon: 'none',
+      duration: 1500
+    });
+    setTimeout(() => {
+      uni.navigateTo({ url: '/pages-sub/user/login/index' });
+    }, 500);
+    return false;
+  }
+  return true;
+};
+
 const goChat = (item: any) => {
   chatStore.setCurrentConversation(item.id);
   uni.navigateTo({ url: `/pages-sub/chat/index?id=${item.id}` });
@@ -288,10 +304,12 @@ const onRefresh = async () => {
 };
 
 onMounted(() => {
+  if (!checkAuthAndRedirect()) return;
   loadConversations();
 });
 
 onShow(() => {
+  if (!checkAuthAndRedirect()) return;
   loadConversations();
 });
 </script>

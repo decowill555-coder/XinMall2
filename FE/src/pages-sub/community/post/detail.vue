@@ -383,16 +383,16 @@ const fetchPostDetail = async () => {
   loading.value = true;
   try {
     const res = await forumApi.getPostDetail(postId.value);
-    // 转换后端返回的数据格式
+    // res 已经是内层的 data 对象（http.ts 返回 res.data.data）
     post.value = {
-      ...res.data,
+      ...res,
       author: {
-        id: String(res.data.author?.id || ''),
-        name: res.data.author?.name || '',
-        avatar: res.data.author?.avatar || '',
-        levelName: res.data.author?.levelName || ''
+        id: String(res.author?.id || ''),
+        name: res.author?.name || '',
+        avatar: res.author?.avatar || '',
+        levelName: res.author?.levelName || ''
       },
-      shareCount: res.data.shareCount || 0
+      shareCount: res.shareCount || 0
     };
     isFollowed.value = false;
   } catch (error) {
@@ -450,8 +450,8 @@ const fetchComments = async (isRefresh = false) => {
       pageSize: 20
     });
 
-    // 转换后端返回的数据格式
-    const list = (res.data.list || res.data.records || []).map((comment: any) => ({
+    // res 已经是内层的 data 对象（http.ts 返回 res.data.data）
+    const list = (res.list || res.records || []).map((comment: any) => ({
       ...comment,
       author: {
         id: String(comment.author?.id || ''),
@@ -471,8 +471,8 @@ const fetchComments = async (isRefresh = false) => {
     } else {
       comments.value = [...comments.value, ...list];
     }
-    commentTotal.value = res.data.total;
-    commentHasMore.value = res.data.hasMore ?? (res.data.page < res.data.pages);
+    commentTotal.value = res.total;
+    commentHasMore.value = res.hasMore ?? (res.page < res.pages);
   } catch (error) {
     logError('获取评论失败:', error);
   } finally {
