@@ -13,9 +13,16 @@
       :scroll-top="scrollTopValue"
     >
       <view class="scroll-content">
+        <!-- 加载状态 -->
+        <view v-if="loading" class="loading-container">
+          <ui-loading :size="80" />
+          <text class="loading-text">加载中...</text>
+        </view>
+
+        <template v-else>
         <view class="swiper-section" :style="{ paddingTop: safeAreaTop + 'px' }">
-          <swiper 
-            class="device-swiper" 
+          <swiper
+            class="device-swiper"
             :indicator-dots="deviceImages.length > 1"
             indicator-color="rgba(255, 255, 255, 0.3)"
             indicator-active-color="rgba(255, 255, 255, 0.9)"
@@ -25,15 +32,21 @@
           >
             <swiper-item v-for="(img, index) in deviceImages" :key="index">
               <view class="swiper-item" @click="previewImage(index)">
-                <image 
-                  :src="img" 
-                  class="device-image" 
+                <image
+                  :src="img"
+                  class="device-image"
                   mode="aspectFill"
                 />
               </view>
             </swiper-item>
           </swiper>
-          
+
+          <!-- 当没有图片时显示占位 -->
+          <view v-if="deviceImages.length === 0" class="no-image-placeholder">
+            <ui-icon name="image" :size="120" color="placeholder" />
+            <text>暂无图片</text>
+          </view>
+
           <view class="swiper-overlay">
             <view class="back-btn" @click="goBack">
               <ui-icon name="arrow-left" :size="40" color="white" />
@@ -47,8 +60,8 @@
               </view>
             </view>
           </view>
-          
-          <view class="image-counter">
+
+          <view class="image-counter" v-if="deviceImages.length > 0">
             <text>{{ currentImageIndex + 1 }}/{{ deviceImages.length }}</text>
           </view>
         </view>
@@ -351,8 +364,9 @@
             </view>
           </view>
         </view>
-        
+
         <view class="bottom-space"></view>
+        </template>
       </view>
     </scroll-view>
     
@@ -441,24 +455,23 @@ const showSortPicker = ref(false);
 const currentSort = ref('hot');
 const scrollTopValue = ref(0);
 
-const deviceImages = ref([
-  'https://picsum.photos/800/600?random=d1',
-  'https://picsum.photos/800/600?random=d2',
-  'https://picsum.photos/800/600?random=d3'
-]);
+// 初始为空数组，等待 API 返回真实图片数据
+// 如果 SPU 有 cover 图片，先使用它作为默认展示
+const deviceImages = ref<string[]>([]);
 
+// 初始为默认值，等待 API 返回真实数据
 const deviceInfo = ref<DeviceInfo>({
   id: '',
-  name: 'iPhone 15 Pro Max',
-  subtitle: 'Apple 2023年旗舰 · 钛金属边框 · A17 Pro芯片',
-  score: 9.2,
-  memberCount: 125680,
-  postCount: 8923,
-  productCount: 1567,
-  reviewCount: 3456,
+  name: '',
+  subtitle: '',
+  score: 0,
+  memberCount: 0,
+  postCount: 0,
+  productCount: 0,
+  reviewCount: 0,
   isFollowed: false,
-  isHot: true,
-  tags: ['旗舰手机', '苹果', '钛金属', 'A17 Pro']
+  isHot: false,
+  tags: []
 });
 
 const navTabs = computed(() => [
@@ -503,6 +516,9 @@ const productList = ref<Product[]>([]);
 const productLoading = ref(false);
 const productHasMore = ref(true);
 
+// 页面加载状态
+const loading = ref(true);
+
 onMounted(() => {
   nextTick(() => {
     calcLayout();
@@ -537,27 +553,34 @@ const formatCount = (count: number): string => {
 const fetchDeviceData = async () => {
   if (!deviceId.value) return;
 
+  loading.value = true;
   try {
     const detail = await spuApi.getSpuDetail(deviceId.value);
     deviceInfo.value = {
       id: detail.id,
       name: detail.name,
-      subtitle: `${detail.brandName} · ${detail.deviceTypeName}`,
-      score: detail.avgRating * 2,
-      memberCount: detail.memberCount,
-      postCount: detail.postCount,
-      productCount: detail.productCount,
+      subtitle: `${detail.brandName || ''} · ${detail.deviceTypeName || ''}`,
+      score: detail.avgRating ? detail.avgRating * 2 : 0,
+      memberCount: detail.memberCount || 0,
+      postCount: detail.postCount || 0,
+      productCount: detail.productCount || 0,
       reviewCount: 0,
-      isFollowed: detail.isFollowed,
-      isHot: detail.memberCount > 10000,
-      tags: detail.tags
+      isFollowed: detail.isFollowed || false,
+      isHot: (detail.memberCount || 0) > 10000,
+      tags: detail.tags || []
     };
 
+    // 设置图片：优先使用 images 数组，其次使用 cover 作为单图展示
     if (detail.images?.length) {
       deviceImages.value = detail.images;
+    } else if (detail.cover) {
+      deviceImages.value = [detail.cover];
     }
   } catch (error) {
     logError('获取设备详情失败:', error);
+    uni.showToast({ title: '获取设备信息失败', icon: 'none' });
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -654,7 +677,7 @@ const fetchProductList = async () => {
       id: product.id,
       cover: product.cover,
       title: product.title,
-      price: product.price / 100,
+      price: product.price,
       sales: product.viewCount,
       condition: product.condition,
       specs: Object.values(product.specValues || {}).join(' / '),
@@ -1538,11 +1561,38 @@ const goProductDetail = (item: Product) => {
 .empty-state {
   @include flex-column-center;
   padding: 120rpx 0;
-  
+
   .empty-text {
     font-size: $font-size-md;
     @include text-sub;
     margin-top: $space-md;
+  }
+}
+
+.loading-container {
+  @include flex-column-center;
+  padding: 200rpx 0;
+
+  .loading-text {
+    font-size: $font-size-md;
+    @include text-sub;
+    margin-top: $space-md;
+  }
+}
+
+.no-image-placeholder {
+  @include flex-column-center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: $color-bg-card;
+
+  text {
+    font-size: $font-size-sm;
+    @include text-placeholder;
+    margin-top: $space-sm;
   }
 }
 </style>

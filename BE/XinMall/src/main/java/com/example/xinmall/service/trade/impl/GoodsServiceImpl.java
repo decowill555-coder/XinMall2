@@ -28,6 +28,7 @@ import com.example.xinmall.mapper.product.AttributeMapper;
 import com.example.xinmall.service.trade.GoodsService;
 import com.example.xinmall.service.user.UserService;
 import com.example.xinmall.service.product.CategoryService;
+import com.example.xinmall.service.spu.SpuService;
 import com.example.xinmall.entity.product.Category;
 import com.example.xinmall.service.system.CollectionService;
 import com.example.xinmall.mapper.system.ShopMapper;
@@ -63,6 +64,7 @@ public class GoodsServiceImpl implements GoodsService {
     private final ProductModelAttributeMapper productModelAttributeMapper;
     private final AttributeMapper attributeMapper;
     private final CategoryService categoryService;
+    private final SpuService spuService;
 
     private static final int COLLECTION_TYPE_GOODS = 1;
     private static final int COLLECTION_TYPE_SHOP = 3;
@@ -76,7 +78,8 @@ public class GoodsServiceImpl implements GoodsService {
                            BrandMapper brandMapper,
                            ProductModelAttributeMapper productModelAttributeMapper,
                            AttributeMapper attributeMapper,
-                           CategoryService categoryService) {
+                           CategoryService categoryService,
+                           @Lazy SpuService spuService) {
         this.goodsMapper = goodsMapper;
         this.userService = userService;
         this.collectionService = collectionService;
@@ -88,6 +91,7 @@ public class GoodsServiceImpl implements GoodsService {
         this.productModelAttributeMapper = productModelAttributeMapper;
         this.attributeMapper = attributeMapper;
         this.categoryService = categoryService;
+        this.spuService = spuService;
     }
 
     @Override
@@ -364,8 +368,11 @@ public class GoodsServiceImpl implements GoodsService {
             case 99 -> "99新";
             case 95 -> "95新";
             case 90 -> "9成新";
-            case 80 -> "8成新";
-            default -> "未知";
+            case 80, 8 -> "8成新";
+            case 70, 7 -> "7成新";
+            case 60, 6 -> "6成新";
+            case 50, 5 -> "5成新";
+            default -> conditionLevel + "成新";
         };
     }
 
@@ -428,6 +435,12 @@ public class GoodsServiceImpl implements GoodsService {
         goods.setStatus(GoodsStatus.OFF_SHELF);
         goods.setUpdatedAt(LocalDateTime.now());
         goodsMapper.updateById(goods);
+
+        // 同步更新 SPU 的商品数量和价格范围
+        if (goods.getModelId() != null) {
+            spuService.syncProductCount(goods.getModelId());
+            spuService.syncPriceRange(goods.getModelId());
+        }
     }
 
     @Override
@@ -445,6 +458,9 @@ public class GoodsServiceImpl implements GoodsService {
         goods.setStatus(GoodsStatus.AUDITING);
         goods.setUpdatedAt(LocalDateTime.now());
         goodsMapper.updateById(goods);
+
+        // 注意：上架时商品状态变为审核中，需审核通过后才算在售
+        // 如果需要实时更新，可在审核通过时同步 SPU 统计数据
     }
 
     @Override

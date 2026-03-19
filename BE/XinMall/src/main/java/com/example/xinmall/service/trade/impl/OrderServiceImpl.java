@@ -17,11 +17,13 @@ import com.example.xinmall.mapper.trade.OrderMapper;
 import com.example.xinmall.mapper.user.UserAddressMapper;
 import com.example.xinmall.service.trade.OrderService;
 import com.example.xinmall.service.user.UserService;
+import com.example.xinmall.service.spu.SpuService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -37,7 +39,6 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
-@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     private final OrderMapper orderMapper;
@@ -45,6 +46,18 @@ public class OrderServiceImpl implements OrderService {
     private final UserAddressMapper userAddressMapper;
     private final UserService userService;
     private final ObjectMapper objectMapper;
+    private final SpuService spuService;
+
+    public OrderServiceImpl(OrderMapper orderMapper, GoodsMapper goodsMapper,
+                           UserAddressMapper userAddressMapper, UserService userService,
+                           ObjectMapper objectMapper, @Lazy SpuService spuService) {
+        this.orderMapper = orderMapper;
+        this.goodsMapper = goodsMapper;
+        this.userAddressMapper = userAddressMapper;
+        this.userService = userService;
+        this.objectMapper = objectMapper;
+        this.spuService = spuService;
+    }
 
     @Override
     @Transactional
@@ -296,6 +309,12 @@ public class OrderServiceImpl implements OrderService {
         if (goods != null && goods.getStatus() == GoodsStatus.ON_SHELF) {
             goods.setStatus(GoodsStatus.SOLD);
             goodsMapper.updateById(goods);
+
+            // 同步更新 SPU 的商品数量和价格范围
+            if (goods.getModelId() != null) {
+                spuService.syncProductCount(goods.getModelId());
+                spuService.syncPriceRange(goods.getModelId());
+            }
         }
     }
 

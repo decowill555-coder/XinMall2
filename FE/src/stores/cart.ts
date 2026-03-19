@@ -90,7 +90,15 @@ export const useCartStore = defineStore('cart', () => {
   const loadFromStorage = () => {
     const stored = uni.getStorageSync('cart');
     if (stored) {
-      items.value = stored;
+      try {
+        // uni.getStorageSync 在 H5 端返回字符串，需要解析
+        const parsed = typeof stored === 'string' ? JSON.parse(stored) : stored;
+        if (Array.isArray(parsed)) {
+          items.value = parsed;
+        }
+      } catch (e) {
+        console.error('Failed to parse cart data from storage:', e);
+      }
     }
   };
 

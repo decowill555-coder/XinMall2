@@ -546,4 +546,68 @@ public class SpuServiceImpl implements SpuService {
             default -> "有使用痕迹";
         };
     }
+
+    @Override
+    public void syncProductCount(Long spuId) {
+        if (spuId == null) {
+            return;
+        }
+
+        // 统计该 SPU 下在售商品的数量
+        LambdaQueryWrapper<Goods> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Goods::getModelId, spuId)
+                .eq(Goods::getStatus, GoodsStatus.ON_SHELF);
+
+        Long count = goodsMapper.selectCount(wrapper);
+
+        // 更新 SPU 的 productCount 字段
+        spuMapper.update(null, new LambdaUpdateWrapper<Spu>()
+                .eq(Spu::getId, spuId)
+                .set(Spu::getProductCount, count != null ? count.intValue() : 0));
+    }
+
+    @Override
+    public void syncPriceRange(Long spuId) {
+        if (spuId == null) {
+            return;
+        }
+
+        // 查询该 SPU 下在售商品的最低价和最高价
+        LambdaQueryWrapper<Goods> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Goods::getModelId, spuId)
+                .eq(Goods::getStatus, GoodsStatus.ON_SHELF)
+                .select(Goods::getPrice);
+
+        List<Goods> goodsList = goodsMapper.selectList(wrapper);
+
+        if (goodsList.isEmpty()) {
+            // 没有在售商品，将价格范围设为 null
+            spuMapper.update(null, new LambdaUpdateWrapper<Spu>()
+                    .eq(Spu::getId, spuId)
+                    .set(Spu::getPriceMin, null)
+                    .set(Spu::getPriceMax, null));
+            return;
+        }
+
+        // 计算最低价和最高价
+        java.math.BigDecimal minPrice = null;
+        java.math.BigDecimal maxPrice = null;
+
+        for (Goods goods : goodsList) {
+            if (goods.getPrice() != null) {
+                if (minPrice == null || goods.getPrice().compareTo(minPrice) < 0) {
+                    minPrice = goods.getPrice();
+                }
+                if (maxPrice == null || goods.getPrice().compareTo(maxPrice) > 0) {
+                    maxPrice = goods.getPrice();
+                }
+            }
+        }
+
+        // 更新 SPU 的价格范围
+        spuMapper.update(null, new LambdaUpdateWrapper<Spu>()
+                .eq(Spu::getId, spuId)
+                .set(Spu::getPriceMin, minPrice)
+                .set(Spu::getPriceMax, maxPrice));
+    }
 }

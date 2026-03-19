@@ -38,4 +38,18 @@ public interface SpuService {
     void incrementViewCount(Long id);
 
     Long getMemberCount(Long spuId);
+
+    /**
+     * 同步更新 SPU 的商品数量统计
+     * 重新计算指定 SPU 下在售商品的数量
+     * @param spuId SPU ID
+     */
+    void syncProductCount(Long spuId);
+
+    /**
+     * 同步更新 SPU 的价格范围
+     * 重新计算指定 SPU 下在售商品的最低价和最高价
+     * @param spuId SPU ID
+     */
+    void syncPriceRange(Long spuId);
 }

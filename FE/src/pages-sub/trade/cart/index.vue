@@ -23,7 +23,7 @@
           <ui-image :src="item.cover" width="180rpx" height="180rpx" radius="12rpx" />
           <view class="item-info">
             <text class="item-title">{{ item.name }}</text>
-            <text class="item-spec">{{ item.skuSpecs.map(s => s.value).join(' / ') }}</text>
+            <text class="item-spec">{{ item.skuSpecs?.map(s => s.value).join(' / ') || '' }}</text>
             <view class="item-bottom">
               <ui-price :value="item.price" type="main" :size="28" />
               <ui-stepper :model-value="item.quantity" :min="1" :max="99" @change="(val: number) => updateQuantity(item.id, val)" />
@@ -93,7 +93,13 @@ const goShopping = () => {
 };
 
 const goConfirm = () => {
-  uni.navigateTo({ url: '/pages-sub/trade/order/confirm' });
+  // 获取选中的商品ID，取第一个
+  const selectedItems = cartStore.selectedItems;
+  if (selectedItems.length === 0) return;
+
+  // 使用第一个选中商品的spuId作为productId
+  const productId = selectedItems[0].spuId;
+  uni.navigateTo({ url: `/pages-sub/trade/order/confirm?productId=${productId}` });
 };
 </script>
 
