@@ -1,11 +1,11 @@
 <template>
   <view class="ui-goods-actions">
-    <view 
-      v-for="(action, index) in actions" 
+    <view
+      v-for="(action, index) in actions"
       :key="index"
       class="action-btn"
       :class="action.type"
-      @click="emit('click', action)"
+      @click.stop="emit('click', action)"
     >
       <text>{{ action.text }}</text>
     </view>

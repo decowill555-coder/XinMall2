@@ -48,27 +48,15 @@
         
         <view class="title-section">
           <text class="product-title">{{ product.title }}</text>
-          <view class="title-tags" v-if="productTags.length">
-            <view 
-              v-for="(tag, index) in productTags" 
-              :key="index"
-              class="title-tag"
-              :class="tag.type"
-            >
-              {{ tag.text }}
-            </view>
-          </view>
         </view>
         
         <ui-seller-card
           :seller-id="product.seller.id"
           :avatar="product.seller.avatar"
           :name="product.seller.name"
-          :level-name="product.seller.levelName"
           :desc="product.seller.signature"
           :sales="product.seller.sellingCount"
           :followers="product.seller.followerCount"
-          :rating="product.seller.rating"
         />
         
         <view class="description-section">
@@ -115,9 +103,10 @@
       <view class="action-icons">
         <view class="icon-item" :class="{ 'is-active': isCollected }" @click="handleCollect">
           <ui-icon
-            :name="isCollected ? 'heart-fill' : 'heart'"
+            :name="isCollected ? 'star-fill' : 'star'"
             :size="40"
-            :color="isCollected ? 'error' : 'placeholder'"
+            :color="isCollected ? 'warning' : ''"
+            :class="{ 'star-outline': !isCollected }"
           />
           <text>{{ isCollected ? '已收藏' : '收藏' }}</text>
         </view>
@@ -161,28 +150,6 @@ const isCollected = ref(false);
 const isOwner = computed(() => {
   if (!product.value || !authStore.state.userId) return false;
   return String(product.value.seller.id) === String(authStore.state.userId);
-});
-
-interface TagItem {
-  text: string;
-  type: 'primary' | 'success' | 'warning' | 'info';
-}
-
-const productTags = computed<TagItem[]>(() => {
-  const tags: TagItem[] = [];
-  if (product.value?.condition) {
-    tags.push({ text: product.value.condition, type: 'primary' });
-  }
-  if (product.value?.warranty) {
-    tags.push({ text: '在保', type: 'success' });
-  }
-  if (product.value?.invoice) {
-    tags.push({ text: '有发票', type: 'info' });
-  }
-  if (product.value?.canBargain) {
-    tags.push({ text: '可小刀', type: 'warning' });
-  }
-  return tags;
 });
 
 const formatPrice = (price: number): string => {
@@ -536,14 +503,20 @@ const loadMore = () => {};
       @include flex-column-center;
       gap: 4rpx;
       padding: $space-xs;
-      
+
       text {
         font-size: $font-size-xs;
         @include text-sub;
       }
-      
+
       &.is-active text {
-        color: $color-error;
+        color: var(--color-warning, #FF9500);
+      }
+
+      .star-outline {
+        color: var(--color-main, #1F2937);
+        text-shadow: 0 0 4rpx var(--color-main, #1F2937);
+        -webkit-text-stroke: 2rpx var(--color-main, #1F2937);
       }
     }
   }

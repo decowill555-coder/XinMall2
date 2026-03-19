@@ -1,7 +1,0 @@
-{
-  "navigationBarTitleText": "关注",
-  "navigationStyle": "custom",
-  "usingComponents": {
-    "the-tabbar": "../../components/layout/TheTabbar"
-  }
-}

@@ -1,1 +1,0 @@
-<view class="ui-badge-wrapper data-v-05bd2ae2"><slot/><view wx:if="{{a}}" class="{{['ui-badge', 'data-v-05bd2ae2', d, e]}}" style="{{f}}"><text wx:if="{{b}}" class="badge-text data-v-05bd2ae2">{{c}}</text></view></view>

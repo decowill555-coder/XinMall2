@@ -12,8 +12,8 @@
         </view>
         
         <view v-else class="address-list">
-          <ui-address-card 
-            v-for="item in addressList" 
+          <ui-address-card
+            v-for="item in addressList"
             :key="item.id"
             :name="item.name"
             :phone="item.phone"
@@ -21,7 +21,7 @@
             :city="item.city"
             :district="item.district"
             :detail="item.detail"
-            :is-default="item.isDefault"
+            :is-default="item.isDefault === 1"
             @click="selectAddress(item)"
             @set-default="setDefault(item)"
             @edit="goEdit(item)"
@@ -91,7 +91,7 @@ const selectAddress = (item: Address) => {
 const setDefault = async (item: Address) => {
   try {
     await tradeApi.setDefaultAddress(item.id);
-    addressList.value.forEach(addr => addr.isDefault = addr.id === item.id);
+    addressList.value.forEach(addr => addr.isDefault = addr.id === item.id ? 1 : 0);
     uni.showToast({ title: '设置成功', icon: 'success' });
   } catch (error) {
     uni.showToast({ title: '设置失败', icon: 'none' });
@@ -132,6 +132,7 @@ const handleDelete = (item: Address) => {
 
 .address-content {
   padding: $space-md;
+  padding-bottom: calc(#{$space-md} + 120rpx + env(safe-area-inset-bottom));
 }
 
 .empty-state {

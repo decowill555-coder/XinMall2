@@ -1,7 +1,0 @@
-{
-  "navigationBarTitleText": "搜索结果",
-  "navigationStyle": "custom",
-  "usingComponents": {
-    "ui-filter-sidebar": "../../ui-kit/organisms/UiFilterSidebar"
-  }
-}

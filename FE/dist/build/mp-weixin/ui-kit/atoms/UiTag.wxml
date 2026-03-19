@@ -1,1 +1,0 @@
-<view class="{{['ui-tag', 'data-v-43555e2e', a, b, c, d]}}" bindtap="{{e}}"><slot></slot></view>

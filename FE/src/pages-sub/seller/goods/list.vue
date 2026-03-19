@@ -16,8 +16,8 @@
       />
       
       <view v-else class="goods-list">
-        <ui-goods-list-item 
-          v-for="item in goodsList" 
+        <ui-goods-list-item
+          v-for="item in goodsList"
           :key="item.id"
           :cover="item.cover"
           :title="item.title"
@@ -30,6 +30,9 @@
           @action="handleAction($event, item)"
         />
       </view>
+
+      <!-- 底部留白，防止被按钮遮挡 -->
+      <view class="bottom-space"></view>
     </scroll-view>
     
     <ui-bottom-bar>
@@ -39,8 +42,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { onShow } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { tradeApi, type MyGoodsListItem } from '@/api';
+import { logError } from '@/utils/logger';
 
 const { safeAreaBottom, scrollHeight } = usePageLayout({
   hasSubNavbar: true,
@@ -48,43 +54,66 @@ const { safeAreaBottom, scrollHeight } = usePageLayout({
 });
 
 const activeTab = ref(0);
+const loading = ref(false);
 
 const tabList = ref([
   { name: '全部' },
   { name: '在售' },
-  { name: '下架' }
+  { name: '下架' },
+  { name: '已售' }
 ]);
 
-const allGoods = ref([
-  { id: 1, cover: 'https://picsum.photos/200/200?random=l1', title: 'iPhone 15 Pro Max 256GB 钛金属原色', price: 7999, stock: 10, status: 'on', isRecommend: true },
-  { id: 2, cover: 'https://picsum.photos/200/200?random=l2', title: 'MacBook Pro 14寸 M3芯片', price: 12999, stock: 5, status: 'on', isRecommend: false },
-  { id: 3, cover: 'https://picsum.photos/200/200?random=l3', title: 'AirPods Pro 第二代', price: 1399, stock: 30, status: 'on', isRecommend: true },
-  { id: 4, cover: 'https://picsum.photos/200/200?random=l4', title: 'iPad Pro 12.9寸 M2', price: 6999, stock: 0, status: 'off', isRecommend: false }
-]);
+const allGoods = ref<MyGoodsListItem[]>([]);
 
 const goodsList = computed(() => {
   if (activeTab.value === 0) {
     return allGoods.value;
   } else if (activeTab.value === 1) {
-    return allGoods.value.filter(item => item.status === 'on');
+    return allGoods.value.filter(item => item.status === 'on_sale');
+  } else if (activeTab.value === 2) {
+    return allGoods.value.filter(item => item.status === 'off_sale');
   } else {
-    return allGoods.value.filter(item => item.status === 'off');
+    return allGoods.value.filter(item => item.status === 'sold');
   }
 });
 
-const getTags = (item: any) => {
+const fetchMyGoods = async () => {
+  loading.value = true;
+  try {
+    const res = await tradeApi.getMyGoods({ page: 1, size: 100 });
+    allGoods.value = res.list || [];
+  } catch (error) {
+    logError('获取商品列表失败:', error);
+    uni.showToast({ title: '获取商品列表失败', icon: 'none' });
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  fetchMyGoods();
+});
+
+onShow(() => {
+  fetchMyGoods();
+});
+
+const getTags = (item: MyGoodsListItem) => {
   const tags = [];
-  tags.push({ text: item.status === 'on' ? '在售' : '下架', type: item.status === 'on' ? 'success' : 'warning' });
-  if (item.isRecommend) {
-    tags.push({ text: '推荐', type: 'primary' });
+  if (item.status === 'on_sale') {
+    tags.push({ text: '在售', type: 'success' });
+  } else if (item.status === 'off_sale') {
+    tags.push({ text: '下架', type: 'warning' });
+  } else if (item.status === 'sold') {
+    tags.push({ text: '已售', type: 'info' });
   }
   return tags;
 };
 
-const getActions = (item: any) => {
+const getActions = (item: MyGoodsListItem) => {
   return [
     { text: '编辑', type: 'default', action: 'edit' },
-    { text: item.status === 'on' ? '下架' : '上架', type: 'warning', action: 'toggle' },
+    { text: item.status === 'on_sale' ? '下架' : '上架', type: 'warning', action: 'toggle' },
     { text: '删除', type: 'danger', action: 'delete' }
   ];
 };
@@ -93,22 +122,33 @@ const goPublish = () => {
   uni.navigateTo({ url: '/pages-sub/seller/publish/entry' });
 };
 
-const handleEdit = (item: any) => {
+const handleEdit = (item: MyGoodsListItem) => {
   uni.navigateTo({ url: `/pages-sub/seller/goods/edit?id=${item.id}` });
 };
 
-const handleAction = (action: string, item: any) => {
+const handleAction = async (action: string, item: MyGoodsListItem) => {
   if (action === 'edit') {
     handleEdit(item);
   } else if (action === 'toggle') {
-    const text = item.status === 'on' ? '下架' : '上架';
+    const isOnSale = item.status === 'on_sale';
+    const text = isOnSale ? '下架' : '上架';
     uni.showModal({
       title: '提示',
       content: `确定${text}该商品吗？`,
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          item.status = item.status === 'on' ? 'off' : 'on';
-          uni.showToast({ title: `${text}成功`, icon: 'success' });
+          try {
+            if (isOnSale) {
+              await tradeApi.offShelfProduct(item.id);
+            } else {
+              await tradeApi.onShelfProduct(item.id);
+            }
+            uni.showToast({ title: `${text}成功`, icon: 'success' });
+            fetchMyGoods();
+          } catch (error) {
+            logError(`${text}失败:`, error);
+            uni.showToast({ title: `${text}失败，请重试`, icon: 'none' });
+          }
         }
       }
     });
@@ -116,8 +156,9 @@ const handleAction = (action: string, item: any) => {
     uni.showModal({
       title: '提示',
       content: '确定删除该商品吗？删除后无法恢复',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
+          // TODO: 后端暂无删除接口，暂时只做本地删除
           const index = allGoods.value.findIndex(g => g.id === item.id);
           if (index > -1) {
             allGoods.value.splice(index, 1);
@@ -149,5 +190,9 @@ const handleAction = (action: string, item: any) => {
 
 .goods-list {
   padding: $space-md;
+}
+
+.bottom-space {
+  height: 140rpx;
 }
 </style>

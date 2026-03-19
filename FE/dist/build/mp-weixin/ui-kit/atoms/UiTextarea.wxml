@@ -1,1 +1,0 @@
-<view class="ui-textarea data-v-60b18bdc"><block wx:if="{{r0}}"><textarea class="textarea-field data-v-60b18bdc" value="{{a}}" placeholder="{{b}}" maxlength="{{c}}" rows="{{d}}" disabled="{{e}}" bindinput="{{f}}"/></block><text wx:if="{{g}}" class="textarea-count data-v-60b18bdc">{{h}}/{{i}}</text></view>

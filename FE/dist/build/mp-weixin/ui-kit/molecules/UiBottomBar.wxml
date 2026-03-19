@@ -1,1 +1,0 @@
-<view class="{{['ui-bottom-bar', 'data-v-7b94893f', a && 'has-border']}}"><slot/></view>

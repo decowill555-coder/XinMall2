@@ -84,6 +84,28 @@ export interface ProductListResult {
   hasMore: boolean;
 }
 
+export interface MyGoodsListItem {
+  id: string;
+  title: string;
+  cover: string;
+  price: number;
+  originalPrice?: number;
+  stock?: number;
+  status: 'on_sale' | 'sold' | 'off_sale';
+  viewCount?: number;
+  likeCount?: number;
+  createdAt?: string;
+}
+
+export interface MyGoodsListResult {
+  list: MyGoodsListItem[];
+  total: number;
+  hasMore: boolean;
+  page?: number;
+  size?: number;
+  pages?: number;
+}
+
 export interface CreateOrderParams {
   goodsId: string;
   quantity: number;
@@ -231,7 +253,7 @@ export interface Address {
   city: string;
   district: string;
   detail: string;
-  isDefault: boolean;
+  isDefault: number;
 }
 
 export interface CreateEvaluationParams {
@@ -300,6 +322,28 @@ export const tradeApi = {
       url: '/goods',
       method: 'GET',
       data: params
+    });
+  },
+
+  getMyGoods: (params?: { page?: number; size?: number }) => {
+    return http<MyGoodsListResult>({
+      url: '/goods/my',
+      method: 'GET',
+      data: params
+    });
+  },
+
+  offShelfProduct: (id: string) => {
+    return http<void>({
+      url: `/goods/${id}/off`,
+      method: 'PUT'
+    });
+  },
+
+  onShelfProduct: (id: string) => {
+    return http<void>({
+      url: `/goods/${id}/on`,
+      method: 'PUT'
     });
   },
 
@@ -392,7 +436,7 @@ export const tradeApi = {
     });
   },
 
-  createAddress: (data: Omit<Address, 'id' | 'isDefault'>) => {
+  createAddress: (data: Omit<Address, 'id' | 'isDefault'> & { isDefault?: number }) => {
     return http<Address>({
       url: '/user/address',
       method: 'POST',

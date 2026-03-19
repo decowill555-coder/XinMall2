@@ -1,1 +1,0 @@
-<view class="{{['ui-skeleton', 'data-v-b628fa28', a && 'is-animate']}}" style="{{'width:' + b + ';' + ('height:' + c) + ';' + ('border-radius:' + d) + ';' + ('margin-top:' + e) + ';' + ('margin-bottom:' + f)}}"/>

@@ -235,8 +235,8 @@ const fetchOrderDetail = async () => {
   loading.value = true;
   try {
     const res = await tradeApi.getOrderDetail(orderId.value);
-    const productPrice = res.product.price ? res.product.price / 100 : 0;
-    const totalAmount = res.totalAmount ? res.totalAmount / 100 : 0;
+    const productPrice = res.product.price || 0;
+    const totalAmount = res.totalAmount || 0;
     order.value = {
       orderNo: res.orderNo,
       title: res.product.title,

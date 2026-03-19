@@ -1,1 +1,0 @@
-<image class="ui-icon-svg data-v-e1660e1a" src="{{a}}" style="{{'width:' + b + ';' + ('height:' + c)}}" mode="{{'aspectFit'}}" bindtap="{{d}}"/>

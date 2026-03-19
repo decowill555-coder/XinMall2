@@ -1,22 +1,22 @@
 <template>
   <view class="ui-goods-list-item" @click="emit('click')">
-    <ui-image 
-      :src="cover" 
+    <ui-image
+      :src="cover"
       :width="imageSize"
       :height="imageSize"
       radius="8rpx"
     />
-    
-    <ui-goods-info 
+
+    <ui-goods-info
       :title="title"
       :tags="tags"
       :price="price"
       :stock="stock"
       :time="time"
     />
-    
+
     <slot name="right">
-      <ui-goods-actions 
+      <ui-goods-actions
         v-if="showActions"
         :actions="actions"
         @click="handleAction"

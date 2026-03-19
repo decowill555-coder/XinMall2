@@ -13,6 +13,11 @@ public class GoodsVO implements Serializable {
 
     private Long id;
 
+    /**
+     * 商品ID (兼容收藏列表，值为id的别名)
+     */
+    private Long productId;
+
     private String title;
 
     private Long sellerId;
@@ -36,6 +41,8 @@ public class GoodsVO implements Serializable {
     private Integer viewCount;
 
     private Integer likeCount;
+
+    private String status;
 
     private LocalDateTime createdAt;
 }

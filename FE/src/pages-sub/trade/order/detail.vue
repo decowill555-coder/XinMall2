@@ -262,15 +262,15 @@ const fetchOrderDetail = async () => {
                  res.paymentMethod === 'alipay' ? '支付宝' :
                  res.paymentMethod === 'balance' ? '余额支付' : '-',
       payTime: res.paymentTime || '',
-      goodsTotal: res.product.price && res.quantity ? (res.product.price * res.quantity) / 100 : 0,
-      freight: res.freightAmount ? res.freightAmount / 100 : 0,
-      totalPrice: res.totalAmount ? res.totalAmount / 100 : 0,
+      goodsTotal: res.product.price && res.quantity ? res.product.price * res.quantity : 0,
+      freight: res.freightAmount || 0,
+      totalPrice: res.totalAmount || 0,
       goods: [{
         id: res.product.id,
         cover: res.product.cover,
         title: res.product.title,
         spec: res.product.condition,
-        price: res.product.price ? res.product.price / 100 : 0,
+        price: res.product.price || 0,
         quantity: res.quantity
       }]
     };

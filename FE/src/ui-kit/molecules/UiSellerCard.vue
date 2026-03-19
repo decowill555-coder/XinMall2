@@ -4,7 +4,6 @@
     <view class="seller-info">
       <view class="seller-main">
         <text class="seller-name">{{ name }}</text>
-        <view v-if="levelName" class="level-badge">{{ levelName }}</view>
       </view>
       <view v-if="desc" class="seller-desc">{{ desc }}</view>
       <view class="seller-stats">
@@ -15,10 +14,6 @@
         <view v-if="followers !== undefined" class="stat-item">
           <text class="stat-value">{{ formatCount(followers) }}</text>
           <text class="stat-label">粉丝</text>
-        </view>
-        <view v-if="rating !== undefined" class="stat-item">
-          <text class="stat-value">{{ rating }}%</text>
-          <text class="stat-label">好评</text>
         </view>
       </view>
     </view>
@@ -31,11 +26,9 @@ interface Props {
   sellerId?: string | number;
   avatar?: string;
   name?: string;
-  levelName?: string;
   desc?: string;
   sales?: number;
   followers?: number;
-  rating?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -92,15 +85,7 @@ const handleClick = () => {
       font-weight: $font-weight-medium;
       @include text-main;
     }
-    
-    .level-badge {
-      font-size: $font-size-xs;
-      color: var(--color-primary, #FF6A00);
-      background: var(--color-primary-glass, rgba(255, 106, 0, 0.08));
-      padding: 2rpx 12rpx;
-      border-radius: $radius-full;
-    }
-    
+
     .seller-desc {
       font-size: $font-size-xs;
       @include text-sub;

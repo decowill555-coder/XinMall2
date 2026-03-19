@@ -102,9 +102,9 @@ const transformApiOrder = (apiOrder: any): OrderItem => ({
   skuSpecs: [],
   name: apiOrder.goodsTitle || '未知商品',
   cover: apiOrder.goodsCover || '',
-  price: Number(apiOrder.totalAmount) / 100,
+  price: Number(apiOrder.totalAmount) || 0,
   quantity: apiOrder.quantity || 1,
-  totalAmount: Number(apiOrder.totalAmount) / 100,
+  totalAmount: Number(apiOrder.totalAmount) || 0,
   status: mapOrderStatus(apiOrder.status),
   createdAt: apiOrder.createdAt,
   productType: 'standard' as const

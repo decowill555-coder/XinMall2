@@ -1,1 +1,0 @@
-<button class="{{['ui-btn', 'data-v-a2f9c486', c, d, e, f]}}" hover-class="{{g}}" disabled="{{h}}" bindtap="{{i}}"><view wx:if="{{a}}" class="ui-btn__loading data-v-a2f9c486"></view><text class="ui-btn__text data-v-a2f9c486"><block wx:if="{{$slots.d}}"><slot></slot></block><block wx:else>{{b}}</block></text></button>

@@ -13,10 +13,10 @@
             <ui-input v-model="form.phone" type="tel" placeholder="请输入手机号" :maxlength="11" />
           </ui-form-item>
           <ui-form-item label="所在地区">
-            <view class="form-select" @click="chooseLocation">
-              <text :class="{ placeholder: !form.region }">{{ form.region || '请选择省市区' }}</text>
-              <ui-icon name="chevron-right" :size="32" />
-            </view>
+            <ui-region-picker
+              v-model="regionArray"
+              @change="onRegionChange"
+            />
           </ui-form-item>
           <ui-form-item label="详细地址">
             <ui-textarea v-model="form.detail" placeholder="请输入详细地址（街道、楼栋、门牌号）" :rows="3" />
@@ -51,6 +51,7 @@ import { usePageLayout } from '@/composables/usePageLayout';
 import { useNavigation } from '@/composables/useNavigation';
 import { tradeApi, type Address } from '@/api/trade';
 import { logError } from '@/utils/logger';
+import UiRegionPicker from '@/ui-kit/molecules/UiRegionPicker.vue';
 
 const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
@@ -82,6 +83,18 @@ const form = ref({
   isDefault: false
 });
 
+const regionArray = computed({
+  get: () => {
+    if (form.value.province && form.value.city && form.value.district) {
+      return [form.value.province, form.value.city, form.value.district];
+    }
+    return [];
+  },
+  set: () => {
+    // setter not needed, handled by onRegionChange
+  }
+});
+
 onLoad((options: any) => {
   if (options.id) {
     isEdit.value = true;
@@ -100,11 +113,11 @@ const fetchAddressDetail = async (id: string) => {
       province: res.province,
       city: res.city,
       district: res.district,
-      region: `${res.province} ${res.city} ${res.district}`,
+      region: res.province && res.city && res.district ? `${res.province} ${res.city} ${res.district}` : '',
       detail: res.detail,
       tag: res.tag || '家',
       tagIndex: tagOptions.value.findIndex(t => t.label === res.tag) || 0,
-      isDefault: res.isDefault
+      isDefault: res.isDefault === 1
     };
   } catch (error) {
     logError('获取地址详情失败:', error);
@@ -114,22 +127,13 @@ const fetchAddressDetail = async (id: string) => {
   }
 };
 
-const chooseLocation = () => {
-  uni.chooseLocation({
-    success: (res) => {
-      const address = res.address || '';
-      const parts = address.split(/省|市|区|县/);
-      if (parts.length >= 3) {
-        form.value.province = parts[0] + '省';
-        form.value.city = parts[1] + '市';
-        form.value.district = parts[2] + '区';
-      }
-      form.value.region = res.name || address;
-      if (res.name && !form.value.detail) {
-        form.value.detail = res.name;
-      }
-    }
-  });
+const onRegionChange = (value: string[]) => {
+  if (value && value.length === 3) {
+    form.value.province = value[0];
+    form.value.city = value[1];
+    form.value.district = value[2];
+    form.value.region = `${value[0]} ${value[1]} ${value[2]}`;
+  }
 };
 
 const handleSave = async () => {
@@ -161,7 +165,7 @@ const handleSave = async () => {
       district: form.value.district || form.value.region.split(' ')[2] || '',
       detail: form.value.detail,
       tag: tagOptions.value[form.value.tagIndex]?.label || '家',
-      isDefault: form.value.isDefault
+      isDefault: form.value.isDefault ? 1 : 0
     };
     
     if (isEdit.value && addressId.value) {
@@ -194,6 +198,7 @@ const handleSave = async () => {
 
 .address-content {
   padding: $space-md;
+  padding-bottom: calc(#{$space-md} + 120rpx + env(safe-area-inset-bottom));
 }
 
 .form-section {
@@ -202,26 +207,6 @@ const handleSave = async () => {
   -webkit-backdrop-filter: blur($blur-lg);
   border-radius: $radius-md;
   padding: $space-md;
-  
-  .form-select {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 88rpx;
-    padding: 0 $space-md;
-    background: var(--glass-crystal-high, rgba(255, 255, 255, 0.6));
-    backdrop-filter: blur($blur-sm);
-    -webkit-backdrop-filter: blur($blur-sm);
-    border: 1rpx solid var(--glass-border-subtle, rgba(0, 0, 0, 0.04));
-    border-radius: $radius-md;
-    
-    text {
-      font-size: $font-size-md;
-      color: $color-text-main;
-      
-      &.placeholder { color: $color-text-placeholder; }
-    }
-  }
 }
 
 .switch-section {

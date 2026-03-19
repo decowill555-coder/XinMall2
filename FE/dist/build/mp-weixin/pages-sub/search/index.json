@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "搜索",
-  "navigationStyle": "custom",
-  "usingComponents": {
-    "ui-search-filter-bar": "../../ui-kit/organisms/UiSearchFilterBar",
-    "ui-filter-sidebar": "../../ui-kit/organisms/UiFilterSidebar"
-  }
-}

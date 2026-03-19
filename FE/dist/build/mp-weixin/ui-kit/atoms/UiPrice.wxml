@@ -1,1 +1,0 @@
-<view class="{{['ui-price', 'data-v-ed0613a5', i, j]}}" style="{{'color:' + k}}"><text wx:if="{{a}}" class="symbol data-v-ed0613a5" style="{{'font-size:' + b}}">¥</text><text class="integer data-v-ed0613a5" style="{{'font-size:' + d + ';' + ('font-weight:' + e)}}">{{c}}</text><text wx:if="{{f}}" class="decimal data-v-ed0613a5" style="{{'font-size:' + h}}">.{{g}}</text></view>

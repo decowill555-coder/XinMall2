@@ -527,6 +527,9 @@ public class GoodsServiceImpl implements GoodsService {
         );
         vo.setSellerType(shop != null ? "merchant" : "personal");
 
+        // 添加状态字段
+        vo.setStatus(convertStatusToString(goods.getStatus()));
+
         return vo;
     }
 }

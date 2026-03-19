@@ -13,6 +13,11 @@ public class PostVO implements Serializable {
 
     private Long id;
 
+    /**
+     * 帖子ID (兼容收藏列表，值为id的别名)
+     */
+    private Long productId;
+
     private String title;
 
     private String content;

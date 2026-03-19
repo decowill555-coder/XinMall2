@@ -1,1 +1,0 @@
-<view class="ui-goods-actions data-v-74c70f89"><view wx:for="{{a}}" wx:for-item="action" wx:key="b" class="{{['action-btn', 'data-v-74c70f89', action.c]}}" bindtap="{{action.d}}"><text class="data-v-74c70f89">{{action.a}}</text></view></view>

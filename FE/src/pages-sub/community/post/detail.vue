@@ -5,7 +5,18 @@
       <view class="decoration-circle circle-2"></view>
     </view>
     
-    <ui-sub-navbar title="帖子详情" />
+    <ui-sub-navbar title="帖子详情">
+      <template #right>
+        <view class="collect-btn" @click="handleCollect">
+          <ui-icon
+            :name="isCollected ? 'star-fill' : 'star'"
+            :size="44"
+            :color="isCollected ? 'warning' : ''"
+            :class="{ 'star-outline': !isCollected }"
+          />
+        </view>
+      </template>
+    </ui-sub-navbar>
     
     <scroll-view 
       scroll-y 
@@ -280,6 +291,7 @@ import { onLoad } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { useAuthStore } from '@/stores';
 import { forumApi, type PostDetail, type CommentItem } from '@/api/community';
+import { collectionApi, CollectionType } from '@/api/collection';
 import { authApi } from '@/api/auth';
 import { formatTimeAgo } from '@/utils/date';
 import { logError } from '@/utils/logger';
@@ -297,6 +309,7 @@ const postId = ref('');
 const loading = ref(true);
 const post = ref<PostDetail | null>(null);
 const isFollowed = ref(false);
+const isCollected = ref(false);
 
 const comments = ref<CommentItem[]>([]);
 const commentTotal = ref(0);
@@ -361,6 +374,16 @@ const fetchPostDetail = async () => {
       }
     } else {
       isFollowed.value = false;
+    }
+
+    // 检查收藏状态
+    if (authStore.isAuthenticated && postId.value) {
+      try {
+        const collected = await collectionApi.check(Number(postId.value), CollectionType.POST);
+        isCollected.value = collected;
+      } catch (e) {
+        isCollected.value = false;
+      }
     }
   } catch (error) {
     logError('获取帖子详情失败:', error);
@@ -504,6 +527,35 @@ const toggleFollow = async () => {
     isFollowed.value = !isFollowed.value;
   } catch (error) {
     logError('关注操作失败:', error);
+    uni.showToast({ title: '操作失败', icon: 'none' });
+  }
+};
+
+const handleCollect = async () => {
+  if (!postId.value) return;
+
+  if (!authStore.isAuthenticated) {
+    uni.navigateTo({ url: '/pages-sub/user/login/index' });
+    return;
+  }
+
+  try {
+    if (isCollected.value) {
+      await collectionApi.remove({
+        targetId: Number(postId.value),
+        targetType: CollectionType.POST
+      });
+      uni.showToast({ title: '已取消收藏', icon: 'none' });
+    } else {
+      await collectionApi.add({
+        targetId: Number(postId.value),
+        targetType: CollectionType.POST
+      });
+      uni.showToast({ title: '收藏成功', icon: 'none' });
+    }
+    isCollected.value = !isCollected.value;
+  } catch (error) {
+    logError('收藏操作失败:', error);
     uni.showToast({ title: '操作失败', icon: 'none' });
   }
 };
@@ -743,6 +795,19 @@ const goTopic = (tag: string) => {
   overflow: hidden;
   position: relative;
   z-index: 1;
+}
+
+.collect-btn {
+  padding: $space-xs;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .star-outline {
+    color: var(--color-main, #1F2937);
+    text-shadow: 0 0 4rpx var(--color-main, #1F2937);
+    -webkit-text-stroke: 2rpx var(--color-main, #1F2937);
+  }
 }
 
 .loading-state {

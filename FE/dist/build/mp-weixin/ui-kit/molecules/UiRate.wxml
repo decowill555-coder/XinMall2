@@ -1,1 +1,0 @@
-<view class="ui-rate data-v-558e5b4a"><view wx:for="{{a}}" wx:for-item="index" wx:for-index="i0" wx:key="c" class="star-item data-v-558e5b4a" bindtap="{{index.d}}"><ui-icon wx:if="{{index.b}}" class="data-v-558e5b4a" u-i="{{index.a}}" bind:__l="__l" u-p="{{index.b}}"/></view><text wx:if="{{b}}" class="rate-score data-v-558e5b4a" style="{{'color:' + d}}">{{c}}</text></view>
