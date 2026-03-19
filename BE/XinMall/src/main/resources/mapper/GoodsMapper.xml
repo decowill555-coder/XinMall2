@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.xinmall.mapper.trade.GoodsMapper">
+
+    <select id="countBySellerId" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM goods
+        WHERE seller_id = #{sellerId} AND deleted = 0
+    </select>
+
+    <select id="selectBySellerId" resultType="com.example.xinmall.entity.trade.Goods">
+        SELECT * FROM goods
+        WHERE seller_id = #{sellerId} AND deleted = 0
+        <if test="status != null and status != '' and status != 'all'">
+            <choose>
+                <when test="status == 'selling'">
+                    AND status = 'ON_SALE'
+                </when>
+                <when test="status == 'sold'">
+                    AND status = 'SOLD'
+                </when>
+            </choose>
+        </if>
+        ORDER BY created_at DESC
+    </select>
+
+</mapper>

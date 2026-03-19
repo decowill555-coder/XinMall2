@@ -56,7 +56,7 @@
           <view class="order-tabs">
             <view class="order-item" @click="goOrders('pending')">
               <view class="order-icon">
-                <ui-badge v-if="orderCounts.pending > 0" :value="orderCounts.pending">
+                <ui-badge v-if="unreadCounts.pending > 0" :value="unreadCounts.pending">
                   <ui-icon name="wallet" :size="40" />
                 </ui-badge>
                 <ui-icon v-else name="wallet" :size="40" />
@@ -65,7 +65,7 @@
             </view>
             <view class="order-item" @click="goOrders('shipped')">
               <view class="order-icon">
-                <ui-badge v-if="orderCounts.shipped > 0" :value="orderCounts.shipped">
+                <ui-badge v-if="unreadCounts.shipped > 0" :value="unreadCounts.shipped">
                   <ui-icon name="truck" :size="40" />
                 </ui-badge>
                 <ui-icon v-else name="truck" :size="40" />
@@ -74,7 +74,7 @@
             </view>
             <view class="order-item" @click="goOrders('received')">
               <view class="order-icon">
-                <ui-badge v-if="orderCounts.received > 0" :value="orderCounts.received">
+                <ui-badge v-if="unreadCounts.received > 0" :value="unreadCounts.received">
                   <ui-icon name="package" :size="40" />
                 </ui-badge>
                 <ui-icon v-else name="package" :size="40" />
@@ -83,7 +83,7 @@
             </view>
             <view class="order-item" @click="goOrders('reviewed')">
               <view class="order-icon">
-                <ui-badge v-if="orderCounts.reviewed > 0" :value="orderCounts.reviewed">
+                <ui-badge v-if="unreadCounts.reviewed > 0" :value="unreadCounts.reviewed">
                   <ui-icon name="star" :size="40" />
                 </ui-badge>
                 <ui-icon v-else name="star" :size="40" />
@@ -92,7 +92,7 @@
             </view>
             <view class="order-item" @click="goAftersale">
               <view class="order-icon">
-                <ui-badge v-if="orderCounts.refund > 0" :value="orderCounts.refund">
+                <ui-badge v-if="unreadCounts.refund > 0" :value="unreadCounts.refund">
                   <ui-icon name="refresh" :size="40" />
                 </ui-badge>
                 <ui-icon v-else name="refresh" :size="40" />
@@ -168,9 +168,10 @@ const fetchUserInfo = async () => {
 
 const fetchOrderSummary = async () => {
   if (!authStore.isAuthenticated) return;
-  
+
   try {
-    await orderStore.fetchOrders(true);
+    // 获取订单数量统计（用于显示正确的角标数字）
+    await orderStore.fetchOrderCount();
   } catch (error) {
     logError('获取订单统计失败:', error);
   }
@@ -194,13 +195,27 @@ const userInfo = computed(() => ({
   likes: userStore.userInfo?.likes || 0
 }));
 
-const orderCounts = computed(() => ({
-  pending: orderStore.orderCountByStatus.pending,
-  shipped: orderStore.orderCountByStatus.paid,
-  received: orderStore.orderCountByStatus.shipped,
-  reviewed: orderStore.orderCountByStatus.completed,
-  refund: orderStore.orderCountByStatus.refunding
+// 后端状态名: PENDING_PAYMENT, PENDING_SHIPMENT, PENDING_RECEIPT, COMPLETED, REFUNDED
+// 前端显示: 待付款, 待发货, 待收货, 待评价, 退款/售后
+// orderCountByStatus 中: pending, paid, shipped, completed, refunding
+
+// 未读订单数量（用于小红点显示）
+const unreadCounts = computed(() => ({
+  pending: orderStore.unreadCountByStatus.pending,       // 待付款
+  shipped: orderStore.unreadCountByStatus.paid,          // 待发货
+  received: orderStore.unreadCountByStatus.shipped,      // 待收货
+  reviewed: orderStore.unreadCountByStatus.completed,    // 待评价
+  refund: orderStore.unreadCountByStatus.refunding       // 退款/售后
 }));
+
+// my页面参数到 store status 的映射
+const typeToStatusMap: Record<string, 'pending' | 'paid' | 'shipped' | 'completed' | 'refunding'> = {
+  'pending': 'pending',      // 待付款
+  'shipped': 'paid',         // 待发货
+  'received': 'shipped',     // 待收货
+  'reviewed': 'completed',   // 待评价
+  'refund': 'refunding'      // 退款/售后
+};
 
 const goProfile = () => {
   if (!authStore.isAuthenticated) {
@@ -246,6 +261,10 @@ const goLikes = () => {
 
 const goOrders = (type?: string) => {
   if (!checkAuthAndRedirect()) return;
+  // 点击进入订单列表时，标记该状态为已读
+  if (type && typeToStatusMap[type]) {
+    orderStore.markStatusAsRead(typeToStatusMap[type]);
+  }
   const url = type
     ? `/pages-sub/trade/order/list?type=${type}`
     : '/pages-sub/trade/order/list';

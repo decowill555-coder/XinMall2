@@ -3,7 +3,7 @@ package com.example.xinmall.config;
 import com.example.xinmall.common.security.JwtAuthenticationTokenFilter;
 import com.example.xinmall.common.security.handler.AccessDeniedHandlerImpl;
 import com.example.xinmall.common.security.handler.AuthenticationEntryPointImpl;
-import jakarta.servlet.Filter;
+import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.http.HttpMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -73,6 +73,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowCredentials(true);
+                    config.addAllowedOriginPattern("*");
+                    config.addAllowedHeader("*");
+                    config.addAllowedMethod("*");
+                    config.addExposedHeader("Authorization");
+                    config.setMaxAge(3600L);
+                    return config;
+                }))
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth

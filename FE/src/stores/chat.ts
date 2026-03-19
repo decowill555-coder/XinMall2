@@ -22,7 +22,13 @@ export interface ChatMessage {
     productName?: string;
     productCover?: string;
     productPrice?: number;
-    orderId?: string;
+    orderId?: number | string;
+    orderNo?: string;
+    status?: string;
+    totalAmount?: number;
+    quantity?: number;
+    message?: string;
+    timestamp?: number;
     orderStatus?: string;
     imageUrl?: string;
     imageWidth?: number;

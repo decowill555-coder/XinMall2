@@ -33,6 +33,13 @@ public class OrderController {
         return Result.created(id);
     }
 
+    @Operation(summary = "订单数量统计")
+    @GetMapping("/count")
+    public Result<Map<String, Long>> getOrderCount() {
+        Map<String, Long> counts = orderService.getOrderCountByStatus();
+        return Result.success(counts);
+    }
+
     @Operation(summary = "订单列表")
     @GetMapping
     public Result<PageResult<OrderVO>> getList(
@@ -40,6 +47,16 @@ public class OrderController {
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
         IPage<OrderVO> result = orderService.getMyOrders(status, page, size);
+        return Result.success(PageResult.of(result));
+    }
+
+    @Operation(summary = "卖家订单列表")
+    @GetMapping("/seller")
+    public Result<PageResult<OrderVO>> getSellerOrders(
+            @RequestParam(required = false) OrderStatus status,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size) {
+        IPage<OrderVO> result = orderService.getMySales(status, page, size);
         return Result.success(PageResult.of(result));
     }
 
@@ -95,15 +112,5 @@ public class OrderController {
         logistics.put("company", "顺丰速运");
         logistics.put("trackingNo", "SF1234567890");
         return Result.success(logistics);
-    }
-
-    @Operation(summary = "卖家订单列表")
-    @GetMapping("/seller")
-    public Result<PageResult<OrderVO>> getSellerOrders(
-            @RequestParam(required = false) OrderStatus status,
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer size) {
-        IPage<OrderVO> result = orderService.getMySales(status, page, size);
-        return Result.success(PageResult.of(result));
     }
 }

@@ -92,8 +92,15 @@
                   <ui-icon name="package" :size="32" class="order-icon" />
                   <text class="order-title">订单信息</text>
                 </view>
+                <view class="order-info">
+                  <text class="order-no">订单号: {{ msg.extra?.orderNo || '未知' }}</text>
+                  <text class="order-amount">金额: ¥{{ msg.extra?.totalAmount || '0.00' }}</text>
+                </view>
                 <view class="order-status">
-                  <text class="order-status-text">{{ msg.extra?.orderStatus }}</text>
+                  <text class="order-status-text">{{ formatOrderStatus(msg.extra?.status) }}</text>
+                </view>
+                <view class="order-message-text" v-if="msg.extra?.message">
+                  <text>{{ msg.extra.message }}</text>
                 </view>
               </view>
             </view>
@@ -186,7 +193,7 @@
 import { ref, computed, nextTick, watch } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { useChatStore, useUserStore, type ChatMessage } from '@/stores';
-import { MessageTypeReverseMap, type MessageType } from '@/api/message';
+import { messageApi, MessageTypeReverseMap, type MessageType } from '@/api/message';
 import { uploadApi } from '@/api';
 import { BASE_URL } from '@/utils/http';
 
@@ -268,6 +275,37 @@ const loadConversationInfo = () => {
       avatar: conversation.targetUserAvatar,
       isOnline: conversation.isOnline
     };
+  } else {
+    // 如果 chatStore 中没有会话信息，尝试从会话列表 API 获取
+    messageApi.getConversationList().then(conversations => {
+      const conv = conversations?.find(c => String(c.id) === conversationId.value);
+      if (conv) {
+        targetUser.value = {
+          id: String(conv.targetId),
+          name: conv.targetName,
+          avatar: conv.targetAvatar,
+          isOnline: false
+        };
+        // 同时更新 chatStore
+        chatStore.addConversation({
+          id: String(conv.id),
+          targetUserId: String(conv.targetId),
+          targetUserName: conv.targetName,
+          targetUserAvatar: conv.targetAvatar,
+          lastMessage: conv.lastMessage || '',
+          lastMessageType: conv.lastMessageType || '文本',
+          lastMessageTime: conv.lastMessageTime || new Date().toISOString(),
+          unreadCount: conv.unreadCount || 0,
+          isOnline: false,
+          isMuted: conv.isMuted || false,
+          isPinned: conv.isPinned || false,
+          createdAt: conv.lastMessageTime || new Date().toISOString(),
+          updatedAt: conv.lastMessageTime || new Date().toISOString()
+        });
+      }
+    }).catch(error => {
+      console.error('获取会话信息失败:', error);
+    });
   }
 };
 
@@ -576,6 +614,18 @@ const goOrderDetail = (extra: any) => {
       url: `/pages-sub/trade/order/detail?id=${extra.orderId}`
     });
   }
+};
+
+const formatOrderStatus = (status: string) => {
+  const statusMap: Record<string, string> = {
+    'PENDING_PAYMENT': '待付款',
+    'PENDING_SHIPMENT': '待发货',
+    'PENDING_RECEIPT': '待收货',
+    'COMPLETED': '已完成',
+    'CANCELLED': '已取消',
+    'REFUNDED': '已退款'
+  };
+  return statusMap[status] || status || '未知状态';
 };
 
 const onImageLoad = (index: number) => {
@@ -905,7 +955,7 @@ watch(() => messages.value.length, (newLen, oldLen) => {
 }
 
 .order-message {
-  min-width: 300rpx;
+  min-width: 320rpx;
 }
 
 .order-header {
@@ -913,7 +963,7 @@ watch(() => messages.value.length, (newLen, oldLen) => {
   align-items: center;
   gap: $space-sm;
   margin-bottom: $space-sm;
-  
+
   .order-icon {
     color: $color-primary;
   }
@@ -925,10 +975,28 @@ watch(() => messages.value.length, (newLen, oldLen) => {
   font-weight: $font-weight-medium;
 }
 
+.order-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+  margin-bottom: $space-sm;
+}
+
+.order-no {
+  font-size: $font-size-xs;
+  @include text-sub;
+}
+
+.order-amount {
+  font-size: $font-size-sm;
+  color: $color-price;
+  font-weight: $font-weight-medium;
+}
+
 .order-status {
   padding-top: $space-sm;
   border-top: 1px solid $color-divider;
-  
+
   [data-theme="dark"] & {
     border-top-color: var(--color-divider, rgba(255, 255, 255, 0.08));
   }
@@ -937,6 +1005,21 @@ watch(() => messages.value.length, (newLen, oldLen) => {
 .order-status-text {
   font-size: $font-size-xs;
   @include text-sub;
+}
+
+.order-message-text {
+  margin-top: $space-sm;
+  padding-top: $space-sm;
+  border-top: 1px solid $color-divider;
+
+  [data-theme="dark"] & {
+    border-top-color: var(--color-divider, rgba(255, 255, 255, 0.08));
+  }
+
+  text {
+    font-size: $font-size-xs;
+    color: $color-primary;
+  }
 }
 
 .sending-indicator {

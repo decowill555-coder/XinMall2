@@ -14,7 +14,7 @@ import com.example.xinmall.service.trade.impl.GoodsServiceImpl;
 import com.example.xinmall.service.user.UserService;
 import com.example.xinmall.service.system.CollectionService;
 import com.example.xinmall.mapper.system.ShopMapper;
-import tools.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

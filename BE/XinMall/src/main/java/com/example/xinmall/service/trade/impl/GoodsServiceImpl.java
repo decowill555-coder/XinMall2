@@ -27,12 +27,14 @@ import com.example.xinmall.mapper.product.ProductModelAttributeMapper;
 import com.example.xinmall.mapper.product.AttributeMapper;
 import com.example.xinmall.service.trade.GoodsService;
 import com.example.xinmall.service.user.UserService;
+import com.example.xinmall.service.product.CategoryService;
+import com.example.xinmall.entity.product.Category;
 import com.example.xinmall.service.system.CollectionService;
 import com.example.xinmall.mapper.system.ShopMapper;
 import com.example.xinmall.entity.system.Shop;
-import tools.jackson.core.type.TypeReference;
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.JacksonException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
@@ -60,6 +62,7 @@ public class GoodsServiceImpl implements GoodsService {
     private final BrandMapper brandMapper;
     private final ProductModelAttributeMapper productModelAttributeMapper;
     private final AttributeMapper attributeMapper;
+    private final CategoryService categoryService;
 
     private static final int COLLECTION_TYPE_GOODS = 1;
     private static final int COLLECTION_TYPE_SHOP = 3;
@@ -72,7 +75,8 @@ public class GoodsServiceImpl implements GoodsService {
                            ProductModelMapper productModelMapper,
                            BrandMapper brandMapper,
                            ProductModelAttributeMapper productModelAttributeMapper,
-                           AttributeMapper attributeMapper) {
+                           AttributeMapper attributeMapper,
+                           CategoryService categoryService) {
         this.goodsMapper = goodsMapper;
         this.userService = userService;
         this.collectionService = collectionService;
@@ -83,6 +87,7 @@ public class GoodsServiceImpl implements GoodsService {
         this.brandMapper = brandMapper;
         this.productModelAttributeMapper = productModelAttributeMapper;
         this.attributeMapper = attributeMapper;
+        this.categoryService = categoryService;
     }
 
     @Override
@@ -197,6 +202,14 @@ public class GoodsServiceImpl implements GoodsService {
         if (goods.getModelId() != null) {
             ProductModelVO modelVO = buildModelVO(goods.getModelId());
             vo.setModel(modelVO);
+        }
+
+        // 获取分类名称
+        if (goods.getCategoryId() != null) {
+            Category category = categoryService.getById(goods.getCategoryId());
+            if (category != null) {
+                vo.setCategoryName(category.getName());
+            }
         }
 
         String conditionStr = convertConditionToString(goods.getConditionLevel());

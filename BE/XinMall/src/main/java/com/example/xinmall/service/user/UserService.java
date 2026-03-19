@@ -72,4 +72,24 @@ public interface UserService {
      * 获取粉丝列表
      */
     PageResult<FollowUserVO> getFollowersList(Long userId, Integer page, Integer size);
+
+    /**
+     * 获取用户公开资料（用于查看其他用户主页）
+     */
+    UserPublicProfileVO getUserPublicProfile(Long userId, Long currentUserId);
+
+    /**
+     * 获取用户商品列表
+     */
+    com.example.xinmall.common.result.PageResult<com.example.xinmall.dto.user.response.UserGoodsVO> getUserGoods(Long userId, String status, Integer page, Integer pageSize);
+
+    /**
+     * 获取用户收藏列表
+     */
+    com.example.xinmall.common.result.PageResult<com.example.xinmall.dto.user.response.UserCollectionsVO> getUserCollections(Long userId, Integer page, Integer pageSize);
+
+    /**
+     * 获取用户点赞列表
+     */
+    com.example.xinmall.common.result.PageResult<com.example.xinmall.dto.user.response.UserLikesVO> getUserLikes(Long userId, Integer page, Integer pageSize);
 }

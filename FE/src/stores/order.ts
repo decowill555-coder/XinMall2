@@ -3,7 +3,7 @@ import { ref, computed, watch } from 'vue';
 import { tradeApi, type OrderListItem, type OrderListParams } from '@/api/trade';
 import { logError } from '@/utils/logger';
 
-export type OrderStatus = 
+export type OrderStatus =
   | 'pending'      // 待付款
   | 'paid'         // 待发货
   | 'shipped'      // 待收货
@@ -11,6 +11,9 @@ export type OrderStatus =
   | 'cancelled'    // 已取消
   | 'refunding'    // 售后中
   | 'refunded';    // 已退款
+
+// 未读订单状态类型
+export type UnreadStatusType = 'pending' | 'paid' | 'shipped' | 'completed' | 'refunding';
 
 export interface OrderItem {
   id: string;
@@ -39,6 +42,19 @@ export interface OrderSummary {
   pendingReceipt: number;
   totalSpent: number;
 }
+
+// 后端返回的状态名称到前端状态的映射
+const mapBackendStatusToKey = (status: string): OrderStatus => {
+  const statusMap: Record<string, OrderStatus> = {
+    'PENDING_PAYMENT': 'pending',
+    'PENDING_SHIPMENT': 'paid',
+    'PENDING_RECEIPT': 'shipped',
+    'COMPLETED': 'completed',
+    'CANCELLED': 'cancelled',
+    'REFUNDED': 'refunded'
+  };
+  return statusMap[status] || 'pending';
+};
 
 const mapOrderStatus = (status: number | string): OrderStatus => {
   // Handle string status from backend (lowercase enum name)
@@ -109,32 +125,49 @@ export const useOrderStore = defineStore('order', () => {
   const currentPage = ref(1);
   const currentStatus = ref<OrderStatus | undefined>(undefined);
 
-  const pendingPaymentOrders = computed(() => 
+  // 存储从后端获取的真实订单数量统计
+  const orderCountMap = ref<Record<string, number>>({});
+
+  // 未读订单数量（用于小红点显示）
+  // 存储用户已读的状态，当用户查看某个状态的订单列表时，该状态的未读数清零
+  const unreadCountMap = ref<Record<UnreadStatusType, number>>({
+    pending: 0,
+    paid: 0,
+    shipped: 0,
+    completed: 0,
+    refunding: 0
+  });
+
+  // 上次从后端获取的订单数量（用于比较是否有新订单）
+  const lastFetchedCountMap = ref<Record<string, number>>({});
+
+  const pendingPaymentOrders = computed(() =>
     orders.value.filter(o => o.status === 'pending')
   );
 
-  const pendingShipmentOrders = computed(() => 
+  const pendingShipmentOrders = computed(() =>
     orders.value.filter(o => o.status === 'paid')
   );
 
-  const pendingReceiptOrders = computed(() => 
+  const pendingReceiptOrders = computed(() =>
     orders.value.filter(o => o.status === 'shipped')
   );
 
-  const completedOrders = computed(() => 
+  const completedOrders = computed(() =>
     orders.value.filter(o => o.status === 'completed')
   );
 
-  const refundingOrders = computed(() => 
+  const refundingOrders = computed(() =>
     orders.value.filter(o => o.status === 'refunding')
   );
 
+  // 使用后端真实数据计算订单数量
   const orderCountByStatus = computed(() => ({
-    pending: pendingPaymentOrders.value.length,
-    paid: pendingShipmentOrders.value.length,
-    shipped: pendingReceiptOrders.value.length,
-    completed: completedOrders.value.length,
-    refunding: refundingOrders.value.length
+    pending: orderCountMap.value['PENDING_PAYMENT'] || 0,
+    paid: orderCountMap.value['PENDING_SHIPMENT'] || 0,
+    shipped: orderCountMap.value['PENDING_RECEIPT'] || 0,
+    completed: orderCountMap.value['COMPLETED'] || 0,
+    refunding: orderCountMap.value['REFUNDED'] || 0
   }));
 
   const updateSummary = () => {
@@ -143,11 +176,72 @@ export const useOrderStore = defineStore('order', () => {
       pendingPayment: pendingPaymentOrders.value.length,
       pendingShipment: pendingShipmentOrders.value.length,
       pendingReceipt: pendingReceiptOrders.value.length,
-      totalSpent: orders.value.reduce((sum, o) => 
+      totalSpent: orders.value.reduce((sum, o) =>
         sum + o.totalAmount, 0
       )
     };
   };
+
+  // 获取订单数量统计（从后端获取真实数据）
+  const fetchOrderCount = async () => {
+    try {
+      const counts = await tradeApi.getOrderCount();
+      const newCountMap = counts || {};
+
+      // 比较新旧数量，计算新增的未读订单
+      const statusKeyMap: Record<string, UnreadStatusType> = {
+        'PENDING_PAYMENT': 'pending',
+        'PENDING_SHIPMENT': 'paid',
+        'PENDING_RECEIPT': 'shipped',
+        'COMPLETED': 'completed',
+        'REFUNDED': 'refunding'
+      };
+
+      // 检查是否是第一次获取（lastFetchedCountMap 为空）
+      const isFirstFetch = Object.keys(lastFetchedCountMap.value).length === 0;
+
+      for (const [backendStatus, count] of Object.entries(newCountMap)) {
+        const frontendStatus = statusKeyMap[backendStatus];
+        if (frontendStatus) {
+          // 第一次获取时不计算未读数，只记录当前数量
+          if (!isFirstFetch) {
+            const lastCount = lastFetchedCountMap.value[backendStatus] || 0;
+            const newOrders = (count || 0) - lastCount;
+            // 只有当数量增加时才累加未读数
+            if (newOrders > 0) {
+              unreadCountMap.value[frontendStatus] += newOrders;
+            }
+          }
+        }
+      }
+
+      // 更新存储的数量
+      lastFetchedCountMap.value = { ...newCountMap };
+      orderCountMap.value = newCountMap;
+    } catch (error) {
+      logError('获取订单数量统计失败:', error);
+    }
+  };
+
+  // 标记某个状态的订单为已读（进入该状态订单列表时调用）
+  const markStatusAsRead = (status: UnreadStatusType) => {
+    unreadCountMap.value[status] = 0;
+  };
+
+  // 标记所有订单为已读
+  const markAllAsRead = () => {
+    for (const key of Object.keys(unreadCountMap.value) as UnreadStatusType[]) {
+      unreadCountMap.value[key] = 0;
+    }
+  };
+
+  // 获取未读订单数量（用于小红点显示）
+  const unreadCountByStatus = computed(() => unreadCountMap.value);
+
+  // 获取总未读数量
+  const totalUnreadCount = computed(() =>
+    Object.values(unreadCountMap.value).reduce((sum, count) => sum + count, 0)
+  );
 
   const fetchOrders = async (isRefresh = false, status?: OrderStatus) => {
     if (loading.value) return;
@@ -234,6 +328,9 @@ export const useOrderStore = defineStore('order', () => {
     hasMore,
     currentPage,
     currentStatus,
+    orderCountMap,
+    unreadCountMap,
+    lastFetchedCountMap,
 
     pendingPaymentOrders,
     pendingShipmentOrders,
@@ -241,8 +338,13 @@ export const useOrderStore = defineStore('order', () => {
     completedOrders,
     refundingOrders,
     orderCountByStatus,
+    unreadCountByStatus,
+    totalUnreadCount,
 
     fetchOrders,
+    fetchOrderCount,
+    markStatusAsRead,
+    markAllAsRead,
     addOrder,
     updateOrderStatus,
     setOrders,

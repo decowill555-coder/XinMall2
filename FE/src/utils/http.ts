@@ -133,7 +133,7 @@ export const http = <T>(options: RequestOptions): Promise<T> => {
           if (response.code === 200 || response.code === 201) {
             resolve(res.data.data as T);
           } else {
-            uni.showToast({ title: response.message || '请求失败', icon: 'none' });
+            // 业务错误不显示 toast，让调用方处理
             reject(res.data);
           }
         } else if (res.statusCode === 401) {
@@ -160,7 +160,7 @@ export const http = <T>(options: RequestOptions): Promise<T> => {
           uni.showToast({ title: '接口不存在', icon: 'none' });
           reject(res);
         } else {
-          uni.showToast({ title: `服务器错误(${res.statusCode})`, icon: 'none' });
+          // 服务器错误不显示 toast，让调用方处理
           reject(res);
         }
       },

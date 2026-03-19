@@ -56,9 +56,8 @@ export const messageApi = {
 
   getOrCreateConversation: (targetId: number) => {
     return http<ConversationVO>({
-      url: '/conversation/create',
-      method: 'POST',
-      data: { targetId }
+      url: `/conversation/create?targetId=${targetId}`,
+      method: 'POST'
     });
   },
 

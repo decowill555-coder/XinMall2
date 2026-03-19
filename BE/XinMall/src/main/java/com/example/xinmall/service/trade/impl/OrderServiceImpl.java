@@ -17,9 +17,9 @@ import com.example.xinmall.mapper.trade.OrderMapper;
 import com.example.xinmall.mapper.user.UserAddressMapper;
 import com.example.xinmall.service.trade.OrderService;
 import com.example.xinmall.service.user.UserService;
-import tools.jackson.core.type.TypeReference;
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.Authentication;
@@ -31,7 +31,9 @@ import org.springframework.util.StringUtils;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
@@ -413,5 +415,22 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return vo;
+    }
+
+    @Override
+    public Map<String, Long> getOrderCountByStatus() {
+        Long userId = getCurrentUserId();
+
+        Map<String, Long> counts = new HashMap<>();
+
+        // 统计各状态订单数量
+        for (OrderStatus status : OrderStatus.values()) {
+            LambdaQueryWrapper<Order> wrapper = new LambdaQueryWrapper<Order>()
+                    .eq(Order::getUserId, userId)
+                    .eq(Order::getStatus, status);
+            counts.put(status.name(), orderMapper.selectCount(wrapper));
+        }
+
+        return counts;
     }
 }

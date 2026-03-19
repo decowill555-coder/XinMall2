@@ -124,9 +124,9 @@
           <view class="card-content">
             <view class="service-item" @click="contactService">
               <view class="service-icon">
-                <ui-icon name="headphones" :size="32" />
+                <ui-icon name="message-circle" :size="32" />
               </view>
-              <text class="service-text">联系客服</text>
+              <text class="service-text">联系卖家</text>
               <ui-icon name="arrow-right" :size="28" class="arrow-icon" />
             </view>
           </view>
@@ -164,7 +164,11 @@ import { ref, computed, onMounted } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { tradeApi, type OrderDetail } from '@/api/trade';
+import { messageApi } from '@/api/message';
+import { useChatStore } from '@/stores';
 import { logError } from '@/utils/logger';
+
+const chatStore = useChatStore();
 
 const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
@@ -342,8 +346,47 @@ const buyAgain = () => {
   uni.showToast({ title: '已加入购物车', icon: 'success' });
 };
 
-const contactService = () => {
-  uni.showToast({ title: '联系客服', icon: 'none' });
+const contactService = async () => {
+  // 获取卖家ID - 后端返回的是 number 类型
+  const sellerId = orderData.value?.seller?.id;
+  console.log('[contactService] sellerId:', sellerId, 'type:', typeof sellerId);
+  console.log('[contactService] orderData:', JSON.stringify(orderData.value?.seller));
+
+  if (!sellerId) {
+    uni.showToast({ title: '卖家信息获取失败', icon: 'none' });
+    return;
+  }
+
+  try {
+    // 创建或获取聊天会话 - 确保 targetId 是 number 类型
+    const targetId = typeof sellerId === 'string' ? parseInt(sellerId, 10) : sellerId;
+    console.log('[contactService] targetId:', targetId, 'type:', typeof targetId);
+
+    const conversation = await messageApi.getOrCreateConversation(targetId);
+
+    // 将会话添加到 chatStore 中，这样聊天页面可以获取到 targetUserId
+    chatStore.addConversation({
+      id: String(conversation.id),
+      targetUserId: String(conversation.targetId),
+      targetUserName: conversation.targetName,
+      targetUserAvatar: conversation.targetAvatar,
+      lastMessage: conversation.lastMessage || '',
+      lastMessageType: conversation.lastMessageType || '文本',
+      lastMessageTime: conversation.lastMessageTime || new Date().toISOString(),
+      unreadCount: conversation.unreadCount || 0,
+      isOnline: false,
+      isMuted: conversation.isMuted || false,
+      isPinned: conversation.isPinned || false,
+      createdAt: conversation.lastMessageTime || new Date().toISOString(),
+      updatedAt: conversation.lastMessageTime || new Date().toISOString()
+    });
+
+    // 跳转到聊天页面
+    uni.navigateTo({ url: `/pages-sub/chat/index?id=${conversation.id}` });
+  } catch (error) {
+    logError('创建聊天会话失败:', error);
+    uni.showToast({ title: '联系卖家失败，请稍后重试', icon: 'none' });
+  }
 };
 
 const applyAftersale = () => {

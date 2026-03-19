@@ -31,7 +31,7 @@ public class BrandServiceImpl implements BrandService {
     public List<BrandVO> getBrandsByCategoryId(Long categoryId) {
         String cacheKey = RedisKey.BRAND_LIST + ":" + categoryId;
         List<BrandVO> cachedBrands = cacheService.get(cacheKey, 
-                new tools.jackson.core.type.TypeReference<List<BrandVO>>() {}.getType());
+                new com.fasterxml.jackson.core.type.TypeReference<List<BrandVO>>() {}.getType());
         if (cachedBrands != null) {
             return cachedBrands;
         }

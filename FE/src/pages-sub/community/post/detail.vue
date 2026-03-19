@@ -88,53 +88,8 @@
             >#{{ tag }}</text>
           </view>
           
-          <view class="post-stats">
-            <view class="stat-item">
-              <ui-icon name="eye" :size="28" color="placeholder" />
-              <text>{{ formatCount(post.viewCount) }}浏览</text>
-            </view>
-            <view class="stat-item">
-              <ui-icon name="share" :size="28" color="placeholder" />
-              <text>{{ formatCount(post.shareCount) }}分享</text>
-            </view>
-          </view>
         </view>
-        
-        <view class="interact-section">
-          <view 
-            class="interact-item" 
-            :class="{ 'is-active': post.isLiked }"
-            @click="toggleLike"
-          >
-            <ui-icon
-              :name="post.isLiked ? 'heart-fill' : 'heart'"
-              :size="40"
-              :color="post.isLiked ? 'error' : 'placeholder'"
-            />
-            <text>{{ formatCount(post.likeCount) }}</text>
-          </view>
-          <view class="interact-item">
-            <ui-icon name="message" :size="40" color="placeholder" />
-            <text>{{ formatCount(post.commentCount) }}</text>
-          </view>
-          <view 
-            class="interact-item"
-            :class="{ 'is-active': post.isCollected }"
-            @click="toggleCollect"
-          >
-            <ui-icon
-              :name="post.isCollected ? 'star-fill' : 'star'"
-              :size="40"
-              :color="post.isCollected ? 'warning' : 'placeholder'"
-            />
-            <text>{{ post.isCollected ? '已收藏' : '收藏' }}</text>
-          </view>
-          <view class="interact-item" @click="handleShare">
-            <ui-icon name="share" :size="40" color="placeholder" />
-            <text>分享</text>
-          </view>
-        </view>
-        
+
         <view class="comment-section">
           <view class="section-header">
             <text class="section-title">评论 ({{ commentTotal }})</text>
@@ -325,6 +280,7 @@ import { onLoad } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { useAuthStore } from '@/stores';
 import { forumApi, type PostDetail, type CommentItem } from '@/api/community';
+import { authApi } from '@/api/auth';
 import { formatTimeAgo } from '@/utils/date';
 import { logError } from '@/utils/logger';
 
@@ -394,7 +350,18 @@ const fetchPostDetail = async () => {
       },
       shareCount: res.shareCount || 0
     };
-    isFollowed.value = false;
+
+    // 检查关注状态
+    if (authStore.isAuthenticated && post.value.author.id && post.value.author.id !== authStore.state.userId) {
+      try {
+        const followStatus = await authApi.checkFollow(post.value.author.id);
+        isFollowed.value = followStatus;
+      } catch (e) {
+        isFollowed.value = false;
+      }
+    } else {
+      isFollowed.value = false;
+    }
   } catch (error) {
     logError('获取帖子详情失败:', error);
     post.value = {
@@ -520,66 +487,24 @@ const changeCommentSort = (sort: 'new' | 'hot') => {
 
 const toggleFollow = async () => {
   if (!post.value) return;
-  
-  if (!authStore.isAuthenticated) {
-    uni.navigateTo({ url: '/pages-sub/user/login/index' });
-    return;
-  }
-  
-  try {
-    isFollowed.value = !isFollowed.value;
-    uni.showToast({ 
-      title: isFollowed.value ? '关注成功' : '已取消关注', 
-      icon: 'none' 
-    });
-  } catch (error) {
-    isFollowed.value = !isFollowed.value;
-  }
-};
 
-const toggleLike = async () => {
-  if (!post.value) return;
-  
   if (!authStore.isAuthenticated) {
     uni.navigateTo({ url: '/pages-sub/user/login/index' });
     return;
   }
-  
-  try {
-    if (post.value.isLiked) {
-      await forumApi.unlikePost(post.value.id);
-      post.value.likeCount--;
-    } else {
-      await forumApi.likePost(post.value.id);
-      post.value.likeCount++;
-    }
-    post.value.isLiked = !post.value.isLiked;
-  } catch (error) {
-    logError('操作失败:', error);
-  }
-};
 
-const toggleCollect = async () => {
-  if (!post.value) return;
-  
-  if (!authStore.isAuthenticated) {
-    uni.navigateTo({ url: '/pages-sub/user/login/index' });
-    return;
-  }
-  
   try {
-    if (post.value.isCollected) {
-      await forumApi.uncollectPost(post.value.id);
+    if (isFollowed.value) {
+      await authApi.unfollowUser(post.value.author.id);
+      uni.showToast({ title: '已取消关注', icon: 'none' });
     } else {
-      await forumApi.collectPost(post.value.id);
+      await authApi.followUser(post.value.author.id);
+      uni.showToast({ title: '关注成功', icon: 'none' });
     }
-    post.value.isCollected = !post.value.isCollected;
-    uni.showToast({ 
-      title: post.value.isCollected ? '收藏成功' : '已取消收藏', 
-      icon: 'none' 
-    });
+    isFollowed.value = !isFollowed.value;
   } catch (error) {
-    logError('操作失败:', error);
+    logError('关注操作失败:', error);
+    uni.showToast({ title: '操作失败', icon: 'none' });
   }
 };
 
@@ -980,57 +905,6 @@ const goTopic = (tag: string) => {
     }
   }
   
-  .post-stats {
-    display: flex;
-    gap: $space-lg;
-    margin-top: $space-lg;
-    padding-top: $space-md;
-    border-top: 1rpx solid var(--color-divider, rgba(0, 0, 0, 0.06));
-    
-    .stat-item {
-      display: flex;
-      align-items: center;
-      gap: 4rpx;
-      
-      text {
-        font-size: $font-size-sm;
-        @include text-sub;
-      }
-    }
-  }
-}
-
-.interact-section {
-  display: flex;
-  justify-content: space-around;
-  padding: $space-md;
-  margin: 0 $space-md $space-md;
-  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
-  backdrop-filter: blur($blur-lg);
-  -webkit-backdrop-filter: blur($blur-lg);
-  border: 1rpx solid var(--glass-border-light, rgba(255, 255, 255, 0.6));
-  border-radius: $radius-lg;
-  
-  .interact-item {
-    @include flex-column-center;
-    gap: 4rpx;
-    padding: $space-sm $space-md;
-    border-radius: $radius-md;
-    transition: all $duration-fast $ease-spring;
-    
-    text {
-      font-size: $font-size-xs;
-      @include text-sub;
-    }
-    
-    &.is-active text {
-      color: var(--color-primary, #FF6A00);
-    }
-    
-    &:active {
-      background: var(--color-primary-glass, rgba(255, 106, 0, 0.08));
-    }
-  }
 }
 
 .comment-section {

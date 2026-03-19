@@ -65,7 +65,12 @@ export interface RefreshTokenResult {
 }
 
 export interface UserDetailInfo extends UserInfo {
+  id: string;
+  nickname: string;
+  avatar: string;
   cover: string;
+  signature: string;
+  gender: 0 | 1 | 2;
   level?: number;
   levelName?: string;
   isVerified: boolean;

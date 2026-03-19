@@ -34,8 +34,8 @@ public class GoodsPublishRequest implements Serializable {
     private BigDecimal originalPrice;
 
     @NotNull(message = "成色不能为空")
-    @Min(value = 1, message = "成色范围为1-10")
-    @Max(value = 10, message = "成色范围为1-10")
+    @Min(value = 1, message = "成色范围为1-100")
+    @Max(value = 100, message = "成色范围为1-100")
     private Integer conditionLevel;
 
     private String conditionDesc;

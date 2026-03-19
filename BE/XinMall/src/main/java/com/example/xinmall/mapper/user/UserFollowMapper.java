@@ -47,11 +47,18 @@ public interface UserFollowMapper extends BaseMapper<UserFollow> {
     /**
      * 查询粉丝列表 - 返回Map，包含是否回关
      */
-    @Select("SELECT uf.user_id AS userId, u.nickname, u.avatar, u.signature, u.gender, uf.created_at AS createdAt, " +
+    @Select("<script>" +
+            "SELECT uf.user_id AS userId, u.nickname, u.avatar, u.signature, u.gender, uf.created_at AS createdAt, " +
+            "<if test='currentUserId != null'>" +
             "CASE WHEN EXISTS(SELECT 1 FROM user_follow WHERE user_id = #{currentUserId} AND followed_id = uf.user_id) THEN 1 ELSE 0 END AS isFollowed " +
+            "</if>" +
+            "<if test='currentUserId == null'>" +
+            "0 AS isFollowed " +
+            "</if>" +
             "FROM user_follow uf " +
             "LEFT JOIN user u ON uf.user_id = u.id " +
             "WHERE uf.followed_id = #{userId} " +
-            "ORDER BY uf.created_at DESC")
+            "ORDER BY uf.created_at DESC" +
+            "</script>")
     IPage<Map<String, Object>> selectFollowersPage(Page<Map<String, Object>> page, @Param("userId") Long userId, @Param("currentUserId") Long currentUserId);
 }

@@ -7,6 +7,8 @@ import com.example.xinmall.dto.trade.response.OrderVO;
 import com.example.xinmall.entity.trade.Order;
 import com.example.xinmall.entity.trade.enums.OrderStatus;
 
+import java.util.Map;
+
 public interface OrderService {
 
     Long create(OrderCreateRequest request);
@@ -28,4 +30,9 @@ public interface OrderService {
     void refund(Long id, String reason);
 
     Order getById(Long id);
+
+    /**
+     * 获取用户各状态订单数量统计
+     */
+    Map<String, Long> getOrderCountByStatus();
 }

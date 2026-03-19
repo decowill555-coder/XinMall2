@@ -18,12 +18,13 @@
       </view>
       
       <template v-else-if="product">
-        <swiper 
-          class="product-swiper" 
-          :indicator-dots="product.images.length > 1" 
+        <swiper
+          class="product-swiper"
+          :indicator-dots="product.images && product.images.length > 1"
           :autoplay="false"
           indicator-color="rgba(255, 255, 255, 0.5)"
           indicator-active-color="#FFFFFF"
+          circular
         >
           <swiper-item v-for="(img, index) in product.images" :key="index" @click="previewImage(index)">
             <ui-image :src="img" width="100%" height="750rpx" mode="aspectFill" radius="0" />
@@ -113,20 +114,21 @@
     <view class="bottom-bar">
       <view class="action-icons">
         <view class="icon-item" :class="{ 'is-active': isCollected }" @click="handleCollect">
-          <ui-icon 
-            :name="isCollected ? 'heart-fill' : 'heart'" 
-            :size="40" 
-            :color="isCollected ? 'error' : 'placeholder'" 
+          <ui-icon
+            :name="isCollected ? 'heart-fill' : 'heart'"
+            :size="40"
+            :color="isCollected ? 'error' : 'placeholder'"
           />
           <text>{{ isCollected ? '已收藏' : '收藏' }}</text>
         </view>
       </view>
       <view class="action-btns">
-        <ui-button class="btn-chat" @click="handleChat">
-          <ui-icon name="message" :size="32" color="primary" />
-          <text>聊一聊</text>
-        </ui-button>
-        <ui-button class="btn-buy" type="primary" @click="handleBuy">立即购买</ui-button>
+        <template v-if="isOwner">
+          <ui-button class="btn-edit" type="primary" @click="handleEdit">编辑商品</ui-button>
+        </template>
+        <template v-else>
+          <ui-button class="btn-buy" type="primary" @click="handleBuy">立即购买</ui-button>
+        </template>
       </view>
     </view>
   </view>
@@ -155,6 +157,11 @@ const productId = ref('');
 const loading = ref(true);
 const product = ref<ProductDetail | null>(null);
 const isCollected = ref(false);
+
+const isOwner = computed(() => {
+  if (!product.value || !authStore.state.userId) return false;
+  return String(product.value.seller.id) === String(authStore.state.userId);
+});
 
 interface TagItem {
   text: string;
@@ -200,6 +207,7 @@ const fetchProductDetail = async () => {
     const res = await tradeApi.getProductDetail(productId.value);
     product.value = res;
     isCollected.value = res.isCollected;
+    console.log('Product images:', res.images);
   } catch (error) {
     logError('获取商品详情失败:', error);
     product.value = null;
@@ -209,9 +217,9 @@ const fetchProductDetail = async () => {
 };
 
 const previewImage = (index: number) => {
-  if (!product.value?.images) return;
+  if (!product.value?.images || product.value.images.length === 0) return;
   uni.previewImage({
-    current: index,
+    current: product.value.images[index],
     urls: product.value.images
   });
 };
@@ -221,9 +229,9 @@ const handleCollect = async () => {
     uni.navigateTo({ url: '/pages-sub/user/login/index' });
     return;
   }
-  
+
   if (!product.value) return;
-  
+
   try {
     if (isCollected.value) {
       await tradeApi.uncollectProduct(product.value.id);
@@ -243,29 +251,24 @@ const handleCollect = async () => {
   }
 };
 
-const handleChat = () => {
-  if (!authStore.isAuthenticated) {
-    uni.navigateTo({ url: '/pages-sub/user/login/index' });
-    return;
-  }
-  
-  if (!product.value) return;
-  
-  uni.navigateTo({ 
-    url: `/pages-sub/chat/index?sellerId=${product.value.seller.id}&productId=${product.value.id}` 
-  });
-};
-
 const handleBuy = () => {
   if (!authStore.isAuthenticated) {
     uni.navigateTo({ url: '/pages-sub/user/login/index' });
     return;
   }
-  
+
   if (!product.value) return;
-  
-  uni.navigateTo({ 
-    url: `/pages-sub/trade/order/confirm?productId=${product.value.id}` 
+
+  uni.navigateTo({
+    url: `/pages-sub/trade/order/confirm?productId=${product.value.id}`
+  });
+};
+
+const handleEdit = () => {
+  if (!product.value) return;
+
+  uni.navigateTo({
+    url: `/pages-sub/seller/goods/edit?id=${product.value.id}`
   });
 };
 
@@ -550,25 +553,13 @@ const loadMore = () => {};
     display: flex;
     margin-left: $space-md;
     gap: $space-sm;
-    
-    .btn-chat {
+
+    .btn-edit {
       flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8rpx;
-      background: rgba(255, 106, 0, 0.1);
-      border: 1rpx solid var(--color-primary, #FF6A00);
-      color: var(--color-primary, #FF6A00);
-      
-      text {
-        font-size: $font-size-sm;
-        color: var(--color-primary, #FF6A00);
-      }
     }
-    
+
     .btn-buy {
-      flex: 1.5;
+      flex: 1;
     }
   }
 }

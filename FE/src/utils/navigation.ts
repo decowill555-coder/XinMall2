@@ -16,31 +16,12 @@ export interface NavigationOptions {
 
 const SMART_BACK_THRESHOLD = 15;
 
-const AUTH_REQUIRED_PAGES = [
-  'pages/message/index',
-  'pages/my/index',
-  'pages-sub/trade/cart/index',
-  'pages-sub/trade/order/list',
-  'pages-sub/trade/order/detail',
-  'pages-sub/trade/order/confirm',
-  'pages-sub/trade/pay/index',
-  'pages-sub/trade/evaluate/index',
-  'pages-sub/seller/publish/entry',
-  'pages-sub/seller/shop/index',
-  'pages-sub/seller/shop/manage',
-  'pages-sub/seller/goods/list',
-  'pages-sub/seller/goods/edit',
-  'pages-sub/seller/after-sale/list',
-  'pages-sub/seller/after-sale/detail',
-  'pages-sub/community/post/publish',
-  'pages-sub/user/address/list',
-  'pages-sub/user/address/edit',
-  'pages-sub/user/collection/index',
-  'pages-sub/user/history/index',
-  'pages-sub/user/settings/index',
-  'pages-sub/user/wallet/index',
-  'pages-sub/auth/real-name/index',
-  'pages-sub/auth/shop-auth/index',
+// 不需要登录的公开页面（白名单）- 仅首页、登录、注册、忘记密码
+const PUBLIC_PAGES = [
+  'pages/index/index',
+  'pages-sub/user/login/index',
+  'pages-sub/user/register/index',
+  'pages-sub/user/forgot/index',
 ];
 
 const LOGIN_PAGE = '/pages-sub/user/login/index';
@@ -107,7 +88,14 @@ function normalizeRoute(route: string): string {
 
 function isAuthRequired(url: string): boolean {
   const normalizedRoute = normalizeRoute(url);
-  return AUTH_REQUIRED_PAGES.some(page => normalizedRoute.includes(page));
+
+  // 如果在白名单中，不需要登录
+  if (PUBLIC_PAGES.some(page => normalizedRoute.includes(page))) {
+    return false;
+  }
+
+  // 其他所有页面都需要登录
+  return true;
 }
 
 function isLoggedIn(): boolean {

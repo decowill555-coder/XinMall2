@@ -7,7 +7,11 @@ import com.example.xinmall.dto.user.request.UpdatePasswordRequest;
 import com.example.xinmall.dto.user.request.UpdateUserRequest;
 import com.example.xinmall.dto.user.response.FollowUserVO;
 import com.example.xinmall.dto.user.response.UserProfileVO;
+import com.example.xinmall.dto.user.response.UserPublicProfileVO;
 import com.example.xinmall.dto.user.response.UserVO;
+import com.example.xinmall.dto.user.response.UserGoodsVO;
+import com.example.xinmall.dto.user.response.UserCollectionsVO;
+import com.example.xinmall.dto.user.response.UserLikesVO;
 import com.example.xinmall.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -102,8 +106,63 @@ public class UserController {
         return Result.success(result);
     }
 
+    @Operation(summary = "获取用户公开资料")
+    @GetMapping("/profile/{userId}")
+    public Result<UserPublicProfileVO> getUserPublicProfile(@PathVariable Long userId) {
+        Long currentUserId = getCurrentUserIdOrNull();
+        UserPublicProfileVO profile = userService.getUserPublicProfile(userId, currentUserId);
+        return Result.success(profile);
+    }
+
+    @Operation(summary = "获取用户商品列表")
+    @GetMapping("/goods/{userId}")
+    public Result<PageResult<UserGoodsVO>> getUserGoods(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "all") String status,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "20") Integer pageSize) {
+        PageResult<UserGoodsVO> result = userService.getUserGoods(userId, status, page, pageSize);
+        return Result.success(result);
+    }
+
+    @Operation(summary = "获取用户收藏列表")
+    @GetMapping("/collections/{userId}")
+    public Result<PageResult<UserCollectionsVO>> getUserCollections(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "20") Integer pageSize) {
+        PageResult<UserCollectionsVO> result = userService.getUserCollections(userId, page, pageSize);
+        return Result.success(result);
+    }
+
+    @Operation(summary = "获取用户点赞列表")
+    @GetMapping("/likes/{userId}")
+    public Result<PageResult<UserLikesVO>> getUserLikes(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "20") Integer pageSize) {
+        PageResult<UserLikesVO> result = userService.getUserLikes(userId, page, pageSize);
+        return Result.success(result);
+    }
+
     private Long getCurrentUserId() {
         return Long.parseLong(org.springframework.security.core.context.SecurityContextHolder
                 .getContext().getAuthentication().getName());
+    }
+
+    private Long getCurrentUserIdOrNull() {
+        org.springframework.security.core.context.SecurityContext context =
+                org.springframework.security.core.context.SecurityContextHolder.getContext();
+        if (context == null || context.getAuthentication() == null) {
+            return null;
+        }
+        if (!context.getAuthentication().isAuthenticated()) {
+            return null;
+        }
+        try {
+            return Long.parseLong(context.getAuthentication().getName());
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

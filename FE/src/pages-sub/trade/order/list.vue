@@ -69,14 +69,31 @@ const statusMap: Record<number, OrderStatus | undefined> = {
   4: 'completed'
 };
 
+// 从 my 页面跳转时传入的 type 参数映射到 tab 索引
+// my/index.vue 中的参数: pending(待付款), shipped(待发货), received(待收货), reviewed(待评价)
 const typeToTabMap: Record<string, number> = {
-  'pending': 1,
-  'paid': 2,
-  'shipped': 3,
-  'completed': 4,
-  'received': 3,
-  'reviewed': 4,
-  'refund': 0
+  'pending': 1,     // 待付款
+  'shipped': 2,     // 待发货 - 之前错误地映射到3
+  'received': 3,    // 待收货 - 之前错误地映射到3
+  'reviewed': 4,    // 待评价
+  'refund': 0       // 退款/售后
+};
+
+// my页面参数到 store unread status 的映射
+const typeToUnreadStatusMap: Record<string, 'pending' | 'paid' | 'shipped' | 'completed' | 'refunding'> = {
+  'pending': 'pending',      // 待付款
+  'shipped': 'paid',         // 待发货
+  'received': 'shipped',     // 待收货
+  'reviewed': 'completed',   // 待评价
+  'refund': 'refunding'      // 退款/售后
+};
+
+// tab索引到 store unread status 的映射
+const tabToUnreadStatusMap: Record<number, 'pending' | 'paid' | 'shipped' | 'completed' | undefined> = {
+  1: 'pending',      // 待付款
+  2: 'paid',         // 待发货
+  3: 'shipped',      // 待收货
+  4: 'completed'     // 待评价
 };
 
 onLoad((options) => {
@@ -84,6 +101,11 @@ onLoad((options) => {
     const tabIndex = typeToTabMap[options.type];
     if (tabIndex !== undefined) {
       activeTab.value = tabIndex;
+    }
+    // 从我的页面跳转过来时，标记该状态为已读
+    const unreadStatus = typeToUnreadStatusMap[options.type];
+    if (unreadStatus) {
+      orderStore.markStatusAsRead(unreadStatus);
     }
   }
 });
@@ -97,6 +119,11 @@ const fetchOrders = async (isRefresh = true) => {
 
 watch(activeTab, () => {
   fetchOrders(true);
+  // 切换tab时，标记该状态的订单为已读
+  const unreadStatus = tabToUnreadStatusMap[activeTab.value];
+  if (unreadStatus) {
+    orderStore.markStatusAsRead(unreadStatus);
+  }
 });
 
 onMounted(() => {

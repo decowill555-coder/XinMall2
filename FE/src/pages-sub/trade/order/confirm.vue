@@ -44,7 +44,7 @@
                   <text class="goods-tag">{{ product?.condition }}</text>
                 </view>
                 <view class="goods-bottom">
-                  <ui-price :value="product?.price ? product.price / 100 : 0" :size="36" />
+                  <ui-price :value="product?.price || 0" :size="36" />
                   <text class="goods-quantity">x{{ quantity }}</text>
                 </view>
               </view>
@@ -68,7 +68,7 @@
           <view class="price-card">
             <view class="price-item">
               <text class="price-label">商品金额</text>
-              <text class="price-value">¥{{ product?.price ? (product.price / 100).toFixed(2) : '0.00' }}</text>
+              <text class="price-value">¥{{ product?.price ? product.price.toFixed(2) : '0.00' }}</text>
             </view>
             <view class="price-item">
               <text class="price-label">运费</text>
@@ -163,7 +163,7 @@ const fullAddress = computed(() => {
 
 const totalPrice = computed(() => {
   if (!product.value) return 0;
-  return (product.value.price / 100) * quantity.value + freight.value;
+  return (product.value.price || 0) * quantity.value + freight.value;
 });
 
 onLoad((options: any) => {

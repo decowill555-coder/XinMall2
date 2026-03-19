@@ -116,6 +116,15 @@ onMounted(() => {
 });
 
 onLoad((options: any) => {
+  // 检查登录状态
+  const token = uni.getStorageSync('token');
+  if (!token) {
+    uni.showToast({ title: '请先登录', icon: 'none' });
+    uni.setStorageSync('redirectUrl', `/pages-sub/user/follow/index?id=${options.id || ''}&tab=${options.tab || ''}`);
+    uni.navigateTo({ url: '/pages-sub/user/login/index' });
+    return;
+  }
+
   if (options.id) {
     userId.value = options.id;
   }

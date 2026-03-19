@@ -149,6 +149,8 @@ import { ref, reactive, onMounted } from 'vue';
 import { onLoad, onShow } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { useNavigation } from '@/composables/useNavigation';
+import { tradeApi } from '@/api';
+import { logError } from '@/utils/logger';
 
 const { safeAreaBottom } = usePageLayout({
   hasSubNavbar: true,
@@ -166,6 +168,9 @@ interface ImageItem {
 const imageList = ref<ImageItem[]>([]);
 const showActionPopup = ref(false);
 const currentImageIndex = ref(0);
+const isEdit = ref(false);
+const editProductId = ref<number | null>(null);
+const loading = ref(false);
 
 const form = reactive({
   images: [] as string[],
@@ -193,6 +198,14 @@ onMounted(() => {
 });
 
 onLoad((options: any) => {
+  // 编辑模式：加载商品数据
+  if (options?.id) {
+    isEdit.value = true;
+    editProductId.value = parseInt(options.id, 10);
+    loadProductData(editProductId.value);
+  }
+
+  // 分类选择返回
   if (options?.categoryId) {
     form.categoryId = parseInt(options.categoryId, 10);
     form.categoryName = options.categoryName ? decodeURIComponent(options.categoryName) : '';
@@ -300,11 +313,43 @@ const chooseLocation = () => {
   });
 };
 
+const loadProductData = async (productId: number) => {
+  loading.value = true;
+  try {
+    const res = await tradeApi.getProductDetail(String(productId));
+    // 填充表单数据
+    form.title = res.title;
+    form.description = res.description;
+    form.categoryId = res.categoryId;
+    form.categoryName = res.categoryName || '';
+    form.condition = res.conditionLevel ? res.conditionLevel * 10 : 100;
+    form.price = String(res.price);
+    form.originalPrice = res.originalPrice ? String(res.originalPrice) : '';
+    form.stock = String(res.stock || 1);
+    form.deliveryMethod = res.deliveryMethod || 'express';
+    form.location = res.location || '';
+
+    // 填充图片
+    if (res.images && res.images.length > 0) {
+      imageList.value = res.images.map((url: string) => ({
+        url,
+        status: 'done' as const
+      }));
+      form.images = res.images;
+    }
+  } catch (error) {
+    logError('加载商品数据失败:', error);
+    uni.showToast({ title: '加载商品数据失败', icon: 'none' });
+  } finally {
+    loading.value = false;
+  }
+};
+
 const saveDraft = () => {
   uni.showToast({ title: '已保存草稿', icon: 'success' });
 };
 
-const publish = () => {
+const publish = async () => {
   if (imageList.value.length === 0) {
     uni.showToast({ title: '请添加商品图片', icon: 'none' });
     return;
@@ -321,11 +366,37 @@ const publish = () => {
     uni.showToast({ title: '请输入价格', icon: 'none' });
     return;
   }
-  
-  uni.showToast({ title: '发布成功', icon: 'success' });
-  setTimeout(() => {
-    smartBack();
-  }, 1500);
+
+  try {
+    const submitData = {
+      title: form.title,
+      description: form.description,
+      categoryId: form.categoryId,
+      conditionLevel: Math.round(form.condition / 10), // 100 -> 10, 90 -> 9, etc.
+      price: parseFloat(form.price),
+      originalPrice: form.originalPrice ? parseFloat(form.originalPrice) : undefined,
+      stock: parseInt(form.stock) || 1,
+      location: form.location,
+      images: form.images
+    };
+
+    if (isEdit.value && editProductId.value) {
+      // 编辑模式：更新商品
+      await tradeApi.updateProduct(String(editProductId.value), submitData);
+      uni.showToast({ title: '商品更新成功', icon: 'success' });
+    } else {
+      // 发布模式：创建商品
+      await tradeApi.createProduct(submitData);
+      uni.showToast({ title: '发布成功', icon: 'success' });
+    }
+
+    setTimeout(() => {
+      smartBack();
+    }, 1500);
+  } catch (error) {
+    logError('操作失败:', error);
+    uni.showToast({ title: '操作失败，请重试', icon: 'none' });
+  }
 };
 </script>
 

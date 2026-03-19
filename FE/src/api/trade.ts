@@ -6,6 +6,9 @@ export interface ProductDetail {
   price: number;
   originalPrice?: number;
   condition: string;
+  conditionLevel?: number;
+  categoryId?: number;
+  categoryName?: string;
   warranty?: boolean;
   invoice?: boolean;
   canBargain?: boolean;
@@ -143,10 +146,11 @@ export interface OrderAddress {
 }
 
 export interface OrderSeller {
-  id: string;
+  id: number;  // 后端返回 Long 类型
   name: string;
   avatar: string;
-  type: 'personal' | 'merchant';
+  phone?: string;
+  type?: 'personal' | 'merchant';
 }
 
 export interface LogisticsInfo {
@@ -252,11 +256,42 @@ export interface EvaluationDetail {
   createdAt: string;
 }
 
+export interface CreateProductParams {
+  title: string;
+  description?: string;
+  categoryId?: number;
+  conditionLevel?: number;
+  price: number;
+  originalPrice?: number;
+  stock?: number;
+  location?: string;
+  images?: string[];
+  canBargain?: boolean;
+}
+
 export const tradeApi = {
   getProductDetail: (id: string) => {
     return http<ProductDetail>({
       url: `/goods/${id}`,
       method: 'GET'
+    });
+  },
+
+  createProduct: (params: CreateProductParams) => {
+    return http<number>({
+      url: '/goods',
+      method: 'POST',
+      data: params,
+      loading: true
+    });
+  },
+
+  updateProduct: (id: string, params: CreateProductParams) => {
+    return http<void>({
+      url: `/goods/${id}`,
+      method: 'PUT',
+      data: params,
+      loading: true
     });
   },
 
@@ -296,6 +331,13 @@ export const tradeApi = {
       url: '/order',
       method: 'GET',
       data: params
+    });
+  },
+
+  getOrderCount: () => {
+    return http<Record<string, number>>({
+      url: '/order/count',
+      method: 'GET'
     });
   },
 

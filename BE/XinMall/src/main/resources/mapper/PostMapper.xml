@@ -15,4 +15,9 @@
         ORDER BY p.created_at DESC
     </select>
 
+    <select id="countByUserId" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM post
+        WHERE author_id = #{userId} AND status = 1
+    </select>
+
 </mapper>

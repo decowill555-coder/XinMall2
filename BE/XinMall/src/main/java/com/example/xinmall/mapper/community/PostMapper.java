@@ -11,4 +11,9 @@ import org.apache.ibatis.annotations.Param;
 public interface PostMapper extends BaseMapper<Post> {
 
     IPage<Post> selectFollowedPosts(Page<Post> page, @Param("userId") Long userId);
+
+    /**
+     * 统计用户帖子数
+     */
+    Integer countByUserId(@Param("userId") Long userId);
 }

@@ -119,6 +119,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isAuthenticated = computed(() => state.value.isAuthenticated);
   const isInitialized = computed(() => state.value.isInitialized);
+  const userId = computed(() => state.value.userId);
   const currentRole = computed(() => state.value.role);
   const allPermissions = computed(() => [
     ...state.value.permissions,
@@ -336,6 +337,7 @@ export const useAuthStore = defineStore('auth', () => {
     customPermissions,
     isAuthenticated,
     isInitialized,
+    userId,
     currentRole,
     allPermissions,
     isGuest,
