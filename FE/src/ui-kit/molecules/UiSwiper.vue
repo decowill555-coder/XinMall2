@@ -11,7 +11,7 @@
       @change="onSwiperChange"
     >
       <swiper-item v-for="(item, index) in list" :key="index">
-        <view class="swiper-item" @click="onItemClick(item, index)">
+        <view class="swiper-item" @tap="onItemClick(item, index)">
           <ui-image
             :src="item.image"
             width="100%"

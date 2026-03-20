@@ -111,7 +111,7 @@
       <view class="start-search" @click="handleSearch"><text>开始搜索</text></view>
     </view>
 
-    <ui-filter-sidebar v-model="showFilterSidebar" @confirm="fetchProducts" @reset="handleFilterReset" />
+    <ui-filter-sidebar v-model:show="showFilterSidebar" @confirm="fetchProducts" @reset="handleFilterReset" />
   </view>
 </template>
 

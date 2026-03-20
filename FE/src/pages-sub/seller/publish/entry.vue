@@ -350,20 +350,35 @@ const saveDraft = () => {
 };
 
 const publish = async () => {
+  // 表单验证
+  const errors: string[] = [];
+
   if (imageList.value.length === 0) {
-    uni.showToast({ title: '请添加商品图片', icon: 'none' });
-    return;
+    errors.push('请添加商品图片');
   }
-  if (!form.title) {
-    uni.showToast({ title: '请输入商品名称', icon: 'none' });
-    return;
+  if (!form.title.trim()) {
+    errors.push('请输入商品名称');
+  }
+  if (!form.description.trim()) {
+    errors.push('请输入商品描述');
   }
   if (!form.categoryId) {
-    uni.showToast({ title: '请选择分类', icon: 'none' });
-    return;
+    errors.push('请选择分类');
   }
-  if (!form.price) {
-    uni.showToast({ title: '请输入价格', icon: 'none' });
+  if (!form.price || parseFloat(form.price) <= 0) {
+    errors.push('请输入有效价格');
+  }
+  if (!form.stock || parseInt(form.stock) <= 0) {
+    errors.push('请输入有效库存数量');
+  }
+
+  // 显示验证错误
+  if (errors.length > 0) {
+    uni.showToast({
+      title: errors[0],
+      icon: 'none',
+      duration: 2000
+    });
     return;
   }
 

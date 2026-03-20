@@ -215,6 +215,10 @@ const calcLayout = () => {
 onLoad((options: any) => {
   if (options.id) {
     deviceTypeId.value = options.id;
+  } else {
+    // 没有 id 参数时显示错误提示
+    uni.showToast({ title: '缺少设备类型ID参数', icon: 'none' });
+    return;
   }
   if (options.name) {
     deviceTypeName.value = decodeURIComponent(options.name);

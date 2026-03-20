@@ -15,7 +15,9 @@
       <view class="scroll-content">
         <!-- 加载状态 -->
         <view v-if="loading" class="loading-container">
-          <ui-loading :size="80" />
+          <view class="ui-loading">
+            <view class="loading-spinner"></view>
+          </view>
           <text class="loading-text">加载中...</text>
         </view>
 
@@ -533,6 +535,11 @@ const calcLayout = () => {
 onLoad((options: any) => {
   if (options.id) {
     deviceId.value = options.id;
+  } else {
+    // 没有 id 参数时显示错误提示并停止加载
+    uni.showToast({ title: '缺少设备ID参数', icon: 'none' });
+    loading.value = false;
+    return;
   }
   if (options.name) {
     deviceInfo.value.name = decodeURIComponent(options.name);
@@ -585,6 +592,8 @@ const fetchDeviceData = async () => {
 };
 
 const fetchDiscussList = async () => {
+  if (!deviceId.value) return;
+
   discussLoading.value = true;
 
   try {
@@ -635,6 +644,8 @@ const formatTime = (dateStr: string): string => {
 };
 
 const fetchReviewList = async () => {
+  if (!deviceId.value) return;
+
   try {
     const result = await spuApi.getSpuEvaluations({
       spuId: deviceId.value,
@@ -663,6 +674,8 @@ const fetchReviewList = async () => {
 };
 
 const fetchProductList = async () => {
+  if (!deviceId.value) return;
+
   productLoading.value = true;
 
   try {
@@ -1572,6 +1585,27 @@ const goProductDetail = (item: Product) => {
 .loading-container {
   @include flex-column-center;
   padding: 200rpx 0;
+
+  .ui-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .loading-spinner {
+    width: 80rpx;
+    height: 80rpx;
+    border: 4rpx solid rgba(0, 0, 0, 0.1);
+    border-top-color: var(--color-primary, #FF6A00);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
 
   .loading-text {
     font-size: $font-size-md;

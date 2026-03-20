@@ -24,12 +24,12 @@
       </view>
 
       <!-- 2. 上传按钮 -->
-      <view 
-        v-if="fileList.length < maxCount" 
-        class="upload-btn" 
+      <view
+        v-if="fileList.length < maxCount"
+        class="upload-btn"
         @click="onChoose"
       >
-        <ui-icon name="camera" size="48" :color="$color-text-placeholder" />
+        <ui-icon name="camera" :size="48" color="placeholder" />
         <text class="upload-text">添加图片</text>
       </view>
     </view>
@@ -43,9 +43,10 @@ interface FileItem {
 }
 
 const props = withDefaults(defineProps<{
-  fileList: FileItem[];
+  fileList?: FileItem[];
   maxCount?: number;
 }>(), {
+  fileList: () => [],
   maxCount: 9
 });
 

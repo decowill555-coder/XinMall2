@@ -21,13 +21,13 @@
         <view class="upload-section">
           <text class="section-title">身份证照片</text>
           <view class="upload-list">
-            <ui-id-card-uploader 
+            <ui-id-uploader
               v-model="form.frontImage"
               type="front"
               placeholder="上传身份证人像面"
               @upload="uploadImage('front')"
             />
-            <ui-id-card-uploader 
+            <ui-id-uploader
               v-model="form.backImage"
               type="back"
               placeholder="上传身份证国徽面"

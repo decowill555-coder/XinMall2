@@ -103,11 +103,15 @@ const onClick = (index: number) => {
       color: $color-text-main;
       font-weight: $font-weight-bold;
       font-size: $font-size-lg;
-      background: var(--color-primary-glass, rgba(255, 106, 0, 0.1));
-      
+      background: var(--color-primary-glass, rgba(255, 106, 0, 0.15));
+      border: 2rpx solid var(--color-primary, rgba(255, 106, 0, 0.5));
+      box-shadow: 0 2rpx 8rpx rgba(255, 106, 0, 0.2);
+
       [data-theme="dark"] & {
         color: var(--color-text-main, #F2F2F7);
-        background: rgba(217, 70, 239, 0.15);
+        background: rgba(217, 70, 239, 0.2);
+        border: 2rpx solid rgba(217, 70, 239, 0.5);
+        box-shadow: 0 2rpx 8rpx rgba(217, 70, 239, 0.3);
       }
     }
   }
@@ -138,20 +142,26 @@ const onClick = (index: number) => {
       height: 60rpx;
       border-radius: $radius-full;
       margin-right: $space-sm;
-      background-color: transparent;
-      border: 1rpx solid transparent;
+      background-color: rgba(0, 0, 0, 0.03);
+      border: 1rpx solid rgba(0, 0, 0, 0.08);
+      transition: all 0.2s ease;
+
+      [data-theme="dark"] & {
+        background-color: rgba(255, 255, 255, 0.05);
+        border: 1rpx solid rgba(255, 255, 255, 0.1);
+      }
 
       &.is-active {
         background: linear-gradient(135deg, var(--color-primary, #FF6A00) 0%, var(--color-primary-dark, #E55D00) 100%);
         color: var(--color-text-white, #FFFFFF);
-        box-shadow: 
+        box-shadow:
           0 4rpx 16rpx rgba(255, 106, 0, 0.25),
           inset 0 0 0 1rpx rgba(255, 255, 255, 0.2);
         border-color: rgba(255, 255, 255, 0.3);
-        
+
         [data-theme="dark"] & {
           background: var(--gradient-sunset, linear-gradient(135deg, #C026D3 0%, #F43F5E 60%, #FF7849 100%));
-          box-shadow: 
+          box-shadow:
             0 4rpx 16rpx rgba(217, 70, 239, 0.3),
             inset 0 0 0 1rpx rgba(255, 255, 255, 0.2);
         }

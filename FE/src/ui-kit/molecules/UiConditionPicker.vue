@@ -1,11 +1,11 @@
 <template>
   <view class="ui-condition-picker">
-    <view 
-      v-for="item in options" 
+    <view
+      v-for="item in options"
       :key="item.value"
       class="condition-item"
       :class="{ active: modelValue === item.value }"
-      @click="emit('update:modelValue', item.value)"
+      @click="handleSelect(item.value)"
     >
       <text class="condition-text">{{ item.label }}</text>
     </view>
@@ -23,8 +23,8 @@ interface Props {
   options?: ConditionOption[];
 }
 
-withDefaults(defineProps<Props>(), {
-  modelValue: 0,
+const props = withDefaults(defineProps<Props>(), {
+  modelValue: 100,
   options: () => [
     { label: '全新', value: 100 },
     { label: '99新', value: 99 },
@@ -36,6 +36,11 @@ withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits(['update:modelValue']);
+
+// Handle click - ensure value update
+const handleSelect = (value: number) => {
+  emit('update:modelValue', value);
+};
 </script>
 
 <style lang="scss" scoped>

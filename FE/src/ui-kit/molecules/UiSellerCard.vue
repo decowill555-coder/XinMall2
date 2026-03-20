@@ -52,10 +52,12 @@ const formatCount = (count: number): string => {
 };
 
 const handleClick = () => {
-  emit('click');
+  // 先执行导航，避免emit的click事件被父组件处理后阻止默认行为
   if (props.sellerId) {
     uni.navigateTo({ url: `/pages-sub/community/user/index?id=${props.sellerId}` });
   }
+  // 然后触发click事件供父组件监听
+  emit('click');
 };
 </script>
 
