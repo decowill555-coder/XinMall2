@@ -9,9 +9,10 @@ public enum AftersaleStatus {
 
     PENDING(1, "pending", "待处理"),
     PROCESSING(2, "processing", "处理中"),
-    COMPLETED(3, "completed", "已完成"),
-    REJECTED(4, "rejected", "已拒绝"),
-    CANCELLED(5, "cancelled", "已取消");
+    WAITING_RETURN(3, "waiting_return", "待退货"),
+    COMPLETED(4, "completed", "已完成"),
+    REJECTED(5, "rejected", "已拒绝"),
+    CANCELLED(6, "cancelled", "已取消");
 
     private final Integer code;
 

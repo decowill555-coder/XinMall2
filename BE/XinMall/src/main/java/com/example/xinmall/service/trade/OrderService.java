@@ -35,4 +35,9 @@ public interface OrderService {
      * 获取用户各状态订单数量统计
      */
     Map<String, Long> getOrderCountByStatus();
+
+    /**
+     * 获取卖家各状态订单数量统计
+     */
+    Map<String, Long> getSellerOrderCountByStatus();
 }

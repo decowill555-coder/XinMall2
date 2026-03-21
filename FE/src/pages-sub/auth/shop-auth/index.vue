@@ -3,10 +3,36 @@
     <ui-sub-navbar title="店铺认证" />
     
     <scroll-view scroll-y class="auth-scroll" :style="{ height: scrollHeight + 'px' }">
-      <view class="auth-tips">
-        <ui-icon name="store" :size="40" color="success" />
-        <text class="tips-text">店铺认证后可开通店铺、发布商品等功能</text>
+      <!-- 审核中状态 -->
+      <view v-if="authStatus === 'pending'" class="status-section">
+        <ui-icon name="clock" :size="80" color="warning" />
+        <text class="status-title">认证审核中</text>
+        <text class="status-desc">您的店铺认证申请正在审核中，请耐心等待</text>
+        <ui-button type="primary" size="md" @click="smartBack">返回</ui-button>
       </view>
+
+      <!-- 审核通过状态 -->
+      <view v-else-if="authStatus === 'approved'" class="status-section">
+        <ui-icon name="check-circle" :size="80" color="success" />
+        <text class="status-title">认证已通过</text>
+        <text class="status-desc">恭喜您，店铺认证已通过审核！</text>
+        <ui-button type="primary" size="md" @click="goToShop">进入我的店铺</ui-button>
+      </view>
+
+      <!-- 审核拒绝状态 -->
+      <view v-else-if="authStatus === 'rejected'" class="status-section rejected">
+        <ui-icon name="x-circle" :size="80" color="danger" />
+        <text class="status-title">认证未通过</text>
+        <text class="status-desc">拒绝原因：{{ rejectReason || '资料不符合要求' }}</text>
+        <ui-button type="primary" size="md" @click="authStatus = null">重新提交</ui-button>
+      </view>
+
+      <!-- 表单区域 -->
+      <template v-else>
+        <view class="auth-tips">
+          <ui-icon name="store" :size="40" color="success" />
+          <text class="tips-text">店铺认证后可开通店铺、发布商品等功能</text>
+        </view>
       
       <view class="form-section">
         <view class="form-item">
@@ -60,9 +86,10 @@
           <text class="link" @click="goAgreement">《店铺认证服务协议》</text>
         </text>
       </view>
+      </template>
     </scroll-view>
     
-    <view class="auth-footer" :style="{ paddingBottom: (safeAreaBottom + 12) + 'px' }">
+    <view v-if="authStatus === null" class="auth-footer" :style="{ paddingBottom: (safeAreaBottom + 12) + 'px' }">
       <ui-button type="primary" block :disabled="!canSubmit" @click="handleSubmit">
         提交认证
       </ui-button>
@@ -71,9 +98,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { useNavigation } from '@/composables/useNavigation';
+import { shopAuthApi, type ShopAuthStatus } from '@/api/shop-auth';
+import { uploadApi } from '@/api/upload';
 
 const { safeAreaBottom, scrollHeight } = usePageLayout({
   hasSubNavbar: true,
@@ -84,6 +113,9 @@ const { smartBack } = useNavigation();
 
 const agreed = ref(false);
 const showCategoryPicker = ref(false);
+const loading = ref(false);
+const authStatus = ref<ShopAuthStatus | null>(null);
+const rejectReason = ref('');
 
 const form = ref({
   shopName: '',
@@ -95,21 +127,59 @@ const form = ref({
   address: ''
 });
 
+// 检查认证状态
+const checkAuthStatus = async () => {
+  try {
+    const res = await shopAuthApi.getAuthStatus();
+    if (res) {
+      authStatus.value = res.status;
+      rejectReason.value = res.rejectReason || '';
+      // 如果已提交过，填充表单
+      if (res.status === 'pending' || res.status === 'rejected') {
+        form.value = {
+          shopName: res.shopName,
+          shopDesc: res.shopDesc || '',
+          category: res.category,
+          licenseImage: res.licenseImage,
+          legalPerson: res.legalPerson,
+          phone: res.phone,
+          address: res.address
+        };
+      }
+    }
+  } catch (error) {
+    console.error('获取认证状态失败', error);
+  }
+};
+
+onMounted(() => {
+  checkAuthStatus();
+});
+
 const canSubmit = computed(() => {
-  return form.value.shopName && 
-         form.value.category && 
-         form.value.licenseImage && 
-         form.value.legalPerson && 
-         form.value.phone && 
-         form.value.address && 
+  return form.value.shopName &&
+         form.value.category &&
+         form.value.licenseImage &&
+         form.value.legalPerson &&
+         form.value.phone &&
+         form.value.address &&
          agreed.value;
 });
 
 const uploadLicense = () => {
   uni.chooseImage({
     count: 1,
-    success: (res) => {
-      form.value.licenseImage = res.tempFilePaths[0];
+    success: async (res) => {
+      const tempFilePath = res.tempFilePaths[0];
+      uni.showLoading({ title: '上传中...' });
+      try {
+        const uploadRes = await uploadApi.uploadImage(tempFilePath, 'other');
+        form.value.licenseImage = uploadRes.fileUrl;
+        uni.hideLoading();
+      } catch (error) {
+        uni.hideLoading();
+        uni.showToast({ title: '上传失败', icon: 'none' });
+      }
     }
   });
 };
@@ -118,17 +188,42 @@ const goAgreement = () => {
   uni.showToast({ title: '店铺认证服务协议', icon: 'none' });
 };
 
-const handleSubmit = () => {
-  if (!canSubmit.value) return;
-  
-  uni.showLoading({ title: '提交中...' });
-  setTimeout(() => {
+const goToShop = () => {
+  uni.navigateTo({ url: '/pages-sub/seller/shop/index' });
+};
+
+const handleSubmit = async () => {
+  if (!canSubmit.value || loading.value) return;
+
+  try {
+    loading.value = true;
+    uni.showLoading({ title: '提交中...' });
+
+    await shopAuthApi.submitAuth({
+      shopName: form.value.shopName,
+      shopDesc: form.value.shopDesc,
+      category: form.value.category,
+      licenseImage: form.value.licenseImage,
+      legalPerson: form.value.legalPerson,
+      phone: form.value.phone,
+      address: form.value.address
+    });
+
     uni.hideLoading();
     uni.showToast({ title: '提交成功，请等待审核', icon: 'success' });
+
+    // 更新状态
+    authStatus.value = 'pending';
+
     setTimeout(() => {
       smartBack();
     }, 1500);
-  }, 1500);
+  } catch (error: any) {
+    uni.hideLoading();
+    uni.showToast({ title: error.message || '提交失败', icon: 'none' });
+  } finally {
+    loading.value = false;
+  }
 };
 </script>
 
@@ -275,5 +370,34 @@ const handleSubmit = () => {
   padding-bottom: calc(#{$space-md} + env(safe-area-inset-bottom));
   background: $color-white;
   box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
+}
+
+.status-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $space-xl $space-md;
+  text-align: center;
+
+  .status-title {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $color-text-main;
+    margin-top: $space-lg;
+  }
+
+  .status-desc {
+    font-size: $font-size-sm;
+    color: $color-text-sub;
+    margin-top: $space-sm;
+    margin-bottom: $space-lg;
+  }
+
+  &.rejected {
+    .status-desc {
+      color: $color-danger;
+    }
+  }
 }
 </style>

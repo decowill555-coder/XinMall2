@@ -38,8 +38,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { aftersaleApi, type AftersaleListItem, type AftersaleStatus } from '@/api/aftersale';
 
 const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
@@ -47,6 +48,7 @@ const { scrollHeight } = usePageLayout({
 });
 
 const activeTab = ref(0);
+const loading = ref(false);
 
 const tabList = ref([
   { name: '全部' },
@@ -55,66 +57,95 @@ const tabList = ref([
   { name: '已完成' }
 ]);
 
-const afterSaleList = ref([
-  {
-    id: 1,
-    orderNo: 'XM202401150001',
-    goodsCover: 'https://picsum.photos/200/200?random=a1',
-    goodsTitle: 'iPhone 15 Pro Max 256GB',
-    goodsSpec: '钛金属原色',
-    type: '退货退款',
-    reason: '商品与描述不符',
-    status: 'pending',
-    createTime: '2024-01-15 10:30'
-  },
-  {
-    id: 2,
-    orderNo: 'XM202401140002',
-    goodsCover: 'https://picsum.photos/200/200?random=a2',
-    goodsTitle: 'AirPods Pro 第二代',
-    goodsSpec: 'USB-C',
-    type: '仅退款',
-    reason: '质量问题',
-    status: 'processing',
-    createTime: '2024-01-14 15:20'
-  },
-  {
-    id: 3,
-    orderNo: 'XM202401130003',
-    goodsCover: 'https://picsum.photos/200/200?random=a3',
-    goodsTitle: 'MacBook Pro 14寸',
-    goodsSpec: 'M3芯片 16G+512G',
-    type: '换货',
-    reason: '收到商品有划痕',
-    status: 'completed',
-    createTime: '2024-01-13 09:15'
-  }
-]);
+// 状态映射
+const statusMap: Record<number, AftersaleStatus | undefined> = {
+  0: undefined, // 全部
+  1: 'pending', // 待处理
+  2: 'processing', // 处理中
+  3: 'completed' // 已完成
+};
 
-const goDetail = (item: any) => {
+const afterSaleList = ref<AftersaleListItem[]>([]);
+const page = ref(1);
+const hasMore = ref(true);
+
+// 加载数据
+const loadData = async (reset = false) => {
+  if (loading.value) return;
+
+  if (reset) {
+    page.value = 1;
+    afterSaleList.value = [];
+    hasMore.value = true;
+  }
+
+  try {
+    loading.value = true;
+    const status = statusMap[activeTab.value];
+    const res = await aftersaleApi.getSellerAftersaleList({
+      status,
+      page: page.value,
+      size: 10
+    });
+
+    if (reset) {
+      afterSaleList.value = res.list;
+    } else {
+      afterSaleList.value.push(...res.list);
+    }
+    hasMore.value = res.hasMore;
+  } catch (error) {
+    console.error('加载售后列表失败', error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+// 监听tab切换
+watch(activeTab, () => {
+  loadData(true);
+});
+
+onMounted(() => {
+  loadData();
+});
+
+const goDetail = (item: AftersaleListItem) => {
   uni.navigateTo({ url: `/pages-sub/seller/after-sale/detail?id=${item.id}` });
 };
 
-const handleAgree = (item: any) => {
+const handleAgree = (item: AftersaleListItem) => {
   uni.showModal({
     title: '确认',
     content: '确定同意该售后申请吗？',
-    success: (res) => {
+    success: async (res) => {
       if (res.confirm) {
-        uni.showToast({ title: '已同意', icon: 'success' });
+        try {
+          await aftersaleApi.agreeAftersale(item.id);
+          uni.showToast({ title: '已同意', icon: 'success' });
+          loadData(true);
+        } catch (error) {
+          uni.showToast({ title: '操作失败', icon: 'none' });
+        }
       }
     }
   });
 };
 
-const handleReject = (item: any) => {
+const handleReject = (item: AftersaleListItem) => {
   uni.showModal({
     title: '拒绝原因',
     editable: true,
     placeholderText: '请输入拒绝原因',
-    success: (res) => {
-      if (res.confirm) {
-        uni.showToast({ title: '已拒绝', icon: 'success' });
+    success: async (res) => {
+      if (res.confirm && res.content) {
+        try {
+          await aftersaleApi.rejectAftersale(item.id, res.content);
+          uni.showToast({ title: '已拒绝', icon: 'success' });
+          loadData(true);
+        } catch (error) {
+          uni.showToast({ title: '操作失败', icon: 'none' });
+        }
       }
     }
   });

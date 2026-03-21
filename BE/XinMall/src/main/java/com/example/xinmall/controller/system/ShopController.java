@@ -3,6 +3,7 @@ package com.example.xinmall.controller.system;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.xinmall.common.result.Result;
 import com.example.xinmall.dto.system.request.ShopCreateRequest;
+import com.example.xinmall.dto.system.response.ShopDashboardVO;
 import com.example.xinmall.dto.system.response.ShopVO;
 import com.example.xinmall.service.system.ShopService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -68,5 +69,19 @@ public class ShopController {
             @RequestParam(defaultValue = "10") Integer size) {
         IPage<ShopVO> result = shopService.getShopList(page, size);
         return Result.success(result);
+    }
+
+    @Operation(summary = "店铺首页仪表盘数据")
+    @GetMapping("/my/dashboard")
+    public Result<ShopDashboardVO> getShopDashboard() {
+        ShopDashboardVO dashboard = shopService.getShopDashboard();
+        return Result.success(dashboard);
+    }
+
+    @Operation(summary = "检查是否有店铺")
+    @GetMapping("/exists")
+    public Result<Boolean> checkShopExists() {
+        boolean hasShop = shopService.hasShop();
+        return Result.success(hasShop);
     }
 }

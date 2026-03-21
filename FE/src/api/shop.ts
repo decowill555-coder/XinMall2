@@ -7,6 +7,12 @@ export interface ShopInfo {
   avatar: string;
   cover: string;
   description: string;
+  phone?: string;
+  wechat?: string;
+  category?: string;
+  address?: string;
+  isOpen?: boolean;
+  autoAccept?: boolean;
   rating: number;
   followerCount: number;
   goodsCount: number;
@@ -20,6 +26,12 @@ export interface ShopCreateParams {
   avatar?: string;
   cover?: string;
   description?: string;
+  phone?: string;
+  wechat?: string;
+  category?: string;
+  address?: string;
+  isOpen?: boolean;
+  autoAccept?: boolean;
 }
 
 export interface ShopUpdateParams {
@@ -27,6 +39,29 @@ export interface ShopUpdateParams {
   avatar?: string;
   cover?: string;
   description?: string;
+  phone?: string;
+  wechat?: string;
+  category?: string;
+  address?: string;
+  isOpen?: boolean;
+  autoAccept?: boolean;
+}
+
+export interface RecentGoods {
+  id: string;
+  title: string;
+  cover: string;
+  price: number;
+  stock: number;
+  status: string;
+  createdAt: string;
+}
+
+export interface ShopDashboard {
+  shop: ShopInfo;
+  orderCounts: Record<string, number>;
+  aftersaleCount: number;
+  recentGoods: RecentGoods[];
 }
 
 export const shopApi = {
@@ -88,6 +123,22 @@ export const shopApi = {
       url: '/shop/list',
       method: 'GET',
       data: { page, size }
+    });
+  },
+
+  // 店铺首页仪表盘数据
+  getShopDashboard: () => {
+    return http<ShopDashboard>({
+      url: '/shop/my/dashboard',
+      method: 'GET'
+    });
+  },
+
+  // 检查是否有店铺
+  checkShopExists: () => {
+    return http<boolean>({
+      url: '/shop/exists',
+      method: 'GET'
     });
   }
 };

@@ -3,7 +3,7 @@ package com.example.xinmall.dto.search.request;
 import lombok.Data;
 
 import java.io.Serializable;
-    import java.math.BigDecimal;
+import java.math.BigDecimal;
 
 @Data
 public class SearchRequest implements Serializable {
@@ -25,6 +25,20 @@ public class SearchRequest implements Serializable {
     private BigDecimal priceMax;
 
     private String sellerType;
+
+    private String tradeMethod;
+
+    private Boolean hasInvoice;
+
+    private Boolean hasWarranty;
+
+    private Boolean canInspect;
+
+    private Boolean freeShipping;
+
+    private String publishTime;
+
+    private String storage;
 
     private String sort;
 

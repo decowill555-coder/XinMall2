@@ -27,6 +27,36 @@ public class Shop {
 
     private String description;
 
+    /**
+     * 联系电话
+     */
+    private String phone;
+
+    /**
+     * 微信号
+     */
+    private String wechat;
+
+    /**
+     * 经营类目
+     */
+    private String category;
+
+    /**
+     * 发货地址
+     */
+    private String address;
+
+    /**
+     * 是否营业
+     */
+    private Boolean isOpen;
+
+    /**
+     * 是否自动接单
+     */
+    private Boolean autoAccept;
+
     private BigDecimal rating;
 
     private Integer followerCount;

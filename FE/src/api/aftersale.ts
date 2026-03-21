@@ -1,6 +1,6 @@
 import { http } from '@/utils/http';
 
-export type AftersaleStatus = 'pending' | 'processing' | 'completed' | 'rejected' | 'cancelled';
+export type AftersaleStatus = 'pending' | 'processing' | 'waiting_return' | 'completed' | 'rejected' | 'cancelled';
 export type AftersaleType = 'refund_only' | 'refund_return' | 'exchange';
 
 export interface AftersaleListItem {
@@ -147,6 +147,42 @@ export const aftersaleApi = {
       url: '/aftersale/reasons',
       method: 'GET',
       data: { type }
+    });
+  },
+
+  // 卖家售后列表
+  getSellerAftersaleList: (params: AftersaleListParams) => {
+    return http<AftersaleListResult>({
+      url: '/aftersale/seller',
+      method: 'GET',
+      data: params
+    });
+  },
+
+  // 卖家售后数量统计
+  getSellerAftersaleCount: () => {
+    return http<number>({
+      url: '/aftersale/seller/count',
+      method: 'GET'
+    });
+  },
+
+  // 同意售后
+  agreeAftersale: (id: string) => {
+    return http<{ success: boolean }>({
+      url: `/aftersale/${id}/agree`,
+      method: 'PUT',
+      loading: true
+    });
+  },
+
+  // 拒绝售后
+  rejectAftersale: (id: string, reason: string) => {
+    return http<{ success: boolean }>({
+      url: `/aftersale/${id}/reject`,
+      method: 'PUT',
+      data: { reason },
+      loading: true
     });
   }
 };

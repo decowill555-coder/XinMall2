@@ -95,6 +95,7 @@ import { onLoad, onShow } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { useNavigation } from '@/composables/useNavigation';
 import { tradeApi } from '@/api';
+import { uploadApi } from '@/api/upload';
 import { logError } from '@/utils/logger';
 
 const { safeAreaBottom, scrollHeight } = usePageLayout({
@@ -109,6 +110,7 @@ const conditions = ['全新', '99新', '95新', '9成新', '8成新'];
 interface ImageItem {
   url: string;
   status?: 'ready' | 'uploading' | 'done' | 'error';
+  file?: string;
 }
 
 const productId = ref<number | null>(null);
@@ -174,12 +176,35 @@ const goCategorySelect = () => {
 };
 
 // 处理图片上传
-const handleAfterRead = (urls: string[]) => {
-  const newImages = urls.map(url => ({
+const handleAfterRead = async (urls: string[]) => {
+  const newImages: ImageItem[] = urls.map(url => ({
     url,
-    status: 'done' as const
+    status: 'uploading' as const,
+    file: url
   }));
   imageList.value = [...imageList.value, ...newImages];
+
+  for (let i = 0; i < newImages.length; i++) {
+    const img = newImages[i];
+    const currentIndex = imageList.value.findIndex(item => item === img);
+    if (currentIndex === -1) continue;
+
+    try {
+      const uploadRes = await uploadApi.uploadProductImage(img.file!);
+      imageList.value[currentIndex] = {
+        url: uploadRes.fileUrl,
+        status: 'done' as const
+      };
+    } catch (error) {
+      logError('图片上传失败:', error);
+      imageList.value[currentIndex] = {
+        url: img.url,
+        status: 'error' as const
+      };
+      uni.showToast({ title: '图片上传失败', icon: 'none' });
+    }
+  }
+
   goodsInfo.value.images = imageList.value.map(img => img.url);
 };
 

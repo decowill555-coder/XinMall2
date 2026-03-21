@@ -21,4 +21,16 @@ public class ShopCreateRequest implements Serializable {
 
     @Size(max = 500, message = "店铺简介最长500个字符")
     private String description;
+
+    private String phone;
+
+    private String wechat;
+
+    private String category;
+
+    private String address;
+
+    private Boolean isOpen;
+
+    private Boolean autoAccept;
 }

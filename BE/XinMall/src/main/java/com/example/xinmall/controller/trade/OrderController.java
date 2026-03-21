@@ -113,4 +113,11 @@ public class OrderController {
         logistics.put("trackingNo", "SF1234567890");
         return Result.success(logistics);
     }
+
+    @Operation(summary = "卖家订单数量统计")
+    @GetMapping("/seller/count")
+    public Result<Map<String, Long>> getSellerOrderCount() {
+        Map<String, Long> counts = orderService.getSellerOrderCountByStatus();
+        return Result.success(counts);
+    }
 }

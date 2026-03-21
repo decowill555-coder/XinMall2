@@ -32,18 +32,35 @@ const emit = defineEmits(['click']);
 
 const themeStore = useThemeStore();
 
+const COLOR_NAME_MAP: Record<string, { light: string; dark: string }> = {
+  primary: { light: '#FF4081', dark: '#D946EF' },
+  placeholder: { light: '#A9A5A2', dark: '#6B7280' },
+  disabled: { light: '#C4C0BE', dark: '#52525B' },
+  secondary: { light: '#867A76', dark: '#A1A1AA' }
+};
+
 const parsedSize = computed(() => {
   return typeof props.size === 'number' ? `${props.size}rpx` : props.size;
 });
 
 const resolvedColor = computed(() => {
-  if (props.color && props.color.trim() !== '') return props.color;
-  
-  if (themeStore.isDark) {
-    return '#F5F5FA';
+  if (!props.color || props.color.trim() === '') {
+    return themeStore.isDark ? '#F5F5FA' : '#2C2624';
   }
-  
-  return '#2C2624';
+
+  const colorLower = props.color.toLowerCase();
+
+  if (COLOR_NAME_MAP[colorLower]) {
+    return themeStore.isDark
+      ? COLOR_NAME_MAP[colorLower].dark
+      : COLOR_NAME_MAP[colorLower].light;
+  }
+
+  if (colorLower === 'currentcolor' || colorLower.startsWith('#') || colorLower.startsWith('rgb')) {
+    return props.color;
+  }
+
+  return themeStore.isDark ? '#F5F5FA' : '#2C2624';
 });
 
 const encodedColor = computed(() => {

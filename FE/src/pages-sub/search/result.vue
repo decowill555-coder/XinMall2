@@ -21,6 +21,26 @@
       @scrolltolower="loadMore"
     >
       <view class="scroll-content">
+        <!-- 筛选标签展示 -->
+        <view v-if="filterTags.length > 0" class="filter-tags-bar">
+          <scroll-view scroll-x class="tags-scroll">
+            <view class="tags-list">
+              <view
+                v-for="(tag, index) in filterTags"
+                :key="index"
+                class="filter-tag"
+                @click="removeFilterTag(tag)"
+              >
+                <text class="tag-text">{{ tag.label }}</text>
+                <ui-icon name="close" :size="20" color="#1ABC9C" />
+              </view>
+              <view class="clear-all-btn" @click="clearAllFilters">
+                <text class="clear-text">清除全部</text>
+              </view>
+            </view>
+          </scroll-view>
+        </view>
+
         <view class="filter-bar">
           <view class="filter-tabs">
             <view
@@ -40,6 +60,9 @@
           <view class="filter-btn" @click="showFilterSidebar = true">
             <ui-icon name="filter" :size="32" color="primary" />
             <text class="filter-btn-text">筛选</text>
+            <view v-if="searchFilterStore.advancedFilterCount > 0" class="filter-badge">
+              {{ searchFilterStore.advancedFilterCount }}
+            </view>
           </view>
         </view>
 
@@ -111,7 +134,12 @@
       <view class="start-search" @click="handleSearch"><text>开始搜索</text></view>
     </view>
 
-    <ui-filter-sidebar v-model:show="showFilterSidebar" @confirm="fetchProducts" @reset="handleFilterReset" />
+    <ui-filter-sidebar
+      v-model:show="showFilterSidebar"
+      :aggregations="aggregations"
+      @confirm="fetchProducts"
+      @reset="handleFilterReset"
+    />
   </view>
 </template>
 
@@ -119,8 +147,9 @@
 import { ref, computed, onMounted, nextTick, watch } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { useAppStore, useSearchHistoryStore, useSearchFilterStore } from '@/stores';
+import { BRAND_OPTIONS, CONDITION_OPTIONS, STORAGE_OPTIONS, TRADE_METHOD_OPTIONS, PUBLISH_TIME_OPTIONS } from '@/stores/search-filter';
 import { useNavigation } from '@/composables/useNavigation';
-import { searchApi, type SearchResultItem } from '@/api/search';
+import { searchApi, type SearchResultItem, type SearchAggregations } from '@/api/search';
 import UiFilterSidebar from '@/ui-kit/organisms/UiFilterSidebar.vue';
 import { logError } from '@/utils/logger';
 
@@ -155,8 +184,157 @@ const currentPage = ref(1);
 const showFilterSidebar = ref(false);
 const activeSort = ref<'relevance' | 'new' | 'price' | 'sales'>('relevance');
 const priceSortOrder = ref<'asc' | 'desc'>('asc');
+const aggregations = ref<SearchAggregations | null>(null);
 
 const displayKeyword = computed(() => currentModel.value?.name || keyword.value || '搜索商品...');
+
+interface FilterTag {
+  key: string;
+  label: string;
+  type: string;
+}
+
+const filterTags = computed<FilterTag[]>(() => {
+  const tags: FilterTag[] = [];
+  const filters = searchFilterStore.advancedFilters;
+
+  // 价格区间
+  if (filters.priceMin || filters.priceMax) {
+    const min = filters.priceMin || '0';
+    const max = filters.priceMax || '不限';
+    tags.push({
+      key: 'price',
+      label: `¥${min}-${max}`,
+      type: 'price'
+    });
+  }
+
+  // 品牌
+  filters.brands.forEach((brandValue: string) => {
+    const brand = BRAND_OPTIONS.find(b => b.value === brandValue);
+    if (brand) {
+      tags.push({
+        key: `brand-${brandValue}`,
+        label: brand.label,
+        type: 'brand'
+      });
+    }
+  });
+
+  // 存储容量
+  filters.storages.forEach((storageValue: string) => {
+    const storage = STORAGE_OPTIONS.find(s => s.value === storageValue);
+    if (storage) {
+      tags.push({
+        key: `storage-${storageValue}`,
+        label: storage.label,
+        type: 'storage'
+      });
+    }
+  });
+
+  // 成色
+  filters.conditions.forEach((condValue: string) => {
+    const cond = CONDITION_OPTIONS.find(c => c.value === condValue);
+    if (cond) {
+      tags.push({
+        key: `condition-${condValue}`,
+        label: cond.label,
+        type: 'condition'
+      });
+    }
+  });
+
+  // 交易方式
+  filters.tradeMethods.forEach((methodValue: string) => {
+    const method = TRADE_METHOD_OPTIONS.find(m => m.value === methodValue);
+    if (method) {
+      tags.push({
+        key: `tradeMethod-${methodValue}`,
+        label: method.label,
+        type: 'tradeMethod'
+      });
+    }
+  });
+
+  // 发布时间
+  if (filters.publishTime) {
+    const time = PUBLISH_TIME_OPTIONS.find(t => t.value === filters.publishTime);
+    if (time) {
+      tags.push({
+        key: 'publishTime',
+        label: time.label,
+        type: 'publishTime'
+      });
+    }
+  }
+
+  // 其他筛选选项
+  if (filters.hasInvoice) {
+    tags.push({ key: 'hasInvoice', label: '有发票', type: 'hasInvoice' });
+  }
+  if (filters.hasWarranty) {
+    tags.push({ key: 'hasWarranty', label: '在保修期内', type: 'hasWarranty' });
+  }
+  if (filters.canInspect) {
+    tags.push({ key: 'canInspect', label: '支持验货', type: 'canInspect' });
+  }
+  if (filters.freeShipping) {
+    tags.push({ key: 'freeShipping', label: '包邮', type: 'freeShipping' });
+  }
+
+  return tags;
+});
+
+const removeFilterTag = (tag: FilterTag) => {
+  const filters = searchFilterStore.advancedFilters;
+
+  switch (tag.type) {
+    case 'price':
+      filters.priceMin = '';
+      filters.priceMax = '';
+      break;
+    case 'brand':
+      const brandIndex = filters.brands.indexOf(tag.key.replace('brand-', ''));
+      if (brandIndex > -1) filters.brands.splice(brandIndex, 1);
+      break;
+    case 'storage':
+      const storageIndex = filters.storages.indexOf(tag.key.replace('storage-', ''));
+      if (storageIndex > -1) filters.storages.splice(storageIndex, 1);
+      break;
+    case 'condition':
+      const condIndex = filters.conditions.indexOf(tag.key.replace('condition-', ''));
+      if (condIndex > -1) filters.conditions.splice(condIndex, 1);
+      break;
+    case 'tradeMethod':
+      const methodIndex = filters.tradeMethods.indexOf(tag.key.replace('tradeMethod-', ''));
+      if (methodIndex > -1) filters.tradeMethods.splice(methodIndex, 1);
+      break;
+    case 'publishTime':
+      filters.publishTime = '';
+      break;
+    case 'hasInvoice':
+      filters.hasInvoice = false;
+      break;
+    case 'hasWarranty':
+      filters.hasWarranty = false;
+      break;
+    case 'canInspect':
+      filters.canInspect = false;
+      break;
+    case 'freeShipping':
+      filters.freeShipping = false;
+      break;
+  }
+
+  searchFilterStore.setAdvancedFilters(filters);
+  fetchProducts(true);
+};
+
+const clearAllFilters = () => {
+  searchFilterStore.resetAdvancedFilters();
+  fetchProducts(true);
+};
 
 const sortTabs = [
   { label: '综合', value: 'relevance' },
@@ -179,7 +357,7 @@ const transformSearchResult = (item: SearchResultItem): Product => ({
   id: item.id,
   cover: item.cover,
   title: item.title,
-  price: item.price ? item.price / 100 : 0,
+  price: item.price || 0,
   sales: item.memberCount || 0,
   condition: item.condition,
   tags: item.tags || []
@@ -197,13 +375,47 @@ const fetchProducts = async (isRefresh = false) => {
   }
 
   try {
+    // 构建排序参数
+    let sortParam: string | undefined;
+    if (activeSort.value === 'price') {
+      sortParam = priceSortOrder.value === 'asc' ? 'price_asc' : 'price_desc';
+    } else if (activeSort.value === 'new') {
+      sortParam = 'new';
+    } else if (activeSort.value === 'sales') {
+      sortParam = 'sales';
+    } else {
+      sortParam = 'relevance';
+    }
+
+    const filters = searchFilterStore.advancedFilters;
     const params: any = {
       keyword: keyword.value || undefined,
       modelId: modelId.value || undefined,
-      sort: activeSort.value,
-      priceOrder: activeSort.value === 'price' ? priceSortOrder.value : undefined,
+      sort: sortParam,
       page: currentPage.value,
-      pageSize: 10
+      pageSize: 10,
+      // 价格区间
+      priceMin: filters.priceMin ? Number(filters.priceMin) : undefined,
+      priceMax: filters.priceMax ? Number(filters.priceMax) : undefined,
+      // 品牌 - 多选支持（后端暂只支持单选，传第一个）
+      brandId: filters.brands?.length > 0 ? filters.brands[0] : undefined,
+      // 成色 - 多选支持
+      condition: filters.conditions?.length > 0 ? filters.conditions.join(',') : undefined,
+      // 交易方式
+      tradeMethod: filters.tradeMethods?.length > 0 ? filters.tradeMethods.join(',') : undefined,
+      // 存储容量
+      storage: filters.storages?.length > 0 ? filters.storages.join(',') : undefined,
+      // 发布时间
+      publishTime: filters.publishTime || undefined,
+      // 布尔筛选
+      hasInvoice: filters.hasInvoice || undefined,
+      hasWarranty: filters.hasWarranty || undefined,
+      canInspect: filters.canInspect || undefined,
+      freeShipping: filters.freeShipping || undefined,
+      // 卖家类型
+      sellerType: searchFilterStore.sellerType !== 'all' ? searchFilterStore.sellerType : undefined,
+      // 设备类型 - 转换为数字ID
+      deviceTypeId: searchFilterStore.deviceType && searchFilterStore.deviceType !== 'all' ? Number(searchFilterStore.deviceType) : undefined
     };
 
     const res = await searchApi.searchProducts(params);
@@ -218,6 +430,11 @@ const fetchProducts = async (isRefresh = false) => {
 
     totalCount.value = res?.total || 0;
     hasMore.value = res?.hasMore ?? (res?.current !== undefined && res?.pages !== undefined && res.current < res.pages);
+
+    // Store aggregations for filter sidebar
+    if (res?.aggregations) {
+      aggregations.value = res.aggregations;
+    }
 
     if (hasMore.value) {
       currentPage.value++;
@@ -387,6 +604,7 @@ const goDeviceCommunity = () => {
 }
 
 .filter-btn {
+  position: relative;
   display: flex;
   align-items: center;
   padding: $space-sm $space-md;
@@ -456,7 +674,10 @@ const goDeviceCommunity = () => {
   .toggle-item {
     padding: $space-xs $space-sm;
     border-radius: $radius-sm;
-    &.is-active { background: var(--glass-solid, rgba(255, 255, 255, 0.85)); }
+    &.is-active {
+      background: #fff;
+      box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+    }
   }
 }
 
@@ -505,6 +726,65 @@ const goDeviceCommunity = () => {
   align-items: center;
   padding: 120rpx $space-xl;
   .empty-text { font-size: $font-size-md; color: $color-text-sub; margin-top: $space-md; }
+}
+
+.filter-tags-bar {
+  background: var(--glass-solid, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur($blur-md);
+  padding: $space-sm $space-md;
+  border-bottom: 1rpx solid var(--color-border, rgba(0, 0, 0, 0.04));
+}
+
+.tags-scroll {
+  white-space: nowrap;
+}
+
+.tags-list {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-sm;
+}
+
+.filter-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: $space-xs $space-md;
+  background: rgba($color-primary, 0.1);
+  border-radius: $radius-full;
+  border: 1rpx solid rgba($color-primary, 0.2);
+
+  .tag-text {
+    font-size: $font-size-sm;
+    color: $color-primary;
+  }
+}
+
+.clear-all-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: $space-xs $space-md;
+
+  .clear-text {
+    font-size: $font-size-sm;
+    color: $color-text-sub;
+  }
+}
+
+.filter-badge {
+  position: absolute;
+  top: 4rpx;
+  right: 4rpx;
+  min-width: 28rpx;
+  height: 28rpx;
+  background: $color-primary;
+  border-radius: 50%;
+  font-size: $font-size-xs;
+  color: $color-white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6rpx;
 }
 
 

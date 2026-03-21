@@ -235,6 +235,87 @@ public class AftersaleServiceImpl implements AftersaleService {
         return aftersaleMapper.selectById(id);
     }
 
+    @Override
+    public IPage<AftersaleVO> getSellerList(AftersaleStatus status, Integer page, Integer size) {
+        Long userId = getCurrentUserId();
+        Page<Aftersale> pageParam = new Page<>(page, size);
+
+        LambdaQueryWrapper<Aftersale> wrapper = new LambdaQueryWrapper<Aftersale>()
+                .eq(Aftersale::getSellerId, userId);
+        if (status != null) {
+            wrapper.eq(Aftersale::getStatus, status);
+        }
+        wrapper.orderByDesc(Aftersale::getCreatedAt);
+
+        Page<Aftersale> result = aftersaleMapper.selectPage(pageParam, wrapper);
+        return result.convert(this::convertToVO);
+    }
+
+    @Override
+    public Long getSellerAftersaleCount() {
+        Long userId = getCurrentUserId();
+        return aftersaleMapper.selectCount(
+                new LambdaQueryWrapper<Aftersale>()
+                        .eq(Aftersale::getSellerId, userId)
+                        .eq(Aftersale::getStatus, AftersaleStatus.PENDING)
+        );
+    }
+
+    @Override
+    @Transactional
+    public void agree(Long id) {
+        Long userId = getCurrentUserId();
+        Aftersale aftersale = aftersaleMapper.selectById(id);
+        if (aftersale == null) {
+            throw new BusinessException("售后记录不存在");
+        }
+        if (!aftersale.getSellerId().equals(userId)) {
+            throw new BusinessException("无权操作此售后记录");
+        }
+        if (aftersale.getStatus() != AftersaleStatus.PENDING) {
+            throw new BusinessException("当前状态不能同意");
+        }
+
+        // 根据售后类型设置不同状态
+        if (aftersale.getType() == AftersaleType.REFUND_ONLY) {
+            // 仅退款，直接完成
+            aftersale.setStatus(AftersaleStatus.COMPLETED);
+            // TODO: 实际退款逻辑
+        } else {
+            // 退货退款/换货，等待买家退货
+            aftersale.setStatus(AftersaleStatus.WAITING_RETURN);
+        }
+        aftersale.setUpdatedAt(LocalDateTime.now());
+        aftersaleMapper.updateById(aftersale);
+
+        // 记录售后日志
+        createAftersaleLog(id, aftersale.getStatus(), "卖家同意售后申请", AftersaleOperatorType.SELLER, userId);
+    }
+
+    @Override
+    @Transactional
+    public void reject(Long id, String reason) {
+        Long userId = getCurrentUserId();
+        Aftersale aftersale = aftersaleMapper.selectById(id);
+        if (aftersale == null) {
+            throw new BusinessException("售后记录不存在");
+        }
+        if (!aftersale.getSellerId().equals(userId)) {
+            throw new BusinessException("无权操作此售后记录");
+        }
+        if (aftersale.getStatus() != AftersaleStatus.PENDING) {
+            throw new BusinessException("当前状态不能拒绝");
+        }
+
+        aftersale.setStatus(AftersaleStatus.REJECTED);
+        aftersale.setRejectReason(reason);
+        aftersale.setUpdatedAt(LocalDateTime.now());
+        aftersaleMapper.updateById(aftersale);
+
+        // 记录售后日志
+        createAftersaleLog(id, AftersaleStatus.REJECTED, "卖家拒绝售后申请: " + reason, AftersaleOperatorType.SELLER, userId);
+    }
+
     private Long getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {

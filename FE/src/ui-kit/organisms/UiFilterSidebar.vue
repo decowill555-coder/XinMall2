@@ -44,42 +44,42 @@
         <view class="filter-section">
           <text class="section-title">品牌</text>
           <view class="tag-grid">
-            <view 
-              v-for="brand in BRAND_OPTIONS" 
+            <view
+              v-for="brand in brandOptions"
               :key="brand.value"
               class="tag-item"
-              :class="{ 'is-active': localFilters.brands.includes(brand.value as string) }"
-              @click="handleToggle('brands', brand.value as string)"
+              :class="{ 'is-active': localFilters.brands.includes(String(brand.value)) }"
+              @click="handleToggle('brands', brand.value)"
             >
               {{ brand.label }}
             </view>
           </view>
         </view>
-        
+
         <view class="filter-section">
           <text class="section-title">存储容量</text>
           <view class="tag-grid">
-            <view 
-              v-for="storage in STORAGE_OPTIONS" 
+            <view
+              v-for="storage in storageOptions"
               :key="storage.value"
               class="tag-item"
-              :class="{ 'is-active': localFilters.storages.includes(storage.value as string) }"
-              @click="handleToggle('storages', storage.value as string)"
+              :class="{ 'is-active': localFilters.storages.includes(String(storage.value)) }"
+              @click="handleToggle('storages', storage.value)"
             >
               {{ storage.label }}
             </view>
           </view>
         </view>
-        
+
         <view class="filter-section">
           <text class="section-title">成色</text>
           <view class="tag-grid">
-            <view 
-              v-for="cond in CONDITION_OPTIONS" 
+            <view
+              v-for="cond in conditionOptions"
               :key="cond.value"
               class="tag-item"
-              :class="{ 'is-active': localFilters.conditions.includes(cond.value as string) }"
-              @click="handleToggle('conditions', cond.value as string)"
+              :class="{ 'is-active': localFilters.conditions.includes(String(cond.value)) }"
+              @click="handleToggle('conditions', cond.value)"
             >
               {{ cond.label }}
             </view>
@@ -170,7 +170,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, reactive } from 'vue';
-import { 
+import {
   useSearchFilterStore,
   CONDITION_OPTIONS,
   BRAND_OPTIONS,
@@ -178,11 +178,18 @@ import {
   TRADE_METHOD_OPTIONS,
   PUBLISH_TIME_OPTIONS,
   PRICE_RANGES,
-  type AdvancedFilters
+  type AdvancedFilters,
+  type FilterOption
 } from '@/stores/search-filter';
 
 const props = defineProps<{
   show: boolean;
+  aggregations?: {
+    brands?: { id: string | number; name: string; count: number }[];
+    conditions?: { name: string; value: string; count: number }[];
+    storages?: { value: string; name: string; count: number }[];
+    priceRange?: { min: number; max: number };
+  };
 }>();
 
 const emit = defineEmits<{
@@ -209,6 +216,69 @@ const localFilters = reactive<AdvancedFilters>({
   publishTime: ''
 });
 
+// 动态品牌选项（优先使用聚合数据）
+const brandOptions = computed<FilterOption[]>(() => {
+  if (props.aggregations?.brands?.length) {
+    return props.aggregations.brands.map(b => ({
+      label: `${b.name} (${b.count})`,
+      value: b.id
+    }));
+  }
+  return BRAND_OPTIONS;
+});
+
+// 动态成色选项（优先使用聚合数据）
+const conditionOptions = computed<FilterOption[]>(() => {
+  if (props.aggregations?.conditions?.length) {
+    return props.aggregations.conditions.map(c => ({
+      label: `${c.name} (${c.count})`,
+      value: c.value
+    }));
+  }
+  return CONDITION_OPTIONS;
+});
+
+// 动态存储选项（优先使用聚合数据）
+const storageOptions = computed<FilterOption[]>(() => {
+  if (props.aggregations?.storages?.length) {
+    return props.aggregations.storages.map(s => ({
+      label: `${s.name} (${s.count})`,
+      value: s.value
+    }));
+  }
+  return STORAGE_OPTIONS;
+});
+
+// 价格范围验证
+const validatePrice = () => {
+  const min = parseFloat(localFilters.priceMin);
+  const max = parseFloat(localFilters.priceMax);
+
+  if (localFilters.priceMin && min < 0) {
+    localFilters.priceMin = '0';
+  }
+  if (localFilters.priceMax && max < 0) {
+    localFilters.priceMax = '';
+  }
+  if (localFilters.priceMin && localFilters.priceMax && min > max) {
+    // 交换最小最大值
+    const temp = localFilters.priceMin;
+    localFilters.priceMin = localFilters.priceMax;
+    localFilters.priceMax = temp;
+  }
+};
+
+// 监听价格输入变化
+watch([() => localFilters.priceMin, () => localFilters.priceMax], () => {
+  // 清除快速选择
+  if (localFilters.priceMin || localFilters.priceMax) {
+    const matchingRange = PRICE_RANGES.find(
+      r => r.min === localFilters.priceMin && r.max === localFilters.priceMax
+    );
+    selectedPriceRange.value = matchingRange?.label || '';
+  }
+});
+
 const activeFilterCount = computed(() => {
   let count = 0;
   if (localFilters.priceMin || localFilters.priceMax) count++;
@@ -226,23 +296,38 @@ const activeFilterCount = computed(() => {
 
 watch(() => props.show, (isShow) => {
   if (isShow) {
-    Object.assign(localFilters, searchFilterStore.advancedFilters);
+    Object.assign(localFilters, JSON.parse(JSON.stringify(searchFilterStore.advancedFilters)));
+    // 恢复价格快速选择状态
+    if (localFilters.priceMin || localFilters.priceMax) {
+      const matchingRange = PRICE_RANGES.find(
+        r => r.min === localFilters.priceMin && r.max === localFilters.priceMax
+      );
+      selectedPriceRange.value = matchingRange?.label || '';
+    }
   }
 });
 
 const handlePriceRange = (range: typeof PRICE_RANGES[0]) => {
-  selectedPriceRange.value = range.label;
-  localFilters.priceMin = range.min;
-  localFilters.priceMax = range.max;
+  if (selectedPriceRange.value === range.label) {
+    // 取消选择
+    selectedPriceRange.value = '';
+    localFilters.priceMin = '';
+    localFilters.priceMax = '';
+  } else {
+    selectedPriceRange.value = range.label;
+    localFilters.priceMin = range.min;
+    localFilters.priceMax = range.max;
+  }
 };
 
-const handleToggle = (field: 'brands' | 'storages' | 'conditions' | 'tradeMethods', value: string) => {
+const handleToggle = (field: 'brands' | 'storages' | 'conditions' | 'tradeMethods', value: string | number) => {
   const arr = localFilters[field];
-  const index = arr.indexOf(value);
+  const valueStr = String(value);
+  const index = arr.indexOf(valueStr);
   if (index > -1) {
     arr.splice(index, 1);
   } else {
-    arr.push(value);
+    arr.push(valueStr);
   }
 };
 
@@ -268,6 +353,7 @@ const handleReset = () => {
 };
 
 const handleConfirm = () => {
+  validatePrice();
   searchFilterStore.setAdvancedFilters({ ...localFilters });
   emit('confirm', { ...localFilters });
   handleClose();

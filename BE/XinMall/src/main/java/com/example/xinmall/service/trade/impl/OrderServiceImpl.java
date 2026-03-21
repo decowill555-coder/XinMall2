@@ -452,4 +452,21 @@ public class OrderServiceImpl implements OrderService {
 
         return counts;
     }
+
+    @Override
+    public Map<String, Long> getSellerOrderCountByStatus() {
+        Long userId = getCurrentUserId();
+
+        Map<String, Long> counts = new HashMap<>();
+
+        // 统计卖家各状态订单数量
+        for (OrderStatus status : OrderStatus.values()) {
+            LambdaQueryWrapper<Order> wrapper = new LambdaQueryWrapper<Order>()
+                    .eq(Order::getSellerId, userId)
+                    .eq(Order::getStatus, status);
+            counts.put(status.name(), orderMapper.selectCount(wrapper));
+        }
+
+        return counts;
+    }
 }

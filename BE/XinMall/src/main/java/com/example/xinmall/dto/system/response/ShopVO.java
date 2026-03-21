@@ -23,6 +23,18 @@ public class ShopVO implements Serializable {
 
     private String description;
 
+    private String phone;
+
+    private String wechat;
+
+    private String category;
+
+    private String address;
+
+    private Boolean isOpen;
+
+    private Boolean autoAccept;
+
     private BigDecimal rating;
 
     private Integer followerCount;

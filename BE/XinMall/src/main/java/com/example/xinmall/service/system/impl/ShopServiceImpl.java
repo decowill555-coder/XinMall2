@@ -6,10 +6,20 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.xinmall.common.exception.BusinessException;
 import com.example.xinmall.dto.system.request.ShopCreateRequest;
+import com.example.xinmall.dto.system.response.ShopDashboardVO;
 import com.example.xinmall.dto.system.response.ShopVO;
 import com.example.xinmall.entity.system.Shop;
 import com.example.xinmall.entity.system.enums.ShopStatus;
+import com.example.xinmall.entity.trade.Aftersale;
+import com.example.xinmall.entity.trade.Goods;
+import com.example.xinmall.entity.trade.Order;
+import com.example.xinmall.entity.trade.enums.AftersaleStatus;
+import com.example.xinmall.entity.trade.enums.GoodsStatus;
+import com.example.xinmall.entity.trade.enums.OrderStatus;
 import com.example.xinmall.mapper.system.ShopMapper;
+import com.example.xinmall.mapper.trade.AftersaleMapper;
+import com.example.xinmall.mapper.trade.GoodsMapper;
+import com.example.xinmall.mapper.trade.OrderMapper;
 import com.example.xinmall.service.system.ShopService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -20,12 +30,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class ShopServiceImpl implements ShopService {
 
     private final ShopMapper shopMapper;
+    private final OrderMapper orderMapper;
+    private final AftersaleMapper aftersaleMapper;
+    private final GoodsMapper goodsMapper;
 
     @Override
     @Transactional
@@ -94,6 +111,12 @@ public class ShopServiceImpl implements ShopService {
         shop.setAvatar(request.getAvatar());
         shop.setCover(request.getCover());
         shop.setDescription(request.getDescription());
+        shop.setPhone(request.getPhone());
+        shop.setWechat(request.getWechat());
+        shop.setCategory(request.getCategory());
+        shop.setAddress(request.getAddress());
+        shop.setIsOpen(request.getIsOpen());
+        shop.setAutoAccept(request.getAutoAccept());
         shop.setUpdatedAt(LocalDateTime.now());
         shopMapper.updateById(shop);
     }
@@ -191,6 +214,84 @@ public class ShopServiceImpl implements ShopService {
                         .eq(Shop::getId, shopId)
                         .setSql("follower_count = GREATEST(0, follower_count - 1)")
         );
+    }
+
+    @Override
+    public ShopDashboardVO getShopDashboard() {
+        Long userId = getCurrentUserId();
+
+        // 获取店铺信息
+        Shop shop = shopMapper.selectOne(
+                new LambdaQueryWrapper<Shop>().eq(Shop::getUserId, userId)
+        );
+        if (shop == null) {
+            throw new BusinessException("您还没有店铺");
+        }
+
+        ShopDashboardVO dashboard = new ShopDashboardVO();
+        dashboard.setShop(convertToVO(shop));
+
+        // 获取卖家订单统计
+        Map<String, Long> orderCounts = new HashMap<>();
+        for (OrderStatus status : OrderStatus.values()) {
+            LambdaQueryWrapper<Order> wrapper = new LambdaQueryWrapper<Order>()
+                    .eq(Order::getSellerId, userId)
+                    .eq(Order::getStatus, status);
+            orderCounts.put(status.name(), orderMapper.selectCount(wrapper));
+        }
+        dashboard.setOrderCounts(orderCounts);
+
+        // 获取待处理售后数量
+        Long aftersaleCount = aftersaleMapper.selectCount(
+                new LambdaQueryWrapper<Aftersale>()
+                        .eq(Aftersale::getSellerId, userId)
+                        .eq(Aftersale::getStatus, AftersaleStatus.PENDING)
+        );
+        dashboard.setAftersaleCount(aftersaleCount);
+
+        // 获取最近在售商品列表（最多5个）
+        List<Goods> recentGoodsList = goodsMapper.selectList(
+                new LambdaQueryWrapper<Goods>()
+                        .eq(Goods::getSellerId, userId)
+                        .eq(Goods::getStatus, GoodsStatus.ON_SHELF)
+                        .orderByDesc(Goods::getCreatedAt)
+                        .last("LIMIT 5")
+        );
+        List<ShopDashboardVO.RecentGoodsVO> recentGoods = new ArrayList<>();
+        for (Goods goods : recentGoodsList) {
+            ShopDashboardVO.RecentGoodsVO goodsVO = new ShopDashboardVO.RecentGoodsVO();
+            goodsVO.setId(goods.getId());
+            goodsVO.setTitle(goods.getTitle());
+            goodsVO.setPrice(goods.getPrice());
+            goodsVO.setStock(goods.getStock());
+            goodsVO.setStatus(goods.getStatus().name());
+            goodsVO.setCreatedAt(goods.getCreatedAt());
+            // 获取封面图
+            if (goods.getImages() != null && !goods.getImages().isEmpty()) {
+                try {
+                    com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                    List<String> images = mapper.readValue(goods.getImages(), new com.fasterxml.jackson.core.type.TypeReference<List<String>>() {});
+                    if (!images.isEmpty()) {
+                        goodsVO.setCover(images.get(0));
+                    }
+                } catch (Exception e) {
+                    // ignore
+                }
+            }
+            recentGoods.add(goodsVO);
+        }
+        dashboard.setRecentGoods(recentGoods);
+
+        return dashboard;
+    }
+
+    @Override
+    public boolean hasShop() {
+        Long userId = getCurrentUserId();
+        Shop shop = shopMapper.selectOne(
+                new LambdaQueryWrapper<Shop>().eq(Shop::getUserId, userId)
+        );
+        return shop != null;
     }
 
     private ShopVO convertToVO(Shop shop) {

@@ -22,6 +22,8 @@ public class SearchAggregationVO implements Serializable {
 
     private PriceRange priceRange;
 
+    private List<StorageAggregation> storages;
+
     public void setProductCount(Long productCount) {
         this.productCount = productCount;
     }
@@ -44,6 +46,7 @@ public class SearchAggregationVO implements Serializable {
     @Data
     public static class ConditionAggregation implements Serializable {
         private String name;
+        private String value;
         private Integer count;
     }
 
@@ -51,5 +54,12 @@ public class SearchAggregationVO implements Serializable {
     public static class PriceRange implements Serializable {
         private java.math.BigDecimal min;
         private java.math.BigDecimal max;
+    }
+
+    @Data
+    public static class StorageAggregation implements Serializable {
+        private String value;
+        private String name;
+        private Integer count;
     }
 }

@@ -36,17 +36,26 @@ export interface SearchResultItem {
 }
 
 export interface SearchParams {
-  keyword: string;
+  keyword?: string;
+  modelId?: string;
   type?: 'all' | 'product' | 'model' | 'community';
-  deviceTypeId?: string;
-  brandId?: string;
+  deviceTypeId?: string | number;
+  brandId?: string | number;
   condition?: string;
   priceMin?: number;
   priceMax?: number;
   sellerType?: 'personal' | 'merchant';
+  tradeMethod?: string;
+  hasInvoice?: boolean;
+  hasWarranty?: boolean;
+  canInspect?: boolean;
+  freeShipping?: boolean;
+  publishTime?: string;
+  storage?: string;
   sort?: 'relevance' | 'new' | 'price' | 'sales';
   priceOrder?: 'asc' | 'desc';
   page?: number;
+  pageSize?: number;
   size?: number;
 }
 
@@ -62,8 +71,9 @@ export interface SearchAggregations {
   modelCount: number;
   communityCount: number;
   brands: { id: string; name: string; count: number }[];
-  conditions: { name: string; count: number }[];
+  conditions: { name: string; value: string; count: number }[];
   priceRange: { min: number; max: number };
+  storages: { value: string; name: string; count: number }[];
 }
 
 export interface HotModelItem {

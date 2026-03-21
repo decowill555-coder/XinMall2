@@ -74,4 +74,36 @@ public class AftersaleController {
         List<String> reasons = aftersaleService.getReasons(type);
         return Result.success(reasons);
     }
+
+    @Operation(summary = "卖家售后列表")
+    @GetMapping("/seller")
+    public Result<PageResult<AftersaleVO>> getSellerList(
+            @RequestParam(required = false) AftersaleStatus status,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size) {
+        IPage<AftersaleVO> result = aftersaleService.getSellerList(status, page, size);
+        return Result.success(PageResult.of(result));
+    }
+
+    @Operation(summary = "卖家售后数量统计")
+    @GetMapping("/seller/count")
+    public Result<Long> getSellerAftersaleCount() {
+        Long count = aftersaleService.getSellerAftersaleCount();
+        return Result.success(count);
+    }
+
+    @Operation(summary = "同意售后")
+    @PutMapping("/{id}/agree")
+    public Result<Void> agree(@PathVariable Long id) {
+        aftersaleService.agree(id);
+        return Result.success();
+    }
+
+    @Operation(summary = "拒绝售后")
+    @PutMapping("/{id}/reject")
+    public Result<Void> reject(@PathVariable Long id, @RequestBody java.util.Map<String, String> body) {
+        String reason = body.get("reason");
+        aftersaleService.reject(id, reason);
+        return Result.success();
+    }
 }

@@ -100,18 +100,11 @@ const onClick = (index: number) => {
     }
 
     &.is-active {
-      color: $color-text-main;
-      font-weight: $font-weight-bold;
-      font-size: $font-size-lg;
-      background: var(--color-primary-glass, rgba(255, 106, 0, 0.15));
-      border: 2rpx solid var(--color-primary, rgba(255, 106, 0, 0.5));
-      box-shadow: 0 2rpx 8rpx rgba(255, 106, 0, 0.2);
+      color: $color-primary;
+      font-weight: $font-weight-medium;
 
       [data-theme="dark"] & {
-        color: var(--color-text-main, #F2F2F7);
-        background: rgba(217, 70, 239, 0.2);
-        border: 2rpx solid rgba(217, 70, 239, 0.5);
-        box-shadow: 0 2rpx 8rpx rgba(217, 70, 239, 0.3);
+        color: var(--color-primary, #E879F9);
       }
     }
   }

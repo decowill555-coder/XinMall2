@@ -455,12 +455,16 @@ public class GoodsServiceImpl implements GoodsService {
             throw new BusinessException("无权操作此商品");
         }
 
-        goods.setStatus(GoodsStatus.AUDITING);
+        goods.setStatus(GoodsStatus.ON_SHELF);
         goods.setUpdatedAt(LocalDateTime.now());
         goodsMapper.updateById(goods);
 
-        // 注意：上架时商品状态变为审核中，需审核通过后才算在售
-        // 如果需要实时更新，可在审核通过时同步 SPU 统计数据
+        // 上架后商品状态变为在售
+        // 同步更新 SPU 的商品数量和价格范围
+        if (goods.getModelId() != null) {
+            spuService.syncProductCount(goods.getModelId());
+            spuService.syncPriceRange(goods.getModelId());
+        }
     }
 
     @Override

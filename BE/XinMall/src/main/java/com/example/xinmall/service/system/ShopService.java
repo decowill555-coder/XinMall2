@@ -2,6 +2,7 @@ package com.example.xinmall.service.system;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.xinmall.dto.system.request.ShopCreateRequest;
+import com.example.xinmall.dto.system.response.ShopDashboardVO;
 import com.example.xinmall.dto.system.response.ShopVO;
 
 public interface ShopService {
@@ -29,4 +30,14 @@ public interface ShopService {
     void incrementFollowerCount(Long shopId);
 
     void decrementFollowerCount(Long shopId);
+
+    /**
+     * 获取店铺首页仪表盘数据
+     */
+    ShopDashboardVO getShopDashboard();
+
+    /**
+     * 检查当前用户是否有店铺
+     */
+    boolean hasShop();
 }

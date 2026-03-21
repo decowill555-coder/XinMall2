@@ -401,15 +401,15 @@ const loadMore = async () => {
       background: var(--color-bg-gray, rgba(0, 0, 0, 0.03));
       border-radius: $radius-md;
       padding: 4rpx;
-      
+
       .toggle-item {
         padding: $space-xs $space-sm;
         border-radius: $radius-sm;
         transition: all $duration-fast;
-        
+
         &.is-active {
-          background: var(--glass-solid, rgba(255, 255, 255, 0.85));
-          box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+          background: #fff;
+          box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
         }
       }
     }

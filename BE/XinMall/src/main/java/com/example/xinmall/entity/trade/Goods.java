@@ -45,6 +45,12 @@ public class Goods {
 
     private String location;
 
+    private String tradeMethod;
+
+    private Boolean freeShipping;
+
+    private Boolean canInspect;
+
     private Integer stock;
 
     private Integer viewCount;

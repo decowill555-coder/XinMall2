@@ -95,10 +95,6 @@
                     >{{ tag }}</text>
                   </view>
                   <view class="card-footer">
-                    <view class="price-info">
-                      <text class="price-label">参考价</text>
-                      <ui-price :value="item.price" :size="28" />
-                    </view>
                     <view class="community-arrow">
                       <text class="community-text">进入社区</text>
                       <ui-icon name="arrow-right" :size="24" color="primary" />

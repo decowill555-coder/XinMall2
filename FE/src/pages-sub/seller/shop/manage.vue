@@ -4,52 +4,52 @@
     
     <scroll-view scroll-y class="manage-scroll" :style="{ height: scrollHeight + 'px' }">
       <view class="shop-card">
-        <ui-avatar :src="shopInfo.logo" :size="100" />
+        <ui-avatar :src="formData.avatar" :size="100" />
         <view class="shop-info">
-          <text class="shop-name">{{ shopInfo.name }}</text>
-          <text class="shop-id">店铺ID: {{ shopInfo.id }}</text>
+          <text class="shop-name">{{ shopInfo?.name }}</text>
+          <text class="shop-id">店铺ID: {{ shopInfo?.id }}</text>
         </view>
         <ui-button size="sm" @click="editLogo">修改头像</ui-button>
       </view>
-      
+
       <view class="form-section">
         <view class="form-item">
           <text class="form-label">店铺名称</text>
-          <input class="form-input" v-model="shopInfo.name" placeholder="请输入店铺名称" />
+          <input class="form-input" v-model="formData.name" placeholder="请输入店铺名称" />
         </view>
         <view class="form-item">
           <text class="form-label">店铺简介</text>
-          <textarea class="form-textarea" v-model="shopInfo.desc" placeholder="请输入店铺简介" :maxlength="200" />
+          <textarea class="form-textarea" v-model="formData.description" placeholder="请输入店铺简介" :maxlength="200" />
         </view>
         <view class="form-item">
           <text class="form-label">联系电话</text>
-          <input class="form-input" v-model="shopInfo.phone" placeholder="请输入联系电话" type="tel" />
+          <input class="form-input" v-model="formData.phone" placeholder="请输入联系电话" type="tel" />
         </view>
         <view class="form-item">
           <text class="form-label">微信号</text>
-          <input class="form-input" v-model="shopInfo.wechat" placeholder="请输入微信号" />
+          <input class="form-input" v-model="formData.wechat" placeholder="请输入微信号" />
         </view>
         <view class="form-item">
           <text class="form-label">经营类目</text>
           <view class="form-select" @click="showCategory = true">
-            <text :class="{ placeholder: !shopInfo.category }">{{ shopInfo.category || '请选择类目' }}</text>
+            <text :class="{ placeholder: !formData.category }">{{ formData.category || '请选择类目' }}</text>
             <ui-icon name="arrow-right" ::size="32" />
           </view>
         </view>
         <view class="form-item">
           <text class="form-label">发货地址</text>
-          <input class="form-input" v-model="shopInfo.address" placeholder="请输入发货地址" />
+          <input class="form-input" v-model="formData.address" placeholder="请输入发货地址" />
         </view>
       </view>
-      
+
       <view class="switch-section">
         <view class="switch-item">
           <text class="switch-label">店铺营业</text>
-          <ui-switch v-model="shopInfo.isOpen" />
+          <ui-switch v-model="formData.isOpen" />
         </view>
         <view class="switch-item">
           <text class="switch-label">自动接单</text>
-          <ui-switch v-model="shopInfo.autoAccept" />
+          <ui-switch v-model="formData.autoAccept" />
         </view>
       </view>
     </scroll-view>
@@ -61,44 +61,103 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { useShopStore } from '@/stores/shop';
+import { storeToRefs } from 'pinia';
+import { uploadApi } from '@/api/upload';
 
 const { safeAreaBottom, scrollHeight } = usePageLayout({
   hasSubNavbar: true,
   headerEstimatedHeight: 120
 });
 
+const shopStore = useShopStore();
+const { shopInfo, loading } = storeToRefs(shopStore);
+
 const showCategory = ref(false);
 
-const shopInfo = ref({
-  logo: 'https://picsum.photos/200/200?random=shop',
-  name: '数码达人小店',
-  id: 'XM88888',
-  desc: '专注正品数码，诚信经营，假一赔十',
-  phone: '138****8888',
-  wechat: 'digital_master',
-  category: '数码产品',
-  address: '北京市朝阳区建国路88号',
+// 本地表单数据
+const formData = ref({
+  name: '',
+  description: '',
+  phone: '',
+  wechat: '',
+  category: '',
+  address: '',
   isOpen: true,
-  autoAccept: false
+  autoAccept: false,
+  avatar: ''
+});
+
+// 初始化表单数据
+const initFormData = () => {
+  if (shopInfo.value) {
+    formData.value = {
+      name: shopInfo.value.name || '',
+      description: shopInfo.value.description || '',
+      phone: shopInfo.value.phone || '',
+      wechat: shopInfo.value.wechat || '',
+      category: shopInfo.value.category || '',
+      address: shopInfo.value.address || '',
+      isOpen: shopInfo.value.isOpen ?? true,
+      autoAccept: shopInfo.value.autoAccept ?? false,
+      avatar: shopInfo.value.avatar || ''
+    };
+  }
+};
+
+onMounted(async () => {
+  if (!shopInfo.value) {
+    await shopStore.fetchMyShop();
+  }
+  initFormData();
 });
 
 const editLogo = () => {
   uni.chooseImage({
     count: 1,
-    success: (res) => {
-      shopInfo.value.logo = res.tempFilePaths[0];
+    success: async (res) => {
+      const tempFilePath = res.tempFilePaths[0];
+      uni.showLoading({ title: '上传中...' });
+      try {
+        const url = await uploadApi.uploadImage(tempFilePath);
+        formData.value.avatar = url;
+        uni.hideLoading();
+      } catch (error) {
+        uni.hideLoading();
+        uni.showToast({ title: '上传失败', icon: 'none' });
+      }
     }
   });
 };
 
-const handleSave = () => {
-  uni.showLoading({ title: '保存中...' });
-  setTimeout(() => {
+const handleSave = async () => {
+  if (!formData.value.name) {
+    uni.showToast({ title: '请输入店铺名称', icon: 'none' });
+    return;
+  }
+
+  try {
+    uni.showLoading({ title: '保存中...' });
+    await shopStore.updateShop(shopInfo.value!.id, {
+      name: formData.value.name,
+      description: formData.value.description,
+      phone: formData.value.phone,
+      wechat: formData.value.wechat,
+      category: formData.value.category,
+      address: formData.value.address,
+      isOpen: formData.value.isOpen,
+      autoAccept: formData.value.autoAccept,
+      avatar: formData.value.avatar
+    });
     uni.hideLoading();
     uni.showToast({ title: '保存成功', icon: 'success' });
-  }, 1000);
+    uni.navigateBack();
+  } catch (error) {
+    uni.hideLoading();
+    uni.showToast({ title: '保存失败', icon: 'none' });
+  }
 };
 </script>
 

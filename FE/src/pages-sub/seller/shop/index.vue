@@ -3,15 +3,15 @@
     <ui-sub-navbar title="我的店铺" />
     
     <scroll-view scroll-y class="shop-scroll" :style="{ height: scrollHeight + 'px' }">
-      <ui-shop-header 
-        :logo="shopInfo.logo"
-        :name="shopInfo.name"
-        :desc="shopInfo.desc"
+      <ui-shop-header
+        :logo="shopInfo?.avatar"
+        :name="shopInfo?.name"
+        :desc="shopInfo?.description"
         :stats="shopStats"
       >
         <template #tags>
-          <ui-tag v-if="shopInfo.isVerified" type="success" size="sm">已认证</ui-tag>
-          <ui-tag type="primary" size="sm">营业中</ui-tag>
+          <ui-tag v-if="shopInfo?.status === 'normal'" type="success" size="sm">已认证</ui-tag>
+          <ui-tag :type="shopInfo?.isOpen ? 'primary' : 'default'" size="sm">{{ shopInfo?.isOpen ? '营业中' : '休息中' }}</ui-tag>
         </template>
       </ui-shop-header>
       
@@ -51,28 +51,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { usePageLayout } from '@/composables/usePageLayout';
+import { useShopStore } from '@/stores/shop';
+import { storeToRefs } from 'pinia';
 
 const { safeAreaBottom, scrollHeight } = usePageLayout({
   hasSubNavbar: true,
   headerEstimatedHeight: 120
 });
 
-const shopInfo = ref({
-  logo: 'https://picsum.photos/200/200?random=shop',
-  name: '数码达人小店',
-  desc: '专注正品数码，诚信经营',
-  isVerified: true,
-  goodsCount: 56,
-  salesCount: 1289,
-  followers: 3680
-});
+const shopStore = useShopStore();
+const { shopInfo, dashboard, loading, hasShop } = storeToRefs(shopStore);
 
 const shopStats = computed(() => [
-  { value: shopInfo.value.goodsCount, label: '商品' },
-  { value: shopInfo.value.salesCount, label: '销量' },
-  { value: shopInfo.value.followers, label: '粉丝' }
+  { value: shopInfo.value?.goodsCount || 0, label: '商品' },
+  { value: shopInfo.value?.soldCount || 0, label: '销量' },
+  { value: shopInfo.value?.followerCount || 0, label: '粉丝' }
 ]);
 
 const quickActions = computed(() => [
@@ -82,26 +77,41 @@ const quickActions = computed(() => [
   { icon: 'refresh', text: '售后管理' }
 ]);
 
-const orderCounts = ref({
-  pending: 5,
-  shipped: 12,
-  completed: 89,
-  refund: 2
+const orderOverviewItems = computed(() => {
+  const counts = dashboard.value?.orderCounts || {};
+  return [
+    { count: counts['pending_shipment'] || 0, label: '待发货' },
+    { count: counts['pending_receipt'] || 0, label: '已发货' },
+    { count: counts['completed'] || 0, label: '已完成' },
+    { count: dashboard.value?.aftersaleCount || 0, label: '售后' }
+  ];
 });
 
-const orderOverviewItems = computed(() => [
-  { count: orderCounts.value.pending, label: '待发货' },
-  { count: orderCounts.value.shipped, label: '已发货' },
-  { count: orderCounts.value.completed, label: '已完成' },
-  { count: orderCounts.value.refund, label: '售后' }
-]);
+const goodsList = computed(() => dashboard.value?.recentGoods || []);
 
-const goodsList = ref([
-  { id: 1, cover: 'https://picsum.photos/200/200?random=g1', title: 'iPhone 15 Pro Max', price: 7999, stock: 10 },
-  { id: 2, cover: 'https://picsum.photos/200/200?random=g2', title: 'MacBook Pro 14', price: 12999, stock: 5 },
-  { id: 3, cover: 'https://picsum.photos/200/200?random=g3', title: 'AirPods Pro 2', price: 1399, stock: 30 },
-  { id: 4, cover: 'https://picsum.photos/200/200?random=g4', title: 'iPad Pro 12.9', price: 6999, stock: 8 }
-]);
+// 加载数据
+const loadData = async () => {
+  try {
+    await shopStore.fetchDashboard();
+  } catch (error: any) {
+    // 如果没有店铺，跳转到创建店铺页面
+    if (shopStore.hasShop === false) {
+      uni.showModal({
+        title: '提示',
+        content: '您还没有创建店铺，是否立即创建？',
+        success: (res) => {
+          if (res.confirm) {
+            uni.navigateTo({ url: '/pages-sub/auth/shop-auth/index' });
+          }
+        }
+      });
+    }
+  }
+};
+
+onMounted(() => {
+  loadData();
+});
 
 const handleAction = (index: number) => {
   const actions = [goPublish, goGoodsList, goOrderList, goAfterSale];
@@ -109,7 +119,7 @@ const handleAction = (index: number) => {
 };
 
 const handleOrderClick = (index: number) => {
-  const types = ['pending', 'shipped', 'completed', 'refund'];
+  const types = ['pending_shipment', 'pending_receipt', 'completed', 'refund'];
   const type = types[index];
   if (type === 'refund') {
     goAfterSale();

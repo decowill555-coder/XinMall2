@@ -47,4 +47,24 @@ public interface AftersaleService {
      * 根据ID获取售后
      */
     Aftersale getById(Long id);
+
+    /**
+     * 获取卖家售后列表
+     */
+    IPage<AftersaleVO> getSellerList(AftersaleStatus status, Integer page, Integer size);
+
+    /**
+     * 获取卖家售后数量统计
+     */
+    Long getSellerAftersaleCount();
+
+    /**
+     * 同意售后
+     */
+    void agree(Long id);
+
+    /**
+     * 拒绝售后
+     */
+    void reject(Long id, String reason);
 }

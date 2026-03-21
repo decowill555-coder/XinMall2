@@ -488,5 +488,32 @@ export const tradeApi = {
       method: 'GET',
       data: { page, size }
     });
+  },
+
+  // 卖家订单列表
+  getSellerOrders: (params: OrderListParams) => {
+    return http<OrderListResult>({
+      url: '/order/seller',
+      method: 'GET',
+      data: params
+    });
+  },
+
+  // 卖家订单数量统计
+  getSellerOrderCount: () => {
+    return http<Record<string, number>>({
+      url: '/order/seller/count',
+      method: 'GET'
+    });
+  },
+
+  // 发货
+  shipOrder: (orderId: string, params: { expressCompany: string; expressNo: string }) => {
+    return http<{ success: boolean }>({
+      url: `/order/${orderId}/ship`,
+      method: 'PUT',
+      data: params,
+      loading: true
+    });
   }
 };

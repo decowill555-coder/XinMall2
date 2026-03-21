@@ -10,13 +10,17 @@
     </view>
     
     <view class="address-actions" v-if="showActions">
-      <view class="action-item" @click.stop="emit('setDefault')">
+      <view 
+        class="action-item" 
+        :class="{ 'is-disabled': setDefaultDisabled }"
+        @click.stop="!setDefaultDisabled && emit('setDefault')"
+      >
         <ui-icon 
           :name="isDefault ? 'check-circle-fill' : 'circle'" 
           :size="40" 
-          :color="isDefault ? '#1ABC9C' : ''" 
+          :color="isDefault ? '#1ABC9C' : (setDefaultDisabled ? 'disabled' : '')" 
         />
-        <text>默认</text>
+        <text>{{ setDefaultDisabled ? '默认' : '设为默认' }}</text>
       </view>
       <view class="action-item" @click.stop="emit('edit')">
         <ui-icon name="edit" :size="40" />
@@ -42,6 +46,7 @@ interface Props {
   detail?: string;
   isDefault?: boolean;
   showActions?: boolean;
+  setDefaultDisabled?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -52,7 +57,8 @@ const props = withDefaults(defineProps<Props>(), {
   district: '',
   detail: '',
   isDefault: false,
-  showActions: true
+  showActions: true,
+  setDefaultDisabled: false
 });
 
 const emit = defineEmits(['click', 'setDefault', 'edit', 'delete']);
@@ -109,8 +115,12 @@ const fullAddress = computed(() => {
       align-items: center;
       font-size: $font-size-xs;
       color: $color-text-sub;
-      
+
       text { margin-left: $space-xs; }
+
+      &.is-disabled {
+        color: $color-text-disabled;
+      }
     }
   }
 }
