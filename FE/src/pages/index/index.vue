@@ -26,10 +26,15 @@
     </view>
     
     <view class="page-content" :style="{ paddingTop: headerHeight + 'px' }">
-      <scroll-view 
-        scroll-y 
-        class="goods-scroll" 
-        :style="{ height: scrollHeight + 'px' }" 
+      <scroll-view
+        scroll-y
+        class="goods-scroll"
+        :style="{ height: scrollHeight + 'px' }"
+        refresher-enabled
+        refresher-default-style="black"
+        :refresher-triggered="isRefreshing"
+        :refresher-threshold="80"
+        @refresherrefresh="onRefresh"
         @scrolltolower="loadMore"
       >
         <view class="swiper">
@@ -41,15 +46,15 @@
         </view>
         
         <view class="goods-list">
-          <ui-waterfalls :list="goodsList" :columns="2" :gap="12" @click="goDetail">
+          <ui-waterfalls :list="feedList" :columns="2" :gap="12">
             <template #item="{ item }">
-              <ui-goods-card :data="item" mode="waterfall" @click="goDetail" @user-click="goUser" />
+              <ui-goods-card :data="item" mode="waterfall" @click="handleItemClick" @user-click="goUser" />
             </template>
           </ui-waterfalls>
         </view>
         
-        <view class="load-more" v-if="goodsList.length > 0">
-          <ui-divider :text="loading ? '加载中...' : '上拉加载更多'" />
+        <view class="load-more" v-if="feedList.length > 0">
+          <ui-divider :text="loading ? '加载中...' : (hasMore ? '上拉加载更多' : '没有更多了')" />
         </view>
       </scroll-view>
     </view>
@@ -63,8 +68,25 @@ import { ref, computed, onMounted, nextTick, watch } from 'vue';
 import { onReady, onShow } from '@dcloudio/uni-app';
 import { useAppStore } from '@/stores';
 import { useNavigation } from '@/composables/useNavigation';
-import { searchApi, categoryApi, tradeApi, bannerApi, type ProductListItem } from '@/api';
+import { searchApi, categoryApi, bannerApi } from '@/api';
+import { forumApi, type PostListItem } from '@/api/community';
+import { spuApi } from '@/api';
 import { logError } from '@/utils/logger';
+
+interface FeedItem {
+  id: string | number;
+  cover: string;
+  title: string;
+  price?: number;
+  userName: string;
+  userAvatar: string;
+  userId: string;
+  likeCount?: number;
+  memberCount?: number;
+  isLiked?: boolean;
+  isVideo?: boolean;
+  itemType: 'post' | 'product';
+}
 
 const appStore = useAppStore();
 const { navigateTo } = useNavigation();
@@ -72,6 +94,7 @@ const { navigateTo } = useNavigation();
 const keyword = ref('');
 const activeTab = ref(0);
 const loading = ref(false);
+const isRefreshing = ref(false);
 const initialLoading = ref(true);
 
 onShow(() => {
@@ -116,37 +139,10 @@ const categoryList = ref<Array<{ name: string; id?: string }>>([
 
 const bannerList = ref<Array<{ image: string; title: string; link: string }>>([]);
 
-interface GoodsItem {
-  id: string | number;
-  cover: string;
-  title: string;
-  price: number;
-  originalPrice?: number;
-  sales?: number;
-  tags: string[];
-  userAvatar: string;
-  userName: string;
-  likeCount: number;
-  sellerId?: string;
-}
-
-const goodsList = ref<GoodsItem[]>([]);
+const feedList = ref<FeedItem[]>([]);
 const currentPage = ref(1);
 const hasMore = ref(true);
-const currentDeviceTypeId = ref<string | undefined>(undefined);
-
-const transformProductToGoods = (product: ProductListItem): GoodsItem => ({
-  id: product.id,
-  cover: product.cover || '',
-  title: product.title,
-  price: Number(product.price) || 0,
-  originalPrice: product.originalPrice ? Number(product.originalPrice) : undefined,
-  tags: [],
-  userAvatar: product.sellerAvatar || '',
-  userName: product.sellerName || '未知卖家',
-  likeCount: product.likeCount || 0,
-  sellerId: String(product.sellerId || '')
-});
+const pageSize = 12;
 
 const fetchHotKeywords = async () => {
   try {
@@ -192,51 +188,76 @@ const fetchCategories = async () => {
   }
 };
 
-const fetchGoodsList = async (isRefresh = false) => {
+const fetchFeed = async (page: number = 1) => {
   if (loading.value) return;
-  if (!isRefresh && !hasMore.value) return;
-  
-  loading.value = true;
-  
-  if (isRefresh) {
-    currentPage.value = 1;
+  if (page === 1) {
     hasMore.value = true;
-  }
-  
+  } else if (!hasMore.value) return;
+
+  loading.value = true;
+
   try {
-    const params: any = {
-      page: currentPage.value,
-      size: 12,
-      sortBy: 'created_at',
-      sortOrder: 'desc'
-    };
+    // 获取当前选中的分类ID（"推荐"tab不传分类ID）
+    const currentCategory = categoryList.value[activeTab.value];
+    const deviceTypeId = currentCategory?.id || undefined;
+
+    const [postsResult, spusResult] = await Promise.all([
+      // 使用 getPosts 获取推荐帖子，支持分类筛选
+      forumApi.getPosts({
+        page,
+        pageSize,
+        sort: 'new'
+      }),
+      // 使用 getSpuList 获取推荐商品，支持分类筛选
+      spuApi.getSpuList({
+        deviceTypeId,
+        page,
+        size: pageSize,
+        sort: 'hot'
+      })
+    ]);
     
-    if (currentDeviceTypeId.value) {
-      params.categoryId = Number(currentDeviceTypeId.value);
-    }
+    const postItems: FeedItem[] = (postsResult?.list || []).map((item: PostListItem) => ({
+      id: item.id,
+      cover: item.images && item.images.length > 0 ? item.images[0] : '',
+      title: item.title || '',
+      userName: item.author?.name || '未知用户',
+      userAvatar: item.author?.avatar || '',
+      userId: String(item.author?.id || ''),
+      likeCount: item.likeCount || 0,
+      isLiked: item.isLiked || false,
+      isVideo: false,
+      itemType: 'post'
+    }));
     
-    const res = await tradeApi.getProductList(params);
-
-    if (res && res.list && Array.isArray(res.list)) {
-      const newGoods = res.list.map(transformProductToGoods);
-
-      if (isRefresh) {
-        goodsList.value = newGoods;
-      } else {
-        goodsList.value = [...goodsList.value, ...newGoods];
-      }
-
-      hasMore.value = res.hasMore;
-      if (hasMore.value) {
-        currentPage.value++;
-      }
+    const spuItems: FeedItem[] = (spusResult?.list || []).map((item: any) => ({
+      id: item.id,
+      cover: item.cover || '',
+      title: item.name || '',
+      price: item.priceRange?.min || item.priceRange?.max,
+      userName: '商品',
+      userAvatar: '',
+      userId: '',
+      memberCount: item.memberCount || 0,
+      itemType: 'product'
+    }));
+    
+    const allItems = [...postItems, ...spuItems];
+    
+    if (page === 1) {
+      feedList.value = allItems;
     } else {
-      hasMore.value = false;
+      feedList.value = [...feedList.value, ...allItems];
     }
+    
+    currentPage.value = page;
+    const postHasMore = postsResult?.hasMore ?? false;
+    const spuHasMore = spusResult?.hasMore ?? false;
+    hasMore.value = postHasMore || spuHasMore;
   } catch (error) {
-    logError('获取商品列表失败:', error);
-    if (isRefresh && goodsList.value.length === 0) {
-      goodsList.value = [];
+    logError('获取首页数据失败:', error);
+    if (page === 1) {
+      feedList.value = [];
     }
   } finally {
     loading.value = false;
@@ -244,14 +265,8 @@ const fetchGoodsList = async (isRefresh = false) => {
   }
 };
 
-watch(activeTab, (newTab) => {
-  if (newTab === 0) {
-    currentDeviceTypeId.value = undefined;
-  } else {
-    const category = categoryList.value[newTab];
-    currentDeviceTypeId.value = category?.id;
-  }
-  fetchGoodsList(true);
+watch(activeTab, () => {
+  fetchFeed(1);
 });
 
 onMounted(async () => {
@@ -271,7 +286,7 @@ onMounted(async () => {
     fetchBanners()
   ]);
   
-  fetchGoodsList(true);
+  fetchFeed(1);
 });
 
 const goSearch = () => {
@@ -286,13 +301,17 @@ const handleHotClick = (item: any) => {
   navigateTo(`/pages-sub/search/result?keyword=${encodeURIComponent(item.keyword)}`);
 };
 
-const goDetail = (item: any) => {
-  navigateTo(`/pages-sub/trade/product/detail?id=${item.id}`);
+const handleItemClick = (item: FeedItem) => {
+  if (item.itemType === 'post') {
+    uni.navigateTo({ url: `/pages-sub/community/post/detail?id=${item.id}` });
+  } else {
+    uni.navigateTo({ url: `/pages-sub/trade/product/detail?id=${item.id}` });
+  }
 };
 
-const goUser = (item: any) => {
-  if (item.sellerId) {
-    navigateTo(`/pages-sub/community/user/index?id=${item.sellerId}`);
+const goUser = (item: FeedItem) => {
+  if (item.userId) {
+    uni.navigateTo({ url: `/pages-sub/community/user/index?id=${item.userId}` });
   }
 };
 
@@ -303,9 +322,25 @@ const onBannerClick = ({ item, index }: { item: any; index: number }) => {
 };
 
 const loadMore = () => {
-  if (!initialLoading.value) {
-    fetchGoodsList(false);
+  if (!initialLoading.value && hasMore.value) {
+    fetchFeed(currentPage.value + 1);
   }
+};
+
+const onRefresh = async () => {
+  if (isRefreshing.value) return;
+
+  isRefreshing.value = true;
+
+  await Promise.all([
+    fetchHotKeywords(),
+    fetchCategories(),
+    fetchBanners()
+  ]);
+
+  await fetchFeed(1);
+
+  isRefreshing.value = false;
 };
 </script>
 
@@ -448,10 +483,10 @@ const loadMore = () => {
 
 .load-more {
   padding: $space-md 0;
-  
+
   :deep(.ui-divider) {
     color: $color-text-sub;
-    
+
     [data-theme="dark"] & {
       color: var(--color-text-sub, #A1A1AA);
     }

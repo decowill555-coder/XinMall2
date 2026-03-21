@@ -137,7 +137,8 @@ const goGoodsList = () => {
 };
 
 const goOrderList = (type?: string) => {
-  const url = type ? `/pages-sub/seller/order/list?type=${type}` : '/pages-sub/seller/order/list';
+  // 跳转到"我的订单"页面（买家订单列表）
+  const url = type ? `/pages-sub/order/list?type=${type}` : '/pages-sub/order/list';
   uni.navigateTo({ url });
 };
 
@@ -191,15 +192,20 @@ const goEdit = (item: any) => {
   .goods-list {
     display: inline-flex;
     gap: $space-sm;
-    
+
     .goods-item {
       width: 200rpx;
-      
+      flex-shrink: 0;
+      overflow: hidden;
+
       .goods-title {
         font-size: $font-size-sm;
         color: $color-text-main;
         @include text-ellipsis(1);
         margin-top: $space-xs;
+        white-space: normal;
+        word-break: break-all;
+        line-height: 1.3;
       }
       
       .goods-bottom {
