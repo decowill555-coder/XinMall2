@@ -123,7 +123,7 @@ public class SpuServiceImpl implements SpuService {
                 wrapper.orderByDesc(Spu::getPriceMin);
             }
         } else {
-            wrapper.orderByDesc(Spu::getCreatedAt);
+            wrapper.last("ORDER BY RAND()");
         }
 
         IPage<Spu> spuPage = spuMapper.selectPage(page, wrapper);

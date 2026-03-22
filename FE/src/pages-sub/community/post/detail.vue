@@ -179,7 +179,34 @@
                     </view>
                   </view>
                   
-                  <view v-if="comment.replies?.length" class="reply-section">
+                  <view v-if="comment.replyCount && comment.replyCount > 0" class="reply-toggle">
+                    <view 
+                      v-if="!comment.replies?.length" 
+                      class="more-replies"
+                      @click="expandReplies(comment)"
+                    >
+                      <text>展开{{ comment.replyCount }}条回复</text>
+                      <ui-icon name="arrow-down" :size="24" color="primary" />
+                    </view>
+                    <view 
+                      v-else-if="comment.replies?.length && !comment.isCollapsed" 
+                      class="collapse-replies"
+                      @click="collapseReplies(comment)"
+                    >
+                      <text>收起回复</text>
+                      <ui-icon name="arrow-up" :size="24" color="primary" />
+                    </view>
+                    <view 
+                      v-else-if="comment.isCollapsed" 
+                      class="more-replies"
+                      @click="expandReplies(comment)"
+                    >
+                      <text>展开{{ comment.replyCount }}条回复</text>
+                      <ui-icon name="arrow-down" :size="24" color="primary" />
+                    </view>
+                  </view>
+                  
+                  <view v-if="comment.replies?.length && !comment.isCollapsed" class="reply-section">
                     <view 
                       v-for="reply in comment.replies" 
                       :key="reply.id"
@@ -193,9 +220,9 @@
                       <view class="reply-body">
                         <view class="reply-header">
                           <text class="reply-author">{{ reply.author.name }}</text>
-                          <template v-if="reply.replyTo">
+                          <template v-if="reply.replyToId">
                             <text class="reply-arrow">回复</text>
-                            <text class="reply-target">@{{ reply.replyTo.authorName }}</text>
+                            <text class="reply-target">@{{ reply.replyTo?.authorName || reply.replyToUser?.name }}</text>
                           </template>
                         </view>
                         <text class="reply-content">{{ reply.content }}</text>
@@ -219,15 +246,6 @@
                           </view>
                         </view>
                       </view>
-                    </view>
-                    
-                    <view 
-                      v-if="comment.replyCount && comment.replyCount > (comment.replies?.length || 0)"
-                      class="more-replies"
-                      @click="loadMoreReplies(comment)"
-                    >
-                      <text>展开更多{{ comment.replyCount - (comment.replies?.length || 0) }}条回复</text>
-                      <ui-icon name="arrow-down" :size="24" color="primary" />
                     </view>
                   </view>
                 </view>
@@ -290,6 +308,7 @@ import { ref, computed, onMounted } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { useAuthStore } from '@/stores';
+import { useUserStore } from '@/stores/user';
 import { forumApi, type PostDetail, type CommentItem } from '@/api/community';
 import { collectionApi, CollectionType } from '@/api/collection';
 import { authApi } from '@/api/auth';
@@ -304,6 +323,7 @@ const { scrollHeight: baseScrollHeight, safeAreaBottom } = usePageLayout({
 const scrollHeight = computed(() => baseScrollHeight.value - 60);
 
 const authStore = useAuthStore();
+const userStore = useUserStore();
 
 const postId = ref('');
 const loading = ref(true);
@@ -449,6 +469,7 @@ const fetchComments = async (isRefresh = false) => {
         avatar: comment.author?.avatar || '',
         levelName: comment.author?.levelName || ''
       },
+      replyToId: comment.replyToId,
       replyTo: comment.replyToUser ? {
         id: String(comment.replyToUser.id || ''),
         authorName: comment.replyToUser.name || '',
@@ -479,7 +500,7 @@ const loadMoreComments = () => {
 const loadMoreReplies = async (comment: CommentItem) => {
   try {
     const res = await forumApi.getReplies(comment.id, 1, 20);
-    const replies = (res.data.list || res.data.records || []).map((reply: any) => ({
+    const replies = (res.list || res.records || []).map((reply: any) => ({
       ...reply,
       author: {
         id: String(reply.author?.id || ''),
@@ -487,6 +508,7 @@ const loadMoreReplies = async (comment: CommentItem) => {
         avatar: reply.author?.avatar || '',
         levelName: reply.author?.levelName || ''
       },
+      replyToId: reply.replyToId,
       replyTo: reply.replyToUser ? {
         id: String(reply.replyToUser.id || ''),
         authorName: reply.replyToUser.name || '',
@@ -499,6 +521,23 @@ const loadMoreReplies = async (comment: CommentItem) => {
     }
   } catch (error) {
     logError('获取回复失败:', error);
+  }
+};
+
+const collapseReplies = (comment: CommentItem) => {
+  const commentIndex = comments.value.findIndex(c => c.id === comment.id);
+  if (commentIndex > -1) {
+    comments.value[commentIndex].isCollapsed = true;
+  }
+};
+
+const expandReplies = async (comment: CommentItem) => {
+  const commentIndex = comments.value.findIndex(c => c.id === comment.id);
+  if (commentIndex > -1) {
+    comments.value[commentIndex].isCollapsed = false;
+    if (!comments.value[commentIndex].replies?.length) {
+      await loadMoreReplies(comment);
+    }
   }
 };
 
@@ -621,7 +660,13 @@ const submitComment = async () => {
     };
     
     if (replyTarget.value) {
-      params.replyToId = replyTarget.value.id;
+      if (replyParent.value) {
+        params.parentId = replyParent.value.id;
+        params.replyToId = replyTarget.value.id;
+        params.replyToUserId = replyTarget.value.author.id;
+      } else {
+        params.parentId = replyTarget.value.id;
+      }
     }
     
     const res = await forumApi.createComment(params);
@@ -633,21 +678,22 @@ const submitComment = async () => {
           comments.value[parentIndex].replies = [];
         }
         comments.value[parentIndex].replies?.push({
-          id: res.data.id,
+          id: String(res.id || res),
           content: commentText.value.trim(),
           images: [],
           author: {
             id: authStore.state.userId || '',
-            name: '我',
-            avatar: ''
+            name: userStore.userInfo?.nickname || '用户',
+            avatar: userStore.userInfo?.avatar || ''
           },
           likeCount: 0,
           isLiked: false,
-          replyTo: replyTarget.value ? {
-            id: replyTarget.value.id,
+          replyToId: replyTarget.value.id,
+          replyTo: {
+            id: replyTarget.value.author.id,
             authorName: replyTarget.value.author.name,
             content: replyTarget.value.content
-          } : undefined,
+          },
           createdAt: new Date().toISOString()
         });
         comments.value[parentIndex].replyCount = (comments.value[parentIndex].replyCount || 0) + 1;
@@ -659,34 +705,29 @@ const submitComment = async () => {
           comments.value[parentIndex].replies = [];
         }
         comments.value[parentIndex].replies?.unshift({
-          id: res.data.id,
+          id: String(res.id || res),
           content: commentText.value.trim(),
           images: [],
           author: {
             id: authStore.state.userId || '',
-            name: '我',
-            avatar: ''
+            name: userStore.userInfo?.nickname || '用户',
+            avatar: userStore.userInfo?.avatar || ''
           },
           likeCount: 0,
           isLiked: false,
-          replyTo: {
-            id: replyTarget.value.id,
-            authorName: replyTarget.value.author.name,
-            content: replyTarget.value.content
-          },
           createdAt: new Date().toISOString()
         });
         comments.value[parentIndex].replyCount = (comments.value[parentIndex].replyCount || 0) + 1;
       }
     } else {
       comments.value.unshift({
-        id: res.data.id,
+        id: String(res.id || res),
         content: commentText.value.trim(),
         images: [],
         author: {
           id: authStore.state.userId || '',
-          name: '我',
-          avatar: ''
+          name: userStore.userInfo?.nickname || '用户',
+          avatar: userStore.userInfo?.avatar || ''
         },
         likeCount: 0,
         isLiked: false,
@@ -1199,6 +1240,23 @@ const goTopic = (tag: string) => {
 }
 
 .more-replies {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+  padding: $space-sm 0;
+  
+  text {
+    font-size: $font-size-xs;
+    color: var(--color-primary, #FF6A00);
+  }
+}
+
+.reply-toggle {
+  margin-top: $space-sm;
+}
+
+.collapse-replies {
   display: flex;
   align-items: center;
   justify-content: center;

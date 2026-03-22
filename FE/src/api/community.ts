@@ -112,6 +112,7 @@ export interface CommentItem {
   author: PostAuthor;
   likeCount: number;
   isLiked: boolean;
+  replyToId?: string;
   replyTo?: {
     id: string;
     authorName: string;
@@ -119,6 +120,7 @@ export interface CommentItem {
   };
   replies?: CommentItem[];
   replyCount?: number;
+  isCollapsed?: boolean;
   createdAt: string;
 }
 
@@ -139,7 +141,9 @@ export interface CreateCommentParams {
   postId: string;
   content: string;
   images?: string[];
+  parentId?: string;
   replyToId?: string;
+  replyToUserId?: string;
 }
 
 export interface UserForumLevel {

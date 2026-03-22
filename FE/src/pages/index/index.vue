@@ -217,18 +217,14 @@ const fetchFeed = async (page: number = 1) => {
     const deviceTypeId = currentCategory?.id || undefined;
 
     const [postsResult, spusResult] = await Promise.all([
-      // 使用 getPosts 获取推荐帖子，支持分类筛选
       forumApi.getPosts({
         page,
-        pageSize,
-        sort: 'new'
+        pageSize
       }),
-      // 使用 getSpuList 获取推荐商品，支持分类筛选
       spuApi.getSpuList({
         deviceTypeId,
         page,
-        size: pageSize,
-        sort: 'hot'
+        size: pageSize
       })
     ]);
     

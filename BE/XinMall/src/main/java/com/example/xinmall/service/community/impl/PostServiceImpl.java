@@ -84,7 +84,7 @@ public class PostServiceImpl implements PostService {
                 } else if ("essence".equals(request.getSort())) {
                     wrapper.orderByDesc(Post::getIsEssence);
                 } else {
-                    wrapper.orderByDesc(Post::getCreatedAt);
+                    wrapper.last("ORDER BY RAND()");
                 }
 
                 postPage = postMapper.selectPage(page, wrapper);
