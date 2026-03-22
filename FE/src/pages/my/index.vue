@@ -120,6 +120,11 @@
                 </ui-text>
               </template>
             </ui-cell>
+            <ui-cell title="管理帖子" icon="file-text" is-link separated @click="goPostManage">
+              <template #right-icon>
+                <ui-text size="sm" color="sub">{{ postCount > 0 ? postCount + '篇' : '' }}</ui-text>
+              </template>
+            </ui-cell>
           </ui-card>
           
           <ui-card :glass="true" :shadow="false" radius="lg" padding="sm" class="menu-group">
@@ -143,6 +148,7 @@ import { onShow } from '@dcloudio/uni-app';
 import { usePageLayout } from '@/composables/usePageLayout';
 import { useUserStore, useAuthStore, useOrderStore } from '@/stores';
 import { authApi } from '@/api';
+import { forumApi } from '@/api/community';
 import { logError } from '@/utils/logger';
 
 const { safeAreaTop, headerExtraTop, headerHeight, scrollHeight } = usePageLayout({
@@ -177,13 +183,6 @@ const fetchOrderSummary = async () => {
   }
 };
 
-onShow(() => {
-  if (authStore.isAuthenticated) {
-    fetchUserInfo();
-    fetchOrderSummary();
-  }
-});
-
 const userInfo = computed(() => ({
   avatar: userStore.userInfo?.avatar || '/static/default-avatar.png',
   name: userStore.userInfo?.nickname || (authStore.isAuthenticated ? '用户' + (userStore.userInfo?.phone?.slice(-4) || '') : '未登录'),
@@ -194,6 +193,26 @@ const userInfo = computed(() => ({
   following: userStore.userInfo?.following || 0,
   likes: userStore.userInfo?.likes || 0
 }));
+
+const postCount = ref(0);
+
+const fetchPostCount = async () => {
+  if (!authStore.isAuthenticated) return;
+  try {
+    const result = await forumApi.getMyPosts(1, 1);
+    postCount.value = result.total || 0;
+  } catch (error) {
+    logError('获取帖子数量失败:', error);
+  }
+};
+
+onShow(() => {
+  if (authStore.isAuthenticated) {
+    fetchUserInfo();
+    fetchOrderSummary();
+    fetchPostCount();
+  }
+});
 
 // 后端状态名: PENDING_PAYMENT, PENDING_SHIPMENT, PENDING_RECEIPT, COMPLETED, REFUNDED
 // 前端显示: 待付款, 待发货, 待收货, 待评价, 退款/售后
@@ -309,6 +328,11 @@ const goWallet = () => {
 const goAuth = () => {
   if (!checkAuthAndRedirect()) return;
   uni.navigateTo({ url: '/pages-sub/auth/real-name/index' });
+};
+
+const goPostManage = () => {
+  if (!checkAuthAndRedirect()) return;
+  uni.navigateTo({ url: '/pages-sub/user/post-manage/index' });
 };
 
 const goHelp = () => {

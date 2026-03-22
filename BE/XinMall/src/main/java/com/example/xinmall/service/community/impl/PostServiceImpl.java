@@ -121,6 +121,10 @@ public class PostServiceImpl implements PostService {
             throw new BusinessException("请先登录");
         }
 
+        log.info("[帖子发布] 开始创建帖子: userId={}, title={}", userId, request.getTitle());
+        log.info("[帖子发布] 请求图片列表: {}", request.getImages());
+        log.info("[帖子发布] 请求标签列表: {}", request.getTags());
+
         Post post = new Post();
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
@@ -137,7 +141,13 @@ public class PostServiceImpl implements PostService {
         post.setStatus(1);
         post.setCreatedAt(LocalDateTime.now());
         post.setUpdatedAt(LocalDateTime.now());
+        
+        log.info("[帖子发布] Post对象images字段: {}", post.getImages());
+        
         postMapper.insert(post);
+        
+        log.info("[帖子发布] 帖子创建成功: postId={}", post.getId());
+        log.info("[帖子发布] 插入后Post对象images字段: {}", post.getImages());
 
         List<Long> matchedCommunityIds = findCommunitiesByTags(request.getTags());
         for (Long communityId : matchedCommunityIds) {
@@ -174,6 +184,54 @@ public class PostServiceImpl implements PostService {
 
         List<Community> communities = communityMapper.selectList(wrapper);
         return communities.stream().map(Community::getId).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void update(Long id, CreatePostRequest request) {
+        Long userId = getCurrentUserId();
+        if (userId == null) {
+            throw new BusinessException("请先登录");
+        }
+
+        Post post = postMapper.selectById(id);
+        if (post == null) {
+            throw new BusinessException("帖子不存在");
+        }
+
+        if (!post.getAuthorId().equals(userId)) {
+            throw new BusinessException("无权修改此帖子");
+        }
+
+        List<Long> oldCommunityIds = postCommunityMapper.selectCommunityIdsByPostId(id);
+        for (Long communityId : oldCommunityIds) {
+            communityMapper.update(null, new LambdaUpdateWrapper<Community>()
+                    .eq(Community::getId, communityId)
+                    .setSql("post_count = GREATEST(post_count - 1, 0)"));
+        }
+        postCommunityMapper.delete(new LambdaQueryWrapper<PostCommunity>()
+                .eq(PostCommunity::getPostId, id));
+
+        post.setTitle(request.getTitle());
+        post.setContent(request.getContent());
+        post.setSpuId(request.getSpuId());
+        post.setImages(request.getImages());
+        post.setTags(request.getTags());
+        post.setUpdatedAt(LocalDateTime.now());
+        postMapper.updateById(post);
+
+        List<Long> newCommunityIds = findCommunitiesByTags(request.getTags());
+        for (Long communityId : newCommunityIds) {
+            PostCommunity pc = new PostCommunity();
+            pc.setPostId(post.getId());
+            pc.setCommunityId(communityId);
+            pc.setCreatedAt(LocalDateTime.now());
+            postCommunityMapper.insert(pc);
+
+            communityMapper.update(null, new LambdaUpdateWrapper<Community>()
+                    .eq(Community::getId, communityId)
+                    .setSql("post_count = post_count + 1"));
+        }
     }
 
     @Override

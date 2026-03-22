@@ -93,7 +93,9 @@
         { "path": "theme/index", "style": { "navigationBarTitleText": "主题设置", "navigationStyle": "custom" } },
         { "path": "wallet/index", "style": { "navigationBarTitleText": "我的钱包", "navigationStyle": "custom" } },
         { "path": "profile/index", "style": { "navigationBarTitleText": "个人资料", "navigationStyle": "custom" } },
-        { "path": "follow/index", "style": { "navigationBarTitleText": "关注/粉丝", "navigationStyle": "custom" } }
+        { "path": "follow/index", "style": { "navigationBarTitleText": "关注/粉丝", "navigationStyle": "custom" } },
+        { "path": "post-manage/index", "style": { "navigationBarTitleText": "管理帖子", "navigationStyle": "custom" } },
+        { "path": "post-manage/edit", "style": { "navigationBarTitleText": "编辑帖子", "navigationStyle": "custom" } }
       ]
     },
     {

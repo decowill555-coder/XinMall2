@@ -10,8 +10,10 @@ import com.example.xinmall.service.community.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @Tag(name = "帖子管理", description = "帖子相关接口")
 @RestController
 @RequestMapping("/api/post")
@@ -35,7 +37,16 @@ public class PostController {
     @Operation(summary = "发布帖子")
     @PostMapping
     public Result<Long> create(@RequestBody CreatePostRequest request) {
+        log.info("[PostController] 收到发布帖子请求: title={}, images={}, tags={}", 
+                request.getTitle(), request.getImages(), request.getTags());
         return Result.success(postService.create(request));
+    }
+
+    @Operation(summary = "更新帖子")
+    @PutMapping("/{id}")
+    public Result<Void> update(@PathVariable Long id, @RequestBody CreatePostRequest request) {
+        postService.update(id, request);
+        return Result.success();
     }
 
     @Operation(summary = "删除帖子")

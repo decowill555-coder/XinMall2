@@ -249,6 +249,14 @@ export const forumApi = {
     });
   },
 
+  updatePost: (postId: string, params: CreatePostParams) => {
+    return http<{ success: boolean }>({
+      url: `/post/${postId}`,
+      method: 'PUT',
+      data: params
+    });
+  },
+
   likePost: (postId: string) => {
     return http<{ success: boolean; likeCount: number }>({
       url: `/post/${postId}/like`,

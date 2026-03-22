@@ -46,21 +46,27 @@
         <view class="image-section">
           <view class="section-header">
             <text class="section-title">添加图片</text>
-            <text class="image-count">{{ images.length }}/9</text>
+            <text class="image-count">{{ imageList.length }}/9</text>
           </view>
           
           <view class="image-grid">
             <view 
-              v-for="(img, index) in images" 
+              v-for="(img, index) in imageList" 
               :key="index"
               class="image-item"
             >
-              <image :src="img" class="preview-image" mode="aspectFill" />
+              <image :src="getImageUrl(img.url)" class="preview-image" mode="aspectFill" />
+              <view v-if="img.status === 'uploading'" class="uploading-overlay">
+                <view class="uploading-spinner"></view>
+              </view>
+              <view v-if="img.status === 'error'" class="error-overlay">
+                <text>上传失败</text>
+              </view>
               <view class="delete-btn" @click="removeImage(index)">
                 <ui-icon name="x" :size="24" color="white" />
               </view>
               <view 
-                v-if="index === 0" 
+                v-if="index === 0 && img.status === 'done'" 
                 class="cover-tag"
               >
                 <text>封面</text>
@@ -68,7 +74,7 @@
             </view>
             
             <view 
-              v-if="images.length < 9"
+              v-if="imageList.length < 9"
               class="add-image-btn"
               @click="chooseImage"
             >
@@ -264,6 +270,8 @@ import { usePageLayout } from '@/composables/usePageLayout';
 import { useNavigation } from '@/composables/useNavigation';
 import { useAuthStore } from '@/stores';
 import { forumApi } from '@/api/community';
+import { uploadApi } from '@/api/upload';
+import { getImageUrl } from '@/utils/http';
 import { logError } from '@/utils/logger';
 
 interface Topic {
@@ -280,6 +288,13 @@ interface Product {
   price: number;
 }
 
+interface ImageItem {
+  url: string;
+  status: 'uploading' | 'done' | 'error';
+  file?: string;
+  serverUrl?: string;
+}
+
 const { scrollHeight } = usePageLayout({
   hasSubNavbar: true,
   headerEstimatedHeight: 100
@@ -290,7 +305,7 @@ const authStore = useAuthStore();
 
 const title = ref('');
 const content = ref('');
-const images = ref<string[]>([]);
+const imageList = ref<ImageItem[]>([]);
 const selectedTopics = ref<Topic[]>([]);
 const topicKeyword = ref('');
 const showTopicSearch = ref(false);
@@ -450,19 +465,63 @@ const clearTopicKeyword = () => {
 };
 
 const chooseImage = () => {
-  const remaining = 9 - images.value.length;
+  const remaining = 9 - imageList.value.length;
+  console.log('[publish] chooseImage 开始, 剩余可选:', remaining);
+  
   uni.chooseImage({
     count: remaining,
     sizeType: ['compressed'],
     sourceType: ['album', 'camera'],
-    success: (res) => {
-      images.value = [...images.value, ...res.tempFilePaths];
+    success: async (res) => {
+      console.log('[publish] 选择的图片:', res.tempFilePaths);
+      
+      const startIndex = imageList.value.length;
+      const newImages: ImageItem[] = res.tempFilePaths.map(url => ({
+        url,
+        status: 'uploading' as const,
+        file: url
+      }));
+      imageList.value = [...imageList.value, ...newImages];
+      console.log('[publish] 添加新图片到列表, 当前数量:', imageList.value.length);
+
+      for (let i = 0; i < newImages.length; i++) {
+        const img = newImages[i];
+        const currentIndex = startIndex + i;
+
+        console.log(`[publish] 开始上传第 ${i + 1} 张图片:`, img.file);
+
+        try {
+          const uploadRes = await uploadApi.uploadPostImage(img.file!);
+          console.log(`[publish] 上传成功, 返回结果:`, uploadRes);
+          console.log(`[publish] uploadRes.fileUrl:`, uploadRes.fileUrl);
+          console.log(`[publish] uploadRes.fileKey:`, uploadRes.fileKey);
+
+          imageList.value.splice(currentIndex, 1, {
+            url: uploadRes.fileUrl,
+            status: 'done' as const,
+            serverUrl: uploadRes.fileUrl
+          });
+          
+          console.log(`[publish] 更新图片状态完成, 当前imageList:`, 
+            JSON.stringify(imageList.value.map(item => ({ url: item.url, status: item.status, serverUrl: item.serverUrl }))));
+        } catch (error) {
+          console.error(`[publish] 上传图片失败:`, error);
+          logError('上传图片失败:', error);
+          imageList.value.splice(currentIndex, 1, {
+            url: img.url,
+            status: 'error' as const
+          });
+        }
+      }
+      
+      console.log('[publish] 所有图片上传完成, 最终imageList:', 
+        JSON.stringify(imageList.value.map(item => ({ url: item.url, status: item.status, serverUrl: item.serverUrl }))));
     }
   });
 };
 
 const removeImage = (index: number) => {
-  images.value.splice(index, 1);
+  imageList.value.splice(index, 1);
 };
 
 const selectProduct = (product: Product) => {
@@ -475,6 +534,10 @@ const selectProduct = (product: Product) => {
 };
 
 const handlePublish = async () => {
+  console.log('[publish] handlePublish 开始');
+  console.log('[publish] canPublish:', canPublish.value);
+  console.log('[publish] imageList:', JSON.stringify(imageList.value.map(item => ({ url: item.url, status: item.status, serverUrl: item.serverUrl }))));
+  
   if (!canPublish.value) {
     if (title.value.trim().length < 5) {
       uni.showToast({ title: '标题至少5个字', icon: 'none' });
@@ -488,11 +551,21 @@ const handlePublish = async () => {
     uni.navigateTo({ url: '/pages-sub/user/login/index' });
     return;
   }
+
+  if (imageList.value.some(img => img.status === 'uploading')) {
+    uni.showToast({ title: '图片正在上传中...', icon: 'none' });
+    return;
+  }
   
   uni.showLoading({ title: '发布中...' });
   
   try {
-    const uploadedImages = await uploadImages();
+    const uploadedImages = imageList.value
+      .filter(img => img.status === 'done')
+      .map(img => img.serverUrl!);
+    
+    console.log('[publish] uploadedImages:', uploadedImages);
+    console.log('[publish] uploadedImages 长度:', uploadedImages.length);
     
     const params = {
       title: title.value.trim(),
@@ -503,6 +576,8 @@ const handlePublish = async () => {
         ? Number(relatedProduct.value.id) 
         : null
     };
+    
+    console.log('[publish] 发布参数:', JSON.stringify(params));
     
     await forumApi.createPost(params);
     
@@ -516,25 +591,6 @@ const handlePublish = async () => {
     uni.hideLoading();
     uni.showToast({ title: '发布失败，请重试', icon: 'none' });
   }
-};
-
-const uploadImages = async (): Promise<string[]> => {
-  if (images.value.length === 0) return [];
-  
-  const uploadedUrls: string[] = [];
-  for (const img of images.value) {
-    try {
-      const res = await new Promise<string>((resolve) => {
-        setTimeout(() => {
-          resolve(img);
-        }, 300);
-      });
-      uploadedUrls.push(res);
-    } catch (error) {
-      logError('上传图片失败:', error);
-    }
-  }
-  return uploadedUrls;
 };
 </script>
 
@@ -693,6 +749,40 @@ const uploadImages = async (): Promise<string[]> => {
     height: 100%;
   }
   
+  .uploading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    @include flex-center;
+  }
+  
+  .uploading-spinner {
+    width: 48rpx;
+    height: 48rpx;
+    border: 4rpx solid rgba(255, 255, 255, 0.3);
+    border-top-color: $color-white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  
+  .error-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    @include flex-center;
+    
+    text {
+      font-size: $font-size-xs;
+      color: $color-white;
+    }
+  }
+  
   .delete-btn {
     position: absolute;
     top: 8rpx;
@@ -717,6 +807,12 @@ const uploadImages = async (): Promise<string[]> => {
       font-size: $font-size-xs;
       color: $color-white;
     }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 

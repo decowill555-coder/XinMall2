@@ -52,16 +52,21 @@ public class UploadServiceImpl implements UploadService {
         Long userId = getCurrentUserId();
 
         String originalFilename = file.getOriginalFilename();
-        String extension = originalFilename != null && originalFilename.contains(".")
-                ? originalFilename.substring(originalFilename.lastIndexOf("."))
-                : "";
+        String extension = "";
+        
+        if (originalFilename != null && originalFilename.contains(".")) {
+            extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        } else if (file.getContentType() != null) {
+            extension = getExtensionFromMimeType(file.getContentType());
+        }
+        
         String newFilename = UUID.randomUUID().toString().replace("-", "") + extension;
 
         String datePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
         String relativePath = datePath + "/" + newFilename;
 
-        log.info("开始保存文件: originalFilename={}, size={}, contentType={}, scene={}",
-                originalFilename, file.getSize(), file.getContentType(), scene);
+        log.info("开始保存文件: originalFilename={}, size={}, contentType={}, scene={}, extension={}",
+                originalFilename, file.getSize(), file.getContentType(), scene, extension);
 
         try {
             Path directory = Paths.get(uploadPath, datePath);
@@ -104,6 +109,25 @@ public class UploadServiceImpl implements UploadService {
         uploadFileMapper.insert(uploadFile);
 
         return convertToVO(uploadFile);
+    }
+
+    private String getExtensionFromMimeType(String mimeType) {
+        if (mimeType == null) return ".jpg";
+        return switch (mimeType.toLowerCase()) {
+            case "image/jpeg", "image/jpg" -> ".jpg";
+            case "image/png" -> ".png";
+            case "image/gif" -> ".gif";
+            case "image/webp" -> ".webp";
+            case "image/bmp" -> ".bmp";
+            case "image/svg+xml" -> ".svg";
+            case "video/mp4" -> ".mp4";
+            case "video/webm" -> ".webm";
+            case "video/quicktime" -> ".mov";
+            case "audio/mpeg", "audio/mp3" -> ".mp3";
+            case "audio/wav" -> ".wav";
+            case "application/pdf" -> ".pdf";
+            default -> ".jpg";
+        };
     }
 
     @Override
