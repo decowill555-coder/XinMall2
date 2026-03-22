@@ -102,7 +102,7 @@ export interface CreatePostParams {
   content: string;
   images?: string[];
   tags?: string[];
-  forumId?: string;
+  spuId?: number;
 }
 
 export interface CommentItem {

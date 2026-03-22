@@ -4,8 +4,10 @@ import { apiLogger } from './logger';
 
 const DEBUG = process.env.NODE_ENV !== 'production';
 
+// 开发环境和生产环境都使用当前运行的服务器地址
+// 生产环境应该配置为实际的服务器地址
 export const BASE_URL = process.env.NODE_ENV === 'production'
-  ? 'https://api.xinmall.com/api'
+  ? '/api'  // 生产环境使用相对路径，由nginx代理
   : 'http://localhost:8080/api';
 const TIMEOUT = 10000;
 
@@ -191,14 +193,24 @@ export const http = <T>(options: RequestOptions): Promise<T> => {
 
 export const getImageUrl = (url: string | undefined | null): string => {
   if (!url) return '/static/default-avatar.png';
+  // 如果已经是完整URL，直接返回
   if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  // 如果是/uploads路径，使用当前服务器地址
   if (url.startsWith('/uploads')) {
-    return BASE_URL.replace('/api', '') + url;
+    // 开发环境使用localhost:8080，生产环境使用相对路径（由nginx代理）
+    if (process.env.NODE_ENV === 'production') {
+      return url;  // 生产环境直接返回相对路径
+    }
+    return 'http://localhost:8080' + url;  // 开发环境拼接完整URL
   }
   if (url.startsWith('/static')) return url;
   return url;
 };
 
 export const getServerBaseUrl = (): string => {
-  return BASE_URL.replace('/api', '');
+  // 开发环境返回完整URL，生产环境返回空（使用相对路径）
+  if (process.env.NODE_ENV === 'production') {
+    return '';
+  }
+  return 'http://localhost:8080';
 };

@@ -26,17 +26,29 @@
     </view>
     
     <view class="page-content" :style="{ paddingTop: headerHeight + 'px' }">
-      <scroll-view
-        scroll-y
-        class="goods-scroll"
-        :style="{ height: scrollHeight + 'px' }"
-        refresher-enabled
-        refresher-default-style="black"
-        :refresher-triggered="isRefreshing"
-        :refresher-threshold="80"
-        @refresherrefresh="onRefresh"
-        @scrolltolower="loadMore"
-      >
+      <view class="refresh-container">
+        <view 
+          class="refresh-indicator" 
+          :style="{ transform: `translateY(${refreshDistance}px) translateX(-50%)` }"
+        >
+          <view class="refresh-circle" :class="{ 'refreshing': isRefreshing }">
+            <UiIcon name="refresh" :size="20" />
+          </view>
+        </view>
+        <scroll-view
+          scroll-y
+          class="goods-scroll"
+          :style="{ height: scrollHeight + 'px' }"
+          refresher-enabled
+          refresher-default-style="none"
+          :refresher-triggered="isRefreshing"
+          :refresher-threshold="60"
+          :refresher-background="'transparent'"
+          @refresherpulling="onPulling"
+          @refresherrefresh="onRefresh"
+          @refresherrestore="onRestore"
+          @scrolltolower="loadMore"
+        >
         <view class="swiper">
           <ui-swiper
             :list="bannerList"
@@ -56,7 +68,8 @@
         <view class="load-more" v-if="feedList.length > 0">
           <ui-divider :text="loading ? '加载中...' : (hasMore ? '上拉加载更多' : '没有更多了')" />
         </view>
-      </scroll-view>
+        </scroll-view>
+      </view>
     </view>
     
     <TheTabbar current="index" />
@@ -96,6 +109,8 @@ const activeTab = ref(0);
 const loading = ref(false);
 const isRefreshing = ref(false);
 const initialLoading = ref(true);
+const refreshDistance = ref(0);
+const pullingDistance = ref(0);
 
 onShow(() => {
   keyword.value = '';
@@ -327,6 +342,18 @@ const loadMore = () => {
   }
 };
 
+const onPulling = (e: any) => {
+  pullingDistance.value = e.detail.dy || 0;
+  const maxDistance = 80;
+  const distance = Math.min(pullingDistance.value, maxDistance);
+  refreshDistance.value = distance * 0.6;
+};
+
+const onRestore = () => {
+  refreshDistance.value = 0;
+  pullingDistance.value = 0;
+};
+
 const onRefresh = async () => {
   if (isRefreshing.value) return;
 
@@ -439,6 +466,50 @@ const onRefresh = async () => {
   min-height: 100vh;
   position: relative;
   z-index: 1;
+}
+
+.refresh-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.refresh-indicator {
+  position: absolute;
+  top: -70rpx;
+  left: 50%;
+  z-index: 10;
+  transition: transform 0.1s ease-out;
+  pointer-events: none;
+}
+
+.refresh-circle {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background: $color-bg-card;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 2rpx solid $color-border-light;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-primary;
+  box-shadow: $shadow-md;
+  
+  [data-theme="dark"] & {
+    background: var(--glass-card-bg, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+    color: var(--color-primary, #D946EF);
+  }
+  
+  &.refreshing {
+    animation: spin 0.8s linear infinite;
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .goods-scroll {

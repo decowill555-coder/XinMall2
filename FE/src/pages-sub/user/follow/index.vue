@@ -89,12 +89,13 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
-import { useAppStore } from '@/stores';
+import { useAppStore, useUserStore } from '@/stores';
 import { authApi, type FollowUserItem } from '@/api/auth';
 import { formatTimeAgo } from '@/utils/date';
 import { logError } from '@/utils/logger';
 
 const appStore = useAppStore();
+const userStore = useUserStore();
 const safeAreaTop = computed(() => appStore.safeAreaInsets.top);
 const scrollHeight = ref(0);
 
@@ -197,11 +198,16 @@ const toggleFollow = async (user: FollowUserItem) => {
     if (user.isFollowed) {
       await authApi.unfollowUser(user.userId);
       user.isFollowed = false;
+      followingCount.value = Math.max(0, followingCount.value - 1);
       uni.showToast({ title: '已取消关注', icon: 'none' });
     } else {
       await authApi.followUser(user.userId);
       user.isFollowed = true;
+      followingCount.value += 1;
       uni.showToast({ title: '关注成功', icon: 'none' });
+    }
+    if (isOwnProfile.value) {
+      await userStore.refreshUserInfo();
     }
   } catch (error) {
     logError('关注操作失败:', error);

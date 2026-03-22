@@ -16,6 +16,7 @@ import com.example.xinmall.mapper.community.CommentMapper;
 import com.example.xinmall.mapper.community.PostMapper;
 import com.example.xinmall.mapper.user.UserMapper;
 import com.example.xinmall.service.community.CommentService;
+import com.example.xinmall.service.message.InteractionMessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -35,6 +36,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentLikeMapper commentLikeMapper;
     private final PostMapper postMapper;
     private final UserMapper userMapper;
+    private final InteractionMessageService interactionMessageService;
 
     @Override
     public IPage<CommentVO> getList(Long postId, Integer page, Integer pageSize) {
@@ -87,6 +89,18 @@ public class CommentServiceImpl implements CommentService {
             commentMapper.update(null, new LambdaUpdateWrapper<Comment>()
                     .eq(Comment::getId, request.getParentId())
                     .setSql("reply_count = reply_count + 1"));
+
+            // 发送回复通知
+            if (request.getReplyToUserId() != null) {
+                interactionMessageService.createCommentReplyNotification(
+                        request.getReplyToUserId(), userId, request.getPostId(), post.getTitle(),
+                        comment.getId(), request.getContent());
+            }
+        } else {
+            // 发送评论通知
+            interactionMessageService.createPostCommentNotification(
+                    post.getAuthorId(), userId, request.getPostId(), post.getTitle(),
+                    comment.getId(), request.getContent());
         }
 
         return comment.getId();

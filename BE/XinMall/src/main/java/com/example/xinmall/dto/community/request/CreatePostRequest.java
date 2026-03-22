@@ -14,8 +14,6 @@ public class CreatePostRequest implements Serializable {
 
     private String content;
 
-    private Long forumId;
-
     private Long spuId;
 
     private List<String> images;

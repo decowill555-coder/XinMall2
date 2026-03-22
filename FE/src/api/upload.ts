@@ -1,5 +1,8 @@
 import { http } from '@/utils/http';
 import { BASE_URL } from '@/utils/http';
+import { apiLogger } from '@/utils/logger';
+
+const DEBUG = process.env.NODE_ENV !== 'production';
 
 export type UploadScene = 'avatar' | 'product' | 'post' | 'comment' | 'evaluation' | 'other';
 
@@ -43,8 +46,14 @@ export const uploadApi = {
   uploadFile: (file: string, scene: UploadScene, options?: Omit<UploadOptions, 'scene'>): Promise<UploadResponse> => {
     return new Promise((resolve, reject) => {
       const token = uni.getStorageSync('token');
+      const uploadUrl = `${BASE_URL}/upload`;
+
+      if (DEBUG) {
+        apiLogger.log('[Upload] 开始上传', scene, uploadUrl, file);
+      }
+
       uni.uploadFile({
-        url: `${BASE_URL}/upload`,
+        url: uploadUrl,
         filePath: file,
         name: 'file',
         formData: { scene },
@@ -52,22 +61,40 @@ export const uploadApi = {
           Authorization: token ? `Bearer ${token}` : ''
         },
         success: (res) => {
+          if (DEBUG) {
+            apiLogger.log('[Upload] 响应', res.statusCode, res.data);
+          }
           if (res.statusCode === 200) {
             try {
               const data = JSON.parse(res.data);
               if (data.code === 200) {
+                if (DEBUG) {
+                  apiLogger.log('[Upload] 成功', data.data);
+                }
                 resolve(data.data);
               } else {
+                if (DEBUG) {
+                  apiLogger.error('[Upload] 业务错误', data.code, data.message);
+                }
                 reject(new Error(data.message || '上传失败'));
               }
-            } catch {
+            } catch (e) {
+              if (DEBUG) {
+                apiLogger.error('[Upload] 解析失败', e);
+              }
               reject(new Error('解析响应失败'));
             }
           } else {
+            if (DEBUG) {
+              apiLogger.error('[Upload] HTTP错误', res.statusCode);
+            }
             reject(new Error(`上传失败: ${res.statusCode}`));
           }
         },
         fail: (err) => {
+          if (DEBUG) {
+            apiLogger.error('[Upload] 请求失败', err);
+          }
           reject(new Error(err.errMsg || '上传失败'));
         }
       });
@@ -126,18 +153,24 @@ export const uploadApi = {
   ) => {
     return new Promise<UploadResponse>((resolve, reject) => {
       const uploadTask = uni.uploadFile({
-        url: `${http.defaults?.baseURL}/upload/file`,
+        url: `${BASE_URL}/upload`,
         filePath: file,
         name: 'file',
         formData: { scene },
+        header: {
+          Authorization: uni.getStorageSync('token') ? `Bearer ${uni.getStorageSync('token')}` : ''
+        },
         success: (res) => {
+          if (DEBUG) {
+            apiLogger.log('[Upload Progress] 响应', res.statusCode, res.data);
+          }
           if (res.statusCode === 200) {
             try {
               const data = JSON.parse(res.data);
-              if (data.code === 0) {
+              if (data.code === 200) {
                 resolve(data.data);
               } else {
-                reject(new Error(data.msg || '上传失败'));
+                reject(new Error(data.message || '上传失败'));
               }
             } catch {
               reject(new Error('解析响应失败'));
@@ -147,6 +180,9 @@ export const uploadApi = {
           }
         },
         fail: (err) => {
+          if (DEBUG) {
+            apiLogger.error('[Upload Progress] 失败', err);
+          }
           reject(new Error(err.errMsg || '上传失败'));
         }
       });
@@ -261,6 +297,22 @@ export const uploadApi = {
     const files = await uploadApi.chooseImage(count);
     return uploadApi.batchUpload(files, scene);
   }
+};
+
+export const getImageUrl = (relativePath: string | undefined | null): string => {
+  if (!relativePath) return '/static/default-avatar.png';
+  // 如果已经是完整URL，直接返回
+  if (relativePath.startsWith('http://') || relativePath.startsWith('https://')) return relativePath;
+  // 如果是/uploads路径，使用当前服务器地址
+  if (relativePath.startsWith('/uploads')) {
+    // 开发环境使用localhost:8080，生产环境使用相对路径（由nginx代理）
+    if (process.env.NODE_ENV === 'production') {
+      return relativePath;  // 生产环境直接返回相对路径
+    }
+    return 'http://localhost:8080' + relativePath;  // 开发环境拼接完整URL
+  }
+  if (relativePath.startsWith('/static')) return relativePath;
+  return relativePath;
 };
 
 export const UPLOAD_CONFIG = {

@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface UserService {
 
-    void register(RegisterRequest request);
+    LoginVO register(RegisterRequest request);
 
     LoginVO login(LoginRequest request);
 

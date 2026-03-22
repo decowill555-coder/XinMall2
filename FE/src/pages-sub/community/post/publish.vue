@@ -499,10 +499,9 @@ const handlePublish = async () => {
       content: content.value.trim(),
       images: uploadedImages,
       tags: selectedTopics.value.map(t => t.name),
-      forumId: selectedTopics.value[0]?.id,
-      isPublic: isPublic.value,
-      allowComment: allowComment.value,
-      relatedProductId: relatedProduct.value?.id
+      spuId: relatedProduct.value?.id 
+        ? Number(relatedProduct.value.id) 
+        : null
     };
     
     await forumApi.createPost(params);

@@ -349,7 +349,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, nextTick } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
-import { useAppStore } from '@/stores';
+import { useAppStore, useUserStore } from '@/stores';
 import { useNavigation } from '@/composables/useNavigation';
 import { forumApi, type PostListItem } from '@/api/community';
 import { authApi, type UserDetailInfo } from '@/api/auth';
@@ -387,6 +387,7 @@ interface Product {
 }
 
 const appStore = useAppStore();
+const userStore = useUserStore();
 const { smartBack, navigateTo } = useNavigation();
 
 const safeAreaTop = computed(() => appStore.safeAreaInsets.top);
@@ -690,6 +691,7 @@ const toggleFollow = async () => {
       userInfo.value.followersCount++;
       uni.showToast({ title: '关注成功', icon: 'none' });
     }
+    await userStore.refreshUserInfo();
   } catch (error) {
     logError('关注操作失败:', error);
     uni.showToast({

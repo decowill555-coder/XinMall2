@@ -93,9 +93,6 @@
                     height="280rpx" 
                     radius="12rpx 12rpx 0 0" 
                   />
-                  <view v-if="item.condition" class="condition-badge">
-                    {{ item.condition }}
-                  </view>
                 </view>
                 <view class="card-content">
                   <text class="card-title">{{ item.title }}</text>
@@ -108,7 +105,6 @@
                   </view>
                   <view class="card-footer">
                     <ui-price :value="item.price" :size="28" />
-                    <text class="card-sales">{{ item.sales }}人付款</text>
                   </view>
                 </view>
               </view>
@@ -435,19 +431,6 @@ const loadMore = async () => {
   
   .card-image {
     position: relative;
-    
-    .condition-badge {
-      position: absolute;
-      top: 8rpx;
-      left: 8rpx;
-      background: rgba(0, 0, 0, 0.6);
-      color: var(--color-text-white, #FFFFFF);
-      font-size: $font-size-xs;
-      padding: 4rpx 12rpx;
-      border-radius: $radius-sm;
-      backdrop-filter: blur($blur-sm);
-      -webkit-backdrop-filter: blur($blur-sm);
-    }
   }
   
   .card-content {
@@ -481,11 +464,6 @@ const loadMore = async () => {
       justify-content: space-between;
       align-items: center;
       margin-top: $space-sm;
-      
-      .card-sales {
-        font-size: $font-size-xs;
-        color: $color-text-disabled;
-      }
     }
   }
 }

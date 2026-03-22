@@ -12,8 +12,7 @@ public interface PostMapper extends BaseMapper<Post> {
 
     IPage<Post> selectFollowedPosts(Page<Post> page, @Param("userId") Long userId);
 
-    /**
-     * 统计用户帖子数
-     */
+    IPage<Post> selectPostsByCommunityId(Page<Post> page, @Param("communityId") Long communityId);
+
     Integer countByUserId(@Param("userId") Long userId);
 }

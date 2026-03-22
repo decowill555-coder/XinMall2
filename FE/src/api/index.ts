@@ -9,8 +9,9 @@ import { bannerApi } from './banner';
 import { messageApi } from './message';
 import { aftersaleApi } from './aftersale';
 import { collectionApi } from './collection';
+import { notificationApi, interactionApi } from './notification';
 
-export { authApi, spuApi, tradeApi, uploadApi, searchApi, forumApi, categoryApi, bannerApi, messageApi, aftersaleApi, collectionApi };
+export { authApi, spuApi, tradeApi, uploadApi, searchApi, forumApi, categoryApi, bannerApi, messageApi, aftersaleApi, collectionApi, notificationApi, interactionApi };
 
 export const api = {
   auth: authApi,
@@ -23,5 +24,7 @@ export const api = {
   banner: bannerApi,
   message: messageApi,
   aftersale: aftersaleApi,
-  collection: collectionApi
+  collection: collectionApi,
+  notification: notificationApi,
+  interaction: interactionApi
 };

@@ -22,6 +22,7 @@ export interface UserInfo{
   signature: string;
   isSeller: boolean;
   sellerId: string | null;
+  isVerified: boolean;
   followers: number;
   following: number;
   likes: number;

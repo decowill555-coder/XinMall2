@@ -186,10 +186,10 @@ onShow(() => {
 
 const userInfo = computed(() => ({
   avatar: userStore.userInfo?.avatar || '/static/default-avatar.png',
-  name: userStore.userInfo?.nickname || '未登录',
-  signature: userStore.userInfo?.signature || '点击登录',
-  isVerified: authStore.isAuthenticated,
-  isSeller: authStore.isSeller,
+  name: userStore.userInfo?.nickname || (authStore.isAuthenticated ? '用户' + (userStore.userInfo?.phone?.slice(-4) || '') : '未登录'),
+  signature: userStore.userInfo?.signature || (authStore.isAuthenticated ? '这个人很懒，什么都没写' : '点击登录'),
+  isVerified: userStore.userInfo?.isVerified || false,
+  isSeller: userStore.userInfo?.isSeller || false,
   followers: userStore.userInfo?.followers || 0,
   following: userStore.userInfo?.following || 0,
   likes: userStore.userInfo?.likes || 0
@@ -243,14 +243,14 @@ const checkAuthAndRedirect = () => {
 const goFollowers = () => {
   if (!checkAuthAndRedirect()) return;
   uni.navigateTo({
-    url: `/pages-sub/user/follow/index?id=${authStore.userId}&tab=followers`
+    url: `/pages-sub/user/follow/index?id=${authStore.userId}&tab=followers&followers=${userInfo.value.followers}&following=${userInfo.value.following}`
   });
 };
 
 const goFollowing = () => {
   if (!checkAuthAndRedirect()) return;
   uni.navigateTo({
-    url: `/pages-sub/user/follow/index?id=${authStore.userId}&tab=following`
+    url: `/pages-sub/user/follow/index?id=${authStore.userId}&tab=following&followers=${userInfo.value.followers}&following=${userInfo.value.following}`
   });
 };
 

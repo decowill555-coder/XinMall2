@@ -8,6 +8,7 @@ import com.example.xinmall.entity.system.enums.FileType;
 import com.example.xinmall.mapper.system.UploadFileMapper;
 import com.example.xinmall.service.system.UploadService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -20,10 +21,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UploadServiceImpl implements UploadService {
@@ -57,20 +60,40 @@ public class UploadServiceImpl implements UploadService {
         String datePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
         String relativePath = datePath + "/" + newFilename;
 
+        log.info("开始保存文件: originalFilename={}, size={}, contentType={}, scene={}",
+                originalFilename, file.getSize(), file.getContentType(), scene);
+
         try {
             Path directory = Paths.get(uploadPath, datePath);
-            Files.createDirectories(directory);
+            if (!Files.exists(directory)) {
+                Files.createDirectories(directory);
+                log.info("创建目录: {}", directory.toAbsolutePath());
+            }
 
             Path filePath = Paths.get(uploadPath, relativePath);
-            file.transferTo(filePath.toFile());
+            log.info("保存路径: uploadPath={}, relativePath={}, fullPath={}",
+                    uploadPath, relativePath, filePath.toAbsolutePath());
+
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            if (!Files.exists(filePath)) {
+                throw new BusinessException("文件上传失败：文件未成功保存到磁盘");
+            }
+            if (Files.size(filePath) == 0) {
+                Files.deleteIfExists(filePath);
+                throw new BusinessException("文件上传失败：文件大小为0");
+            }
+
+            log.info("文件保存成功: filePath={}, fileSize={}", filePath.toAbsolutePath(), Files.size(filePath));
         } catch (IOException e) {
+            log.error("文件上传失败: {}", e.getMessage(), e);
             throw new BusinessException("文件上传失败: " + e.getMessage());
         }
 
         UploadFile uploadFile = new UploadFile();
         uploadFile.setUserId(userId);
         uploadFile.setFileKey(relativePath);
-        uploadFile.setFileUrl(serverBaseUrl + urlPrefix + "/" + relativePath);
+        uploadFile.setFileUrl(urlPrefix + "/" + relativePath);
         uploadFile.setFileName(originalFilename);
         uploadFile.setFileSize(file.getSize());
         uploadFile.setFileType(determineFileType(file.getContentType()));
@@ -130,8 +153,9 @@ public class UploadServiceImpl implements UploadService {
 
     private Long getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new BusinessException("用户未登录");
+        if (authentication == null || !authentication.isAuthenticated()
+                || "anonymousUser".equals(authentication.getPrincipal())) {
+            return null; // 匿名用户返回null
         }
         return Long.parseLong(authentication.getName());
     }

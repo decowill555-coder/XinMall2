@@ -96,6 +96,7 @@ import { usePageLayout } from '@/composables/usePageLayout';
 import { useNavigation } from '@/composables/useNavigation';
 import { tradeApi } from '@/api';
 import { uploadApi } from '@/api/upload';
+import { getImageUrl } from '@/utils/http';
 import { logError } from '@/utils/logger';
 
 const { safeAreaBottom, scrollHeight } = usePageLayout({
@@ -177,6 +178,9 @@ const goCategorySelect = () => {
 
 // 处理图片上传
 const handleAfterRead = async (urls: string[]) => {
+  console.log('[handleAfterRead] 收到图片:', urls);
+
+  const startIndex = imageList.value.length;
   const newImages: ImageItem[] = urls.map(url => ({
     url,
     status: 'uploading' as const,
@@ -186,26 +190,35 @@ const handleAfterRead = async (urls: string[]) => {
 
   for (let i = 0; i < newImages.length; i++) {
     const img = newImages[i];
-    const currentIndex = imageList.value.findIndex(item => item === img);
-    if (currentIndex === -1) continue;
+    const currentIndex = startIndex + i;
+
+    console.log(`[handleAfterRead] 开始上传第 ${i + 1} 张图片:`, img.file);
 
     try {
       const uploadRes = await uploadApi.uploadProductImage(img.file!);
-      imageList.value[currentIndex] = {
+      console.log(`[handleAfterRead] 上传成功:`, uploadRes);
+
+      imageList.value.splice(currentIndex, 1, {
         url: uploadRes.fileUrl,
         status: 'done' as const
-      };
+      });
     } catch (error) {
+      console.error(`[handleAfterRead] 上传失败:`, error);
       logError('图片上传失败:', error);
-      imageList.value[currentIndex] = {
+      imageList.value.splice(currentIndex, 1, {
         url: img.url,
         status: 'error' as const
-      };
+      });
       uni.showToast({ title: '图片上传失败', icon: 'none' });
     }
   }
 
-  goodsInfo.value.images = imageList.value.map(img => img.url);
+  // 更新images数组，只保存上传成功的相对路径
+  goodsInfo.value.images = imageList.value
+    .filter(img => img.status === 'done')
+    .map(img => img.url);
+
+  console.log('[handleAfterRead] 最终images:', goodsInfo.value.images);
 };
 
 // 处理图片删除

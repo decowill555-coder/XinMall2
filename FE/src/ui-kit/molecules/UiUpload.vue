@@ -2,14 +2,14 @@
   <view class="ui-upload">
     <view class="upload-grid">
       <!-- 1. 已上传图片预览 -->
-      <view 
-        v-for="(item, index) in fileList" 
-        :key="index" 
+      <view
+        v-for="(item, index) in fileList"
+        :key="index"
         class="upload-item"
       >
-        <image 
-          class="preview-img" 
-          :src="item.url" 
+        <image
+          class="preview-img"
+          :src="getImageUrl(item.url)"
           mode="aspectFill"
           @click="onPreview(index)"
         />
@@ -37,6 +37,8 @@
 </template>
 
 <script setup lang="ts">
+import { getImageUrl } from '@/utils/http';
+
 interface FileItem {
   url: string;
   status?: 'ready' | 'uploading' | 'done' | 'error';
@@ -71,7 +73,7 @@ const onRemove = (index: number) => {
 };
 
 const onPreview = (index: number) => {
-  const urls = props.fileList.map(item => item.url);
+  const urls = props.fileList.map(item => getImageUrl(item.url));
   uni.previewImage({
     current: urls[index],
     urls: urls

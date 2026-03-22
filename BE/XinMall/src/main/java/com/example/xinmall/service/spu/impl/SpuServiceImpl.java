@@ -375,8 +375,7 @@ public class SpuServiceImpl implements SpuService {
         LambdaQueryWrapper<Spu> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Spu::getStatus, 1)
                 .eq(deviceTypeId != null, Spu::getCategoryId, deviceTypeId)
-                .orderByDesc(Spu::getMemberCount)
-                .last("LIMIT " + (limit != null ? limit : 10));
+                .last("ORDER BY RAND() LIMIT " + (limit != null ? limit : 10));
 
         List<Spu> spuList = spuMapper.selectList(wrapper);
         return spuList.stream().map(this::convertToListVO).collect(Collectors.toList());

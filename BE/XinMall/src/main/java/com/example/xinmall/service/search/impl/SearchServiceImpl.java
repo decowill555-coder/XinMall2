@@ -86,8 +86,7 @@ public class SearchServiceImpl implements SearchService {
         
         LambdaQueryWrapper<Spu> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Spu::getStatus, 1)
-                .orderByDesc(Spu::getViewCount)
-                .last("LIMIT " + actualLimit);
+                .last("ORDER BY RAND() LIMIT " + actualLimit);
         
         List<Spu> spuList = spuMapper.selectList(wrapper);
         
@@ -349,8 +348,7 @@ public class SearchServiceImpl implements SearchService {
         
         LambdaQueryWrapper<Spu> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Spu::getStatus, 1)
-                .orderByDesc(Spu::getMemberCount)
-                .last("LIMIT " + actualLimit);
+                .last("ORDER BY RAND() LIMIT " + actualLimit);
         
         List<Spu> spuList = spuMapper.selectList(wrapper);
         
@@ -368,8 +366,7 @@ public class SearchServiceImpl implements SearchService {
         
         LambdaQueryWrapper<Community> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Community::getStatus, 1)
-                .orderByDesc(Community::getMemberCount)
-                .last("LIMIT " + actualLimit);
+                .last("ORDER BY RAND() LIMIT " + actualLimit);
         
         List<Community> communityList = communityMapper.selectList(wrapper);
         
@@ -387,8 +384,7 @@ public class SearchServiceImpl implements SearchService {
         
         LambdaQueryWrapper<Spu> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Spu::getStatus, 1)
-                .orderByDesc(Spu::getViewCount)
-                .last("LIMIT " + actualLimit);
+                .last("ORDER BY RAND() LIMIT " + actualLimit);
         
         List<Spu> spuList = spuMapper.selectList(wrapper);
         

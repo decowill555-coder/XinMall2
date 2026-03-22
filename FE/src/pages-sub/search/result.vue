@@ -93,7 +93,6 @@
               <view class="waterfall-card">
                 <view class="card-image">
                   <ui-image :src="item.cover" width="100%" height="280rpx" radius="12rpx 12rpx 0 0" />
-                  <view v-if="item.condition" class="condition-badge">{{ item.condition }}</view>
                 </view>
                 <view class="card-content">
                   <text class="card-title">{{ item.title }}</text>
@@ -102,7 +101,6 @@
                   </view>
                   <view class="card-footer">
                     <ui-price :value="item.price" :size="28" />
-                    <text class="card-sales">{{ item.sales }}人付款</text>
                   </view>
                 </view>
               </view>
@@ -692,16 +690,6 @@ const goDeviceCommunity = () => {
 
   .card-image {
     position: relative;
-    .condition-badge {
-      position: absolute;
-      top: 8rpx;
-      left: 8rpx;
-      background: rgba(0, 0, 0, 0.6);
-      color: #FFF;
-      font-size: $font-size-xs;
-      padding: 4rpx 12rpx;
-      border-radius: $radius-sm;
-    }
   }
 
   .card-content {
@@ -710,7 +698,6 @@ const goDeviceCommunity = () => {
     .card-tags { display: flex; flex-wrap: wrap; gap: 8rpx; margin-top: $space-xs; }
     .card-tag { font-size: $font-size-xs; color: var(--color-primary, #FF6A00); background: var(--color-primary-glass, rgba(255, 106, 0, 0.08)); padding: 4rpx 10rpx; border-radius: $radius-xs; }
     .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: $space-sm; }
-    .card-sales { font-size: $font-size-xs; color: $color-text-disabled; }
   }
 }
 

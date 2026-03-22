@@ -15,6 +15,13 @@
         ORDER BY p.created_at DESC
     </select>
 
+    <select id="selectPostsByCommunityId" resultMap="PostResultMap">
+        SELECT p.* FROM post p
+        INNER JOIN post_community pc ON p.id = pc.post_id
+        WHERE pc.community_id = #{communityId} AND p.status = 1
+        ORDER BY p.created_at DESC
+    </select>
+
     <select id="countByUserId" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM post
         WHERE author_id = #{userId} AND status = 1

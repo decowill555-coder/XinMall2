@@ -38,6 +38,7 @@ import com.example.xinmall.entity.trade.enums.GoodsStatus;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.xinmall.service.user.UserService;
+import com.example.xinmall.service.message.InteractionMessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -70,12 +71,13 @@ public class UserServiceImpl implements UserService {
     private final PostMapper postMapper;
     private final PostLikeMapper postLikeMapper;
     private final ObjectMapper objectMapper;
+    private final InteractionMessageService interactionMessageService;
 
     private static final long USER_CACHE_EXPIRE = 1800;
 
     @Override
     @Transactional
-    public void register(RegisterRequest request) {
+    public LoginVO register(RegisterRequest request) {
         User existUser = userMapper.selectOne(
                 new LambdaQueryWrapper<User>().eq(User::getPhone, request.getPhone())
         );
@@ -99,6 +101,19 @@ public class UserServiceImpl implements UserService {
         profile.setCreatedAt(LocalDateTime.now());
         profile.setUpdatedAt(LocalDateTime.now());
         userProfileMapper.insert(profile);
+
+        String token = jwtUtils.generateToken(user.getId(), user.getPhone());
+        String refreshToken = jwtUtils.generateToken(user.getId(), user.getPhone());
+
+        UserVO userVO = convertToUserVO(user);
+
+        LoginVO loginVO = new LoginVO();
+        loginVO.setToken(token);
+        loginVO.setRefreshToken(refreshToken);
+        loginVO.setExpiresIn(86400000L);
+        loginVO.setUser(userVO);
+
+        return loginVO;
     }
 
     @Override
@@ -166,6 +181,15 @@ public class UserServiceImpl implements UserService {
         } else {
             userVO.setIsSeller(false);
             userVO.setSellerId(null);
+        }
+
+        UserProfile profile = userProfileMapper.selectOne(
+                new LambdaQueryWrapper<UserProfile>().eq(UserProfile::getUserId, user.getId())
+        );
+        if (profile != null) {
+            userVO.setIsVerified(profile.getRealNameStatus() == AuthStatus.AUTHENTICATED);
+        } else {
+            userVO.setIsVerified(false);
         }
 
         userVO.setLikes(0);
@@ -517,6 +541,11 @@ public class UserServiceImpl implements UserService {
         userFollow.setFollowedId(followedId);
         userFollow.setCreatedAt(LocalDateTime.now());
         userFollowMapper.insert(userFollow);
+
+        interactionMessageService.createFollowNotification(followedId, userId);
+
+        cacheService.delete(RedisKey.getUserInfoKey(userId));
+        cacheService.delete(RedisKey.getUserInfoKey(followedId));
     }
 
     @Override

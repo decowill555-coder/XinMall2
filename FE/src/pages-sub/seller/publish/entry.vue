@@ -8,15 +8,15 @@
         <ui-form-item label="商品图片" required>
           <view class="image-upload">
             <view class="image-grid">
-              <view 
-                v-for="(img, index) in imageList" 
-                :key="index" 
+              <view
+                v-for="(img, index) in imageList"
+                :key="index"
                 class="image-item"
                 @click="showImageActions(index)"
               >
-                <image 
-                  class="preview-image" 
-                  :src="img.url" 
+                <image
+                  class="preview-image"
+                  :src="getImageUrl(img.url)"
                   mode="aspectFill"
                 />
                 <view class="delete-btn" @click.stop="removeImage(index)">
@@ -151,6 +151,7 @@ import { usePageLayout } from '@/composables/usePageLayout';
 import { useNavigation } from '@/composables/useNavigation';
 import { tradeApi } from '@/api';
 import { uploadApi } from '@/api/upload';
+import { getImageUrl } from '@/utils/http';
 import { logError } from '@/utils/logger';
 
 const { safeAreaBottom } = usePageLayout({
@@ -244,6 +245,9 @@ const chooseImage = async () => {
     sizeType: ['compressed'],
     sourceType: ['album', 'camera'],
     success: async (res) => {
+      console.log('[chooseImage] 选择的图片:', res.tempFilePaths);
+
+      const startIndex = imageList.value.length;
       const newImages: ImageItem[] = res.tempFilePaths.map(url => ({
         url,
         status: 'uploading' as const,
@@ -253,26 +257,38 @@ const chooseImage = async () => {
 
       for (let i = 0; i < newImages.length; i++) {
         const img = newImages[i];
-        const currentIndex = imageList.value.findIndex(item => item === img);
-        if (currentIndex === -1) continue;
+        const currentIndex = startIndex + i;
+
+        console.log(`[chooseImage] 开始上传第 ${i + 1} 张图片:`, img.file);
 
         try {
           const uploadRes = await uploadApi.uploadProductImage(img.file!);
-          imageList.value[currentIndex] = {
+          console.log(`[chooseImage] 上传成功:`, uploadRes);
+          console.log(`[chooseImage] 上传成功 - fileUrl:`, uploadRes.fileUrl);
+          console.log(`[chooseImage] 上传成功 - fileKey:`, uploadRes.fileKey);
+
+          imageList.value.splice(currentIndex, 1, {
             url: uploadRes.fileUrl,
             status: 'done' as const
-          };
+          });
         } catch (error) {
+          console.error(`[chooseImage] 上传失败:`, error);
           logError('图片上传失败:', error);
-          imageList.value[currentIndex] = {
+          imageList.value.splice(currentIndex, 1, {
             url: img.url,
             status: 'error' as const
-          };
+          });
           uni.showToast({ title: '图片上传失败', icon: 'none' });
         }
       }
 
-      form.images = imageList.value.map(img => img.url);
+      // 更新images数组，只保存上传成功的相对路径
+      form.images = imageList.value
+        .filter(img => img.status === 'done')
+        .map(img => img.url);
+
+      console.log('[chooseImage] 最终images:', form.images);
+      console.log('[chooseImage] imageList状态:', JSON.stringify(imageList.value.map(i => ({ url: i.url, status: i.status }))));
     }
   });
 };
@@ -317,7 +333,7 @@ const handleAction = (action: string) => {
 };
 
 const previewImage = (index: number) => {
-  const urls = imageList.value.map(img => img.url);
+  const urls = imageList.value.map(img => getImageUrl(img.url));
   uni.previewImage({
     current: urls[index],
     urls: urls
@@ -420,15 +436,25 @@ const publish = async () => {
       images: form.images
     };
 
+    console.log('[publish] ========== 开始发布商品 ==========');
+    console.log('[publish] form.images:', form.images);
+    console.log('[publish] submitData:', JSON.stringify(submitData, null, 2));
+    console.log('[publish] submitData.images:', submitData.images);
+
     if (isEdit.value && editProductId.value) {
       // 编辑模式：更新商品
+      console.log('[publish] 编辑模式，更新商品ID:', editProductId.value);
       await tradeApi.updateProduct(String(editProductId.value), submitData);
       uni.showToast({ title: '商品更新成功', icon: 'success' });
     } else {
       // 发布模式：创建商品
-      await tradeApi.createProduct(submitData);
+      console.log('[publish] 发布模式，创建新商品');
+      const result = await tradeApi.createProduct(submitData);
+      console.log('[publish] 创建商品成功，返回ID:', result);
       uni.showToast({ title: '发布成功', icon: 'success' });
     }
+
+    console.log('[publish] ========== 商品发布完成 ==========');
 
     setTimeout(() => {
       smartBack();

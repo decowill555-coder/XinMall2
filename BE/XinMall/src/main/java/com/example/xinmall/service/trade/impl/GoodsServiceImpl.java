@@ -50,6 +50,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class GoodsServiceImpl implements GoodsService {
 
@@ -98,6 +101,9 @@ public class GoodsServiceImpl implements GoodsService {
     @Transactional
     public Long publish(GoodsPublishRequest request) {
         Long userId = getCurrentUserId();
+        
+        log.info("[商品发布] 开始发布商品: userId={}, title={}, images={}", 
+                userId, request.getTitle(), request.getImages());
 
         Goods goods = new Goods();
         goods.setTitle(request.getTitle());
@@ -106,8 +112,11 @@ public class GoodsServiceImpl implements GoodsService {
         goods.setCategoryId(request.getCategoryId());
         goods.setDescription(request.getDescription());
         try {
-            goods.setImages(objectMapper.writeValueAsString(request.getImages()));
+            String imagesJson = objectMapper.writeValueAsString(request.getImages());
+            goods.setImages(imagesJson);
+            log.info("[商品发布] 图片JSON序列化成功: {}", imagesJson);
         } catch (JacksonException e) {
+            log.error("[商品发布] 图片JSON序列化失败: {}", e.getMessage());
             throw new BusinessException("图片数据格式错误");
         }
         goods.setPrice(request.getPrice());
@@ -121,11 +130,12 @@ public class GoodsServiceImpl implements GoodsService {
         goods.setStock(request.getStock() != null ? request.getStock() : 1);
         goods.setViewCount(0);
         goods.setLikeCount(0);
-        goods.setStatus(GoodsStatus.AUDITING);
+        goods.setStatus(GoodsStatus.ON_SHELF);
         goods.setCreatedAt(LocalDateTime.now());
         goods.setUpdatedAt(LocalDateTime.now());
 
         goodsMapper.insert(goods);
+        log.info("[商品发布] 商品发布成功: goodsId={}, images={}", goods.getId(), goods.getImages());
         return goods.getId();
     }
 
@@ -169,7 +179,7 @@ public class GoodsServiceImpl implements GoodsService {
         } else if ("time".equals(request.getSortBy())) {
             wrapper.orderByDesc(Goods::getCreatedAt);
         } else {
-            wrapper.orderByDesc(Goods::getViewCount);
+            wrapper.last("ORDER BY RAND()");
         }
 
         Page<Goods> result = goodsMapper.selectPage(page, wrapper);
@@ -182,6 +192,8 @@ public class GoodsServiceImpl implements GoodsService {
         if (goods == null) {
             throw new BusinessException("商品不存在");
         }
+        
+        log.info("[商品详情] 查询商品: goodsId={}, images字段值={}", id, goods.getImages());
 
         GoodsDetailVO vo = new GoodsDetailVO();
         BeanUtils.copyProperties(goods, vo);
@@ -190,7 +202,9 @@ public class GoodsServiceImpl implements GoodsService {
             try {
                 List<String> images = objectMapper.readValue(goods.getImages(), new TypeReference<List<String>>() {});
                 vo.setImages(images);
+                log.info("[商品详情] 图片解析成功: images={}", images);
             } catch (JacksonException e) {
+                log.error("[商品详情] 图片JSON解析失败: {}", e.getMessage());
                 vo.setImages(List.of());
             }
         }

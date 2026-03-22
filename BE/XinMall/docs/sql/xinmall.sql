@@ -11,7 +11,7 @@
  Target Server Version : 80044 (8.0.44)
  File Encoding         : 65001
 
- Date: 20/03/2026 18:13:18
+ Date: 22/03/2026 16:49:29
 */
 
 SET NAMES utf8mb4;
@@ -169,10 +169,6 @@ CREATE TABLE `banner`  (
 -- ----------------------------
 -- Records of banner
 -- ----------------------------
-INSERT INTO `banner` VALUES (1, '/uploads/banners/banner1.jpg', '新品首发', '/pages-sub/trade/product/list?tag=new', 1, 1, '2026-03-16 14:00:35', '2026-03-17 17:45:26');
-INSERT INTO `banner` VALUES (2, '/uploads/banners/banner2.jpg', '限时特惠', '/pages-sub/trade/product/list?tag=sale', 2, 1, '2026-03-16 14:00:35', '2026-03-17 17:45:26');
-INSERT INTO `banner` VALUES (3, '/uploads/banners/banner3.jpg', '品牌专区', '/pages-sub/search/category', 3, 1, '2026-03-16 14:00:35', '2026-03-17 17:45:26');
-INSERT INTO `banner` VALUES (4, '/uploads/banners/banner4.jpg', '二手好物', '/pages-sub/trade/product/list', 4, 1, '2026-03-16 14:00:35', '2026-03-17 17:45:26');
 INSERT INTO `banner` VALUES (9, '/uploads/banners/banner1.jpg', 'iPhone 16 Pro New Arrival', '/goods/1', 1, 1, '2026-03-16 17:47:11', '2026-03-16 17:47:11');
 INSERT INTO `banner` VALUES (10, '/uploads/banners/banner2.jpg', 'MacBook Pro M3 Series', '/goods?category=2', 2, 1, '2026-03-16 17:47:11', '2026-03-16 17:47:11');
 INSERT INTO `banner` VALUES (11, '/uploads/banners/banner3.jpg', 'Camera Special Sale', '/goods?category=3', 3, 1, '2026-03-16 17:47:11', '2026-03-16 17:47:11');
@@ -300,7 +296,7 @@ CREATE TABLE `category`  (
   `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_parent_id`(`parent_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '设备分类表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 59 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '设备分类表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of category
@@ -432,7 +428,7 @@ CREATE TABLE `comment`  (
   INDEX `idx_author_id`(`author_id` ASC) USING BTREE,
   INDEX `idx_parent_id`(`parent_id` ASC) USING BTREE,
   INDEX `idx_status`(`status` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '评论表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 38 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '评论表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of comment
@@ -465,6 +461,14 @@ INSERT INTO `comment` VALUES (25, 1, '原色钛金属最好看，低调又有质
 INSERT INTO `comment` VALUES (26, 1, '同意，原色确实好看', 2, 23, 23, 4, NULL, 15, 0, 1, '2026-03-10 19:50:09', '2026-03-18 19:50:09');
 INSERT INTO `comment` VALUES (27, 5, 'haoa', 1, NULL, NULL, NULL, NULL, 0, 0, 1, '2026-03-19 00:42:25', '2026-03-19 00:42:25');
 INSERT INTO `comment` VALUES (28, 8, '这是一条测试评论', 1, NULL, NULL, NULL, NULL, 0, 0, 1, '2026-03-19 16:11:32', '2026-03-19 16:11:32');
+INSERT INTO `comment` VALUES (29, 3, 'duid', 1, NULL, NULL, NULL, NULL, 0, 0, 1, '2026-03-21 14:48:50', '2026-03-21 14:48:50');
+INSERT INTO `comment` VALUES (30, 9, '好耶', 1, NULL, NULL, NULL, NULL, 0, 0, 1, '2026-03-21 15:08:49', '2026-03-21 15:08:49');
+INSERT INTO `comment` VALUES (31, 9, '好耶', 1, NULL, NULL, NULL, NULL, 0, 0, 1, '2026-03-21 15:08:51', '2026-03-21 15:08:51');
+INSERT INTO `comment` VALUES (32, 9, '好耶', 1, NULL, NULL, NULL, NULL, 0, 1, 1, '2026-03-21 15:09:10', '2026-03-21 15:49:55');
+INSERT INTO `comment` VALUES (33, 9, '不对', 1, NULL, NULL, NULL, NULL, 0, 0, 1, '2026-03-21 15:49:46', '2026-03-21 15:49:46');
+INSERT INTO `comment` VALUES (34, 9, '对的', 1, 32, NULL, 1, NULL, 0, 0, 1, '2026-03-21 15:49:56', '2026-03-21 15:49:56');
+INSERT INTO `comment` VALUES (35, 9, '不对', 1, NULL, NULL, NULL, NULL, 0, 0, 1, '2026-03-21 15:50:11', '2026-03-21 15:50:11');
+INSERT INTO `comment` VALUES (36, 9, '就是这个', 1, NULL, NULL, NULL, NULL, 0, 0, 1, '2026-03-21 15:57:28', '2026-03-21 15:57:28');
 
 -- ----------------------------
 -- Table structure for comment_like
@@ -478,7 +482,7 @@ CREATE TABLE `comment_like`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_comment_user`(`comment_id` ASC, `user_id` ASC) USING BTREE,
   INDEX `idx_user_id`(`user_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '评论点赞表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '评论点赞表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of comment_like
@@ -518,7 +522,7 @@ CREATE TABLE `community`  (
   INDEX `idx_model_id`(`model_id` ASC) USING BTREE,
   INDEX `idx_creator_id`(`creator_id` ASC) USING BTREE,
   INDEX `idx_status`(`status` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '社区表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '社区表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of community
@@ -547,7 +551,7 @@ CREATE TABLE `community_member`  (
   UNIQUE INDEX `uk_community_user`(`community_id` ASC, `user_id` ASC) USING BTREE,
   INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
   INDEX `idx_community_id`(`community_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '社区成员表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '社区成员表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of community_member
@@ -591,7 +595,7 @@ CREATE TABLE `conversation`  (
 -- ----------------------------
 -- Records of conversation
 -- ----------------------------
-INSERT INTO `conversation` VALUES (1, 1, 2, '{\"totalAmount\":7999.00,\"orderNo\":\"ORD202603150001\",\"quantity\":1,\"orderId\":1,\"message\":\"买家已确认收货，交易完成\",\"status\":\"COMPLETED\",\"timestamp\":1773934337240}', 4, '2026-03-19 23:32:17', 0, 0, 0, 0, '2026-03-14 09:00:00', '2026-03-19 23:32:17');
+INSERT INTO `conversation` VALUES (1, 1, 2, '{\"totalAmount\":7999.00,\"orderNo\":\"ORD202603150001\",\"quantity\":1,\"orderId\":1,\"message\":\"买家已确认收货，交易完成\",\"status\":\"COMPLETED\",\"timestamp\":1773934337240}', 4, '2026-03-19 23:32:17', 0, 0, 0, 0, '2026-03-14 09:00:00', '2026-03-21 12:04:40');
 INSERT INTO `conversation` VALUES (2, 1, 3, 'http://localhost:8080/uploads/2026/03/15/91ec7047f2544f0cb55454e7168d2400.jpg', 2, '2026-03-15 16:52:16', 0, 0, 0, 0, '2026-03-13 14:00:00', '2026-03-15 21:42:24');
 INSERT INTO `conversation` VALUES (3, 1, 5, 'http://localhost:8080/uploads/2026/03/17/2f6784c83fcd42d6a3ee3bdb6ff30510.jpg', 2, '2026-03-17 18:17:10', 0, 1, 0, 0, '2026-03-10 11:00:00', '2026-03-19 19:29:51');
 INSERT INTO `conversation` VALUES (4, 2, 1, '{\"totalAmount\":7999.00,\"orderNo\":\"ORD202603150001\",\"quantity\":1,\"orderId\":1,\"message\":\"买家已确认收货，交易完成\",\"status\":\"COMPLETED\",\"timestamp\":1773934337240}', 4, '2026-03-19 23:32:17', 3, 0, 0, 0, '2026-03-14 09:00:00', '2026-03-19 23:32:17');
@@ -601,8 +605,8 @@ INSERT INTO `conversation` VALUES (7, 3, 2, '请问这个相机还在吗？', 1,
 INSERT INTO `conversation` VALUES (8, 3, 5, '好的，已收到款项', 1, '2026-03-13 11:30:00', 0, 0, 0, 0, '2026-03-11 09:00:00', '2026-03-13 11:30:00');
 INSERT INTO `conversation` VALUES (9, 5, 1, 'http://localhost:8080/uploads/2026/03/17/2f6784c83fcd42d6a3ee3bdb6ff30510.jpg', 2, '2026-03-17 18:17:10', 7, 0, 0, 0, '2026-03-10 11:00:00', '2026-03-17 18:17:10');
 INSERT INTO `conversation` VALUES (10, 5, 3, '好的，已收到款项', 1, '2026-03-13 11:30:00', 2, 0, 0, 0, '2026-03-11 09:00:00', '2026-03-13 11:30:00');
-INSERT INTO `conversation` VALUES (11, 1, 8, 'hello', 1, '2026-03-19 11:28:35', 0, 0, 0, 0, '2026-03-19 11:20:18', '2026-03-19 11:28:43');
-INSERT INTO `conversation` VALUES (12, 8, 1, 'hello', 1, '2026-03-19 11:28:35', 1, 0, 0, 0, '2026-03-19 11:20:18', '2026-03-19 11:28:34');
+INSERT INTO `conversation` VALUES (11, 1, 8, '{\"totalAmount\":22999.00,\"orderNo\":\"XM20260321003552271013\",\"quantity\":1,\"orderId\":12,\"message\":\"买家已付款，请尽快发货\",\"status\":\"PENDING_SHIPMENT\",\"timestamp\":1774024556791}', 4, '2026-03-21 00:35:57', 0, 0, 0, 0, '2026-03-19 11:20:18', '2026-03-21 00:35:57');
+INSERT INTO `conversation` VALUES (12, 8, 1, '{\"totalAmount\":22999.00,\"orderNo\":\"XM20260321003552271013\",\"quantity\":1,\"orderId\":12,\"message\":\"买家已付款，请尽快发货\",\"status\":\"PENDING_SHIPMENT\",\"timestamp\":1774024556791}', 4, '2026-03-21 00:35:57', 3, 0, 0, 0, '2026-03-19 11:20:18', '2026-03-21 00:35:57');
 INSERT INTO `conversation` VALUES (13, 4, 1, '{\"totalAmount\":6999.00,\"orderNo\":\"XM20260320004818224670\",\"quantity\":1,\"orderId\":11,\"message\":\"买家已下单，请等待付款\",\"status\":\"PENDING_PAYMENT\",\"timestamp\":1773938898419}', 4, '2026-03-20 00:48:18', 0, 0, 0, 0, '2026-03-20 00:48:18', '2026-03-20 13:25:48');
 INSERT INTO `conversation` VALUES (14, 1, 4, '{\"totalAmount\":6999.00,\"orderNo\":\"XM20260320004818224670\",\"quantity\":1,\"orderId\":11,\"message\":\"买家已下单，请等待付款\",\"status\":\"PENDING_PAYMENT\",\"timestamp\":1773938898419}', 4, '2026-03-20 00:48:18', 0, 0, 0, 0, '2026-03-20 00:48:18', '2026-03-20 18:08:30');
 
@@ -689,130 +693,76 @@ CREATE TABLE `goods`  (
   INDEX `idx_model_id`(`model_id` ASC) USING BTREE,
   INDEX `idx_category_id`(`category_id` ASC) USING BTREE,
   INDEX `idx_status`(`status` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 120 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '商品表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 123 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '商品表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of goods
 -- ----------------------------
-INSERT INTO `goods` VALUES (1, 'iPhone 15 Pro Max 256GB 原色钛金属', 1, 1, 1, '99新，无划痕，配件齐全，电池健康度100%，支持验机', '[\"https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600\", \"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600\", \"https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=600\"]', 8999.00, 9999.00, 100, '全新未拆封', 1, 1, 1, '北京', 'express', 0, 1, 0, 309, 34, 2, NULL, '2026-03-16 14:00:35', '2026-03-20 18:07:32', 0);
-INSERT INTO `goods` VALUES (2, '华为 Mate 60 Pro+ 512GB 雅丹黑', 2, 4, 1, '95新，轻微使用痕迹，卫星通话功能正常，配件齐全', '[\"https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600\", \"https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=600\"]', 7999.00, 8999.00, 95, '轻微划痕', 1, 0, 1, '上海', 'express', 0, 1, 0, 529, 74, 2, NULL, '2026-03-16 14:00:35', '2026-03-20 18:07:37', 0);
-INSERT INTO `goods` VALUES (3, '小米14 Ultra 16+512 黑色', 3, 6, 1, '99新，全套配件，徕卡影像系统，摄影爱好者必入', '[\"https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600\", \"https://images.unsplash.com/photo-1606986628253-e0e8e2e5c6e3?w=600\"]', 5999.00, 6499.00, 100, '几乎全新', 1, 1, 0, '深圳', 'local', 1, 0, 0, 470, 20, 2, NULL, '2026-03-16 14:00:35', '2026-03-19 18:30:34', 0);
-INSERT INTO `goods` VALUES (4, 'MacBook Pro 14 M3 Pro 18+512 深空黑', 1, 12, 2, '95新，电池健康度98%，屏幕完美无划痕，开发利器', '[\"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600\", \"https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=600\"]', 14999.00, 16999.00, 95, '正常使用痕迹', 1, 1, 1, '北京', 'express', 1, 1, 0, 290, 34, 1, NULL, '2026-03-16 14:00:35', '2026-03-19 18:42:21', 0);
-INSERT INTO `goods` VALUES (5, 'iPad Pro 12.9 M2 256GB 深空灰', 2, 16, 5, '99新，带Apple Pencil二代，屏幕完美，生产力工具', '[\"https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600\", \"https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?w=600\"]', 7999.00, 9299.00, 100, '屏幕完美', 1, 1, 1, '广州', 'express', 1, 1, 0, 230, 85, 1, NULL, '2026-03-16 14:00:35', '2026-03-18 21:39:16', 0);
-INSERT INTO `goods` VALUES (6, 'AirPods Pro 2 主动降噪版', 3, 18, 4, '全新未拆封，H2芯片，降噪效果一流', '[\"https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=600\", \"https://images.unsplash.com/photo-1608156639585-b3a7a6e98dcb?w=600\"]', 1699.00, 1899.00, 100, '全新', 1, 1, 0, '深圳', 'express', 0, 0, 0, 298, 48, 2, NULL, '2026-03-16 14:00:35', '2026-03-19 16:24:42', 0);
-INSERT INTO `goods` VALUES (7, '索尼 WH-1000XM5 头戴式降噪耳机 黑色', 1, 19, 4, '95新，降噪效果极佳，30小时续航，音质出众', '[\"https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600\", \"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600\"]', 1999.00, 2499.00, 95, '耳罩轻微磨损', 1, 0, 1, '上海', 'express', 1, 1, 0, 67, 20, 1, NULL, '2026-03-16 14:00:35', '2026-03-18 21:39:16', 0);
-INSERT INTO `goods` VALUES (8, '三星 Galaxy S24 Ultra 12+256 钛灰色', 2, 9, 1, '99新，国行在保，S Pen书写流畅，2亿像素相机', '[\"https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=600\", \"https://images.unsplash.com/photo-1585060544812-6b45742d762f?w=600\"]', 8499.00, 9699.00, 100, '完美成色', 1, 1, 1, '北京', 'express', 0, 1, 0, 290, 40, 2, NULL, '2026-03-16 14:00:35', '2026-03-18 21:39:16', 0);
-INSERT INTO `goods` VALUES (9, 'MacBook Air M3 15inch 16+512 Starlight Brand New', 6, 60, 2, 'Brand new sealed M3 chip', '[\"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600\", \"https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=600\"]', 10999.00, 11999.00, 100, 'Brand new sealed', 1, 1, 0, 'Beijing', 'express', 1, 0, 0, 0, 0, 1, NULL, '2026-03-16 17:29:15', '2026-03-18 21:39:16', 0);
-INSERT INTO `goods` VALUES (10, 'MacBook Pro 16 M3 Max 36+1TB Space Black 95pct New', 7, 61, 2, '95pct new top specs video editing', '[\"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600\", \"https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=600\"]', 25999.00, 29999.00, 95, 'Minor usage marks', 1, 1, 1, 'Shanghai', 'express', 1, 1, 0, 0, 0, 1, NULL, '2026-03-16 17:29:15', '2026-03-18 21:39:16', 0);
-INSERT INTO `goods` VALUES (11, 'ThinkPad X1 Carbon Gen12 32+512 Black Like New', 8, 62, 2, '99pct new business flagship', '[\"/uploads/goods/thinkpadx1_1.jpg\"]', 12999.00, 14999.00, 100, 'Like new', 1, 1, 1, 'Shenzhen', 'local', 1, 1, 0, 0, 0, 1, NULL, '2026-03-16 17:29:15', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (12, 'Dell XPS 15 i7 32+1TB RTX4060 95pct New', 9, 63, 2, '95pct new OLED screen creative tool', '[\"/uploads/goods/dellxps15_1.jpg\"]', 11999.00, 13999.00, 95, 'Minor usage marks', 1, 0, 1, 'Hangzhou', 'express', 1, 1, 0, 0, 0, 1, NULL, '2026-03-16 17:29:15', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (13, 'ROG Zephyrus G16 2024 i9 32+1TB RTX4080', 10, 64, 2, 'Brand new gaming and creation', '[\"/uploads/goods/rogzephyrus16_1.jpg\"]', 18999.00, 20999.00, 100, 'Brand new sealed', 1, 1, 0, 'Chengdu', 'express', 0, 0, 0, 0, 0, 1, NULL, '2026-03-16 17:29:15', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (14, 'Sony A7M4 Full Frame Mirrorless Brand New', 6, 65, 3, 'Brand new 33MP 4K60p', '[\"/uploads/goods/sonya7m4_1.jpg\"]', 15999.00, 16999.00, 100, 'Brand new sealed', 1, 1, 0, 'Shanghai', 'express', 0, 0, 0, 0, 0, 1, NULL, '2026-03-16 17:29:55', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (15, 'Canon R6 Mark II Full Frame Like New', 7, 66, 3, '99pct new shutter count under 5000', '[\"/uploads/goods/canonr6mk2_1.jpg\"]', 15999.00, 17999.00, 100, 'Like new', 1, 1, 1, 'Beijing', 'local', 1, 1, 0, 0, 0, 1, NULL, '2026-03-16 17:29:55', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (16, 'Nikon Z8 Full Frame 95pct New', 8, 67, 3, '95pct new 45MP professional body', '[\"/uploads/goods/nikonz8_1.jpg\"]', 22999.00, 25999.00, 95, 'Minor usage marks', 1, 1, 1, 'Guangzhou', 'express', 1, 1, 0, 0, 0, 1, NULL, '2026-03-16 17:29:55', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (17, 'Fujifilm X-T5 APS-C Silver Like New', 9, 68, 3, '99pct new retro design film simulation', '[\"/uploads/goods/fujixt5_1.jpg\"]', 12999.00, 13999.00, 100, 'Like new', 1, 1, 0, 'Shenzhen', 'local', 1, 0, 0, 0, 0, 1, NULL, '2026-03-16 17:29:55', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (18, 'DJI Osmo Pocket 3 Brand New', 10, 69, 3, 'Brand new vlog tool rotating screen', '[\"/uploads/goods/osmopocket3_1.jpg\"]', 3999.00, 4499.00, 100, 'Brand new sealed', 1, 1, 0, 'Hangzhou', 'express', 0, 0, 0, 0, 0, 1, NULL, '2026-03-16 17:29:55', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (19, 'MacBook Air M3 15inch 16+512 Starlight Brand New', 6, 60, 2, 'Brand new sealed M3 chip amazing battery', '[\"/uploads/goods/macbookairm3_1.jpg\"]', 10999.00, 11999.00, 100, 'Brand new sealed', 1, 1, 0, 'Beijing', 'express', 1, 0, 0, 0, 0, 1, NULL, '2026-03-16 17:40:10', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (20, 'MacBook Pro 16 M3 Max 36+1TB Space Black 95pct', 7, 61, 2, '95pct new top specs video editing beast', '[\"/uploads/goods/macbookpro16_1.jpg\"]', 25999.00, 29999.00, 95, 'Minor usage marks', 1, 1, 1, 'Shanghai', 'express', 1, 1, 0, 0, 0, 1, NULL, '2026-03-16 17:40:10', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (21, 'ThinkPad X1 Carbon Gen12 32+512 Black Like New', 8, 62, 2, '99pct new business flagship best keyboard', '[\"/uploads/goods/thinkpadx1_1.jpg\"]', 12999.00, 14999.00, 100, 'Like new', 1, 1, 1, 'Shenzhen', 'local', 1, 1, 0, 0, 0, 1, NULL, '2026-03-16 17:40:10', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (22, 'Dell XPS 15 i7 32+1TB RTX4060 95pct New', 9, 63, 2, '95pct new OLED screen creative tool', '[\"/uploads/goods/dellxps15_1.jpg\"]', 11999.00, 13999.00, 95, 'Minor usage marks', 1, 0, 1, 'Hangzhou', 'express', 1, 1, 0, 0, 0, 1, NULL, '2026-03-16 17:40:25', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (23, 'ROG Zephyrus G16 2024 i9 32+1TB RTX4080', 10, 64, 2, 'Brand new gaming and creation', '[\"/uploads/goods/rogzephyrus16_1.jpg\"]', 18999.00, 20999.00, 100, 'Brand new sealed', 1, 1, 0, 'Chengdu', 'express', 0, 0, 0, 0, 0, 1, NULL, '2026-03-16 17:40:25', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (24, 'Sony A7M4 Full Frame Mirrorless Brand New', 6, 65, 3, 'Brand new 33MP 4K60p', '[\"/uploads/goods/sonya7m4_1.jpg\"]', 15999.00, 16999.00, 100, 'Brand new sealed', 1, 1, 0, 'Shanghai', 'express', 0, 0, 0, 0, 0, 1, NULL, '2026-03-16 17:40:44', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (25, 'Canon R6 Mark II Full Frame Like New', 7, 66, 3, '99pct new shutter count under 5000 video beast', '[\"/uploads/goods/canonr6mk2_1.jpg\"]', 15999.00, 17999.00, 100, 'Like new', 1, 1, 1, 'Beijing', 'local', 1, 1, 0, 0, 0, 1, NULL, '2026-03-16 17:40:44', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (26, 'Nikon Z8 Full Frame 95pct New', 8, 67, 3, '95pct new 45MP professional body', '[\"/uploads/goods/nikonz8_1.jpg\"]', 22999.00, 25999.00, 95, 'Minor usage marks', 1, 1, 1, 'Guangzhou', 'express', 1, 1, 0, 0, 0, 1, NULL, '2026-03-16 17:40:44', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (27, 'Fujifilm X-T5 APS-C Silver Like New', 9, 68, 3, '99pct new retro design film simulation', '[\"/uploads/goods/fujixt5_1.jpg\"]', 12999.00, 13999.00, 100, 'Like new', 1, 1, 0, 'Shenzhen', 'local', 1, 0, 0, 0, 0, 1, NULL, '2026-03-16 17:40:44', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (28, 'DJI Osmo Pocket 3 Brand New', 10, 69, 3, 'Brand new vlog tool rotating screen', '[\"/uploads/goods/osmopocket3_1.jpg\"]', 3999.00, 4499.00, 100, 'Brand new sealed', 1, 1, 0, 'Hangzhou', 'express', 0, 0, 0, 0, 0, 1, NULL, '2026-03-16 17:40:44', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (29, 'AirPods Max Silver 95pct New', 6, 70, 4, '95pct new active noise cancellation spatial audio', '[\"/uploads/goods/airpodsmax_1.jpg\"]', 3299.00, 4399.00, 95, 'Minor usage marks', 1, 1, 1, 'Beijing', 'express', 1, 1, 0, 0, 0, 1, NULL, '2026-03-16 17:41:07', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (30, 'Bose QC Ultra Headphone Black Brand New', 7, 71, 4, 'Brand new top noise cancellation comfortable', '[\"/uploads/goods/boseqcultra_1.jpg\"]', 2999.00, 3499.00, 100, 'Brand new sealed', 1, 1, 0, 'Shanghai', 'express', 0, 0, 0, 0, 0, 1, NULL, '2026-03-16 17:41:07', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (31, 'Sennheiser HD800S Open-back Like New', 8, 72, 4, '99pct new flagship HIFI wide soundstage', '[\"/uploads/goods/hd800s_1.jpg\"]', 8999.00, 10999.00, 100, 'Like new', 1, 1, 1, 'Chengdu', 'express', 1, 1, 0, 0, 0, 1, NULL, '2026-03-16 17:41:07', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (32, 'Beyerdynamic DT1990 PRO Monitor Headphone', 9, 73, 4, 'Brand new professional monitor studio choice', '[\"/uploads/goods/dt1990pro_1.jpg\"]', 3999.00, 4499.00, 100, 'Brand new sealed', 1, 1, 0, 'Guangzhou', 'express', 1, 0, 0, 0, 0, 1, NULL, '2026-03-16 17:41:07', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (33, 'Focal Utopia Flagship Headphone 95pct New', 10, 74, 4, '95pct new beryllium driver top HIFI experience', '[\"/uploads/goods/utopia_1.jpg\"]', 28999.00, 35999.00, 95, 'Minor usage marks', 1, 1, 1, 'Shenzhen', 'express', 1, 1, 0, 0, 0, 1, NULL, '2026-03-16 17:41:07', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (34, 'iPad Pro 13 M4 256GB WiFi Silver Brand New', 6, 75, 5, 'Brand new M4 chip OLED screen', '[\"/uploads/goods/ipadpro13_1.jpg\"]', 11499.00, 12499.00, 100, 'Brand new sealed', 1, 1, 0, 'Beijing', 1, 0, 0, 1, NULL, '2026-03-16 17:41:23', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (35, 'Samsung Galaxy Tab S9 Ultra 256GB Gray Like New', 7, 76, 5, '99pct new 14.6 inch S Pen included', '[\"/uploads/goods/tabs9ultra_1.jpg\"]', 7999.00, 8999.00, 100, 'Like new', 1, 1, 1, 'Shanghai', 1, 0, 0, 1, NULL, '2026-03-16 17:41:23', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (36, 'Huawei MatePad Pro 13.2 12+256 WiFi 95pct New', 8, 77, 5, '95pct new StarLight ring design NearLink', '[\"/uploads/goods/matepadpro13_1.jpg\"]', 4999.00, 5799.00, 95, 'Minor usage marks', 1, 0, 1, 'Hangzhou', 1, 0, 0, 1, NULL, '2026-03-16 17:41:23', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (37, 'Xiaomi Pad 6 Max 14 12+256 WiFi Like New', 9, 78, 5, '99pct new 14 inch great for movies and work', '[\"/uploads/goods/mipad6max_1.jpg\"]', 2999.00, 3499.00, 100, 'Like new', 1, 1, 0, 'Chengdu', 1, 0, 0, 1, NULL, '2026-03-16 17:41:23', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (38, 'Apple Watch Ultra 2 Titanium 49mm Brand New', 6, 79, 6, 'Brand new outdoor sports durable limit', '[\"/uploads/goods/applewatchultra2_1.jpg\"]', 5999.00, 6499.00, 100, 'Brand new sealed', 1, 1, 0, 'Beijing', 1, 0, 0, 1, NULL, '2026-03-16 17:41:39', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (39, 'Apple Watch Series 9 GPS 45mm Aluminum 95pct New', 7, 80, 6, '95pct new health monitoring daily match', '[\"/uploads/goods/applewatch9_1.jpg\"]', 2799.00, 3499.00, 95, 'Minor usage marks', 1, 1, 1, 'Shanghai', 1, 0, 0, 1, NULL, '2026-03-16 17:41:39', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (40, 'Garmin Fenix 7X Solar 95pct New', 8, 81, 6, '95pct new outdoor professional solar charging', '[\"/uploads/goods/garminfenix7x_1.jpg\"]', 5499.00, 6499.00, 95, 'Minor usage marks', 1, 1, 1, 'Guangzhou', 1, 0, 0, 1, NULL, '2026-03-16 17:41:39', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (41, 'Huawei Watch Ultimate Titanium 99pct New', 9, 82, 6, '99pct new deep dive 100m business sports', '[\"/uploads/goods/huaweiwatchultimate_1.jpg\"]', 4999.00, 5999.00, 100, 'Like new', 1, 1, 0, 'Shenzhen', 1, 0, 0, 1, NULL, '2026-03-16 17:41:39', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (42, 'Samsung Galaxy Watch 6 Classic 47mm 95pct New', 10, 83, 6, '95pct new rotating bezel classic design', '[\"/uploads/goods/galaxywatch6_1.jpg\"]', 2299.00, 2799.00, 95, 'Minor usage marks', 1, 1, 1, 'Hangzhou', 1, 0, 0, 1, NULL, '2026-03-16 17:41:39', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (43, 'iPhone 16 Pro Max 256GB Desert Titanium 99pct New', 7, 47, 1, '99pct new no scratches original battery', '[]', 8999.00, 9999.00, 100, 'Like new', 1, 1, 1, 'Shanghai', 1, 1, 0, 1, NULL, '2026-03-16 17:57:49', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (44, 'iPhone 16 Pro Max 512GB Black Titanium 95pct New', 8, 47, 1, '95pct new minor wear on frame', '[]', 8499.00, 10999.00, 95, 'Minor usage marks', 1, 1, 1, 'Guangzhou', 1, 0, 0, 1, NULL, '2026-03-16 17:57:49', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (45, 'iPhone 16 Pro 128GB Natural Titanium Brand New', 9, 48, 1, 'Brand new sealed in box', '[]', 7499.00, 7999.00, 100, 'Brand new sealed', 1, 1, 0, 'Shenzhen', 1, 0, 0, 1, NULL, '2026-03-16 17:57:49', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (46, 'iPhone 16 Pro 256GB Desert Titanium 95pct New', 10, 48, 1, '95pct new always in case', '[]', 7299.00, 8999.00, 95, 'Minor usage marks', 1, 1, 1, 'Hangzhou', 1, 0, 0, 1, NULL, '2026-03-16 17:57:49', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (47, 'iPhone 15 Pro Max 256GB Natural Titanium Like New', 11, 49, 1, '99pct new battery health 100', '[]', 6999.00, 9999.00, 100, 'Like new', 1, 1, 1, 'Chengdu', 1, 2, 0, 1, NULL, '2026-03-16 17:57:49', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (48, 'iPhone 15 Pro Max 512GB Blue Titanium 95pct New', 12, 49, 1, '95pct new comes with original box', '[]', 6499.00, 10999.00, 95, 'Minor usage marks', 1, 1, 1, 'Wuhan', 1, 1, 0, 1, NULL, '2026-03-16 17:57:49', '2026-03-20 18:11:30', 0);
-INSERT INTO `goods` VALUES (49, 'iPhone 15 128GB Pink 99pct New', 6, 50, 1, '99pct new perfect condition', '[]', 4499.00, 5999.00, 100, 'Like new', 1, 1, 0, 'Nanjing', 1, 0, 0, 1, NULL, '2026-03-16 17:57:49', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (50, 'iPhone 15 256GB Blue 95pct New', 7, 50, 1, '95pct new with charger', '[]', 4299.00, 6899.00, 95, 'Minor usage marks', 1, 1, 1, 'Tianjin', 1, 0, 0, 1, NULL, '2026-03-16 17:57:49', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (51, 'iPhone 14 Pro Max 256GB Deep Purple 95pct New', 8, 51, 1, '95pct new dynamic island works perfect', '[]', 5499.00, 8999.00, 95, 'Minor usage marks', 1, 1, 1, 'Xian', 1, 0, 0, 1, NULL, '2026-03-16 17:57:49', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (52, 'iPhone 14 128GB Blue 99pct New', 9, 52, 1, '99pct new great value', '[]', 3299.00, 4999.00, 100, 'Like new', 1, 1, 0, 'Qingdao', 1, 0, 0, 1, NULL, '2026-03-16 17:57:49', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (53, 'MacBook Air M3 13inch 8+256 Midnight Brand New', 8, 60, 2, 'Brand new compact and powerful', '[]', 7999.00, 8999.00, 100, 'Brand new sealed', 1, 1, 0, 'Beijing', 1, 0, 0, 1, NULL, '2026-03-16 17:58:27', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (54, 'MacBook Air M3 15inch 24+512 Starlight 99pct New', 9, 60, 2, '99pct new upgraded RAM', '[]', 11999.00, 13999.00, 100, 'Like new', 1, 1, 1, 'Shanghai', 1, 0, 0, 1, NULL, '2026-03-16 17:58:27', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (55, 'MacBook Pro 14 M3 Pro 18+512 Space Gray 95pct New', 10, 61, 2, '95pct new professional laptop', '[]', 14999.00, 17999.00, 95, 'Minor usage marks', 1, 1, 1, 'Guangzhou', 1, 0, 0, 1, NULL, '2026-03-16 17:58:27', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (56, 'MacBook Pro 16 M3 Max 48+1TB Space Black Brand New', 11, 61, 2, 'Brand new top configuration', '[]', 32999.00, 35999.00, 100, 'Brand new sealed', 1, 1, 0, 'Shenzhen', 1, 0, 0, 1, NULL, '2026-03-16 17:58:27', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (57, 'ThinkPad X1 Carbon Gen11 16+512 Black 95pct New', 6, 62, 2, '95pct new business ultrabook', '[]', 8999.00, 11999.00, 95, 'Minor usage marks', 1, 1, 1, 'Hangzhou', 1, 0, 0, 1, NULL, '2026-03-16 17:58:27', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (58, 'Dell XPS 13 Plus i7 16+512 OLED 99pct New', 7, 63, 2, '99pct new stunning OLED display', '[]', 9999.00, 12999.00, 100, 'Like new', 1, 1, 0, 'Chengdu', 1, 0, 0, 1, NULL, '2026-03-16 17:58:27', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (59, 'ROG Zephyrus G14 2024 Ryzen9 32+1TB RTX4070', 8, 64, 2, 'Brand new gaming ultraportable', '[]', 13999.00, 15999.00, 100, 'Brand new sealed', 1, 1, 0, 'Wuhan', 1, 0, 0, 1, NULL, '2026-03-16 17:58:27', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (60, 'ASUS ProArt Studiobook 16 OLED i9 32+1TB RTX4060', 9, 64, 2, '95pct new creator laptop', '[]', 15999.00, 18999.00, 95, 'Minor usage marks', 1, 1, 1, 'Nanjing', 1, 0, 0, 1, NULL, '2026-03-16 17:58:27', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (61, 'Sony A7M4 Body Only 95pct New', 9, 65, 3, '95pct new shutter count 15000', '[]', 12999.00, 16999.00, 95, 'Minor usage marks', 1, 1, 1, 'Beijing', 1, 0, 0, 1, NULL, '2026-03-16 17:58:54', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (62, 'Sony A7M4 Kit with 24-70mm F2.8 GM II', 10, 65, 3, 'Brand new complete kit', '[]', 28999.00, 32999.00, 100, 'Brand new sealed', 1, 1, 0, 'Shanghai', 1, 0, 0, 1, NULL, '2026-03-16 17:58:54', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (63, 'Canon R6 Mark II with RF 24-105mm F4 L', 6, 66, 3, '99pct new professional kit', '[]', 23999.00, 27999.00, 100, 'Like new', 1, 1, 1, 'Guangzhou', 1, 0, 0, 1, NULL, '2026-03-16 17:58:54', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (64, 'Canon R6 Mark II Body 95pct New', 7, 66, 3, '95pct new low shutter count', '[]', 12999.00, 17999.00, 95, 'Minor usage marks', 1, 1, 1, 'Shenzhen', 1, 0, 0, 1, NULL, '2026-03-16 17:58:54', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (65, 'Nikon Z8 with 24-70mm F2.8 S', 8, 67, 3, '99pct new flagship kit', '[]', 32999.00, 38999.00, 100, 'Like new', 1, 1, 0, 'Hangzhou', 1, 0, 0, 1, NULL, '2026-03-16 17:58:54', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (66, 'Fujifilm X-T5 Body Black Like New', 9, 68, 3, '99pct new perfect condition', '[]', 11999.00, 13999.00, 100, 'Like new', 1, 1, 0, 'Chengdu', 1, 0, 0, 1, NULL, '2026-03-16 17:58:54', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (67, 'Fujifilm X-T5 with 16-80mm F4', 10, 68, 3, '95pct new versatile kit', '[\"/uploads/goods/fujixt5_1.jpg\"]', 15999.00, 18999.00, 95, 'Minor usage marks', 1, 1, 1, 'Wuhan', 1, 0, 0, 1, NULL, '2026-03-16 17:58:54', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (68, 'DJI Osmo Pocket 3 Creator Combo', 11, 69, 3, 'Brand new complete set', '[\"/uploads/goods/osmopocket3_1.jpg\"]', 4999.00, 5499.00, 100, 'Brand new sealed', 1, 1, 0, 'Nanjing', 1, 0, 0, 1, NULL, '2026-03-16 17:58:54', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (69, 'DJI Pocket 3 with Mic 2 95pct New', 12, 69, 3, '95pct new vlog setup ready', '[\"/uploads/goods/osmopocket3_1.jpg\"]', 3499.00, 4499.00, 95, 'Minor usage marks', 1, 1, 1, 'Tianjin', 1, 0, 0, 1, NULL, '2026-03-16 17:58:54', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (70, 'AirPods Max Green 99pct New', 10, 70, 4, '99pct new with original box', '[\"/uploads/goods/airpodsmax_1.jpg\"]', 3499.00, 4399.00, 100, 'Like new', 1, 1, 1, 'Beijing', 1, 0, 0, 1, NULL, '2026-03-16 17:59:17', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (71, 'AirPods Max Blue 95pct New', 11, 70, 4, '95pct new great ANC', '[\"/uploads/goods/airpodsmax_1.jpg\"]', 2999.00, 4399.00, 95, 'Minor usage marks', 1, 1, 1, 'Shanghai', 1, 0, 0, 1, NULL, '2026-03-16 17:59:17', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (72, 'Bose QC Ultra Earbuds Black Brand New', 12, 71, 4, 'Brand new TWS flagship', '[\"/uploads/goods/boseqcultra_1.jpg\"]', 1999.00, 2299.00, 100, 'Brand new sealed', 1, 1, 0, 'Guangzhou', 1, 0, 0, 1, NULL, '2026-03-16 17:59:17', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (73, 'Bose 700 Headphones Black 95pct New', 6, 71, 4, '95pct new iconic design', '[\"/uploads/goods/boseqcultra_1.jpg\"]', 1799.00, 2499.00, 95, 'Minor usage marks', 1, 1, 1, 'Shenzhen', 1, 0, 0, 1, NULL, '2026-03-16 17:59:17', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (74, 'Sennheiser HD660S Open-back 99pct New', 7, 72, 4, '99pct new audiophile choice', '[\"/uploads/goods/hd800s_1.jpg\"]', 2999.00, 3999.00, 100, 'Like new', 1, 1, 0, 'Hangzhou', 1, 0, 0, 1, NULL, '2026-03-16 17:59:17', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (75, 'Sennheiser IE600 IEM Brand New', 8, 72, 4, 'Brand new flagship IEM', '[\"/uploads/goods/hd800s_1.jpg\"]', 5999.00, 6999.00, 100, 'Brand new sealed', 1, 1, 0, 'Chengdu', 1, 0, 0, 1, NULL, '2026-03-16 17:59:17', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (76, 'Beyerdynamic DT990 PRO 250ohm Brand New', 9, 73, 4, 'Brand new studio classic', '[\"/uploads/goods/dt1990pro_1.jpg\"]', 1499.00, 1799.00, 100, 'Brand new sealed', 1, 1, 0, 'Wuhan', 1, 0, 0, 1, NULL, '2026-03-16 17:59:17', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (77, 'Focal Clear MG Like New', 10, 74, 4, '99pct new premium sound', '[\"/uploads/goods/utopia_1.jpg\"]', 7999.00, 9999.00, 100, 'Like new', 1, 1, 1, 'Nanjing', 1, 0, 0, 1, NULL, '2026-03-16 17:59:17', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (78, 'Focal Stellia 95pct New', 11, 74, 4, '95pct new closed-back flagship', '[\"/uploads/goods/utopia_1.jpg\"]', 18999.00, 24999.00, 95, 'Minor usage marks', 1, 1, 1, 'Tianjin', 1, 0, 0, 1, NULL, '2026-03-16 17:59:17', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (79, 'iPad Pro 11 M4 256GB WiFi Space Black Brand New', 11, 75, 5, 'Brand new M4 power', '[\"/uploads/goods/ipadpro13_1.jpg\"]', 8999.00, 9999.00, 100, 'Brand new sealed', 1, 1, 0, 'Beijing', 1, 0, 0, 1, NULL, '2026-03-16 17:59:46', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (80, 'iPad Pro 13 M4 512GB WiFi+Cell Silver 95pct New', 12, 75, 5, '95pct new cellular model', '[\"/uploads/goods/ipadpro13_1.jpg\"]', 13999.00, 16999.00, 95, 'Minor usage marks', 1, 1, 1, 'Shanghai', 1, 0, 0, 1, NULL, '2026-03-16 17:59:46', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (81, 'Samsung Galaxy Tab S9+ 256GB Beige Like New', 6, 76, 5, '99pct new with S Pen', '[\"/uploads/goods/tabs9ultra_1.jpg\"]', 5999.00, 6999.00, 100, 'Like new', 1, 1, 0, 'Guangzhou', 1, 0, 0, 1, NULL, '2026-03-16 17:59:46', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (82, 'Samsung Galaxy Tab S9 FE 128GB Gray Brand New', 7, 76, 5, 'Brand new midrange tablet', '[]', 2999.00, 3499.00, 100, 'Brand new sealed', 1, 1, 0, 'Shenzhen', 1, 0, 0, 1, NULL, '2026-03-16 17:59:46', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (83, 'Huawei MatePad Pro 11 8+256 WiFi 99pct New', 8, 77, 5, '99pct new OLED screen', '[\"/uploads/goods/matepadpro13_1.jpg\"]', 3499.00, 4299.00, 100, 'Like new', 1, 1, 1, 'Hangzhou', 1, 0, 0, 1, NULL, '2026-03-16 17:59:46', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (84, 'Huawei MatePad 11.5S 8+256 WiFi Brand New', 9, 77, 5, 'Brand new paper display', '[\"/uploads/goods/matepadpro13_1.jpg\"]', 2499.00, 2999.00, 100, 'Brand new sealed', 1, 1, 0, 'Chengdu', 1, 0, 0, 1, NULL, '2026-03-16 17:59:46', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (85, 'Xiaomi Pad 6 Pro 12+256 WiFi 95pct New', 10, 78, 5, '95pct new Snapdragon 8+', '[\"/uploads/goods/matepadpro13_1.jpg\"]', 2299.00, 2799.00, 95, 'Minor usage marks', 1, 1, 1, 'Wuhan', 1, 0, 0, 1, NULL, '2026-03-16 17:59:46', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (86, 'Xiaomi Pad 6 8+128 WiFi Brand New', 11, 78, 5, 'Brand new value tablet', '[\"/uploads/goods/matepadpro13_1.jpg\"]', 1599.00, 1999.00, 100, 'Brand new sealed', 1, 1, 0, 'Nanjing', 1, 0, 0, 1, NULL, '2026-03-16 17:59:46', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (87, 'Apple Watch Ultra 2 Orange Band Brand New', 12, 79, 6, 'Brand new adventure ready', '[\"/uploads/goods/applewatchultra2_1.jpg\"]', 6499.00, 6999.00, 100, 'Brand new sealed', 1, 1, 0, 'Beijing', 1, 0, 0, 1, NULL, '2026-03-16 18:00:22', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (88, 'Apple Watch Ultra 1 49mm Titanium 95pct New', 6, 79, 6, '95pct new rugged smartwatch', '[\"/uploads/goods/applewatch9_1.jpg\"]', 4499.00, 5999.00, 95, 'Minor usage marks', 1, 1, 1, 'Shanghai', 1, 0, 0, 1, NULL, '2026-03-16 18:00:22', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (89, 'Apple Watch Series 9 GPS 41mm Pink 99pct New', 7, 80, 6, '99pct new daily companion', '[\"/uploads/goods/applewatch9_1.jpg\"]', 2499.00, 2999.00, 100, 'Like new', 1, 1, 0, 'Guangzhou', 1, 2, 0, 1, NULL, '2026-03-16 18:00:22', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (90, 'Apple Watch Series 9 GPS+Cell 45mm Brand New', 8, 80, 6, 'Brand new cellular model', '[\"/uploads/goods/applewatch9_1.jpg\"]', 3999.00, 4499.00, 100, 'Brand new sealed', 1, 1, 0, 'Shenzhen', 0, 3, 0, 2, NULL, '2026-03-16 18:00:22', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (91, 'Garmin Fenix 7 Sapphire Solar Brand New', 9, 81, 6, 'Brand new multisport GPS', '[\"/uploads/goods/garminfenix7x_1.jpg\"]', 5999.00, 6999.00, 100, 'Brand new sealed', 1, 1, 0, 'Hangzhou', 1, 0, 0, 1, NULL, '2026-03-16 18:00:22', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (92, 'Garmin Epix Pro Gen 2 47mm 95pct New', 10, 81, 6, '95pct new AMOLED display', '[\"/uploads/goods/garminfenix7x_1.jpg\"]', 4499.00, 5999.00, 95, 'Minor usage marks', 1, 1, 1, 'Chengdu', 1, 0, 0, 1, NULL, '2026-03-16 18:00:22', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (93, 'Huawei Watch GT 4 46mm Green Brand New', 11, 82, 6, 'Brand new stylish design', '[\"/uploads/goods/huaweiwatchultimate_1.jpg\"]', 1499.00, 1799.00, 100, 'Brand new sealed', 1, 1, 0, 'Wuhan', 1, 0, 0, 1, NULL, '2026-03-16 18:00:22', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (94, 'Huawei Watch D Blood Pressure 95pct New', 12, 82, 6, '95pct new health monitoring', '[\"/uploads/goods/huaweiwatchultimate_1.jpg\"]', 2499.00, 2999.00, 95, 'Minor usage marks', 1, 1, 1, 'Nanjing', 1, 1, 0, 1, NULL, '2026-03-16 18:00:22', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (95, 'Samsung Galaxy Watch 6 40mm Gold Brand New', 6, 83, 6, 'Brand new Wear OS', '[\"/uploads/goods/galaxywatch6_1.jpg\"]', 1799.00, 2199.00, 100, 'Brand new sealed', 1, 1, 0, 'Tianjin', 1, 0, 0, 1, NULL, '2026-03-16 18:00:22', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (96, 'Samsung Galaxy Watch 5 Pro 45mm Black 95pct New', 7, 83, 6, '95pct new outdoor watch', '[\"/uploads/goods/galaxywatch6_1.jpg\"]', 1799.00, 2499.00, 95, 'Minor usage marks', 1, 1, 1, 'Qingdao', 1, 0, 0, 1, NULL, '2026-03-16 18:00:22', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (97, 'test', 4, NULL, 7, 'test desc', '[\"http://example.com/1.jpg\"]', 100.00, NULL, 95, NULL, 0, 0, 0, NULL, 1, 0, 0, 3, NULL, '2026-03-18 17:33:39', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (98, 'test', 4, NULL, 7, 'test desc', '[\"http://example.com/1.jpg\"]', 100.00, NULL, 95, NULL, 0, 0, 0, NULL, 1, 0, 0, 3, NULL, '2026-03-18 17:33:53', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (99, 'Test iPhone 15 Pro', 4, NULL, 7, '99 new iPhone 15 Pro from Apple Store, used 3 months, full accessories, battery health 98%, no scratches', '[\"https://picsum.photos/400/400?random=1\", \"https://picsum.photos/400/400?random=2\"]', 7999.00, 9999.00, 95, 'No scratches, battery health 98%', 1, 1, 1, 'Beijing', 1, 4, 0, 3, NULL, '2026-03-18 17:34:25', '2026-03-18 18:10:17', 0);
-INSERT INTO `goods` VALUES (100, 'Test Product for Order Flow', 1, 1, 1, 'Test product for order flow testing', '[\"https://example.com/test.jpg\"]', 99.99, 149.99, 95, NULL, 1, 1, 0, 'Beijing', 0, 3, 0, 2, NULL, '2026-03-18 17:43:10', '2026-03-19 18:46:05', 0);
-INSERT INTO `goods` VALUES (101, 'iPhone 15 Pro Max 256GB 原色钛金属 全新未拆封', 1, 1, 1, '全新未拆封，国行版本，支持验货', '[\"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-7inch_GEO_EMEA?wid=400\", \"blob:http://localhost:5173/a3e85224-cebd-4520-9e65-27f7408fc1e5\"]', 9999.00, 10999.00, 100, NULL, 1, 1, 1, '北京', 1, 1565, 89, 3, NULL, '2026-03-18 19:20:16', '2026-03-19 18:58:29', 0);
-INSERT INTO `goods` VALUES (102, 'iPhone 15 Pro Max 512GB 蓝色钛金属 99新', 1, 1, 1, '使用3个月，成色99新，配件齐全', '[\"/uploads/goods/iphone15pro_1.jpg\"]', 8999.00, 12999.00, 8, NULL, 0, 0, 1, '上海', 1, 890, 45, 1, NULL, '2026-03-18 19:20:16', '2026-03-20 01:19:38', 0);
-INSERT INTO `goods` VALUES (103, 'iPhone 15 Pro Max 1TB 黑色钛金属 95新', 2, 1, 1, '自用转让，轻微使用痕迹，功能完好', '[\"/uploads/goods/iphone15pro_1.jpg\"]', 8499.00, 14999.00, 7, NULL, 0, 0, 1, '广州', 1, 567, 32, 1, NULL, '2026-03-18 19:20:16', '2026-03-20 01:20:14', 0);
-INSERT INTO `goods` VALUES (104, 'iPhone 15 Pro 128GB 黑色钛金属 全新', 1, 2, 1, '全新未激活，国行正品', '[\"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-1inch_GEO_EMEA?wid=400\"]', 7999.00, 8999.00, 10, NULL, 12, 1, 1, '北京', 1, 1200, 67, 1, NULL, '2026-03-18 19:20:16', '2026-03-18 19:20:16', 0);
-INSERT INTO `goods` VALUES (105, 'iPhone 15 Pro 256GB 白色钛金属 99新', 3, 2, 1, '两个月机，电池健康100%', '[\"/uploads/goods/iphone15pro_1.jpg\"]', 7299.00, 9999.00, 8, NULL, 0, 0, 1, '深圳', 1, 891, 51, 1, NULL, '2026-03-18 19:20:16', '2026-03-20 01:20:14', 0);
-INSERT INTO `goods` VALUES (106, 'iPhone 15 128GB 粉色 全新未拆封', 1, 3, 1, '全新未拆封，官方正品', '[\"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-finish-select-202309-6-1inch-pink?wid=400\"]', 5999.00, 6499.00, 10, NULL, 12, 1, 1, '上海', 1, 986, 55, 1, NULL, '2026-03-18 19:20:16', '2026-03-20 14:07:48', 0);
-INSERT INTO `goods` VALUES (107, 'iPhone 15 256GB 蓝色 95新', 2, 3, 1, '使用半年，整体成色良好', '[\"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-finish-select-202309-6-1inch-blue?wid=400\"]', 4999.00, 7499.00, 7, NULL, 0, 0, 1, '杭州', 1, 683, 38, 2, NULL, '2026-03-18 19:20:16', '2026-03-19 22:51:12', 0);
-INSERT INTO `goods` VALUES (108, '小米14 Ultra 16+512 黑色 全新未拆封', 1, 4, 1, '全新未拆封，含原装充电器', '[\"/uploads/goods/mipad6max_1.jpg\"]', 6499.00, 6999.00, 10, NULL, 12, 1, 1, '北京', 1, 756, 42, 1, NULL, '2026-03-18 19:20:16', '2026-03-20 01:19:38', 0);
-INSERT INTO `goods` VALUES (109, '小米14 Ultra 16+1TB 白色 99新', 2, 4, 1, '徕卡影像旗舰，拍照神器', '[\"/uploads/goods/mipad6max_1.jpg\"]', 5999.00, 7499.00, 8, NULL, 0, 0, 1, '成都', 1, 535, 29, 1, NULL, '2026-03-18 19:20:16', '2026-03-20 14:25:28', 0);
-INSERT INTO `goods` VALUES (110, '小米14 Pro 16+512 黑色 全新', 1, 5, 1, '全新未拆封，小米官方正品', '[\"/uploads/goods/mipad6max_1.jpg\"]', 4999.00, 5499.00, 10, NULL, 12, 1, 1, '上海', 1, 624, 35, 1, NULL, '2026-03-18 19:20:16', '2026-03-20 14:24:44', 0);
-INSERT INTO `goods` VALUES (111, '华为Mate 60 Pro 12+512 雅丹黑 全新', 1, 6, 1, '全新未拆封，支持卫星通信', '[\"/uploads/goods/huaweiwatchultimate_1.jpg\"]', 6999.00, 7999.00, 10, NULL, 12, 1, 1, '北京', 1, 1479, 78, 1, NULL, '2026-03-18 19:20:16', '2026-03-20 18:11:02', 0);
-INSERT INTO `goods` VALUES (112, '华为Mate 60 Pro 12+256 南糯紫 99新', 2, 6, 1, '自用转让，配件齐全', '[\"/uploads/goods/huaweiwatchultimate_1.jpg\"]', 6299.00, 6999.00, 8, NULL, 0, 0, 1, '武汉', 1, 1008, 56, 2, NULL, '2026-03-18 19:20:16', '2026-03-20 01:19:38', 0);
-INSERT INTO `goods` VALUES (113, 'ROG Phone 8 Pro 16+512 暗夜黑 全新', 1, 11, 1, '电竞旗舰，全新未拆封', '[\"https://rog.asus.com/images/rog-phone8/cover.jpg\"]', 5999.00, 6499.00, 10, NULL, 1, 1, 1, '北京', 1, 462, 28, 0, NULL, '2026-03-18 19:25:28', '2026-03-19 19:21:51', 0);
-INSERT INTO `goods` VALUES (114, 'ROG Phone 8 Pro 24+1TB 暗夜黑 99新', 2, 11, 1, '游戏神器，成色极佳', '[\"https://rog.asus.com/images/rog-phone8/detail1.jpg\"]', 5499.00, 7999.00, 8, NULL, 0, 0, 1, '上海', 1, 321, 19, 1, NULL, '2026-03-18 19:25:28', '2026-03-18 19:25:28', 0);
-INSERT INTO `goods` VALUES (115, '红魔9 Pro 12+256 炫黑 全新', 1, 12, 1, '电竞手机，RGB灯效炫酷', '[\"/uploads/goods/tabs9ultra_1.jpg\"]', 4799.00, 5299.00, 10, NULL, 1, 1, 1, '广州', 1, 388, 22, 1, NULL, '2026-03-18 19:25:28', '2026-03-20 14:28:25', 0);
-INSERT INTO `goods` VALUES (116, 'vivo X100 Pro 16+512 星迹黑 全新', 1, 13, 1, '蔡司影像旗舰，拍照神器', '[\"/uploads/goods/tabs9ultra_1.jpg\"]', 5499.00, 5999.00, 10, NULL, 1, 1, 1, '深圳', 1, 567, 34, 0, NULL, '2026-03-18 19:25:28', '2026-03-20 01:19:38', 0);
-INSERT INTO `goods` VALUES (117, 'vivo X100 Pro 16+256 白月光 99新', 2, 13, 1, '自用转让，拍照效果极佳', '[\"/uploads/goods/tabs9ultra_1.jpg\"]', 4999.00, 5499.00, 8, NULL, 0, 0, 1, '成都', 1, 432, 26, 1, NULL, '2026-03-18 19:25:28', '2026-03-20 01:19:38', 0);
-INSERT INTO `goods` VALUES (118, 'OPPO Find X7 Ultra 16+512 海阔天空 全新', 1, 14, 1, '双潜望镜头，哈苏影像', '[\"/uploads/goods/tabs9ultra_1.jpg\"]', 6499.00, 6999.00, 10, NULL, 1, 1, 1, '杭州', 1, 498, 31, 0, NULL, '2026-03-18 19:25:28', '2026-03-20 01:19:38', 0);
-INSERT INTO `goods` VALUES (119, 'OPPO Find X7 Ultra 16+256 大漠银月 95新', 3, 14, 1, '成色良好，影像旗舰', '[\"/uploads/goods/tabs9ultra_1.jpg\"]', 5799.00, 6499.00, 7, NULL, 0, 0, 1, '武汉', 1, 356, 21, 1, NULL, '2026-03-18 19:25:28', '2026-03-20 01:19:38', 0);
+INSERT INTO `goods` VALUES (1, 'iPhone 15 Pro Max 256GB 原色钛金属', 1, 1, 1, '99新，无划痕，配件齐全，电池健康度100%，支持验机', '[\"https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600\", \"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600\", \"https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=600\"]', 8999.00, 9999.00, 100, '全新未拆封', 1, 1, 1, '北京', 'express', 0, 1, 10, 314, 34, 1, NULL, '2026-03-16 14:00:35', '2026-03-21 12:08:15', 0);
+INSERT INTO `goods` VALUES (2, '华为 Mate 60 Pro+ 512GB 雅丹黑', 2, 4, 1, '95新，轻微使用痕迹，卫星通话功能正常，配件齐全', '[\"https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600\", \"https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=600\"]', 7999.00, 8999.00, 95, '轻微划痕', 1, 0, 1, '上海', 'express', 0, 1, 10, 529, 74, 1, NULL, '2026-03-16 14:00:35', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (3, '小米14 Ultra 16+512 黑色', 3, 6, 1, '99新，全套配件，徕卡影像系统，摄影爱好者必入', '[\"https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600\", \"https://images.unsplash.com/photo-1606986628253-e0e8e2e5c6e3?w=600\"]', 5999.00, 6499.00, 100, '几乎全新', 1, 1, 0, '深圳', 'local', 1, 0, 10, 470, 20, 1, NULL, '2026-03-16 14:00:35', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (4, 'MacBook Pro 14 M3 Pro 18+512 深空黑', 1, 12, 2, '95新，电池健康度98%，屏幕完美无划痕，开发利器', '[\"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600\", \"https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=600\"]', 14999.00, 16999.00, 95, '正常使用痕迹', 1, 1, 1, '北京', 'express', 1, 1, 10, 291, 34, 1, NULL, '2026-03-16 14:00:35', '2026-03-21 12:08:17', 0);
+INSERT INTO `goods` VALUES (5, 'iPad Pro 12.9 M2 256GB 深空灰', 2, 16, 5, '99新，带Apple Pencil二代，屏幕完美，生产力工具', '[\"https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600\", \"https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?w=600\"]', 7999.00, 9299.00, 100, '屏幕完美', 1, 1, 1, '广州', 'express', 1, 1, 10, 230, 85, 1, NULL, '2026-03-16 14:00:35', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (6, 'AirPods Pro 2 主动降噪版', 3, 18, 4, '全新未拆封，H2芯片，降噪效果一流', '[\"https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=600\", \"https://images.unsplash.com/photo-1608156639585-b3a7a6e98dcb?w=600\"]', 1699.00, 1899.00, 100, '全新', 1, 1, 0, '深圳', 'express', 0, 0, 10, 298, 48, 1, NULL, '2026-03-16 14:00:35', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (7, '索尼 WH-1000XM5 头戴式降噪耳机 黑色', 1, 19, 4, '95新，降噪效果极佳，30小时续航，音质出众', '[\"https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600\", \"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600\"]', 1999.00, 2499.00, 95, '耳罩轻微磨损', 1, 0, 1, '上海', 'express', 1, 1, 10, 67, 20, 1, NULL, '2026-03-16 14:00:35', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (8, '三星 Galaxy S24 Ultra 12+256 钛灰色', 2, 9, 1, '99新，国行在保，S Pen书写流畅，2亿像素相机', '[\"https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=600\", \"https://images.unsplash.com/photo-1585060544812-6b45742d762f?w=600\"]', 8499.00, 9699.00, 100, '完美成色', 1, 1, 1, '北京', 'express', 0, 1, 10, 291, 40, 1, NULL, '2026-03-16 14:00:35', '2026-03-22 13:50:55', 0);
+INSERT INTO `goods` VALUES (9, 'MacBook Air M3 15inch 16+512 Starlight Brand New', 6, 60, 2, 'Brand new sealed M3 chip', '[\"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600\", \"https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=600\"]', 10999.00, 11999.00, 100, 'Brand new sealed', 1, 1, 0, 'Beijing', 'express', 1, 0, 10, 1, 0, 1, NULL, '2026-03-16 17:29:15', '2026-03-21 01:15:00', 0);
+INSERT INTO `goods` VALUES (10, 'MacBook Pro 16 M3 Max 36+1TB Space Black 95pct New', 7, 61, 2, '95pct new top specs video editing', '[\"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600\", \"https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=600\"]', 25999.00, 29999.00, 95, 'Minor usage marks', 1, 1, 1, 'Shanghai', 'express', 1, 1, 10, 0, 0, 1, NULL, '2026-03-16 17:29:15', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (11, 'ThinkPad X1 Carbon Gen12 32+512 Black Like New', 8, 62, 2, '99pct new business flagship', '[\"/uploads/goods/thinkpadx1_1.jpg\"]', 12999.00, 14999.00, 100, 'Like new', 1, 1, 1, 'Shenzhen', 'local', 1, 1, 10, 0, 0, 1, NULL, '2026-03-16 17:29:15', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (12, 'Dell XPS 15 i7 32+1TB RTX4060 95pct New', 9, 63, 2, '95pct new OLED screen creative tool', '[\"/uploads/goods/dellxps15_1.jpg\"]', 11999.00, 13999.00, 95, 'Minor usage marks', 1, 0, 1, 'Hangzhou', 'express', 1, 1, 10, 1, 0, 1, NULL, '2026-03-16 17:29:15', '2026-03-21 01:15:31', 0);
+INSERT INTO `goods` VALUES (13, 'ROG Zephyrus G16 2024 i9 32+1TB RTX4080', 10, 64, 2, 'Brand new gaming and creation', '[\"/uploads/goods/rogzephyrus16_1.jpg\"]', 18999.00, 20999.00, 100, 'Brand new sealed', 1, 1, 0, 'Chengdu', 'express', 0, 0, 10, 0, 0, 1, NULL, '2026-03-16 17:29:15', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (14, 'Sony A7M4 Full Frame Mirrorless Brand New', 6, 65, 3, 'Brand new 33MP 4K60p', '[\"/uploads/goods/sonya7m4_1.jpg\"]', 15999.00, 16999.00, 100, 'Brand new sealed', 1, 1, 0, 'Shanghai', 'express', 0, 0, 10, 0, 0, 1, NULL, '2026-03-16 17:29:55', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (15, 'Canon R6 Mark II Full Frame Like New', 7, 66, 3, '99pct new shutter count under 5000', '[\"/uploads/goods/canonr6mk2_1.jpg\"]', 15999.00, 17999.00, 100, 'Like new', 1, 1, 1, 'Beijing', 'local', 1, 1, 10, 0, 0, 1, NULL, '2026-03-16 17:29:55', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (16, 'Nikon Z8 Full Frame 95pct New', 8, 67, 3, '95pct new 45MP professional body', '[\"/uploads/goods/nikonz8_1.jpg\"]', 22999.00, 25999.00, 95, 'Minor usage marks', 1, 1, 1, 'Guangzhou', 'express', 1, 1, 10, 3, 0, 2, NULL, '2026-03-16 17:29:55', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (17, 'Fujifilm X-T5 APS-C Silver Like New', 9, 68, 3, '99pct new retro design film simulation', '[\"/uploads/goods/fujixt5_1.jpg\"]', 12999.00, 13999.00, 100, 'Like new', 1, 1, 0, 'Shenzhen', 'local', 1, 0, 10, 0, 0, 1, NULL, '2026-03-16 17:29:55', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (18, 'DJI Osmo Pocket 3 Brand New', 10, 69, 3, 'Brand new vlog tool rotating screen', '[\"/uploads/goods/osmopocket3_1.jpg\"]', 3999.00, 4499.00, 100, 'Brand new sealed', 1, 1, 0, 'Hangzhou', 'express', 0, 0, 10, 0, 0, 1, NULL, '2026-03-16 17:29:55', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (19, 'MacBook Air M3 15inch 16+512 Starlight Brand New', 6, 60, 2, 'Brand new sealed M3 chip amazing battery', '[\"/uploads/goods/macbookairm3_1.jpg\"]', 10999.00, 11999.00, 100, 'Brand new sealed', 1, 1, 0, 'Beijing', 'express', 1, 0, 10, 1, 0, 1, NULL, '2026-03-16 17:40:10', '2026-03-21 01:09:48', 0);
+INSERT INTO `goods` VALUES (20, 'MacBook Pro 16 M3 Max 36+1TB Space Black 95pct', 7, 61, 2, '95pct new top specs video editing beast', '[\"/uploads/goods/macbookpro16_1.jpg\"]', 25999.00, 29999.00, 95, 'Minor usage marks', 1, 1, 1, 'Shanghai', 'express', 1, 1, 10, 0, 0, 1, NULL, '2026-03-16 17:40:10', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (21, 'ThinkPad X1 Carbon Gen12 32+512 Black Like New', 8, 62, 2, '99pct new business flagship best keyboard', '[\"/uploads/goods/thinkpadx1_1.jpg\"]', 12999.00, 14999.00, 100, 'Like new', 1, 1, 1, 'Shenzhen', 'local', 1, 1, 10, 0, 0, 1, NULL, '2026-03-16 17:40:10', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (22, 'Dell XPS 15 i7 32+1TB RTX4060 95pct New', 9, 63, 2, '95pct new OLED screen creative tool', '[\"/uploads/goods/dellxps15_1.jpg\"]', 11999.00, 13999.00, 95, 'Minor usage marks', 1, 0, 1, 'Hangzhou', 'express', 1, 1, 10, 0, 0, 1, NULL, '2026-03-16 17:40:25', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (23, 'ROG Zephyrus G16 2024 i9 32+1TB RTX4080', 10, 64, 2, 'Brand new gaming and creation', '[\"/uploads/goods/rogzephyrus16_1.jpg\"]', 18999.00, 20999.00, 100, 'Brand new sealed', 1, 1, 0, 'Chengdu', 'express', 0, 0, 10, 0, 0, 1, NULL, '2026-03-16 17:40:25', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (24, 'Sony A7M4 Full Frame Mirrorless Brand New', 6, 65, 3, 'Brand new 33MP 4K60p', '[\"/uploads/goods/sonya7m4_1.jpg\"]', 15999.00, 16999.00, 100, 'Brand new sealed', 1, 1, 0, 'Shanghai', 'express', 0, 0, 10, 0, 0, 1, NULL, '2026-03-16 17:40:44', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (25, 'Canon R6 Mark II Full Frame Like New', 7, 66, 3, '99pct new shutter count under 5000 video beast', '[\"/uploads/goods/canonr6mk2_1.jpg\"]', 15999.00, 17999.00, 100, 'Like new', 1, 1, 1, 'Beijing', 'local', 1, 1, 10, 0, 0, 1, NULL, '2026-03-16 17:40:44', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (26, 'Nikon Z8 Full Frame 95pct New', 8, 67, 3, '95pct new 45MP professional body', '[\"/uploads/goods/nikonz8_1.jpg\"]', 22999.00, 25999.00, 95, 'Minor usage marks', 1, 1, 1, 'Guangzhou', 'express', 1, 1, 10, 0, 0, 1, NULL, '2026-03-16 17:40:44', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (27, 'Fujifilm X-T5 APS-C Silver Like New', 9, 68, 3, '99pct new retro design film simulation', '[\"/uploads/goods/fujixt5_1.jpg\"]', 12999.00, 13999.00, 100, 'Like new', 1, 1, 0, 'Shenzhen', 'local', 1, 0, 10, 0, 0, 1, NULL, '2026-03-16 17:40:44', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (28, 'DJI Osmo Pocket 3 Brand New', 10, 69, 3, 'Brand new vlog tool rotating screen', '[\"/uploads/goods/osmopocket3_1.jpg\"]', 3999.00, 4499.00, 100, 'Brand new sealed', 1, 1, 0, 'Hangzhou', 'express', 0, 0, 10, 0, 0, 1, NULL, '2026-03-16 17:40:44', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (29, 'AirPods Max Silver 95pct New', 6, 70, 4, '95pct new active noise cancellation spatial audio', '[\"/uploads/goods/airpodsmax_1.jpg\"]', 3299.00, 4399.00, 95, 'Minor usage marks', 1, 1, 1, 'Beijing', 'express', 1, 1, 10, 0, 0, 1, NULL, '2026-03-16 17:41:07', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (30, 'Bose QC Ultra Headphone Black Brand New', 7, 71, 4, 'Brand new top noise cancellation comfortable', '[\"/uploads/goods/boseqcultra_1.jpg\"]', 2999.00, 3499.00, 100, 'Brand new sealed', 1, 1, 0, 'Shanghai', 'express', 0, 0, 10, 0, 0, 1, NULL, '2026-03-16 17:41:07', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (31, 'Sennheiser HD800S Open-back Like New', 8, 72, 4, '99pct new flagship HIFI wide soundstage', '[\"/uploads/goods/hd800s_1.jpg\"]', 8999.00, 10999.00, 100, 'Like new', 1, 1, 1, 'Chengdu', 'express', 1, 1, 10, 0, 0, 1, NULL, '2026-03-16 17:41:07', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (32, 'Beyerdynamic DT1990 PRO Monitor Headphone', 9, 73, 4, 'Brand new professional monitor studio choice', '[\"/uploads/goods/dt1990pro_1.jpg\"]', 3999.00, 4499.00, 100, 'Brand new sealed', 1, 1, 0, 'Guangzhou', 'express', 1, 0, 10, 0, 0, 1, NULL, '2026-03-16 17:41:07', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (33, 'Focal Utopia Flagship Headphone 95pct New', 10, 74, 4, '95pct new beryllium driver top HIFI experience', '[\"/uploads/goods/utopia_1.jpg\"]', 28999.00, 35999.00, 95, 'Minor usage marks', 1, 1, 1, 'Shenzhen', 'express', 1, 1, 10, 0, 0, 1, NULL, '2026-03-16 17:41:07', '2026-03-21 00:34:24', 0);
+INSERT INTO `goods` VALUES (120, '火腿肠', 20, NULL, 1, '火腿肠', '[\"blob:http://localhost:5173/5eb6b249-c504-4131-9654-d4c38751b6ce\", \"blob:http://localhost:5173/c7cc5969-a42a-4177-89aa-9baadb7617bb\"]', 12.00, NULL, 100, NULL, 0, 0, 0, '', NULL, 0, 0, 15, 6, 0, 3, NULL, '2026-03-22 13:26:59', '2026-03-22 13:49:05', 0);
+INSERT INTO `goods` VALUES (121, '火腿肠好吃', 19, NULL, 1, '火腿肠', '[\"/uploads/2026/03/22/213adceac29e47bc8acfdb92dd50b77c.jpg\"]', 12.00, NULL, 100, NULL, 0, 0, 0, '', NULL, 0, 0, 14, 25, 0, 1, NULL, '2026-03-22 14:09:03', '2026-03-22 16:46:29', 0);
+INSERT INTO `goods` VALUES (122, '油', 19, NULL, 2, '好多油', '[\"/uploads/2026/03/22/1399e448d1e94c43aa88537fef2cdbdf.jpg\", \"/uploads/2026/03/22/48da4ace14394f97b72aa863d318b7d8.jpg\"]', 80.00, NULL, 10, NULL, 0, 0, 0, '', NULL, 0, 0, 10, 1, 0, 1, NULL, '2026-03-22 16:48:01', '2026-03-22 16:48:08', 0);
+
+-- ----------------------------
+-- Table structure for interaction_message
+-- ----------------------------
+DROP TABLE IF EXISTS `interaction_message`;
+CREATE TABLE `interaction_message`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `user_id` bigint NOT NULL COMMENT '接收用户ID（被互动的用户）',
+  `actor_id` bigint NOT NULL COMMENT '发起互动的用户ID',
+  `type` tinyint NOT NULL COMMENT '互动类型：1-点赞帖子, 2-评论帖子, 3-回复评论, 4-关注用户, 5-收藏帖子',
+  `post_id` bigint NULL DEFAULT NULL COMMENT '关联帖子ID',
+  `comment_id` bigint NULL DEFAULT NULL COMMENT '关联评论ID',
+  `content` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '互动内容（如评论内容）',
+  `is_read` tinyint NULL DEFAULT 0 COMMENT '是否已读：0-未读, 1-已读',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
+  INDEX `idx_actor_id`(`actor_id` ASC) USING BTREE,
+  INDEX `idx_is_read`(`is_read` ASC) USING BTREE,
+  INDEX `idx_created_at`(`created_at` ASC) USING BTREE,
+  INDEX `idx_post_id`(`post_id` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '互动消息表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of interaction_message
+-- ----------------------------
+INSERT INTO `interaction_message` VALUES (1, 1, 19, 4, NULL, NULL, NULL, 0, '2026-03-22 14:07:09');
+INSERT INTO `interaction_message` VALUES (2, 1, 19, 4, NULL, NULL, NULL, 0, '2026-03-22 14:07:11');
+INSERT INTO `interaction_message` VALUES (3, 3, 19, 4, NULL, NULL, NULL, 0, '2026-03-22 14:19:13');
 
 -- ----------------------------
 -- Table structure for message
@@ -831,7 +781,7 @@ CREATE TABLE `message`  (
   INDEX `idx_conversation_id`(`conversation_id` ASC) USING BTREE,
   INDEX `idx_sender_id`(`sender_id` ASC) USING BTREE,
   INDEX `idx_receiver_id`(`receiver_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 170 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '消息表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 172 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '消息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of message
@@ -1005,6 +955,8 @@ INSERT INTO `message` VALUES (166, 1, 1, 2, 4, '{\"totalAmount\":4999.00,\"order
 INSERT INTO `message` VALUES (167, 1, 1, 2, 4, '{\"totalAmount\":4999.00,\"orderNo\":\"XM20260319224511288314\",\"quantity\":1,\"orderId\":10,\"message\":\"买家已付款，请尽快发货\",\"status\":\"PENDING_SHIPMENT\",\"timestamp\":1773931537964}', 1, '2026-03-19 22:45:38');
 INSERT INTO `message` VALUES (168, 1, 1, 2, 4, '{\"totalAmount\":7999.00,\"orderNo\":\"ORD202603150001\",\"quantity\":1,\"orderId\":1,\"message\":\"买家已确认收货，交易完成\",\"status\":\"COMPLETED\",\"timestamp\":1773934337240}', 1, '2026-03-19 23:32:17');
 INSERT INTO `message` VALUES (169, 13, 4, 1, 4, '{\"totalAmount\":6999.00,\"orderNo\":\"XM20260320004818224670\",\"quantity\":1,\"orderId\":11,\"message\":\"买家已下单，请等待付款\",\"status\":\"PENDING_PAYMENT\",\"timestamp\":1773938898419}', 1, '2026-03-20 00:48:18');
+INSERT INTO `message` VALUES (170, 11, 1, 8, 4, '{\"totalAmount\":22999.00,\"orderNo\":\"XM20260321003552271013\",\"quantity\":1,\"orderId\":12,\"message\":\"买家已下单，请等待付款\",\"status\":\"PENDING_PAYMENT\",\"timestamp\":1774024552846}', 1, '2026-03-21 00:35:53');
+INSERT INTO `message` VALUES (171, 11, 1, 8, 4, '{\"totalAmount\":22999.00,\"orderNo\":\"XM20260321003552271013\",\"quantity\":1,\"orderId\":12,\"message\":\"买家已付款，请尽快发货\",\"status\":\"PENDING_SHIPMENT\",\"timestamp\":1774024556791}', 1, '2026-03-21 00:35:57');
 
 -- ----------------------------
 -- Table structure for order
@@ -1039,7 +991,7 @@ CREATE TABLE `order`  (
   INDEX `idx_seller_id`(`seller_id` ASC) USING BTREE,
   INDEX `idx_goods_id`(`goods_id` ASC) USING BTREE,
   INDEX `idx_status`(`status` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '订单表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '订单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of order
@@ -1055,6 +1007,7 @@ INSERT INTO `order` VALUES (8, 'XM20260318174521332297', 18, 1, 100, '{\"id\": 1
 INSERT INTO `order` VALUES (9, 'XM20260319110803532335', 1, 2, 112, '{\"id\": 112, \"price\": 6299.0, \"stock\": 1, \"title\": \"华为Mate 60 Pro 12+256 南糯紫 99新\", \"images\": \"[\\\"https://consumer.huawei.com/content/dam/huawei-cbg-site/common/mkt/pdp/phones/mate60-pro/images/detail-kv@2x.png\\\"]\", \"status\": \"在售\", \"deleted\": 0, \"invoice\": false, \"modelId\": 6, \"location\": \"武汉\", \"sellerId\": 2, \"warranty\": false, \"createdAt\": \"2026-03-18T19:20:16\", \"likeCount\": 56, \"updatedAt\": \"2026-03-19T11:07:58\", \"viewCount\": 995, \"canBargain\": true, \"categoryId\": 1, \"description\": \"自用转让，配件齐全\", \"rejectReason\": null, \"conditionDesc\": null, \"originalPrice\": 6999.0, \"conditionLevel\": 8}', 1, 6299.00, 2, '', '{\"id\": 14, \"city\": \"Shenzhen\", \"name\": \"WillDC\", \"phone\": \"13800138001\", \"detail\": \"Tech Park Building A 1001\", \"userId\": 1, \"deleted\": 0, \"district\": \"Nanshan\", \"province\": \"Guangdong\", \"createdAt\": \"2026-03-16T17:12:56\", \"isDefault\": 1, \"updatedAt\": \"2026-03-16T17:12:56\"}', NULL, NULL, '2026-03-19 11:08:27', NULL, NULL, NULL, NULL, NULL, '2026-03-19 11:08:03', '2026-03-19 11:08:27', 0);
 INSERT INTO `order` VALUES (10, 'XM20260319224511288314', 1, 2, 107, '{\"id\": 107, \"price\": 4999.0, \"stock\": 1, \"title\": \"iPhone 15 256GB 蓝色 95新\", \"images\": \"[\\\"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-finish-select-202309-6-1inch-blue?wid=400\\\"]\", \"status\": \"在售\", \"deleted\": 0, \"invoice\": false, \"modelId\": 3, \"location\": \"杭州\", \"sellerId\": 2, \"warranty\": false, \"createdAt\": \"2026-03-18T19:20:16\", \"likeCount\": 38, \"updatedAt\": \"2026-03-19T22:44:56\", \"viewCount\": 680, \"canBargain\": true, \"categoryId\": 1, \"description\": \"使用半年，整体成色良好\", \"rejectReason\": null, \"conditionDesc\": null, \"originalPrice\": 7499.0, \"conditionLevel\": 7}', 1, 4999.00, 2, '', '{\"id\": 14, \"city\": \"Shenzhen\", \"name\": \"WillDC\", \"phone\": \"13800138001\", \"detail\": \"Tech Park Building A 1001\", \"userId\": 1, \"deleted\": 0, \"district\": \"Nanshan\", \"province\": \"Guangdong\", \"createdAt\": \"2026-03-16T17:12:56\", \"isDefault\": 1, \"updatedAt\": \"2026-03-19T20:20:20\"}', NULL, NULL, '2026-03-19 22:45:38', NULL, NULL, NULL, NULL, NULL, '2026-03-19 22:45:11', '2026-03-19 22:45:38', 0);
 INSERT INTO `order` VALUES (11, 'XM20260320004818224670', 4, 1, 111, '{\"id\": 111, \"price\": 6999.0, \"stock\": 1, \"title\": \"华为Mate 60 Pro 12+512 雅丹黑 全新\", \"images\": \"[\\\"https://consumer.huawei.com/content/dam/huawei-cbg-site/common/mkt/pdp/phones/mate60-pro/images/prod-color@2x.png\\\"]\", \"status\": \"在售\", \"deleted\": 0, \"invoice\": true, \"modelId\": 6, \"location\": \"北京\", \"sellerId\": 1, \"warranty\": true, \"createdAt\": \"2026-03-18T19:20:16\", \"likeCount\": 78, \"updatedAt\": \"2026-03-20T00:47:05\", \"viewCount\": 1468, \"canBargain\": true, \"categoryId\": 1, \"description\": \"全新未拆封，支持卫星通信\", \"rejectReason\": null, \"conditionDesc\": null, \"originalPrice\": 7999.0, \"conditionLevel\": 10}', 1, 6999.00, 5, '', '{\"id\": 18, \"city\": \"Hangzhou\", \"name\": \"user4\", \"phone\": \"13900000001\", \"detail\": \"Wensan Road\", \"userId\": 4, \"deleted\": 0, \"district\": \"Xihu\", \"province\": \"Zhejiang\", \"createdAt\": \"2026-03-16T17:12:56\", \"isDefault\": 1, \"updatedAt\": \"2026-03-16T17:12:56\"}', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-20 01:21:56', '支付超时，系统自动取消', '2026-03-20 00:48:18', '2026-03-20 01:21:56', 0);
+INSERT INTO `order` VALUES (12, 'XM20260321003552271013', 1, 8, 16, '{\"id\": 16, \"price\": 22999.0, \"stock\": 10, \"title\": \"Nikon Z8 Full Frame 95pct New\", \"images\": \"[\\\"/uploads/goods/nikonz8_1.jpg\\\"]\", \"status\": \"在售\", \"deleted\": 0, \"invoice\": true, \"modelId\": 67, \"location\": \"Guangzhou\", \"sellerId\": 8, \"warranty\": true, \"createdAt\": \"2026-03-16T17:29:55\", \"likeCount\": 0, \"updatedAt\": \"2026-03-21T00:34:24\", \"viewCount\": 3, \"canBargain\": true, \"canInspect\": true, \"categoryId\": 3, \"description\": \"95pct new 45MP professional body\", \"tradeMethod\": \"express\", \"freeShipping\": true, \"rejectReason\": null, \"conditionDesc\": \"Minor usage marks\", \"originalPrice\": 25999.0, \"conditionLevel\": 95}', 1, 22999.00, 2, '', '{\"id\": 14, \"city\": \"Shenzhen\", \"name\": \"WillDC\", \"phone\": \"13800138001\", \"detail\": \"Tech Park Building A 1001\", \"userId\": 1, \"deleted\": 0, \"district\": \"Nanshan\", \"province\": \"Guangdong\", \"createdAt\": \"2026-03-16T17:12:56\", \"isDefault\": 1, \"updatedAt\": \"2026-03-20T18:07:18\"}', NULL, NULL, '2026-03-21 00:35:57', NULL, NULL, NULL, NULL, NULL, '2026-03-21 00:35:53', '2026-03-21 00:35:57', 0);
 
 -- ----------------------------
 -- Table structure for post
@@ -1086,24 +1039,24 @@ CREATE TABLE `post`  (
   INDEX `idx_is_pinned`(`is_pinned` ASC) USING BTREE,
   INDEX `idx_is_essence`(`is_essence` ASC) USING BTREE,
   INDEX `idx_created_at`(`created_at` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '帖子表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '帖子表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of post
 -- ----------------------------
 INSERT INTO `post` VALUES (1, 'iPhone 15 Pro Max 开箱体验，钛金属质感太棒了！', '今天收到了新手机，分享一下开箱体验。包装很简洁，手机拿在手里的质感真的很好，钛金属边框摸起来很舒服。屏幕显示效果非常棒，A17 Pro芯片运行流畅，拍照效果也很出色。', 1, 1, 1, '[\"https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800\", \"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800\", \"https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800\"]', '[\"开箱\", \"iPhone15\", \"体验\"]', 5007, 250, 50, 100, 0, 1, 1, '2026-03-14 18:13:46', '2026-03-20 01:43:14');
 INSERT INTO `post` VALUES (2, '小米14 Ultra 拍照测评，徕卡色彩真的很德味', '分享一下这款手机的拍照效果，徕卡色彩调教真的很棒，人像模式效果很好，夜景拍摄也很出色。', 2, 3, 4, '[\"https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800\", \"https://images.unsplash.com/photo-1606986628253-e0e8e2e5c6e3?w=800\", \"https://images.unsplash.com/photo-1502920917128-1aa5f9d5d24f?w=800\"]', '[\"拍照\", \"徕卡\", \"测评\"]', 3001, 150, 30, 60, 0, 0, 1, '2026-03-14 18:13:46', '2026-03-18 21:38:34');
-INSERT INTO `post` VALUES (3, '二手交易注意事项，总结一些经验', '总结一些二手交易的经验，希望大家都能顺利交易，避免被骗。1. 尽量当面交易 2. 检查机器是否有锁 3. 核对序列号...', 5, 5, NULL, '[\"https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800\", \"https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800\"]', '[\"交易\", \"经验\", \"注意事项\"]', 2000, 100, 40, 80, 1, 1, 1, '2026-03-14 18:13:46', '2026-03-18 21:38:34');
+INSERT INTO `post` VALUES (3, '二手交易注意事项，总结一些经验', '总结一些二手交易的经验，希望大家都能顺利交易，避免被骗。1. 尽量当面交易 2. 检查机器是否有锁 3. 核对序列号...', 5, 5, NULL, '[\"https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800\", \"https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800\"]', '[\"交易\", \"经验\", \"注意事项\"]', 2003, 100, 41, 80, 1, 1, 1, '2026-03-14 18:13:46', '2026-03-21 14:51:10');
 INSERT INTO `post` VALUES (4, '华为Mate 60 Pro 卫星通话体验', '测试了一下卫星通话功能，虽然平时用不上，但是关键时刻真的能救命。分享一下使用体验...', 4, 4, 6, '[\"https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800\", \"https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=800\"]', '[\"卫星通话\", \"华为\", \"体验\"]', 4000, 200, 35, 70, 0, 0, 1, '2026-03-14 18:13:46', '2026-03-18 21:38:34');
 INSERT INTO `post` VALUES (5, 'MacBook Pro M3 Pro 开发体验', '作为开发者，分享一下M3 Pro MacBook的开发体验，编译速度很快，续航也很给力...', 1, 6, 8, '[\"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800\", \"https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800\"]', '[\"MacBook\", \"开发\", \"M3\"]', 2501, 120, 26, 50, 0, 0, 1, '2026-03-14 18:13:46', '2026-03-19 00:42:24');
 INSERT INTO `post` VALUES (6, 'iPhone 15 Pro vs 小米14 Ultra 拍照对比', '两款手机拍照对比，各有特色，分享一下我的使用感受...', 3, 7, NULL, '[\"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800\", \"https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800\", \"https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800\"]', '[\"对比\", \"拍照\", \"iPhone\", \"小米\"]', 6003, 300, 60, 120, 0, 1, 1, '2026-03-14 18:13:46', '2026-03-19 16:26:09');
-INSERT INTO `post` VALUES (7, 'iPhone 15 Pro Max 使用一周感受分享', '入手一周了，钛金属边框真的很有质感，A17 Pro性能强劲，玩游戏完全不卡。5倍光学变焦拍远景很清晰。电池续航也比上一代好很多。', 1, NULL, 1, '[\"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800\", \"https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800\"]', NULL, 2346, 356, 45, 0, 0, 1, 1, '2026-03-18 19:26:23', '2026-03-18 21:38:34');
+INSERT INTO `post` VALUES (7, 'iPhone 15 Pro Max 使用一周感受分享', '入手一周了，钛金属边框真的很有质感，A17 Pro性能强劲，玩游戏完全不卡。5倍光学变焦拍远景很清晰。电池续航也比上一代好很多。', 1, NULL, 1, '[\"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800\", \"https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800\"]', NULL, 2347, 356, 45, 0, 0, 1, 1, '2026-03-18 19:26:23', '2026-03-22 13:51:17');
 INSERT INTO `post` VALUES (8, '关于iPhone 15 Pro Max发热问题的讨论', '大家有遇到发热问题吗？我玩原神的时候感觉挺热的，不知道是不是正常现象。', 2, NULL, 1, '[\"https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800\", \"https://images.unsplash.com/photo-1591331653864-aa9c5e8b6bf4?w=800\"]', NULL, 1590, 189, 68, 0, 0, 0, 1, '2026-03-17 19:26:23', '2026-03-20 18:07:06');
-INSERT INTO `post` VALUES (9, 'iPhone 15 Pro Max vs iPhone 14 Pro Max 对比', '作为14 Pro Max用户，聊聊升级感受。钛金属轻了不少，Type-C接口终于来了，相机提升明显。', 3, NULL, 1, '[\"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800\", \"https://images.unsplash.com/photo-1591331653864-aa9c5e8b6bf4?w=800\", \"https://images.unsplash.com/photo-1605236453808-623a4b8a719e?w=800\"]', NULL, 3456, 423, 89, 0, 1, 1, 1, '2026-03-16 19:26:23', '2026-03-18 21:38:34');
+INSERT INTO `post` VALUES (9, 'iPhone 15 Pro Max vs iPhone 14 Pro Max 对比', '作为14 Pro Max用户，聊聊升级感受。钛金属轻了不少，Type-C接口终于来了，相机提升明显。', 3, NULL, 1, '[\"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800\", \"https://images.unsplash.com/photo-1591331653864-aa9c5e8b6bf4?w=800\", \"https://images.unsplash.com/photo-1605236453808-623a4b8a719e?w=800\"]', NULL, 3482, 423, 96, 0, 1, 1, 1, '2026-03-16 19:26:23', '2026-03-22 14:19:12');
 INSERT INTO `post` VALUES (10, 'iPhone 15 Pro 日常使用体验', '比Pro Max轻很多，单手操作舒适。A17 Pro性能完全够用，拍照效果很满意。', 1, NULL, 2, '[\"https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800\", \"https://images.unsplash.com/photo-1591331653864-aa9c5e8b6bf4?w=800\"]', NULL, 1234, 234, 34, 0, 0, 0, 1, '2026-03-18 19:26:23', '2026-03-18 21:38:34');
 INSERT INTO `post` VALUES (11, 'iPhone 15 Pro 配件推荐', '分享一下我买的配件，保护壳、充电器、MagSafe等，附购买链接。', 2, NULL, 2, '[\"https://example.com/post/acc1.jpg\"]', NULL, 996, 167, 56, 0, 0, 0, 1, '2026-03-17 19:26:23', '2026-03-18 21:58:00');
 INSERT INTO `post` VALUES (12, '小米14 Ultra 徕卡影像体验', '徕卡色彩真的很有味道，随手一拍就是大片。夜景表现也非常出色。', 1, NULL, 4, '[\"https://example.com/post/mi-photo1.jpg\"]', NULL, 1876, 289, 43, 0, 0, 1, 1, '2026-03-18 19:26:23', '2026-03-18 19:26:23');
-INSERT INTO `post` VALUES (13, '小米14 Ultra vs iPhone 15 Pro Max 拍照对比', '两台机器都有，做了一个拍照对比，各有特色。徕卡色彩讨喜，iPhone更真实。', 2, NULL, 4, '[\"https://example.com/post/compare2.jpg\"]', NULL, 2569, 345, 78, 0, 0, 0, 1, '2026-03-17 19:26:23', '2026-03-19 00:45:07');
+INSERT INTO `post` VALUES (13, '小米14 Ultra vs iPhone 15 Pro Max 拍照对比', '两台机器都有，做了一个拍照对比，各有特色。徕卡色彩讨喜，iPhone更真实。', 2, NULL, 4, '[\"https://example.com/post/compare2.jpg\"]', NULL, 2570, 345, 78, 0, 0, 0, 1, '2026-03-17 19:26:23', '2026-03-21 12:55:56');
 INSERT INTO `post` VALUES (14, 'Mate 60 Pro 卫星通信实测', '今天试了卫星通信功能，虽然平时用不上，但关键时刻能救命。昆仑玻璃也很耐摔。', 1, NULL, 6, '[\"https://example.com/post/hw-sat.jpg\"]', NULL, 3456, 456, 67, 0, 0, 1, 1, '2026-03-18 19:26:23', '2026-03-18 19:26:23');
 INSERT INTO `post` VALUES (15, '鸿蒙系统使用感受', '从iOS转过来，说说鸿蒙的体验。系统流畅，分布式功能很实用。', 2, NULL, 6, '[]', NULL, 1568, 234, 45, 0, 0, 0, 1, '2026-03-16 19:26:23', '2026-03-18 21:57:58');
 INSERT INTO `post` VALUES (16, 'ROG Phone 8 Pro 游戏体验', '电竞手机果然不一样，玩原神、王者荣耀帧率稳定，散热也很好。AirTrigger很实用。', 1, NULL, 11, '[\"https://example.com/post/rog-game.jpg\"]', NULL, 1234, 198, 34, 0, 0, 0, 1, '2026-03-18 19:26:23', '2026-03-18 19:26:23');
@@ -1122,7 +1075,7 @@ CREATE TABLE `post_collect`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_post_user`(`post_id` ASC, `user_id` ASC) USING BTREE,
   INDEX `idx_user_id`(`user_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '帖子收藏表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '帖子收藏表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of post_collect
@@ -1140,7 +1093,7 @@ CREATE TABLE `post_like`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_post_user`(`post_id` ASC, `user_id` ASC) USING BTREE,
   INDEX `idx_user_id`(`user_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 32 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '帖子点赞表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 32 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '帖子点赞表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of post_like
@@ -1527,6 +1480,12 @@ CREATE TABLE `shop`  (
   `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '店铺头像',
   `cover` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '店铺封面',
   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '店铺简介',
+  `phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '联系电话',
+  `wechat` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '微信号',
+  `category` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '经营类目',
+  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '发货地址',
+  `is_open` tinyint(1) NULL DEFAULT 1 COMMENT '是否营业 0-停业 1-营业',
+  `auto_accept` tinyint(1) NULL DEFAULT 0 COMMENT '是否自动接单 0-否 1-是',
   `rating` decimal(2, 1) NULL DEFAULT 5.0 COMMENT '店铺评分 0-5',
   `follower_count` int NULL DEFAULT 0 COMMENT '粉丝数',
   `goods_count` int NULL DEFAULT 0 COMMENT '在售商品数',
@@ -1543,8 +1502,36 @@ CREATE TABLE `shop`  (
 -- ----------------------------
 -- Records of shop
 -- ----------------------------
-INSERT INTO `shop` VALUES (1, 1, 'Digital Store', '/shops/shop1.jpg', NULL, 'Quality digital products', 4.8, 0, 0, 0, 1, '2026-03-12 20:47:36', '2026-03-12 20:47:36', 0);
-INSERT INTO `shop` VALUES (2, 3, 'Camera Shop', '/shops/shop2.jpg', NULL, 'Professional camera equipment', 4.9, 0, 0, 0, 1, '2026-03-12 20:47:36', '2026-03-12 20:47:36', 0);
+INSERT INTO `shop` VALUES (1, 1, 'Digital Store', '/shops/shop1.jpg', NULL, 'Quality digital products', NULL, NULL, NULL, NULL, 1, 0, 4.8, 0, 0, 0, 1, '2026-03-12 20:47:36', '2026-03-12 20:47:36', 0);
+INSERT INTO `shop` VALUES (2, 3, 'Camera Shop', '/shops/shop2.jpg', NULL, 'Professional camera equipment', NULL, NULL, NULL, NULL, 1, 0, 4.9, 0, 0, 0, 1, '2026-03-12 20:47:36', '2026-03-12 20:47:36', 0);
+
+-- ----------------------------
+-- Table structure for shop_auth
+-- ----------------------------
+DROP TABLE IF EXISTS `shop_auth`;
+CREATE TABLE `shop_auth`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '认证ID',
+  `user_id` bigint NOT NULL COMMENT '用户ID',
+  `shop_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '店铺名称',
+  `shop_desc` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '店铺描述',
+  `category` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '经营类目',
+  `license_image` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '营业执照图片',
+  `legal_person` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '法人姓名',
+  `phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '联系电话',
+  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '经营地址',
+  `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT 'pending' COMMENT '状态：pending-待审核 approved-已通过 rejected-已拒绝',
+  `reject_reason` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '拒绝原因',
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
+  INDEX `idx_status`(`status` ASC) USING BTREE,
+  INDEX `idx_created_at`(`created_at` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '店铺认证表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of shop_auth
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for spu
@@ -1577,25 +1564,25 @@ CREATE TABLE `spu`  (
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_product_count`(`product_count` ASC) USING BTREE,
   INDEX `idx_member_count`(`member_count` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'SPU标准产品单元表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'SPU标准产品单元表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of spu
 -- ----------------------------
-INSERT INTO `spu` VALUES (1, 'iPhone 15 Pro Max', 1, 1, NULL, '/uploads/goods/iphone15pro_1.jpg', '[\"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-7inch_GEO_EMEA?wid=800\", \"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-7inch-naturaltitanium_GEO_EMEA?wid=800\", \"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-7inch-bluetitanium_GEO_EMEA?wid=800\"]', '苹果2023年旗舰手机，A17 Pro芯片，钛金属边框，5倍光学变焦', NULL, 2, 2500, 80, 4.90, 8499.00, 8999.00, '[\"旗舰手机\", \"苹果\", \"钛金属\", \"A17 Pro\", \"5倍光学变焦\"]', 1, 150000, '2026-03-14 18:13:46', '2026-03-20 01:14:41');
-INSERT INTO `spu` VALUES (2, 'iPhone 15 Pro', 1, 1, NULL, '/uploads/goods/iphone15pro_1.jpg', '[\"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-1inch_GEO_EMEA?wid=800\", \"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-1inch-naturaltitanium_GEO_EMEA?wid=800\"]', '苹果Pro系列，A17 Pro芯片，钛金属设计', NULL, 2, 2000, 60, 4.85, 7299.00, 7999.00, '[\"苹果\", \"A17 Pro\", \"钛金属\", \"专业摄影\"]', 1, 120000, '2026-03-14 18:13:46', '2026-03-20 01:14:41');
-INSERT INTO `spu` VALUES (3, 'iPhone 15', 1, 1, NULL, '/uploads/goods/iphone15_1.jpg', '[\"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-finish-select-202309-6-1inch?wid=800\", \"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-finish-select-202309-6-1inch-blue?wid=800\"]', '苹果标准版，A16芯片，灵动岛设计', NULL, 1, 1500, 40, 4.70, 5999.00, 5999.00, '[\"苹果\", \"A16芯片\", \"灵动岛\", \"性价比\"]', 1, 80000, '2026-03-14 18:13:46', '2026-03-20 01:14:41');
-INSERT INTO `spu` VALUES (4, '小米14 Ultra', 3, 1, NULL, '/uploads/goods/mipad6max_1.jpg', '[\"https://cdn.cnbj1.fds.api.mi-img.com/product-images/mi14ultra/1.jpg\", \"https://cdn.cnbj1.fds.api.mi-img.com/product-images/mi14ultra/2.jpg\"]', '小米影像旗舰，徕卡光学镜头，骁龙8 Gen3', NULL, 2, 1200, 45, 4.75, 5999.00, 6499.00, '[\"小米\", \"徕卡影像\", \"骁龙8 Gen3\", \"旗舰\"]', 1, 60000, '2026-03-14 18:13:46', '2026-03-20 01:14:41');
-INSERT INTO `spu` VALUES (5, '小米14 Pro', 3, 1, NULL, '/uploads/goods/mipad6max_1.jpg', '[\"https://cdn.cnbj1.fds.api.mi-img.com/product-images/mi14pro/1.jpg\", \"https://cdn.cnbj1.fds.api.mi-img.com/product-images/mi14pro/2.jpg\"]', '小米高端旗舰，骁龙8 Gen3，徕卡影像', NULL, 1, 800, 30, 4.70, 4999.00, 4999.00, '[\"小米\", \"徕卡\", \"骁龙8 Gen3\"]', 1, 40000, '2026-03-14 18:13:46', '2026-03-20 01:14:41');
-INSERT INTO `spu` VALUES (6, '华为Mate 60 Pro', 2, 1, NULL, '/uploads/goods/huaweiwatchultimate_1.jpg', '[\"https://consumer.huawei.com/content/dam/huawei-cbg-site/common/mkt/pdp/phones/mate60-pro/images/prod-color@2x.png\", \"https://consumer.huawei.com/content/dam/huawei-cbg-site/common/mkt/pdp/phones/mate60-pro/images/detail-kv@2x.png\"]', '华为旗舰手机，麒麟芯片，卫星通话', NULL, 1, 1800, 55, 4.80, 6999.00, 6999.00, '[\"华为\", \"麒麟芯片\", \"卫星通信\", \"昆仑玻璃\"]', 1, 100000, '2026-03-14 18:13:46', '2026-03-20 01:14:41');
+INSERT INTO `spu` VALUES (1, 'iPhone 15 Pro Max', 1, 1, NULL, '/uploads/goods/iphone15pro_1.jpg', '[\"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-7inch_GEO_EMEA?wid=800\", \"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-7inch-naturaltitanium_GEO_EMEA?wid=800\", \"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-7inch-bluetitanium_GEO_EMEA?wid=800\"]', '苹果2023年旗舰手机，A17 Pro芯片，钛金属边框，5倍光学变焦', NULL, 1, 2500, 80, 4.90, 8999.00, 8999.00, '[\"旗舰手机\", \"苹果\", \"钛金属\", \"A17 Pro\", \"5倍光学变焦\"]', 1, 150000, '2026-03-14 18:13:46', '2026-03-20 01:14:41');
+INSERT INTO `spu` VALUES (2, 'iPhone 15 Pro', 1, 1, NULL, '/uploads/goods/iphone15pro_1.jpg', '[\"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-1inch_GEO_EMEA?wid=800\", \"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-1inch-naturaltitanium_GEO_EMEA?wid=800\"]', '苹果Pro系列，A17 Pro芯片，钛金属设计', NULL, 0, 2000, 60, 4.85, 7299.00, 7999.00, '[\"苹果\", \"A17 Pro\", \"钛金属\", \"专业摄影\"]', 1, 120000, '2026-03-14 18:13:46', '2026-03-20 01:14:41');
+INSERT INTO `spu` VALUES (3, 'iPhone 15', 1, 1, NULL, '/uploads/goods/iphone15_1.jpg', '[\"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-finish-select-202309-6-1inch?wid=800\", \"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-finish-select-202309-6-1inch-blue?wid=800\"]', '苹果标准版，A16芯片，灵动岛设计', NULL, 0, 1500, 40, 4.70, 5999.00, 5999.00, '[\"苹果\", \"A16芯片\", \"灵动岛\", \"性价比\"]', 1, 80000, '2026-03-14 18:13:46', '2026-03-20 01:14:41');
+INSERT INTO `spu` VALUES (4, '小米14 Ultra', 3, 1, NULL, '/uploads/goods/mipad6max_1.jpg', '[\"https://cdn.cnbj1.fds.api.mi-img.com/product-images/mi14ultra/1.jpg\", \"https://cdn.cnbj1.fds.api.mi-img.com/product-images/mi14ultra/2.jpg\"]', '小米影像旗舰，徕卡光学镜头，骁龙8 Gen3', NULL, 1, 1200, 45, 4.75, 7999.00, 7999.00, '[\"小米\", \"徕卡影像\", \"骁龙8 Gen3\", \"旗舰\"]', 1, 60000, '2026-03-14 18:13:46', '2026-03-20 01:14:41');
+INSERT INTO `spu` VALUES (5, '小米14 Pro', 3, 1, NULL, '/uploads/goods/mipad6max_1.jpg', '[\"https://cdn.cnbj1.fds.api.mi-img.com/product-images/mi14pro/1.jpg\", \"https://cdn.cnbj1.fds.api.mi-img.com/product-images/mi14pro/2.jpg\"]', '小米高端旗舰，骁龙8 Gen3，徕卡影像', NULL, 0, 800, 30, 4.70, 4999.00, 4999.00, '[\"小米\", \"徕卡\", \"骁龙8 Gen3\"]', 1, 40000, '2026-03-14 18:13:46', '2026-03-20 01:14:41');
+INSERT INTO `spu` VALUES (6, '华为Mate 60 Pro', 2, 1, NULL, '/uploads/goods/huaweiwatchultimate_1.jpg', '[\"https://consumer.huawei.com/content/dam/huawei-cbg-site/common/mkt/pdp/phones/mate60-pro/images/prod-color@2x.png\", \"https://consumer.huawei.com/content/dam/huawei-cbg-site/common/mkt/pdp/phones/mate60-pro/images/detail-kv@2x.png\"]', '华为旗舰手机，麒麟芯片，卫星通话', NULL, 1, 1800, 55, 4.80, 5999.00, 5999.00, '[\"华为\", \"麒麟芯片\", \"卫星通信\", \"昆仑玻璃\"]', 1, 100000, '2026-03-14 18:13:46', '2026-03-20 01:14:41');
 INSERT INTO `spu` VALUES (7, '华为Mate 60', 2, 1, NULL, '/uploads/goods/huaweiwatchultimate_1.jpg', NULL, '华为高端手机，麒麟芯片回归', NULL, 0, 1000, 35, 4.75, 5499.00, 6499.00, NULL, 1, 50000, '2026-03-14 18:13:46', '2026-03-20 01:14:41');
 INSERT INTO `spu` VALUES (8, 'MacBook Pro 14 M3 Pro', 1, 2, NULL, '/uploads/goods/macbookpro16_1.jpg', NULL, '苹果专业笔记本，M3 Pro芯片，14英寸', NULL, 0, 500, 20, 4.95, 14999.00, 19999.00, NULL, 1, 30000, '2026-03-14 18:13:46', '2026-03-20 01:14:41');
-INSERT INTO `spu` VALUES (9, 'MacBook Air 15 M3', 1, 2, NULL, '/uploads/goods/macbookairm3_1.jpg', NULL, '苹果轻薄笔记本，M3芯片，15英寸大屏', NULL, 0, 600, 25, 4.85, 10499.00, 12999.00, NULL, 1, 25000, '2026-03-14 18:13:46', '2026-03-20 01:14:41');
+INSERT INTO `spu` VALUES (9, 'MacBook Air 15 M3', 1, 2, NULL, '/uploads/goods/macbookairm3_1.jpg', NULL, '苹果轻薄笔记本，M3芯片，15英寸大屏', NULL, 1, 600, 25, 4.85, 8499.00, 8499.00, NULL, 1, 25000, '2026-03-14 18:13:46', '2026-03-20 01:14:41');
 INSERT INTO `spu` VALUES (10, 'Galaxy S24 Ultra', 4, 1, NULL, '/uploads/goods/tabs9ultra_1.jpg', NULL, '三星旗舰手机，骁龙8 Gen3，S Pen', NULL, 0, 700, 25, 4.70, 8999.00, 11999.00, NULL, 1, 35000, '2026-03-14 18:13:46', '2026-03-20 01:14:41');
-INSERT INTO `spu` VALUES (11, 'ROG Phone 8 Pro', 9, 1, 7, 'https://rog.asus.com/images/rog-phone8/cover.jpg', '[\"https://rog.asus.com/images/rog-phone8/cover.jpg\", \"https://rog.asus.com/images/rog-phone8/detail1.jpg\"]', 'Gaming Phone', NULL, 1, 500, 15, 0.00, 5499.00, 5499.00, '[\"游戏手机\", \"ROG\", \"骁龙8 Gen3\", \"电竞\"]', 1, 0, '2026-03-18 18:59:18', '2026-03-18 19:25:04');
-INSERT INTO `spu` VALUES (12, 'Red Magic 9 Pro', 9, 1, 7, 'https://www.redmagic.com/images/cover.jpg', '[\"https://www.redmagic.com/images/cover.jpg\", \"https://www.redmagic.com/images/detail1.jpg\"]', 'Gaming Flagship', NULL, 2, 400, 10, 0.00, 4799.00, 14999.00, '[\"游戏手机\", \"红魔\", \"骁龙8 Gen3\", \"RGB灯效\"]', 1, 0, '2026-03-18 18:59:29', '2026-03-18 19:25:04');
-INSERT INTO `spu` VALUES (13, 'vivo X100 Pro', 6, 1, 9, 'https://www.vivo.com/images/x100pro/cover.jpg', '[\"https://www.vivo.com/images/x100pro/cover.jpg\", \"https://www.vivo.com/images/x100pro/detail1.jpg\"]', 'Camera Flagship', NULL, 1, 800, 25, 0.00, 4999.00, 4999.00, '[\"拍照手机\", \"vivo\", \"蔡司影像\", \"天玑9300\"]', 1, 0, '2026-03-18 18:59:29', '2026-03-18 19:25:04');
-INSERT INTO `spu` VALUES (14, 'OPPO Find X7 Ultra', 5, 1, 9, 'https://www.oppo.com/images/findx7/cover.jpg', '[\"https://www.oppo.com/images/findx7/cover.jpg\", \"https://www.oppo.com/images/findx7/detail1.jpg\"]', 'Ultra Camera Phone', NULL, 1, 600, 20, 0.00, 5799.00, 5799.00, '[\"拍照手机\", \"OPPO\", \"哈苏影像\", \"双潜望\"]', 1, 0, '2026-03-18 18:59:29', '2026-03-18 19:25:04');
+INSERT INTO `spu` VALUES (11, 'ROG Phone 8 Pro', 9, 1, 7, 'https://rog.asus.com/images/rog-phone8/cover.jpg', '[\"https://rog.asus.com/images/rog-phone8/cover.jpg\", \"https://rog.asus.com/images/rog-phone8/detail1.jpg\"]', 'Gaming Phone', NULL, 0, 500, 15, 0.00, 5499.00, 5499.00, '[\"游戏手机\", \"ROG\", \"骁龙8 Gen3\", \"电竞\"]', 1, 0, '2026-03-18 18:59:18', '2026-03-18 19:25:04');
+INSERT INTO `spu` VALUES (12, 'Red Magic 9 Pro', 9, 1, 7, 'https://www.redmagic.com/images/cover.jpg', '[\"https://www.redmagic.com/images/cover.jpg\", \"https://www.redmagic.com/images/detail1.jpg\"]', 'Gaming Flagship', NULL, 1, 400, 10, 0.00, 14999.00, 14999.00, '[\"游戏手机\", \"红魔\", \"骁龙8 Gen3\", \"RGB灯效\"]', 1, 0, '2026-03-18 18:59:29', '2026-03-18 19:25:04');
+INSERT INTO `spu` VALUES (13, 'vivo X100 Pro', 6, 1, 9, 'https://www.vivo.com/images/x100pro/cover.jpg', '[\"https://www.vivo.com/images/x100pro/cover.jpg\", \"https://www.vivo.com/images/x100pro/detail1.jpg\"]', 'Camera Flagship', NULL, 0, 800, 25, 0.00, 4999.00, 4999.00, '[\"拍照手机\", \"vivo\", \"蔡司影像\", \"天玑9300\"]', 1, 0, '2026-03-18 18:59:29', '2026-03-18 19:25:04');
+INSERT INTO `spu` VALUES (14, 'OPPO Find X7 Ultra', 5, 1, 9, 'https://www.oppo.com/images/findx7/cover.jpg', '[\"https://www.oppo.com/images/findx7/cover.jpg\", \"https://www.oppo.com/images/findx7/detail1.jpg\"]', 'Ultra Camera Phone', NULL, 0, 600, 20, 0.00, 5799.00, 5799.00, '[\"拍照手机\", \"OPPO\", \"哈苏影像\", \"双潜望\"]', 1, 0, '2026-03-18 18:59:29', '2026-03-18 19:25:04');
 
 -- ----------------------------
 -- Table structure for spu_follow
@@ -1610,7 +1597,7 @@ CREATE TABLE `spu_follow`  (
   UNIQUE INDEX `uk_spu_user`(`spu_id` ASC, `user_id` ASC) USING BTREE,
   INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
   INDEX `idx_spu_id`(`spu_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 24 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'SPU关注表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 24 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'SPU关注表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of spu_follow
@@ -1644,10 +1631,34 @@ CREATE TABLE `spu_price_trend`  (
   UNIQUE INDEX `uk_spu_date`(`spu_id` ASC, `date` ASC) USING BTREE,
   INDEX `idx_spu_id`(`spu_id` ASC) USING BTREE,
   INDEX `idx_date`(`date` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'SPU价格趋势表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'SPU价格趋势表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of spu_price_trend
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for system_notification
+-- ----------------------------
+DROP TABLE IF EXISTS `system_notification`;
+CREATE TABLE `system_notification`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `user_id` bigint NOT NULL COMMENT '接收用户ID',
+  `type` tinyint NOT NULL COMMENT '通知类型：1-订单发货, 2-订单签收, 3-订单取消, 4-退款, 5-实名认证成功, 6-实名认证失败, 7-商品审核通过, 8-商品审核未通过, 9-交易成功, 10-账户安全提醒, 11-系统公告',
+  `title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '通知标题',
+  `content` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '通知内容',
+  `related_id` bigint NULL DEFAULT NULL COMMENT '关联业务ID',
+  `related_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '关联业务类型（order/product等）',
+  `is_read` tinyint NULL DEFAULT 0 COMMENT '是否已读：0-未读, 1-已读',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
+  INDEX `idx_is_read`(`is_read` ASC) USING BTREE,
+  INDEX `idx_created_at`(`created_at` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '系统通知表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of system_notification
 -- ----------------------------
 
 -- ----------------------------
@@ -1656,7 +1667,7 @@ CREATE TABLE `spu_price_trend`  (
 DROP TABLE IF EXISTS `upload_file`;
 CREATE TABLE `upload_file`  (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '文件ID',
-  `user_id` bigint NOT NULL COMMENT '上传者ID',
+  `user_id` bigint NULL DEFAULT NULL,
   `file_key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '文件Key（存储路径）',
   `file_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '访问URL',
   `file_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '原始文件名',
@@ -1670,7 +1681,7 @@ CREATE TABLE `upload_file`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
   INDEX `idx_scene`(`scene` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 22 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '上传文件表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 34 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '上传文件表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of upload_file
@@ -1696,6 +1707,18 @@ INSERT INTO `upload_file` VALUES (18, 2, '2026/03/15/bc4a25de7af0452986d459c6042
 INSERT INTO `upload_file` VALUES (19, 1, '2026/03/16/14d1e1518ff3453792786315e5df95dc.jpg', '/uploads/2026/03/16/14d1e1518ff3453792786315e5df95dc.jpg', '头像.jpg', 50528, 1, 'image/jpeg', NULL, NULL, 'avatar', '2026-03-16 15:10:27');
 INSERT INTO `upload_file` VALUES (20, 1, '2026/03/17/2f6784c83fcd42d6a3ee3bdb6ff30510.jpg', 'http://localhost:8080/uploads/2026/03/17/2f6784c83fcd42d6a3ee3bdb6ff30510.jpg', '头像.jpg', 50528, 1, 'image/jpeg', NULL, NULL, 'other', '2026-03-17 18:17:10');
 INSERT INTO `upload_file` VALUES (21, 1, '2026/03/17/9696abfa513f433187109ab14bb9c52a.jpg', 'http://localhost:8080/uploads/2026/03/17/9696abfa513f433187109ab14bb9c52a.jpg', '头像.jpg', 50528, 1, 'image/jpeg', NULL, NULL, 'avatar', '2026-03-17 18:21:12');
+INSERT INTO `upload_file` VALUES (22, 20, '2026/03/22/bf8b0a96e356460db731ef864802d3d1.jpg', '/uploads/2026/03/22/bf8b0a96e356460db731ef864802d3d1.jpg', '玉米火腿肠一包-6-零食 - 副本.jpg', 95778, 1, 'image/jpeg', NULL, NULL, 'avatar', '2026-03-22 13:37:52');
+INSERT INTO `upload_file` VALUES (23, 20, '2026/03/22/e525005be074415fad5fe74d1f1fe6b0.jpg', '/uploads/2026/03/22/e525005be074415fad5fe74d1f1fe6b0.jpg', '玉米火腿肠一包-6-零食 - 副本.jpg', 95778, 1, 'image/jpeg', NULL, NULL, 'avatar', '2026-03-22 13:38:00');
+INSERT INTO `upload_file` VALUES (24, 20, '2026/03/22/ea63326c9dbb4084931f4ba2acd1bcb1.jpg', '/uploads/2026/03/22/ea63326c9dbb4084931f4ba2acd1bcb1.jpg', '玉米火腿肠一包-6-零食 - 副本.jpg', 95778, 1, 'image/jpeg', NULL, NULL, 'avatar', '2026-03-22 13:42:20');
+INSERT INTO `upload_file` VALUES (25, 20, '2026/03/22/7789053e0d934df2a026ada1d5a4db7a.jpg', '/uploads/2026/03/22/7789053e0d934df2a026ada1d5a4db7a.jpg', '玉米火腿肠一包-6-零食.jpg', 95778, 1, 'image/jpeg', NULL, NULL, 'avatar', '2026-03-22 13:43:07');
+INSERT INTO `upload_file` VALUES (26, 19, '2026/03/22/67ca2dacf8a144c38d9e61a53a3704ff.jpg', '/uploads/2026/03/22/67ca2dacf8a144c38d9e61a53a3704ff.jpg', '玉米火腿肠一包-6-零食.jpg', 95778, 1, 'image/jpeg', NULL, NULL, 'avatar', '2026-03-22 14:09:39');
+INSERT INTO `upload_file` VALUES (27, 19, '2026/03/22/46046a834f614673a7eeea5d1dc49406.jpg', '/uploads/2026/03/22/46046a834f614673a7eeea5d1dc49406.jpg', '厨邦酱油1.63L-20-副食.jpg', 245171, 1, 'image/jpeg', NULL, NULL, 'avatar', '2026-03-22 14:10:40');
+INSERT INTO `upload_file` VALUES (28, NULL, '2026/03/22/8cb6fbbe4e3149f09f7852886b1ec50e.jpg', '/uploads/2026/03/22/8cb6fbbe4e3149f09f7852886b1ec50e.jpg', 'avatar1.jpg', 8995, 1, 'image/jpeg', NULL, NULL, 'product', '2026-03-22 15:00:05');
+INSERT INTO `upload_file` VALUES (29, NULL, '2026/03/22/d7ebefe04cf34ad787b0e4da0cdcedd5.jpg', '/uploads/2026/03/22/d7ebefe04cf34ad787b0e4da0cdcedd5.jpg', '1.jpg', 12032, 1, 'image/jpeg', NULL, NULL, 'product', '2026-03-22 15:18:10');
+INSERT INTO `upload_file` VALUES (30, 19, '2026/03/22/6f40e7bcb32d4a49bf2f74eacf1b2e3e.jpg', '/uploads/2026/03/22/6f40e7bcb32d4a49bf2f74eacf1b2e3e.jpg', 'O1CN01RS8POs21ArdoPwhxS_!!2209100256945.jpg', 49928, 1, 'image/jpeg', NULL, NULL, 'product', '2026-03-22 16:00:55');
+INSERT INTO `upload_file` VALUES (31, 19, '2026/03/22/213adceac29e47bc8acfdb92dd50b77c.jpg', '/uploads/2026/03/22/213adceac29e47bc8acfdb92dd50b77c.jpg', '加多宝瓶装-4-饮料.jpg', 141265, 1, 'image/jpeg', NULL, NULL, 'product', '2026-03-22 16:46:23');
+INSERT INTO `upload_file` VALUES (32, 19, '2026/03/22/1399e448d1e94c43aa88537fef2cdbdf.jpg', '/uploads/2026/03/22/1399e448d1e94c43aa88537fef2cdbdf.jpg', '鲁花低芥酸菜籽油4L-77-油.jpg', 128650, 1, 'image/jpeg', NULL, NULL, 'product', '2026-03-22 16:47:41');
+INSERT INTO `upload_file` VALUES (33, 19, '2026/03/22/48da4ace14394f97b72aa863d318b7d8.jpg', '/uploads/2026/03/22/48da4ace14394f97b72aa863d318b7d8.jpg', '主图-05 (1).jpg', 128650, 1, 'image/jpeg', NULL, NULL, 'product', '2026-03-22 16:47:41');
 
 -- ----------------------------
 -- Table structure for user
@@ -1718,7 +1741,7 @@ CREATE TABLE `user`  (
   `deleted` tinyint NULL DEFAULT 0 COMMENT '逻辑删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_phone`(`phone` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user
@@ -1734,6 +1757,8 @@ INSERT INTO `user` VALUES (9, '13900000004', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iA
 INSERT INTO `user` VALUES (10, '13900000005', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EH', 'designer_li', 'https://images.unsplash.com/photo-1463453091185-61582044d556?w=200', 2, '1990-07-08', 'UI designer', 1, NULL, NULL, '2026-03-16 17:12:18', '2026-03-18 21:39:33', 0);
 INSERT INTO `user` VALUES (11, '13900000006', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EH', 'coder_jie', 'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=200', 1, '1993-09-18', 'developer', 1, NULL, NULL, '2026-03-16 17:12:18', '2026-03-18 21:39:33', 0);
 INSERT INTO `user` VALUES (12, '13900000007', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EH', 'student_liu', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200', 1, '2002-01-30', 'student', 1, NULL, NULL, '2026-03-16 17:12:18', '2026-03-18 21:56:43', 0);
+INSERT INTO `user` VALUES (19, '17333087336', '$2a$10$qLNgvTb6De8L8EbTE4pepOkIibfimKfTVJOdntgmzOHe28mOpcEq6', '用户7336', '/uploads/2026/03/22/46046a834f614673a7eeea5d1dc49406.jpg', 0, NULL, NULL, 1, '2026-03-22 13:49:33', NULL, '2026-03-22 12:39:32', '2026-03-22 14:10:40', 0);
+INSERT INTO `user` VALUES (20, '15507974564', '$2a$10$.X13Ila5eFFT9Rm4M2i6DOHxKGdZQ2hyNWWaMzm6iuVmZeIwZStnK', '用户4564', '2026/03/22/e525005be074415fad5fe74d1f1fe6b0.jpg', 0, NULL, NULL, 1, NULL, NULL, '2026-03-22 12:54:09', '2026-03-22 13:38:00', 0);
 
 -- ----------------------------
 -- Table structure for user_address
@@ -1793,7 +1818,7 @@ CREATE TABLE `user_follow`  (
   UNIQUE INDEX `uk_user_followed`(`user_id` ASC, `followed_id` ASC) USING BTREE,
   INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
   INDEX `idx_followed_id`(`followed_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户关注表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户关注表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user_follow
@@ -1803,6 +1828,9 @@ INSERT INTO `user_follow` VALUES (3, 2, 1, '2026-03-15 14:38:15');
 INSERT INTO `user_follow` VALUES (4, 2, 3, '2026-03-15 14:38:15');
 INSERT INTO `user_follow` VALUES (5, 3, 1, '2026-03-15 14:38:15');
 INSERT INTO `user_follow` VALUES (6, 1, 2, '2026-03-19 16:09:49');
+INSERT INTO `user_follow` VALUES (7, 1, 5, '2026-03-21 14:51:26');
+INSERT INTO `user_follow` VALUES (12, 19, 1, '2026-03-22 14:07:11');
+INSERT INTO `user_follow` VALUES (13, 19, 3, '2026-03-22 14:19:13');
 
 -- ----------------------------
 -- Table structure for user_profile
@@ -1828,7 +1856,7 @@ CREATE TABLE `user_profile`  (
   `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_user_id`(`user_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户扩展资料表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户扩展资料表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user_profile
@@ -1840,5 +1868,7 @@ INSERT INTO `user_profile` VALUES (4, 4, NULL, NULL, NULL, NULL, 0, NULL, NULL, 
 INSERT INTO `user_profile` VALUES (5, 5, NULL, NULL, NULL, NULL, 0, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, '2026-03-14 15:19:13', '2026-03-14 15:19:13');
 INSERT INTO `user_profile` VALUES (6, 17, NULL, NULL, NULL, NULL, 0, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, '2026-03-18 16:18:21', '2026-03-18 16:18:21');
 INSERT INTO `user_profile` VALUES (7, 18, NULL, NULL, NULL, NULL, 0, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, '2026-03-18 17:45:06', '2026-03-18 17:45:06');
+INSERT INTO `user_profile` VALUES (8, 19, NULL, NULL, NULL, NULL, 0, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, '2026-03-22 12:39:32', '2026-03-22 12:39:32');
+INSERT INTO `user_profile` VALUES (9, 20, NULL, NULL, NULL, NULL, 0, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, '2026-03-22 12:54:09', '2026-03-22 12:54:09');
 
 SET FOREIGN_KEY_CHECKS = 1;

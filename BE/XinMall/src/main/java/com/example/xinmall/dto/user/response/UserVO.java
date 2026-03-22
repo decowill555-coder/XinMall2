@@ -41,4 +41,6 @@ public class UserVO implements Serializable {
     private Boolean isSeller;
 
     private Long sellerId;
+
+    private Boolean isVerified;
 }

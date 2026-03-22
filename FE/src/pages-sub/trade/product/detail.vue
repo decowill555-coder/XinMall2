@@ -290,6 +290,10 @@ const loadMore = () => {};
 .product-swiper {
   width: 100%;
   height: 750rpx;
+  
+  :deep(.uni-swiper-dot) {
+    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.3);
+  }
 }
 
 .price-section {

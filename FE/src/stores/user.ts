@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import type { UserInfo } from '@/api/auth';
+import { authApi } from '@/api/auth';
 
 export const useUserStore = defineStore('user', () => {
   // State
@@ -56,6 +57,17 @@ export const useUserStore = defineStore('user', () => {
     return !!token.value && !!userInfo.value;
   };
 
+  const refreshUserInfo = async () => {
+    try {
+      const info = await authApi.getUserInfo();
+      setUserInfo(info);
+      return info;
+    } catch (error) {
+      console.error('刷新用户信息失败:', error);
+      return null;
+    }
+  };
+
   return {
     token,
     refreshToken,
@@ -66,6 +78,7 @@ export const useUserStore = defineStore('user', () => {
     setUserInfo,
     updateUserInfo,
     logout,
-    isLoggedIn
+    isLoggedIn,
+    refreshUserInfo
   };
 });

@@ -37,10 +37,6 @@
           <!-- 右侧：如果是商品显示价格，是帖子显示点赞 -->
           <view class="action-info">
             <ui-price v-if="data.price" :value="data.price" :size="28" :bold="true" />
-            <view v-else class="like-box">
-              <ui-icon name="heart" :size="40" color="sub" />
-              <text class="like-count">{{ data.likeCount }}</text>
-            </view>
           </view>
         </view>
       </view>
@@ -225,19 +221,6 @@ const toUser = () => {
           }
         }
         
-        .like-box {
-          display: flex;
-          align-items: center;
-          .like-count {
-            font-size: $font-size-xs;
-            color: $color-text-sub;
-            margin-left: 4rpx;
-            
-            [data-theme="dark"] & {
-              color: var(--color-text-sub, #A1A1AA);
-            }
-          }
-        }
       }
     }
   }

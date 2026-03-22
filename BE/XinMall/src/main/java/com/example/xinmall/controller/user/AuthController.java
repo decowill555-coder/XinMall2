@@ -28,9 +28,9 @@ public class AuthController {
 
     @Operation(summary = "用户注册")
     @PostMapping("/register")
-    public Result<Void> register(@Valid @RequestBody RegisterRequest request) {
-        userService.register(request);
-        return Result.created();
+    public Result<LoginVO> register(@Valid @RequestBody RegisterRequest request) {
+        LoginVO loginVO = userService.register(request);
+        return Result.created(loginVO);
     }
 
     @Operation(summary = "用户登录")

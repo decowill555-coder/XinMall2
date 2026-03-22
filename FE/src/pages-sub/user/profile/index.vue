@@ -250,7 +250,6 @@ import { ref, computed } from 'vue';
 import { useUserStore, useAuthStore } from '@/stores';
 import { authApi } from '@/api/auth';
 import { uploadApi } from '@/api/upload';
-import { BASE_URL } from '@/utils/http';
 import { logError } from '@/utils/logger';
 
 const userStore = useUserStore();
@@ -324,22 +323,39 @@ const changeAvatar = () => {
 
 const onAvatarActionSelect = async (item: any) => {
   showAvatarActions.value = false;
-  
+
   const sourceType: ('album' | 'camera')[] = item.value === 'camera' ? ['camera'] : ['album'];
-  
+
   uni.chooseImage({
     count: 1,
     sizeType: ['compressed'],
     sourceType,
     success: async (res) => {
       const tempFilePath = res.tempFilePaths[0];
+
+      try {
+        const fileInfo = await new Promise<UniApp.GetFileInfoSuccessData | null>((resolve) => {
+          uni.getFileInfo({
+            filePath: tempFilePath,
+            success: (info) => resolve(info),
+            fail: () => resolve(null)
+          });
+        });
+
+        if (fileInfo && fileInfo.size > 10 * 1024 * 1024) {
+          uni.showToast({ title: '图片大小不能超过10MB', icon: 'none' });
+          return;
+        }
+      } catch (e) {
+        // 忽略文件信息获取错误，继续上传
+      }
+
       uni.showLoading({ title: '上传中...' });
-      
+
       try {
         const uploadResult = await uploadApi.uploadAvatar(tempFilePath);
-        const avatarUrl = uploadResult.fileUrl.startsWith('http') 
-          ? uploadResult.fileUrl 
-          : BASE_URL.replace('/api', '') + uploadResult.fileUrl;
+        // 保存相对路径到数据库，前端显示时再动态拼接完整URL
+        const avatarUrl = uploadResult.fileUrl;
         const updatedUser = await authApi.updateUserInfo({ avatar: avatarUrl });
         userStore.setUserInfo(updatedUser);
         uni.hideLoading();
@@ -347,7 +363,7 @@ const onAvatarActionSelect = async (item: any) => {
       } catch (error) {
         logError('上传头像失败:', error);
         uni.hideLoading();
-        uni.showToast({ title: '上传失败', icon: 'none' });
+        uni.showToast({ title: '上传失败，请重试', icon: 'none' });
       }
     }
   });
