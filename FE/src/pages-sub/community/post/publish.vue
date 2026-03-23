@@ -466,15 +466,12 @@ const clearTopicKeyword = () => {
 
 const chooseImage = () => {
   const remaining = 9 - imageList.value.length;
-  console.log('[publish] chooseImage 开始, 剩余可选:', remaining);
   
   uni.chooseImage({
     count: remaining,
     sizeType: ['compressed'],
     sourceType: ['album', 'camera'],
     success: async (res) => {
-      console.log('[publish] 选择的图片:', res.tempFilePaths);
-      
       const startIndex = imageList.value.length;
       const newImages: ImageItem[] = res.tempFilePaths.map(url => ({
         url,
@@ -482,30 +479,20 @@ const chooseImage = () => {
         file: url
       }));
       imageList.value = [...imageList.value, ...newImages];
-      console.log('[publish] 添加新图片到列表, 当前数量:', imageList.value.length);
 
       for (let i = 0; i < newImages.length; i++) {
         const img = newImages[i];
         const currentIndex = startIndex + i;
 
-        console.log(`[publish] 开始上传第 ${i + 1} 张图片:`, img.file);
-
         try {
           const uploadRes = await uploadApi.uploadPostImage(img.file!);
-          console.log(`[publish] 上传成功, 返回结果:`, uploadRes);
-          console.log(`[publish] uploadRes.fileUrl:`, uploadRes.fileUrl);
-          console.log(`[publish] uploadRes.fileKey:`, uploadRes.fileKey);
 
           imageList.value.splice(currentIndex, 1, {
             url: uploadRes.fileUrl,
             status: 'done' as const,
             serverUrl: uploadRes.fileUrl
           });
-          
-          console.log(`[publish] 更新图片状态完成, 当前imageList:`, 
-            JSON.stringify(imageList.value.map(item => ({ url: item.url, status: item.status, serverUrl: item.serverUrl }))));
         } catch (error) {
-          console.error(`[publish] 上传图片失败:`, error);
           logError('上传图片失败:', error);
           imageList.value.splice(currentIndex, 1, {
             url: img.url,
@@ -513,9 +500,6 @@ const chooseImage = () => {
           });
         }
       }
-      
-      console.log('[publish] 所有图片上传完成, 最终imageList:', 
-        JSON.stringify(imageList.value.map(item => ({ url: item.url, status: item.status, serverUrl: item.serverUrl }))));
     }
   });
 };
@@ -534,10 +518,6 @@ const selectProduct = (product: Product) => {
 };
 
 const handlePublish = async () => {
-  console.log('[publish] handlePublish 开始');
-  console.log('[publish] canPublish:', canPublish.value);
-  console.log('[publish] imageList:', JSON.stringify(imageList.value.map(item => ({ url: item.url, status: item.status, serverUrl: item.serverUrl }))));
-  
   if (!canPublish.value) {
     if (title.value.trim().length < 5) {
       uni.showToast({ title: '标题至少5个字', icon: 'none' });

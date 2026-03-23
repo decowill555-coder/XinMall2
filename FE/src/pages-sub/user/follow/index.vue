@@ -58,12 +58,12 @@
             <text v-if="user.createdAt" class="follow-time">关注于 {{ formatTime(user.createdAt) }}</text>
           </view>
           <view
-            v-if="!isOwnProfile || activeTab === 'followers'"
+            v-if="activeTab === 'following' || (!isOwnProfile && activeTab === 'followers')"
             class="follow-btn"
             :class="{ 'is-followed': user.isFollowed }"
             @click.stop="toggleFollow(user)"
           >
-            <text>{{ user.isFollowed ? '已关注' : '关注' }}</text>
+            <text>{{ getFollowBtnText(user) }}</text>
           </view>
         </view>
       </view>
@@ -153,10 +153,15 @@ const fetchList = async (page: number = 1) => {
 
     const list = result.list || [];
 
+    const listWithFollowStatus = list.map((user: FollowUserItem) => ({
+      ...user,
+      isFollowed: activeTab.value === 'following' ? true : (user.isFollowed ?? false)
+    }));
+
     if (page === 1) {
-      userList.value = list;
+      userList.value = listWithFollowStatus;
     } else {
-      userList.value = [...userList.value, ...list];
+      userList.value = [...userList.value, ...listWithFollowStatus];
     }
 
     currentPage.value = page;
@@ -235,6 +240,13 @@ const formatTime = (time: string) => {
   } catch {
     return time;
   }
+};
+
+const getFollowBtnText = (user: FollowUserItem) => {
+  if (activeTab.value === 'following') {
+    return user.isFollowed ? '取消关注' : '关注';
+  }
+  return user.isFollowed ? '已关注' : '关注';
 };
 </script>
 

@@ -121,10 +121,6 @@ public class PostServiceImpl implements PostService {
             throw new BusinessException("请先登录");
         }
 
-        log.info("[帖子发布] 开始创建帖子: userId={}, title={}", userId, request.getTitle());
-        log.info("[帖子发布] 请求图片列表: {}", request.getImages());
-        log.info("[帖子发布] 请求标签列表: {}", request.getTags());
-
         Post post = new Post();
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
@@ -142,12 +138,7 @@ public class PostServiceImpl implements PostService {
         post.setCreatedAt(LocalDateTime.now());
         post.setUpdatedAt(LocalDateTime.now());
         
-        log.info("[帖子发布] Post对象images字段: {}", post.getImages());
-        
         postMapper.insert(post);
-        
-        log.info("[帖子发布] 帖子创建成功: postId={}", post.getId());
-        log.info("[帖子发布] 插入后Post对象images字段: {}", post.getImages());
 
         List<Long> matchedCommunityIds = findCommunitiesByTags(request.getTags());
         for (Long communityId : matchedCommunityIds) {

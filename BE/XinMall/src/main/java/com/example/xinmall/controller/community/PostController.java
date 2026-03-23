@@ -37,8 +37,6 @@ public class PostController {
     @Operation(summary = "发布帖子")
     @PostMapping
     public Result<Long> create(@RequestBody CreatePostRequest request) {
-        log.info("[PostController] 收到发布帖子请求: title={}, images={}, tags={}", 
-                request.getTitle(), request.getImages(), request.getTags());
         return Result.success(postService.create(request));
     }
 
